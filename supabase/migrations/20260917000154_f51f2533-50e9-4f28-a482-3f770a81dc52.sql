@@ -1,0 +1,1 @@
+ALTER TABLE public.contatos ALTER COLUMN whatsapp DROP NOT NULL;
