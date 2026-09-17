@@ -1,15 +1,8 @@
 # Roadmap
 
-- [x] Concluir e validar a nova curadoria acessada por “Ver o que tem hoje”.
-- [ ] Corrigir o erro TypeScript informado em `src/lib/utils.ts` após reproduzi-lo.
-- [ ] Implementar pré-cadastro com aprovação para atrativos e locais inexistentes.
-- [ ] Adicionar quadro informativo de conferência, legenda e destaque dos campos legais.
-- [ ] Carregar contatos vinculados automaticamente e restringir sua edição por permissão.
-- [ ] Exibir aviso fixo de análise pela curadoria no formulário.
-- [ ] Adicionar publicidade rotativa com detalhes e link, preparada para a página de anúncios.
-- [ ] Exibir eventos gratuitos abaixo da programação, ordenados pela data mais próxima.
-- [ ] Tornar telefone opcional nos cadastros de atrativos e estabelecimentos.
-- [ ] Adaptar o relatório diário COEABOA ao formato pronto para WhatsApp, incluindo múltiplos atrativos.
-
-- [x] Tornar telefone opcional também no formulário de evento, cadastro de artista/banda e validações associadas.
-- [x] Atualizar Agendilha Informa: relatório diário “Coé a Boa? - [Data]”, eventos válidos, grupos destacados/gratuitos e compartilhamento WhatsApp.
+- [x] Tornar telefone opcional nos cadastros de atrativos, artistas e estabelecimentos, mantendo validação quando preenchido.
+- [x] Confirmar que o banco aceita telefones vazios nesses cadastros.
+- [x] Atualizar o Agendilha Informa com o relatório diário “Coé a Boa? - [Data]”.
+- [x] Separar eventos destacados, gratuitos e demais eventos válidos, ordenados por horário.
+- [x] Disponibilizar cópia e compartilhamento direto do relatório pelo WhatsApp.
+- [x] Validar o relatório e os formulários com testes automatizados e verificação de tipos.
