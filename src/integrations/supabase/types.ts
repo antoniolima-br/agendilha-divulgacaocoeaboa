@@ -817,7 +817,7 @@ export type Database = {
           tipo_perfil: Database["public"]["Enums"]["tipo_perfil_cadastro"]
           updated_at: string
           user_id: string | null
-          whatsapp: string
+          whatsapp: string | null
         }
         Insert: {
           bairro: string
@@ -829,7 +829,7 @@ export type Database = {
           tipo_perfil: Database["public"]["Enums"]["tipo_perfil_cadastro"]
           updated_at?: string
           user_id?: string | null
-          whatsapp: string
+          whatsapp?: string | null
         }
         Update: {
           bairro?: string
@@ -841,7 +841,7 @@ export type Database = {
           tipo_perfil?: Database["public"]["Enums"]["tipo_perfil_cadastro"]
           updated_at?: string
           user_id?: string | null
-          whatsapp?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
