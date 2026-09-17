@@ -14,6 +14,9 @@ export interface SummaryEvent {
   address_street?: string | null;
   address_number?: string | null;
   address_neighborhood?: string | null;
+  is_highlight?: boolean | null;
+  highlight_active?: boolean | null;
+  sale_price?: string | null;
   submission_atrativos?: Array<{ name?: string | null; display_order?: number | null }> | null;
 }
 
@@ -58,7 +61,22 @@ function formatReportTime(time?: string | null): string {
   return `${hour}:${minute}h`;
 }
 
-/** Gera o relatório diário COEABOA pronto para copiar e postar no WhatsApp. */
+function isFreeEvent(event: SummaryEvent): boolean {
+  const value = (event.sale_price ?? "").trim().toLowerCase();
+  if (!value) return true;
+  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
+  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
+  return Number.isFinite(amount) && amount === 0;
+}
+
+function simpleEventLine(event: SummaryEvent): string {
+  const title = eventAttractions(event);
+  const local = event.location || event.estabelecimento_name || "Local a confirmar";
+  return `• ${title} | ${local} | ${formatReportTime(event.start_time)}`;
+}
+
+/** Gera o relatório diário Coé a Boa? pronto para copiar e postar no WhatsApp. */
 export function buildCoeaboaDailyReport(
   submissions: SummaryEvent[],
   date: string,
@@ -67,20 +85,19 @@ export function buildCoeaboaDailyReport(
     .filter((event) => event.status === "aprovado" && event.date === date)
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
-  const header = ["Brasil - RJ - Rio de Janeiro", "", `🗓️ ${formatReportDate(date)}`].join("\n");
+  const header = `*Coé a Boa? - ${formatReportDate(date)}*`;
   if (items.length === 0) return { text: header, count: 0 };
 
-  const blocks = items.map((event) => {
-    const local = event.location || event.estabelecimento_name || "Local a confirmar";
-    const address = shortAddress(event);
-    const locationLine = [local, address].filter(Boolean).join(" – ");
-    return [
-      `🕒 ${formatReportTime(event.start_time)} * ${eventAttractions(event)} *`,
-      `📍 ${locationLine}`,
-    ].join("\n");
-  });
+  const highlighted = items.filter((event) => Boolean(event.highlight_active || event.is_highlight));
+  const free = items.filter((event) => !highlighted.includes(event) && isFreeEvent(event));
+  const regular = items.filter((event) => !highlighted.includes(event) && !free.includes(event));
+  const sections = [
+    highlighted.length ? `⭐ *EVENTOS DESTACADOS*\n${highlighted.map(simpleEventLine).join("\n")}` : null,
+    free.length ? `🆓 *EVENTOS GRATUITOS*\n${free.map(simpleEventLine).join("\n")}` : null,
+    regular.length ? `📅 *OUTROS EVENTOS*\n${regular.map(simpleEventLine).join("\n")}` : null,
+  ].filter((section): section is string => Boolean(section));
 
-  return { text: [header, "", blocks.join("\n\n")].join("\n"), count: items.length };
+  return { text: [header, "", sections.join("\n\n")].join("\n"), count: items.length };
 }
 
 function addDaysISO(iso: string, days: number): string {

@@ -136,7 +136,7 @@ describe("openWhatsAppWithText", () => {
 });
 
 describe("buildCoeaboaDailyReport", () => {
-  it("gera o modelo diário com múltiplos atrativos e endereço completo", () => {
+  it("gera o modelo diário com múltiplos atrativos em evento gratuito", () => {
     const date = "2026-09-15";
     const { text, count } = buildCoeaboaDailyReport([
       {
@@ -157,10 +157,9 @@ describe("buildCoeaboaDailyReport", () => {
 
     expect(count).toBe(1);
     expect(text).toBe(
-      "Brasil - RJ - Rio de Janeiro\n\n" +
-      "🗓️ 15/09/2026\n\n" +
-      "🕒 18:00h * Banda 4X Rock - Linha Vermelha *\n" +
-      "📍 Aterro do Cocotá – Parque Manoel Bandeira, s/n - Cocotá",
+      "*Coé a Boa? - 15/09/2026*\n\n" +
+      "🆓 *EVENTOS GRATUITOS*\n" +
+      "• Banda 4X Rock - Linha Vermelha | Aterro do Cocotá | 18:00h",
     );
   });
 
@@ -175,5 +174,18 @@ describe("buildCoeaboaDailyReport", () => {
     expect(count).toBe(2);
     expect(text.indexOf("Mais cedo")).toBeLessThan(text.indexOf("Mais tarde"));
     expect(text).not.toContain("Pendente");
+  });
+
+  it("separa eventos destacados, gratuitos e outros eventos", () => {
+    const date = "2026-09-15";
+    const { text } = buildCoeaboaDailyReport([
+      { status: "aprovado", date, start_time: "20:00", event_title: "Destaque", is_highlight: true, sale_price: "50" },
+      { status: "aprovado", date, start_time: "18:00", event_title: "Grátis", sale_price: "Gratuito" },
+      { status: "aprovado", date, start_time: "19:00", event_title: "Ingresso", sale_price: "R$ 20" },
+    ], date);
+
+    expect(text).toContain("⭐ *EVENTOS DESTACADOS*\n• Destaque");
+    expect(text).toContain("🆓 *EVENTOS GRATUITOS*\n• Grátis");
+    expect(text).toContain("📅 *OUTROS EVENTOS*\n• Ingresso");
   });
 });

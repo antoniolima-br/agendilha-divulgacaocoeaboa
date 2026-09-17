@@ -10,7 +10,7 @@ import { Copy, Send } from "lucide-react";
 import { toast } from "sonner";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { buildCoeaboaDailyReport } from "@/lib/todayWhatsappSummary";
+import { buildCoeaboaDailyReport, openWhatsAppWithText } from "@/lib/todayWhatsappSummary";
 
 interface Ev {
   id: string;
@@ -25,6 +25,9 @@ interface Ev {
   short_copy: string | null;
   address_street: string | null;
   address_number: string | null;
+  sale_price: string | null;
+  is_highlight: boolean | null;
+  highlight_active?: boolean | null;
   submission_atrativos: Array<{ name: string | null; display_order: number | null }> | null;
 }
 
@@ -53,7 +56,7 @@ export default function AdminAgendaInforma() {
     supabase
       .from("submissions")
       .select(
-        "id, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, submission_atrativos(name, display_order)"
+        "id, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, submission_atrativos(name, display_order)"
       )
       .eq("status", "aprovado")
       .eq("date", date)
@@ -89,15 +92,14 @@ export default function AdminAgendaInforma() {
   }
 
   function shareWhats() {
-    const url = `https://wa.me/?text=${encodeURIComponent(lines)}`;
-    window.open(url, "_blank");
+    openWhatsAppWithText(lines);
   }
 
   return (
     <div className="space-y-6">
       <SectionHeader
         title="Relatório diário COEABOA"
-        subtitle="Selecione os eventos e copie o texto pronto para postar no WhatsApp Agendilha."
+        subtitle="Eventos válidos do dia, separados entre destaques, gratuitos e demais programações."
         rightElement={
           <div>
             <Label htmlFor="date" className="text-xs">Data</Label>
@@ -161,7 +163,7 @@ export default function AdminAgendaInforma() {
         <div className="space-y-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-base">Pré-visualização</CardTitle>
+              <CardTitle className="text-base">Coé a Boa? — pré-visualização</CardTitle>
               <span className="text-xs text-muted-foreground">
                 {chosenCount} evento(s)
               </span>
