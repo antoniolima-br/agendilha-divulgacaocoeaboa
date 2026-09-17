@@ -21,9 +21,12 @@ export interface SummaryEvent {
 }
 
 function todayISO(): string {
-  const d = new Date();
-  const tz = d.getTimezoneOffset() * 60000;
-  return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 function formatTime(t?: string | null): string {
@@ -90,14 +93,12 @@ export function buildCoeaboaDailyReport(
 
   const highlighted = items.filter((event) => Boolean(event.highlight_active || event.is_highlight));
   const free = items.filter((event) => !highlighted.includes(event) && isFreeEvent(event));
-  const regular = items.filter((event) => !highlighted.includes(event) && !free.includes(event));
   const sections = [
     highlighted.length ? `⭐ *EVENTOS DESTACADOS*\n${highlighted.map(simpleEventLine).join("\n")}` : null,
     free.length ? `🆓 *EVENTOS GRATUITOS*\n${free.map(simpleEventLine).join("\n")}` : null,
-    regular.length ? `📅 *OUTROS EVENTOS*\n${regular.map(simpleEventLine).join("\n")}` : null,
   ].filter((section): section is string => Boolean(section));
 
-  return { text: [header, "", sections.join("\n\n")].join("\n"), count: items.length };
+  return { text: [header, "", sections.join("\n\n")].join("\n"), count: highlighted.length + free.length };
 }
 
 function addDaysISO(iso: string, days: number): string {

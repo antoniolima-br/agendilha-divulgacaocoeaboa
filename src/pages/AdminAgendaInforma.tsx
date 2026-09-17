@@ -32,9 +32,12 @@ interface Ev {
 }
 
 function todayISO() {
-  const d = new Date();
-  const tz = d.getTimezoneOffset() * 60000;
-  return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 function formatTime(t: string | null): string {
@@ -84,7 +87,10 @@ export default function AdminAgendaInforma() {
     return buildCoeaboaDailyReport(chosen, date).text;
   }, [events, selected, date]);
 
-  const chosenCount = Object.values(selected).filter(Boolean).length;
+  const chosenCount = useMemo(() => {
+    const chosen = events.filter((event) => selected[event.id]);
+    return buildCoeaboaDailyReport(chosen, date).count;
+  }, [events, selected, date]);
 
   async function copy() {
     await navigator.clipboard.writeText(lines);
@@ -99,7 +105,7 @@ export default function AdminAgendaInforma() {
     <div className="space-y-6">
       <SectionHeader
         title="Relatório diário COEABOA"
-        subtitle="Eventos válidos do dia, separados entre destaques, gratuitos e demais programações."
+        subtitle="Eventos válidos do dia, separados entre destaques e gratuitos."
         rightElement={
           <div>
             <Label htmlFor="date" className="text-xs">Data</Label>
@@ -182,7 +188,7 @@ export default function AdminAgendaInforma() {
                 </Button>
                 <Button onClick={shareWhats} className="flex-1">
                   <Send className="h-4 w-4 mr-2" />
-                  WhatsApp
+                  Compartilhar no WhatsApp
                 </Button>
               </div>
             </CardContent>

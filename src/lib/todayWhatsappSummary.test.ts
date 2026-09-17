@@ -176,7 +176,7 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).not.toContain("Pendente");
   });
 
-  it("separa eventos destacados, gratuitos e outros eventos", () => {
+  it("separa eventos destacados e gratuitos, sem incluir eventos pagos comuns", () => {
     const date = "2026-09-15";
     const { text } = buildCoeaboaDailyReport([
       { status: "aprovado", date, start_time: "20:00", event_title: "Destaque", is_highlight: true, sale_price: "50" },
@@ -186,6 +186,7 @@ describe("buildCoeaboaDailyReport", () => {
 
     expect(text).toContain("⭐ *EVENTOS DESTACADOS*\n• Destaque");
     expect(text).toContain("🆓 *EVENTOS GRATUITOS*\n• Grátis");
-    expect(text).toContain("📅 *OUTROS EVENTOS*\n• Ingresso");
+    expect(text).not.toContain("Ingresso");
+    expect(text).not.toContain("OUTROS EVENTOS");
   });
 });
