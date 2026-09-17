@@ -11,5 +11,5 @@
 - [ ] Tornar telefone opcional nos cadastros de atrativos e estabelecimentos.
 - [ ] Adaptar o relatório diário COEABOA ao formato pronto para WhatsApp, incluindo múltiplos atrativos.
 
-- [ ] Tornar telefone opcional também no formulário de evento, cadastro de artista/banda e validações associadas.
-- [ ] Atualizar Agendilha Informa: relatório diário “Coé a Boa? - [Data]”, eventos válidos, grupos destacados/gratuitos e compartilhamento WhatsApp.
+- [x] Tornar telefone opcional também no formulário de evento, cadastro de artista/banda e validações associadas.
+- [x] Atualizar Agendilha Informa: relatório diário “Coé a Boa? - [Data]”, eventos válidos, grupos destacados/gratuitos e compartilhamento WhatsApp.
