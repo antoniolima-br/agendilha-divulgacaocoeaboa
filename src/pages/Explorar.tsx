@@ -101,6 +101,11 @@ function ExplorarInner() {
       setCustomDate(new Date());
       return;
     }
+    if (view === "free") {
+      setDatePreset("free");
+      setCustomDate(undefined);
+      return;
+    }
     const dateParam = params.get("date");
     if (dateParam) {
       const parsed = parseISO(dateParam);

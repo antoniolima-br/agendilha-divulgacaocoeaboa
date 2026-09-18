@@ -148,7 +148,7 @@ export default function Landing() {
 
         if (error) throw error;
         return (data ?? [])
-          .filter((event) => !event.highlight_active && isFreeEventPrice(event.sale_price))
+          .filter((event) => !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
           .slice(0, 8);
       },
     });
