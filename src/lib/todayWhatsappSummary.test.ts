@@ -15,9 +15,12 @@ function isoAddDays(iso: string, days: number) {
 }
 
 function todayISO() {
-  const d = new Date();
-  const tz = d.getTimezoneOffset() * 60000;
-  return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 describe("buildWeekWhatsAppSummary", () => {
@@ -178,7 +181,7 @@ describe("buildCoeaboaDailyReport", () => {
 
   it("separa eventos destacados e gratuitos, sem incluir eventos pagos comuns", () => {
     const date = "2026-09-15";
-    const { text } = buildCoeaboaDailyReport([
+    const { text, count } = buildCoeaboaDailyReport([
       { status: "aprovado", date, start_time: "20:00", event_title: "Destaque", is_highlight: true, sale_price: "50" },
       { status: "aprovado", date, start_time: "18:00", event_title: "Grátis", sale_price: "Gratuito" },
       { status: "aprovado", date, start_time: "19:00", event_title: "Ingresso", sale_price: "R$ 20" },
@@ -188,5 +191,6 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).toContain("🆓 *EVENTOS GRATUITOS*\n• Grátis");
     expect(text).not.toContain("Ingresso");
     expect(text).not.toContain("OUTROS EVENTOS");
+    expect(count).toBe(2);
   });
 });
