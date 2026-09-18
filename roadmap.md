@@ -6,3 +6,5 @@
 - [x] Separar eventos destacados e gratuitos válidos, ordenados por horário, sem eventos pagos comuns.
 - [x] Disponibilizar cópia e compartilhamento direto do relatório pelo WhatsApp.
 - [x] Validar o relatório e os formulários com testes automatizados e verificação de tipos.
+- [x] Corrigir o atalho Eventos da seção Explorar para abrir a página pública de eventos.
+- [x] Exibir na parte inferior da Home os eventos gratuitos não destacados e válidos.

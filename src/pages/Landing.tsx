@@ -59,6 +59,15 @@ const genres = [
 
 const marqueeWords = ["Música", "Teatro", "Gastronomia", "Arte", "Workshops", "Feiras", "Cinema", "Literatura", "Dança", "Cultura local"];
 
+function isFreeEventPrice(price?: string | null): boolean {
+  const value = (price ?? "").trim().toLowerCase();
+  if (!value) return true;
+  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
+  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
+  return Number.isFinite(amount) && amount === 0;
+}
+
 function useScrollReveal() {
   const observed = useRef<Set<Element>>(new Set());
   useEffect(() => {
@@ -103,7 +112,7 @@ export default function Landing() {
     queryFn: async ({ pageParam = 0 }) => {
       const { data, error } = await supabase
          .from("public_submissions")
-        .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count")
+        .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
         .eq('status', 'aprovado')
         .order('highlight_active', { ascending: false, nullsFirst: false })
         .order('date', { ascending: true })
@@ -118,6 +127,31 @@ export default function Landing() {
      initialPageParam: 0,
      getNextPageParam: (lastPage) => lastPage.nextPage,
    });
+
+    const { data: freeEvents = [], isLoading: freeEventsLoading } = useQuery({
+      queryKey: ["landing-free-events"],
+      queryFn: async () => {
+        const today = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/Sao_Paulo",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+        const { data, error } = await supabase
+          .from("public_submissions")
+          .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
+          .eq("status", "aprovado")
+          .gte("date", today)
+          .order("date", { ascending: true })
+          .order("start_time", { ascending: true, nullsFirst: false })
+          .limit(100);
+
+        if (error) throw error;
+        return (data ?? [])
+          .filter((event) => !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
+          .slice(0, 8);
+      },
+    });
  
     const allEvents = useMemo(() => eventsData?.pages.flatMap(page => page.items) || [], [eventsData]);
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
@@ -475,6 +509,46 @@ export default function Landing() {
          </section>
 
          {/* "Recomendado para você" removido: já coberto por "No seu radar" para evitar duplicação */}
+
+         <section className="mb-12">
+           <div className="flex items-center justify-between mb-6">
+             <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+               <Sparkles className="h-5 w-5 text-primary" />
+               Rolês gratuitos
+             </h2>
+             <Link to="/explorar?view=free" className="text-primary font-bold flex items-center">
+               Ver tudo <ChevronRight className="h-4 w-4" />
+             </Link>
+           </div>
+
+           {freeEventsLoading ? (
+             <div className="flex justify-center py-10">
+               <Loader2 className="h-8 w-8 animate-spin text-primary" />
+             </div>
+           ) : freeEvents.length > 0 ? (
+             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+               {freeEvents.map((event) => (
+                 <DiscoveryEventCard
+                   key={event.id}
+                   event={event}
+                   variant="compact"
+                   className="w-full h-auto"
+                   onClick={() => navigate(`/agenda?event=${event.id}`)}
+                   isFavorite={favorites.includes(event.id)}
+                   onFavoriteToggle={() => toggleFavorite(event.id)}
+                   onShare={() => {
+                     const data = getShareData(event);
+                     setShareData({ ...data, eventId: event.id });
+                   }}
+                 />
+               ))}
+             </div>
+           ) : (
+             <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
+               <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
+             </div>
+           )}
+         </section>
 
         {/* Newsletter / Public Registration */}
         <section className="mb-12">

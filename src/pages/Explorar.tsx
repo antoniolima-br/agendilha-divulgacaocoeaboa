@@ -40,6 +40,15 @@ const CATEGORIES: { id: string; label: string }[] = [
 
 type DatePreset = "all" | "today" | "tomorrow" | "weekend" | "next7" | "custom" | "free" | "kids";
 
+function isFreeEventPrice(price?: string | null): boolean {
+  const value = (price ?? "").trim().toLowerCase();
+  if (!value) return true;
+  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
+  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
+  return Number.isFinite(amount) && amount === 0;
+}
+
 function presetMatches(eventDate: string | null, preset: DatePreset, customDate?: Date): boolean {
   if (preset === "all") return true;
   if (!eventDate) return false;
@@ -86,7 +95,7 @@ function ExplorarInner() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_submissions")
-        .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug")
+        .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug, is_highlight, highlight_active")
         .eq("status", "aprovado")
         .order("date", { ascending: true });
       if (error) throw error;
@@ -99,6 +108,11 @@ function ExplorarInner() {
     if (view === "today") {
       setDatePreset("today");
       setCustomDate(new Date());
+      return;
+    }
+    if (view === "free") {
+      setDatePreset("free");
+      setCustomDate(undefined);
       return;
     }
     const dateParam = params.get("date");
@@ -131,7 +145,7 @@ function ExplorarInner() {
     const q = term.trim().toLowerCase();
     const list = events.filter(ev => {
       if (datePreset !== "free" && datePreset !== "kids" && !presetMatches(ev.date, datePreset as any, customDate)) return false;
-      if (datePreset === "free" && !["0", "gratuito", "grátis", "free"].includes(ev.sale_price?.toLowerCase().trim() || "")) return false;
+      if (datePreset === "free" && (ev.is_highlight || ev.highlight_active || !isFreeEventPrice(ev.sale_price))) return false;
       if (datePreset === "kids" && !ev.is_suitable_for_minors && ev.age_rating !== "Livre") return false;
       if (neighborhood !== "all" && ev.address_neighborhood !== neighborhood) return false;
       if (category !== "all" && ev.category !== category) return false;
