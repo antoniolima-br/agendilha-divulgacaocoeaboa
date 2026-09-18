@@ -54,7 +54,7 @@ export const sidebarConfig: SidebarSection[] = [
       { 
         id: "events", 
         label: "Eventos", 
-        path: ROUTES.AGENDA, 
+        path: ROUTES.EXPLORAR, 
         icon: CalendarDays, 
         roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
         exact: true
