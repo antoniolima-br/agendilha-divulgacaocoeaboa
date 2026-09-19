@@ -179,8 +179,8 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(2);
-    expect(text.indexOf("Mais cedo")).toBeLessThan(text.indexOf("Mais tarde"));
-    expect(text).not.toContain("Pendente");
+    expect(text.indexOf("MAIS CEDO")).toBeLessThan(text.indexOf("MAIS TARDE"));
+    expect(text).not.toContain("PENDENTE");
   });
 
   it("aceita status públicos e converte a data UTC para São Paulo", () => {
@@ -191,8 +191,8 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(2);
-    expect(text).toContain("Publicado");
-    expect(text).toContain("Divulgado");
+    expect(text).toContain("PUBLICADO");
+    expect(text).toContain("DIVULGADO");
   });
 
   it("reúne todos os eventos divulgados em uma lista cronológica sem rótulos", () => {
@@ -203,8 +203,8 @@ describe("buildCoeaboaDailyReport", () => {
       { status: "aprovado", date, start_time: "19:00", event_title: "Ingresso", sale_price: "R$ 20" },
     ], date);
 
-    expect(text.indexOf("Grátis")).toBeLessThan(text.indexOf("Ingresso"));
-    expect(text.indexOf("Ingresso")).toBeLessThan(text.indexOf("Destaque"));
+    expect(text.indexOf("GRÁTIS")).toBeLessThan(text.indexOf("INGRESSO"));
+    expect(text.indexOf("INGRESSO")).toBeLessThan(text.indexOf("DESTAQUE"));
     expect(text).toContain("*DESTAQUE*");
     expect(text).toContain("*GRÁTIS*");
     expect(text).toContain("*INGRESSO*");
