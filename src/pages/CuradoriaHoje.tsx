@@ -167,6 +167,13 @@ function CuradoriaHojeInner() {
     setActiveSlide((current) => (current + direction + featuredEvents.length) % featuredEvents.length);
   };
 
+  const showNextDays = () => {
+    setDateFilter("next7");
+    window.requestAnimationFrame(() => {
+      document.getElementById("programacao-heading")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
       <SeoHead
@@ -326,9 +333,14 @@ function CuradoriaHojeInner() {
 
         {!isLoading && !error && (
           <section aria-labelledby="proximos-patrocinados-heading" className="mb-10">
-            <div className="mb-4">
-              <p className="text-xs font-bold uppercase text-secondary">Agenda patrocinada</p>
-              <h2 id="proximos-patrocinados-heading" className="mt-1 text-xl font-bold sm:text-2xl">Próximos dias</h2>
+            <div className="mb-4 flex items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold uppercase text-secondary">Agenda patrocinada</p>
+                <h2 id="proximos-patrocinados-heading" className="mt-1 text-xl font-bold sm:text-2xl">Próximos dias</h2>
+              </div>
+              <Button type="button" variant="link" className="h-auto p-0 font-semibold" onClick={showNextDays}>
+                Ver próximos dias
+              </Button>
             </div>
             {upcomingEvents.length > 0 ? (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
@@ -363,12 +375,12 @@ function CuradoriaHojeInner() {
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                 {["Amanhã", "Próximos dias", "Fim de semana", "Em breve"].map((label) => (
-                  <div key={label} className="flex aspect-[4/5] flex-col justify-end rounded-lg border border-dashed border-border bg-muted/30 p-4">
+                  <Button key={label} type="button" variant="ghost" onClick={showNextDays} className="flex h-auto aspect-[4/5] flex-col items-start justify-end rounded-lg border border-dashed border-border bg-muted/30 p-4 text-left hover:bg-muted/60">
                     <Badge variant="outline" className="mb-auto w-fit text-[9px] uppercase">Espaço patrocinado</Badge>
                     <CalendarDays className="mb-3 h-7 w-7 text-secondary" aria-hidden="true" />
                     <h3 className="text-sm font-bold sm:text-base">{label}</h3>
                     <p className="mt-1 text-xs text-muted-foreground">Novos rolês entram aqui assim que forem publicados.</p>
-                  </div>
+                  </Button>
                 ))}
               </div>
             )}
