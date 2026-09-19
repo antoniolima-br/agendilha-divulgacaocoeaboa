@@ -163,7 +163,9 @@ export function HomeAdsCarousel() {
       <SponsoredAdDialog
         ad={selectedAd}
         open={Boolean(selectedAd)}
-        fallbackImage={selectedAd ? eventFlyers[visibleAds.findIndex((ad) => ad.id === selectedAd.id) % eventFlyers.length] : undefined}
+        fallbackImage={selectedAd && eventFlyers.length > 0
+          ? eventFlyers[Math.max(0, visibleAds.findIndex((ad) => ad.id === selectedAd.id)) % eventFlyers.length]
+          : undefined}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedAd(null);
