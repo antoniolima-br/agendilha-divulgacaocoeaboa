@@ -12,18 +12,19 @@ import {
 import { useAdCoverUrl } from "@/data/useAdPhotoUrls";
 import { formatPriceBRL } from "@/data/useAdPlans";
 import type { Ad } from "@/data/useAds";
+import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 
 interface SponsoredAdDialogProps {
   ad: Ad | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  fallbackImage?: string;
 }
 
-export function SponsoredAdDialog({ ad, open, onOpenChange, fallbackImage }: SponsoredAdDialogProps) {
+export function SponsoredAdDialog({ ad, open, onOpenChange }: SponsoredAdDialogProps) {
   const cover = useAdCoverUrl(ad?.photos ?? []);
   if (!ad) return null;
+  const displayImage = getSponsoredAdCreative(ad.title) || cover;
 
   const location = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
   const mapUrl = location
@@ -38,8 +39,8 @@ export function SponsoredAdDialog({ ad, open, onOpenChange, fallbackImage }: Spo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto p-0">
         <div className="aspect-video w-full overflow-hidden bg-muted">
-          {cover || fallbackImage ? (
-            <img src={cover || fallbackImage} alt={ad.title} className="h-full w-full object-cover" />
+          {displayImage ? (
+            <img src={displayImage} alt={ad.title} width={1536} height={864} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground">
               <ImageIcon className="h-10 w-10" aria-hidden="true" />
