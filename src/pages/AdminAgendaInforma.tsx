@@ -103,7 +103,7 @@ export default function AdminAgendaInforma() {
     <div className="space-y-6">
       <SectionHeader
         title="Relatório diário COEABOA"
-        subtitle="Eventos válidos do dia, separados entre destaques e gratuitos."
+        subtitle="Programação válida do dia, separada entre anúncios pagos e eventos gratuitos."
         rightElement={
           <div>
             <Label htmlFor="date" className="text-xs">Data</Label>
@@ -123,7 +123,7 @@ export default function AdminAgendaInforma() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
-                Eventos do dia ({events.length})
+                Programação do dia ({events.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
