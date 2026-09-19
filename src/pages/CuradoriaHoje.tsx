@@ -1,18 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  addDays,
-  endOfDay,
-  format,
-  isToday,
-  isTomorrow,
-  nextSaturday,
-  nextSunday,
-  parseISO,
-  startOfDay,
-} from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, ShoppingBasket, Sparkles } from "lucide-react";
+import { BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, Clock3, MapPin, Plus, ShoppingBasket, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Header from "@/components/Header";
@@ -20,9 +10,12 @@ import { DiscoveryEventCard } from "@/components/DiscoveryEventCard";
 import { ShareDialog } from "@/components/ShareDialog";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
+import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
+import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { getShareData } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
@@ -31,7 +24,7 @@ type DateFilter = "today" | "tomorrow" | "weekend" | "next7";
 
 interface CuratedEvent {
   id: string;
-  event_title: string;
+  event_title: string | null;
   date: string | null;
   start_time: string | null;
   location: string | null;
@@ -57,25 +50,25 @@ const filters: Array<{ id: DateFilter; label: string }> = [
 
 function matchesDate(date: string | null, filter: DateFilter): boolean {
   if (!date) return false;
-  const parsed = parseISO(date);
-  if (Number.isNaN(parsed.getTime())) return false;
+  const eventDay = eventDateISO(date);
+  const today = saoPauloTodayISO();
+  if (filter === "today") return eventDay === today;
+  if (filter === "tomorrow") return eventDay === addDaysToISO(today, 1);
+  if (filter === "next7") return eventDay >= today && eventDay <= addDaysToISO(today, 7);
 
-  const now = new Date();
-  if (filter === "today") return isToday(parsed);
-  if (filter === "tomorrow") return isTomorrow(parsed);
-  if (filter === "next7") {
-    return parsed >= startOfDay(now) && parsed <= endOfDay(addDays(now, 7));
-  }
-
-  const saturday = startOfDay(nextSaturday(now));
-  const sunday = endOfDay(nextSunday(now));
-  return parsed >= saturday && parsed <= sunday;
+  const todayDate = parseISO(today);
+  const daysUntilSaturday = (6 - todayDate.getDay() + 7) % 7;
+  const saturday = addDaysToISO(today, daysUntilSaturday);
+  const sunday = addDaysToISO(saturday, 1);
+  return eventDay >= saturday && eventDay <= sunday;
 }
 
 function CuradoriaHojeInner() {
   const navigate = useNavigate();
   const [dateFilter, setDateFilter] = useState<DateFilter>("today");
+  const [region, setRegion] = useState("all");
   const [activeSlide, setActiveSlide] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
   const [shareData, setShareData] = useState<{
     title: string;
     text: string;
@@ -98,19 +91,25 @@ function CuradoriaHojeInner() {
       const { data, error } = await supabase
         .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, description, image_url, age_rating, is_suitable_for_minors, slug, is_highlight, highlight_active")
-        .eq("status", "aprovado")
+        .in("status", [...PUBLIC_EVENT_STATUSES])
+        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
         .order("date", { ascending: true })
         .order("start_time", { ascending: true });
 
       if (error) throw error;
-      return (data ?? []) as CuratedEvent[];
+      return (data ?? []).filter((event) => eventDateISO(event.date) >= saoPauloTodayISO()) as CuratedEvent[];
     },
   });
 
-  const visibleEvents = useMemo(
-    () => events.filter((event) => matchesDate(event.date, dateFilter)),
-    [dateFilter, events],
-  );
+  const regions = useMemo(() => Array.from(new Set(events
+    .map((event) => event.address_neighborhood?.trim())
+    .filter((value): value is string => Boolean(value))))
+    .sort((a, b) => a.localeCompare(b, "pt-BR")), [events]);
+
+  const visibleEvents = useMemo(() => events.filter((event) => {
+    const matchesRegion = region === "all" || event.address_neighborhood === region;
+    return matchesRegion && matchesDate(event.date, dateFilter);
+  }), [dateFilter, events, region]);
 
   const featuredEvents = useMemo(() => {
     return [...visibleEvents]
@@ -119,6 +118,14 @@ function CuradoriaHojeInner() {
   }, [visibleEvents]);
 
   useEffect(() => setActiveSlide(0), [dateFilter]);
+
+  useEffect(() => {
+    if (heroPaused || featuredEvents.length < 2) return;
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % featuredEvents.length);
+    }, 5_000);
+    return () => window.clearInterval(timer);
+  }, [featuredEvents.length, heroPaused]);
 
   const currentFeature = featuredEvents[activeSlide];
   const selectedLabel = filters.find((item) => item.id === dateFilter)?.label ?? "Hoje";
@@ -153,13 +160,13 @@ function CuradoriaHojeInner() {
       <Header />
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-32">
-        <header className="mb-6 sm:mb-8">
-          <p className="mb-2 text-xs font-bold uppercase text-secondary">
+        <header className="mb-7 border-b border-border pb-6 sm:mb-10 sm:pb-8">
+          <p className="mb-3 text-xs font-bold uppercase text-secondary">
             {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
           </p>
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-3xl font-bold leading-tight sm:text-5xl">Hoje na Ilha</h1>
+              <h1 className="text-4xl font-bold leading-tight sm:text-6xl">Hoje na Ilha</h1>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                 A curadoria do que tá rolando, do primeiro programa ao último show.
               </p>
@@ -170,8 +177,9 @@ function CuradoriaHojeInner() {
           </div>
         </header>
 
-        <nav aria-label="Filtrar eventos por data" className="-mx-4 mb-7 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:px-0">
-          <div className="flex w-max gap-2">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <nav aria-label="Filtrar eventos por data" className="-mx-4 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0">
+           <div className="flex w-max gap-2">
             {filters.map((item) => (
               <Button
                 key={item.id}
@@ -184,8 +192,19 @@ function CuradoriaHojeInner() {
                 {item.label}
               </Button>
             ))}
-          </div>
-        </nav>
+           </div>
+          </nav>
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="h-11 w-full rounded-full border-foreground/15 bg-card px-4 shadow-sm sm:w-[240px]" aria-label="Selecionar região">
+              <MapPin className="mr-2 h-4 w-4 shrink-0 text-secondary" />
+              <SelectValue placeholder="Toda a Ilha" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toda a Ilha</SelectItem>
+              {regions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
 
         {isLoading ? (
           <div className="mb-8 aspect-[16/9] w-full animate-pulse rounded-2xl bg-muted sm:aspect-[21/9]" />
@@ -197,7 +216,7 @@ function CuradoriaHojeInner() {
             onRetry={() => refetch()}
           />
         ) : currentFeature ? (
-          <section aria-labelledby="destaques-heading" className="mb-8">
+          <section aria-labelledby="destaques-heading" className="mb-10">
             <div className="mb-3 flex items-center justify-between">
               <h2 id="destaques-heading" className="text-lg font-bold sm:text-2xl">Destaques</h2>
               {featuredEvents.length > 1 && (
@@ -212,29 +231,36 @@ function CuradoriaHojeInner() {
               )}
             </div>
 
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => openEvent(currentFeature)}
-              className="group relative block aspect-[16/9] w-full overflow-hidden rounded-2xl bg-muted text-left shadow-elevated outline-none ring-offset-background transition-transform duration-300 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:aspect-[21/9]"
+              onMouseEnter={() => setHeroPaused(true)}
+              onMouseLeave={() => setHeroPaused(false)}
+              onFocus={() => setHeroPaused(true)}
+              onBlur={() => setHeroPaused(false)}
+              className="group relative block h-auto aspect-[16/11] w-full overflow-hidden rounded-lg bg-muted p-0 text-left shadow-elevated outline-none ring-offset-background transition-transform duration-300 hover:-translate-y-0.5 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:aspect-[21/9]"
             >
               <img
                 src={currentFeature.image_url || getEventFallbackImage(currentFeature.category)}
                 alt={currentFeature.event_title || "Evento em destaque"}
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02] motion-reduce:transition-none"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-9">
                 <span className="mb-2 inline-flex rounded bg-accent px-2 py-1 text-[10px] font-bold uppercase text-accent-foreground">
                   Destaque
                 </span>
                 <h3 className="max-w-3xl text-xl font-bold leading-tight sm:text-4xl">
                   {currentFeature.event_title || "Rolê na Ilha"}
                 </h3>
-                <p className="mt-2 text-xs text-background/80 sm:text-sm">
-                  {[currentFeature.location, currentFeature.start_time].filter(Boolean).join(" • ")}
-                </p>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-background/80 sm:text-sm">
+                  {currentFeature.location && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" />{currentFeature.location}</span>}
+                  {currentFeature.start_time && <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4" />{currentFeature.start_time.slice(0, 5)}</span>}
+                  {currentFeature.date && <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" />{format(parseISO(eventDateISO(currentFeature.date)), "dd MMM", { locale: ptBR })}</span>}
+                </div>
               </div>
-            </button>
+            </Button>
 
             {featuredEvents.length > 1 && (
               <div className="mt-3 flex justify-center gap-2" aria-label="Escolher destaque">
@@ -259,7 +285,9 @@ function CuradoriaHojeInner() {
 
         {!error && !isLoading && (
           <>
-            <aside className="relative mb-9 overflow-hidden rounded-2xl border border-accent/40 bg-muted p-4 sm:p-5" aria-label="Publicidade da Mercearia do Tio João">
+            <HomeAdsCarousel />
+
+            <aside className="relative mb-9 overflow-hidden rounded-lg border border-accent/40 bg-muted p-4 shadow-card sm:p-5" aria-label="Publicidade da Mercearia do Tio João">
               <span className="absolute right-3 top-2 text-[9px] font-bold uppercase text-muted-foreground">Publicidade</span>
               <div className="flex items-center gap-4 pr-14">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
@@ -307,6 +335,26 @@ function CuradoriaHojeInner() {
                   ))}
                 </div>
               )}
+            </section>
+
+            <section aria-labelledby="acoes-heading" className="mt-12 border-y border-border py-8 sm:py-10">
+              <div className="mb-5 flex items-end justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase text-secondary">Faça parte</p>
+                  <h2 id="acoes-heading" className="mt-1 text-2xl font-bold sm:text-3xl">Movimente a Ilha</h2>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <Button onClick={() => navigate("/divulgador/status")} className="h-16 justify-start rounded-lg px-5 text-base shadow-card">
+                  <CalendarDays className="mr-3 h-5 w-5" /> Divulgar evento
+                </Button>
+                <Button onClick={() => navigate("/anuncios")} variant="outline" className="h-16 justify-start rounded-lg px-5 text-base shadow-card">
+                  <BriefcaseBusiness className="mr-3 h-5 w-5 text-secondary" /> Contratar destaque
+                </Button>
+                <Button onClick={() => navigate("/cadastro")} variant="outline" className="h-16 justify-start rounded-lg px-5 text-base shadow-card">
+                  <Plus className="mr-3 h-5 w-5 text-secondary" /> Fazer cadastro
+                </Button>
+              </div>
             </section>
           </>
         )}
