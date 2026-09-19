@@ -607,7 +607,7 @@ export default function Landing() {
          <section className="mb-16 border-t border-border/60 pt-10">
            <div className="flex items-end justify-between gap-4 mb-5">
              <div>
-               <h2 className="text-2xl font-bold font-display">Outras programações</h2>
+               <h2 className="text-2xl font-bold font-display">Outros Eventos</h2>
              </div>
              <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
                Ver tudo <ChevronRight className="h-4 w-4" />
