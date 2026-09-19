@@ -17,7 +17,7 @@ const items = [
  * Fica escondida em telas que já têm barra de ação fixa (detalhe do evento, impressão).
  */
 export function MobileTabBar({ onMenuClick }: Props) {
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
 
   const hidden =
     pathname.startsWith("/evento/") ||
@@ -34,7 +34,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
     >
       <ul className="grid grid-cols-4">
         {items.map((item) => {
-          const active = item.match(pathname, search);
+          const active = item.match(pathname);
           const Icon = item.icon;
           return (
             <li key={item.label} className="min-w-0">
