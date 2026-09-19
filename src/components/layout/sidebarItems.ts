@@ -21,8 +21,8 @@ import {
   MessageSquare,
   Building2,
   ShoppingBag,
-  Settings2
-  ,Share2
+  Settings2,
+  Share2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
