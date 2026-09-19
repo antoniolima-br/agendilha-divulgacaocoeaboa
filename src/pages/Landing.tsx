@@ -41,6 +41,7 @@ import logo from "@/assets/coeaboa-logo.webp";
 import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
+import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
 import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 
 const sitelinks = [
@@ -328,6 +329,11 @@ export default function Landing() {
                 </Button>
             </div>
          </div>
+
+         <HomeMixedHeroCarousel
+           events={todayEvents.length > 0 ? todayEvents : visualEvents.slice(0, 3)}
+           onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
+         />
  
         {/* Categories — minimal, monochrome chips */}
         <div className="flex gap-2 overflow-x-auto pb-6 mb-10 scrollbar-none">

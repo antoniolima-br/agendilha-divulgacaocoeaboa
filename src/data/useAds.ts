@@ -65,10 +65,11 @@ export function useMyAds(userId: string | undefined) {
     queryKey: [...ADS_KEY, "meus", userId],
     enabled: !!userId,
     queryFn: async (): Promise<Ad[]> => {
+      if (!userId) return [];
       const { data, error } = await supabase
         .from("ads")
         .select(AD_COLUMNS)
-        .eq("user_id", userId!)
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return normalize(data);
@@ -98,10 +99,11 @@ export function useAd(id: string | undefined) {
     queryKey: [...ADS_KEY, "detalhe", id],
     enabled: !!id,
     queryFn: async (): Promise<Ad | null> => {
+      if (!id) return null;
       const { data, error } = await supabase
         .from("ads")
         .select(AD_COLUMNS)
-        .eq("id", id!)
+        .eq("id", id)
         .maybeSingle();
       if (error) throw error;
       return data ? normalize([data])[0] : null;
