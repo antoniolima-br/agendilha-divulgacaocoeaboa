@@ -20,3 +20,4 @@
 - [x] Flexibilizar /enviar-evento para envio com nome, data e horário
 - [x] Preservar autocomplete global e máscaras existentes
 - [x] Unificar o Relatório Diário em uma lista limpa, sem rótulos de destaque
+- [x] Renomear a listagem inferior da Home para “Outras programações”
