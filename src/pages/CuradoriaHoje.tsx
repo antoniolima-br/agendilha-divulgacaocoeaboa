@@ -12,6 +12,7 @@ import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,13 +112,28 @@ function CuradoriaHojeInner() {
     return matchesRegion && matchesDate(event.date, dateFilter);
   }), [dateFilter, events, region]);
 
+  const todayEvents = useMemo(() => events.filter((event) => {
+    const matchesRegion = region === "all" || event.address_neighborhood === region;
+    return matchesRegion && eventDateISO(event.date) === saoPauloTodayISO();
+  }), [events, region]);
+
+  const upcomingEvents = useMemo(() => {
+    const today = saoPauloTodayISO();
+    const lastDay = addDaysToISO(today, 7);
+    return events.filter((event) => {
+      const eventDay = eventDateISO(event.date);
+      const matchesRegion = region === "all" || event.address_neighborhood === region;
+      return matchesRegion && eventDay > today && eventDay <= lastDay;
+    }).slice(0, 8);
+  }, [events, region]);
+
   const featuredEvents = useMemo(() => {
-    return [...visibleEvents]
+    return [...todayEvents]
       .sort((a, b) => Number(Boolean(b.highlight_active || b.is_highlight)) - Number(Boolean(a.highlight_active || a.is_highlight)))
       .slice(0, 6);
-  }, [visibleEvents]);
+  }, [todayEvents]);
 
-  useEffect(() => setActiveSlide(0), [dateFilter]);
+  useEffect(() => setActiveSlide(0), [region]);
 
   useEffect(() => {
     if (heroPaused || featuredEvents.length < 2) return;
@@ -166,13 +182,13 @@ function CuradoriaHojeInner() {
           </p>
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-4xl font-bold leading-tight sm:text-6xl">Hoje na Ilha</h1>
+              <h1 className="text-4xl font-bold leading-tight sm:text-6xl">Acontece hoje na Ilha</h1>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                 A curadoria do que tá rolando, do primeiro programa ao último show.
               </p>
             </div>
             <span className="text-sm font-semibold text-secondary">
-              {visibleEvents.length} {visibleEvents.length === 1 ? "rolê" : "rolês"}
+              {todayEvents.length} {todayEvents.length === 1 ? "rolê hoje" : "rolês hoje"}
             </span>
           </div>
         </header>
@@ -218,7 +234,7 @@ function CuradoriaHojeInner() {
         ) : currentFeature ? (
           <section aria-labelledby="destaques-heading" className="mb-10">
             <div className="mb-3 flex items-center justify-between">
-              <h2 id="destaques-heading" className="text-lg font-bold sm:text-2xl">Destaques</h2>
+              <h2 id="destaques-heading" className="text-lg font-bold sm:text-2xl">Acontece hoje na Ilha</h2>
               {featuredEvents.length > 1 && (
                 <div className="flex gap-2">
                   <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" onClick={() => changeSlide(-1)} aria-label="Destaque anterior">
@@ -249,7 +265,7 @@ function CuradoriaHojeInner() {
               <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-9">
                 <span className="mb-2 inline-flex rounded bg-accent px-2 py-1 text-[10px] font-bold uppercase text-accent-foreground">
-                  Destaque
+                   Patrocinado
                 </span>
                 <h3 className="max-w-3xl text-xl font-bold leading-tight sm:text-4xl">
                   {currentFeature.event_title || "Rolê na Ilha"}
@@ -281,7 +297,51 @@ function CuradoriaHojeInner() {
               </div>
             )}
           </section>
+        ) : !isLoading && !error ? (
+          <div className="mb-10 rounded-lg border border-dashed border-border bg-muted/30 px-6 py-10 text-center">
+            <Sparkles className="mx-auto mb-3 h-8 w-8 text-secondary" />
+            <h2 className="font-bold">Nada marcado para hoje ainda.</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Veja os próximos rolês logo abaixo.</p>
+          </div>
         ) : null}
+
+        {!isLoading && !error && upcomingEvents.length > 0 && (
+          <section aria-labelledby="proximos-patrocinados-heading" className="mb-10">
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase text-secondary">Agenda patrocinada</p>
+              <h2 id="proximos-patrocinados-heading" className="mt-1 text-xl font-bold sm:text-2xl">Próximos dias</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+              {upcomingEvents.map((event) => (
+                <Button
+                  key={event.id}
+                  type="button"
+                  variant="ghost"
+                  onClick={() => openEvent(event)}
+                  className="group relative h-auto aspect-[4/5] overflow-hidden rounded-lg border bg-muted p-0 text-left shadow-card hover:bg-muted"
+                  aria-label={`Abrir evento patrocinado ${event.event_title || "Evento"}`}
+                >
+                  <img
+                    src={event.image_url || getEventFallbackImage(event.category)}
+                    alt={event.event_title || "Evento patrocinado"}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/95 via-foreground/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-3 text-background sm:p-4">
+                    <Badge variant="secondary" className="mb-2 text-[9px] uppercase">Patrocinado</Badge>
+                    <p className="mb-1 text-[10px] font-bold uppercase text-background/75">
+                      {format(parseISO(eventDateISO(event.date)), "EEE, dd MMM", { locale: ptBR })}
+                      {event.start_time ? ` · ${event.start_time.slice(0, 5)}` : ""}
+                    </p>
+                    <h3 className="line-clamp-2 text-sm font-bold leading-tight sm:text-base">{event.event_title || "Rolê na Ilha"}</h3>
+                    {event.location && <p className="mt-1 truncate text-[11px] text-background/75">{event.location}</p>}
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {!error && !isLoading && (
           <>

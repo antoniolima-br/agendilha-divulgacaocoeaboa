@@ -29,3 +29,4 @@
 - [x] Preencher anúncios sem capa com flyers de eventos válidos, sem alterar os dados do patrocinador
 - [x] Substituir flyers provisórios por banners próprios dos anunciantes fictícios
 - [x] Apresentar os eventos válidos da Home como patrocinados no destaque
+- [x] Destacar os eventos de hoje em “Acontece hoje na Ilha” e mostrar os próximos dias em cards patrocinados menores
