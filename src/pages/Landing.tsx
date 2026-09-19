@@ -40,6 +40,8 @@ import Header from "@/components/Header";
 import logo from "@/assets/coeaboa-logo.webp";
 import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
+import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
+import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 const sitelinks = [
   { href: "#oferecemos", label: "O que oferecemos" },
@@ -110,17 +112,18 @@ export default function Landing() {
    } = useInfiniteQuery({
     queryKey: qk.agenda.events(),
     queryFn: async ({ pageParam = 0 }) => {
+      const today = saoPauloTodayISO();
       const { data, error } = await supabase
          .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
-        .eq('status', 'aprovado')
+        .gte("date", addDaysToISO(today, -1))
         .order('highlight_active', { ascending: false, nullsFirst: false })
         .order('date', { ascending: true })
         .range(pageParam, pageParam + 9);
        
        if (error) throw error;
        return {
-         items: data,
+         items: (data ?? []).filter((event) => eventDateISO(event.date) >= today),
          nextPage: data.length === 10 ? pageParam + 10 : undefined
        };
      },
@@ -131,24 +134,18 @@ export default function Landing() {
     const { data: freeEvents = [], isLoading: freeEventsLoading } = useQuery({
       queryKey: ["landing-free-events"],
       queryFn: async () => {
-        const today = new Intl.DateTimeFormat("en-CA", {
-          timeZone: "America/Sao_Paulo",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }).format(new Date());
+        const today = saoPauloTodayISO();
         const { data, error } = await supabase
           .from("public_submissions")
           .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
-          .eq("status", "aprovado")
-          .gte("date", today)
+          .gte("date", addDaysToISO(today, -1))
           .order("date", { ascending: true })
           .order("start_time", { ascending: true, nullsFirst: false })
           .limit(100);
 
         if (error) throw error;
         return (data ?? [])
-          .filter((event) => !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
+          .filter((event) => eventDateISO(event.date) >= today && !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
           .slice(0, 8);
       },
     });
@@ -157,8 +154,8 @@ export default function Landing() {
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
-    const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
-    const todayEvents = useMemo(() => allEvents.filter(e => e.date === todayStr).slice(0, 6), [allEvents, todayStr]);
+    const todayStr = useMemo(() => saoPauloTodayISO(), []);
+    const todayEvents = useMemo(() => allEvents.filter(e => eventDateISO(e.date) === todayStr).slice(0, 6), [allEvents, todayStr]);
 
     const weekDays = useMemo(() => {
       return eachDayOfInterval({
@@ -460,6 +457,8 @@ export default function Landing() {
         </section>
 
          {/* Recommendations AI Sections */}
+         <HomeAdsCarousel />
+
          <section className="mb-12">
            <div className="flex items-center justify-between mb-6">
              <h2 className="text-2xl font-bold font-display flex items-center gap-2">

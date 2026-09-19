@@ -1,3 +1,5 @@
+import { eventDateISO, isPublicEventStatus, saoPauloTodayISO } from "@/lib/eventDate";
+
 /**
  * Formato mínimo que os resumos precisam de um evento. Estrutural de propósito:
  * serve tanto para `Submission` quanto para linhas cruas do backend.
@@ -21,12 +23,7 @@ export interface SummaryEvent {
 }
 
 function todayISO(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Sao_Paulo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  return saoPauloTodayISO();
 }
 
 function formatTime(t?: string | null): string {
@@ -85,7 +82,7 @@ export function buildCoeaboaDailyReport(
   date: string,
 ): { text: string; count: number } {
   const items = submissions
-    .filter((event) => event.status === "aprovado" && event.date === date)
+    .filter((event) => isPublicEventStatus(event.status) && eventDateISO(event.date) === date)
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
   const header = `*Coé a Boa? - ${formatReportDate(date)}*`;
@@ -145,7 +142,7 @@ export function buildTodayWhatsAppSummary(submissions: SummaryEvent[]): {
 } {
   const today = todayISO();
   const items = submissions
-    .filter((s) => s.status === "aprovado" && s.date === today)
+    .filter((s) => isPublicEventStatus(s.status) && eventDateISO(s.date) === today)
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
   if (items.length === 0) return { text: "", count: 0 };
@@ -188,7 +185,10 @@ export function buildWeekWhatsAppSummary(submissions: SummaryEvent[]): {
   const end = addDaysISO(start, 6);
 
   const items = submissions
-    .filter((s) => s.status === "aprovado" && s.date && s.date >= start && s.date <= end)
+    .filter((s) => {
+      const date = eventDateISO(s.date);
+      return isPublicEventStatus(s.status) && date >= start && date <= end;
+    })
     .sort((a, b) => {
       const d = (a.date || "").localeCompare(b.date || "");
       if (d !== 0) return d;
@@ -199,9 +199,10 @@ export function buildWeekWhatsAppSummary(submissions: SummaryEvent[]): {
 
   const byDay = new Map<string, SummaryEvent[]>();
   for (const s of items) {
-    const arr = byDay.get(s.date!) || [];
+    const eventDate = eventDateISO(s.date);
+    const arr = byDay.get(eventDate) || [];
     arr.push(s);
-    byDay.set(s.date!, arr);
+    byDay.set(eventDate, arr);
   }
 
   const header =

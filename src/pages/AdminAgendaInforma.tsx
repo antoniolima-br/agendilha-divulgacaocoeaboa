@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { buildCoeaboaDailyReport, openWhatsAppWithText } from "@/lib/todayWhatsappSummary";
+import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 interface Ev {
   id: string;
@@ -32,12 +33,7 @@ interface Ev {
 }
 
 function todayISO() {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Sao_Paulo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  return saoPauloTodayISO();
 }
 
 function formatTime(t: string | null): string {
@@ -61,15 +57,16 @@ export default function AdminAgendaInforma() {
       .select(
         "id, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, submission_atrativos(name, display_order)"
       )
-      .eq("status", "aprovado")
-      .eq("date", date)
+      .in("status", ["aprovado", "publicado", "divulgado"])
+      .gte("date", addDaysToISO(date, -1))
+      .lt("date", addDaysToISO(date, 1))
       .order("start_time", { ascending: true, nullsFirst: false })
       .then(({ data, error }) => {
         if (!active) return;
         if (error) {
           toast.error("Falha ao carregar eventos", { description: error.message });
         } else {
-          const list = (data as Ev[]) || [];
+          const list = ((data as Ev[]) || []).filter((event) => eventDateISO(event.date) === date);
           setEvents(list);
           const sel: Record<string, boolean> = {};
           list.forEach((e) => (sel[e.id] = true));
