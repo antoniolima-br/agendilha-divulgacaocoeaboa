@@ -36,3 +36,4 @@
 - [x] Exibir flyers e banners dos eventos cadastrados no destaque da Home
 - [x] Separar os cards de eventos dos anúncios patrocinados na Home
 - [x] Harmonizar os flyers dos eventos e incluir cards menores abaixo do destaque da Home
+- [x] Preencher integralmente os cards da Home com flyers de eventos reais aprovados

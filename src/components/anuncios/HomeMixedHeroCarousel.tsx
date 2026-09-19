@@ -16,6 +16,7 @@ interface HeroEvent {
   address_neighborhood: string | null;
   category: string | null;
   image_url?: string | null;
+  atrativo_style?: string | null;
   is_highlight?: boolean | null;
   highlight_active?: boolean | null;
 }
@@ -64,7 +65,7 @@ export function HomeMixedHeroCarousel({
     onOpenEvent(item.id);
   };
 
-  const title = item.event_title || "Evento";
+  const title = item.event_title || item.atrativo_style || item.category || "Evento";
   const location = [item.location, item.address_neighborhood].filter(Boolean).join(" · ");
   const eventImage = item.image_url || getEventFallbackImage(item.category);
 
@@ -88,7 +89,7 @@ export function HomeMixedHeroCarousel({
           aria-label={`Abrir evento ${title}`}
         >
           <div className="aspect-[4/3] w-full overflow-hidden bg-muted sm:aspect-[16/7]">
-            <img src={eventImage} alt={title} className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
+            <img src={eventImage} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
@@ -142,11 +143,11 @@ export function HomeMixedHeroCarousel({
                 aria-label={`Destacar evento ${event.event_title || "Evento"}`}
               >
                 <div className="h-16 w-14 shrink-0 overflow-hidden rounded-md bg-muted sm:h-20 sm:w-16">
-                  <img src={thumbnail} alt="" className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.03]" />
+                  <img src={thumbnail} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-2 whitespace-normal text-sm font-semibold leading-snug text-foreground">
-                    {event.event_title || "Evento"}
+                    {event.event_title || event.atrativo_style || event.category || "Evento"}
                   </p>
                   {event.address_neighborhood && (
                     <p className="mt-1 truncate text-xs font-normal text-muted-foreground">{event.address_neighborhood}</p>
