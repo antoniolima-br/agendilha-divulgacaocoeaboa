@@ -66,6 +66,7 @@ function matchesDate(date: string | null, filter: DateFilter): boolean {
 
 function CuradoriaHojeInner() {
   const navigate = useNavigate();
+  const today = saoPauloTodayISO();
   const [dateFilter, setDateFilter] = useState<DateFilter>("today");
   const [region, setRegion] = useState("all");
   const [activeSlide, setActiveSlide] = useState(0);
@@ -87,18 +88,18 @@ function CuradoriaHojeInner() {
   });
 
   const { data: events = [], isLoading, error, refetch } = useQuery({
-    queryKey: ["curadoria-hoje-events"],
+    queryKey: ["curadoria-hoje-events", today],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, description, image_url, age_rating, is_suitable_for_minors, slug, is_highlight, highlight_active")
         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
+        .gte("date", addDaysToISO(today, -1))
         .order("date", { ascending: true })
         .order("start_time", { ascending: true });
 
       if (error) throw error;
-      return (data ?? []).filter((event) => eventDateISO(event.date) >= saoPauloTodayISO()) as CuratedEvent[];
+      return (data ?? []).filter((event) => eventDateISO(event.date) >= today) as CuratedEvent[];
     },
   });
 
@@ -114,8 +115,8 @@ function CuradoriaHojeInner() {
 
   const todayEvents = useMemo(() => events.filter((event) => {
     const matchesRegion = region === "all" || event.address_neighborhood === region;
-    return matchesRegion && eventDateISO(event.date) === saoPauloTodayISO();
-  }), [events, region]);
+    return matchesRegion && eventDateISO(event.date) === today;
+  }), [events, region, today]);
 
   const upcomingEvents = useMemo(() => {
     const today = saoPauloTodayISO();
@@ -264,8 +265,8 @@ function CuradoriaHojeInner() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-9">
-                <span className="mb-2 inline-flex rounded bg-accent px-2 py-1 text-[10px] font-bold uppercase text-accent-foreground">
-                   Patrocinado
+                 <span className="mb-2 inline-flex rounded bg-accent px-2 py-1 text-[10px] font-bold uppercase text-accent-foreground">
+                    {currentFeature.is_highlight || currentFeature.highlight_active ? "Em destaque" : "Evento aprovado"}
                 </span>
                 <h3 className="max-w-3xl text-xl font-bold leading-tight sm:text-4xl">
                   {currentFeature.event_title || "Rolê na Ilha"}
@@ -277,6 +278,24 @@ function CuradoriaHojeInner() {
                 </div>
               </div>
             </Button>
+
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Eventos aprovados de hoje">
+              {todayEvents.map((event) => (
+                <DiscoveryEventCard
+                  key={event.id}
+                  event={event}
+                  variant="compact"
+                  className="h-auto w-full"
+                  onClick={() => openEvent(event)}
+                  isFavorite={favorites.includes(event.id)}
+                  onFavoriteToggle={() => toggleFavorite(event.id)}
+                  onShare={() => {
+                    const data = getShareData(event);
+                    setShareData({ ...data, eventId: event.id });
+                  }}
+                />
+              ))}
+            </div>
 
             {featuredEvents.length > 1 && (
               <div className="mt-3 flex justify-center gap-2" aria-label="Escolher destaque">
