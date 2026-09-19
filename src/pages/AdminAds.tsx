@@ -135,7 +135,7 @@ export default function AdminAds() {
       return;
     }
     const phone = validateBrazilianMobile(whatsapp);
-    if (!phone.valid) {
+    if (phone.valid === false) {
       toast.error(phone.reason);
       return;
     }
