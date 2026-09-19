@@ -55,14 +55,8 @@ export function checkLocationAutofill(v: {
 }): AutofillIssue[] {
   const issues: AutofillIssue[] = [];
 
-  if (!v.locationName?.trim()) {
-    issues.push({ field: "locationName", label: "Local", message: "Informe ou cadastre o nome do local.", level: "error" });
-  }
-
   const tipo = (v.localTipo ?? "").trim();
-  if (!tipo) {
-    issues.push({ field: "localTipo", label: "Tipo de local", message: "Escolha o tipo (bar, praça, clube...).", level: "error" });
-  } else if (!LOCAL_TIPOS_VALIDOS.includes(tipo)) {
+  if (tipo && !LOCAL_TIPOS_VALIDOS.includes(tipo)) {
     issues.push({
       field: "localTipo",
       label: "Tipo de local",
@@ -72,9 +66,7 @@ export function checkLocationAutofill(v: {
   }
 
   const bairro = (v.addressNeighborhood ?? "").trim();
-  if (!bairro) {
-    issues.push({ field: "addressNeighborhood", label: "Bairro", message: "Selecione o bairro do local.", level: "error" });
-  } else if (!isBairroValido(bairro)) {
+  if (bairro && !isBairroValido(bairro)) {
     issues.push({
       field: "addressNeighborhood",
       label: "Bairro",
@@ -83,9 +75,7 @@ export function checkLocationAutofill(v: {
     });
   }
 
-  if (!v.eventAddress?.trim()) {
-    issues.push({ field: "eventAddress", label: "Endereço", message: "Informe o endereço resumido (rua e número).", level: "error" });
-  } else if (v.eventAddress.trim().length < 6) {
+  if (v.eventAddress?.trim() && v.eventAddress.trim().length < 6) {
     issues.push({ field: "eventAddress", label: "Endereço", message: "Endereço muito curto — inclua rua e número.", level: "warning" });
   }
 

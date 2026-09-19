@@ -51,8 +51,9 @@ const formSchema = z.object({
     )
     .default([]),
   
-  nickName: z.string().trim().min(1, "Seu nome é obrigatório").max(50),
-  basicPhone: z.string().trim().min(1, "Informe o WhatsApp").superRefine((val, ctx) => {
+  nickName: z.string().trim().max(50).optional().or(z.literal("")),
+  basicPhone: z.string().trim().optional().superRefine((val, ctx) => {
+    if (!val) return;
     const v = validateBrazilianMobile(val);
     if (v.valid === false) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: v.reason });
@@ -70,10 +71,11 @@ const formSchema = z.object({
   }),
   // Novo modelo (Fase 7): "Responsável pelo evento".
   // Substitui o antigo seletor promotor/atrativo/estabelecimento.
-  responsavelNome: z.string().trim().min(1, "Informe o nome do responsável").max(100),
+  responsavelNome: z.string().trim().max(100).optional().or(z.literal("")),
   usarMeuWhatsapp: z.boolean().default(true),
   // duvidasWhatsapp = WhatsApp do responsável (mantivemos o nome do campo p/ compat com backend).
-  duvidasWhatsapp: z.string().trim().min(1, "Informe o WhatsApp que vai receber as dúvidas").superRefine((val, ctx) => {
+  duvidasWhatsapp: z.string().trim().optional().superRefine((val, ctx) => {
+    if (!val) return;
     const v = validateBrazilianMobile(val);
     if (v.valid === false) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: v.reason });
@@ -81,9 +83,7 @@ const formSchema = z.object({
   }).default(""),
   // Campo legado — mantido em 'promotor' pra compat com telas antigas.
   duvidasSource: z.enum(["promotor", "atrativo", "estabelecimento"]).default("promotor"),
-  duvidasAuthorized: z.literal(true, {
-    errorMap: () => ({ message: "Você precisa autorizar o uso deste WhatsApp" }),
-  }),
+  duvidasAuthorized: z.boolean().default(false),
   // Caracterização opcional do responsável (reaproveitada em divulgações futuras).
   tipoResponsavel: z.enum(["artista", "estabelecimento", "produtor", "outro"]).optional(),
   perfilNomeArtistico: z.string().trim().max(120).optional(),
@@ -112,7 +112,7 @@ const formSchema = z.object({
     }
   }),
   atrativoEmail: z.string().trim().email("E-mail inválido").optional().or(z.literal("")).or(z.null()),
-  atrativoCategory: z.string().trim().min(1, "Selecione a categoria"),
+  atrativoCategory: z.string().trim().optional().or(z.literal("")),
   atrativoCategoryOther: z.string().trim().optional(),
   // Vínculo com cadastro externo (snapshot: draft NÃO segue mudanças posteriores do perfil)
   atrativoSourceId: z.string().uuid("Selecione um atrativo da lista").optional().or(z.literal("")),
@@ -120,9 +120,9 @@ const formSchema = z.object({
   atrativoLinkedAt: z.string().optional(),
   atrativoLinkedName: z.string().optional(),
 
-  locationName: z.string().trim().min(1, "Informe o nome do local/estabelecimento"),
-  eventAddress: z.string().trim().min(1, "Informe o endereço resumido"),
-  locationType: z.enum(["public", "commercial"], { required_error: "Selecione a categoria do espaço" }),
+  locationName: z.string().trim().optional().or(z.literal("")),
+  eventAddress: z.string().trim().optional().or(z.literal("")),
+  locationType: z.enum(["public", "commercial"]).optional(),
   locationContact: z.string().trim().optional().superRefine((val, ctx) => {
     if (!val) return;
     const v = validateBrazilianMobile(val);
@@ -145,7 +145,7 @@ const formSchema = z.object({
   additionalDetails: z.string().trim().optional(),
   stage: z.string().optional(),
   responsiblePerson: z.string().trim().optional(),
-  addressNeighborhood: z.string().trim().min(2, "Informe o bairro do local").max(100),
+  addressNeighborhood: z.string().trim().max(100).optional().or(z.literal("")),
   addressCity: z.string().optional(),
   addressState: z.string().optional(),
   ageRating: z.enum(["Livre", "10+", "12+", "14+", "16+", "18+"]).default("Livre"),
@@ -153,15 +153,9 @@ const formSchema = z.object({
 }).superRefine((data, ctx) => {
   // Se "Outro" for selecionado em tipoResponsavel, o telefone deve estar no formato correto.
   // A validação padrão do campo já cobre o fluxo normal; aqui tratamos apenas o caso especial.
-  if (data.tipoResponsavel === "outro") {
+  if (data.tipoResponsavel === "outro" && data.duvidasWhatsapp?.trim()) {
     const outroPhone = (data.duvidasWhatsapp as string || "").trim();
-    if (!outroPhone) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["duvidasWhatsapp"],
-        message: "Informe o WhatsApp para dúvidas",
-      });
-    } else {
+    if (outroPhone) {
       // Validação não-estrita para o modo "Outro"
       const vOutro = validateBrazilianMobile(outroPhone, false);
       if (vOutro.valid === false) {
@@ -209,6 +203,8 @@ export default function SubmissionForm() {
       duvidasSource: "promotor",
       duvidasWhatsapp: "",
       responsavelNome: "",
+      legalAcceptance: false as any,
+      duvidasAuthorized: false,
       usarMeuWhatsapp: false,
       duvidasWhatsappOutro: "",
     },
@@ -407,18 +403,14 @@ export default function SubmissionForm() {
 
   const getFieldsForStep = (step: number) => {
     switch (step) {
-      // Etapa 1 — informações principais do evento (obrigatórias + complementos)
+      // Etapa 1 — só nome/data/horário bloqueiam o avanço; o restante é complementar.
       case 1: return [
         "date", "startTime",
         "atrativoName",
-        "locationName", "eventAddress", "addressNeighborhood",
-        "category", "ageRating", "atrativoCategory",
-        "locationType", "duvidasWhatsapp",
       ];
-      // Etapa 2 — seleções obrigatórias restantes + contato e termos
+      // Etapa 2 — apenas o aceite legal continua obrigatório no envio final.
       case 2: return [
-        "nickName", "basicPhone",
-        "legalAcceptance", "responsavelNome", "duvidasAuthorized",
+        "legalAcceptance",
       ];
       default: return [];
     }
@@ -773,7 +765,7 @@ export default function SubmissionForm() {
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold">Divulgar um rolê</h1>
                 <p className="text-sm text-muted-foreground">
-                  Comece pelo essencial: data, atrativo, local e horário. Leva menos de 2 minutos.
+                  Comece pelo essencial: nome, data e horário. O resto pode ficar pra depois.
                 </p>
               </div>
 
@@ -821,13 +813,13 @@ export default function SubmissionForm() {
             </div>
           )}
 
-          {/* ETAPA 2 — seleções obrigatórias restantes */}
+          {/* ETAPA 2 — conferência e aceite */}
           {currentStep === 2 && (
             <div className="space-y-6">
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold">Falta pouco</h1>
                 <p className="text-sm text-muted-foreground">
-                  Confira o resumo, confirme o contato oficial e aceite os termos de responsabilidade.
+                  Confira o resumo e aceite os termos. Contatos e demais detalhes são opcionais.
                 </p>
               </div>
 

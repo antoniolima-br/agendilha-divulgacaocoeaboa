@@ -49,7 +49,7 @@ export function DuvidasWhatsappField({ form }: { form: UseFormReturn<any> }) {
         name="duvidasWhatsapp"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Número com DDD *</FormLabel>
+            <FormLabel>Número com DDD <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="(21) 99999-9999"
