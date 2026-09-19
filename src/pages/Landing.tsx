@@ -153,11 +153,15 @@ export default function Landing() {
     });
  
     const allEvents = useMemo(() => eventsData?.pages.flatMap(page => page.items) || [], [eventsData]);
+    const visualEvents = useMemo(
+      () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
+      [allEvents],
+    );
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
-    const todayEvents = useMemo(() => allEvents.filter(e => eventDateISO(e.date) === todayStr).slice(0, 6), [allEvents, todayStr]);
+    const todayEvents = useMemo(() => visualEvents.filter(e => eventDateISO(e.date) === todayStr).slice(0, 6), [visualEvents, todayStr]);
 
     const weekDays = useMemo(() => {
       return eachDayOfInterval({
@@ -168,16 +172,16 @@ export default function Landing() {
 
     const daysWithEvents = useMemo(() => {
       const set = new Set<string>();
-      allEvents.forEach(ev => {
+      visualEvents.forEach(ev => {
         if (ev.date) set.add(ev.date);
       });
       return set;
-    }, [allEvents]);
+    }, [visualEvents]);
     
     // Deduplicate: events in alta should not be in today if possible, or limited
-    const trendingEvents = useMemo(() => allEvents
+    const trendingEvents = useMemo(() => visualEvents
       .filter(e => !todayEvents.find(t => t.id === e.id))
-      .slice(0, 8), [allEvents, todayEvents]);
+      .slice(0, 8), [visualEvents, todayEvents]);
  
    useEffect(() => {
      if (loadMoreInView && hasNextPage && !isFetchingNextPage) {
@@ -265,7 +269,7 @@ export default function Landing() {
    const [recommendedEvents, setRecommendedEvents] = useState<any[]>([]);
    
    useEffect(() => {
-     if (allEvents.length > 0) {
+      if (visualEvents.length > 0) {
        // Simple IA recommendation logic
        if (profileLoaded && user) {
          const prefs = profile.musical_preferences || [];
@@ -278,12 +282,12 @@ export default function Landing() {
            return matchStyle || matchNeighborhood;
          }).slice(0, 5);
          
-          setRecommendedEvents(recs.length > 0 ? recs : allEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
+           setRecommendedEvents(recs.length > 0 ? recs : visualEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
         } else {
-          setRecommendedEvents(allEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
+           setRecommendedEvents(visualEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
         }
      }
-   }, [allEvents, profileLoaded, user, profile.musical_preferences, profile.home_location, profile.work_neighborhood]);
+    }, [visualEvents, profileLoaded, user, profile.musical_preferences, profile.home_location, profile.work_neighborhood, todayEvents, trendingEvents]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -511,46 +515,6 @@ export default function Landing() {
 
          {/* "Recomendado para você" removido: já coberto por "No seu radar" para evitar duplicação */}
 
-         <section className="mb-12">
-           <div className="flex items-center justify-between mb-6">
-             <h2 className="text-2xl font-bold font-display flex items-center gap-2">
-               <Sparkles className="h-5 w-5 text-primary" />
-               Rolês gratuitos
-             </h2>
-             <Link to="/explorar?view=free" className="text-primary font-bold flex items-center">
-               Ver tudo <ChevronRight className="h-4 w-4" />
-             </Link>
-           </div>
-
-           {freeEventsLoading ? (
-             <div className="flex justify-center py-10">
-               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-             </div>
-           ) : freeEvents.length > 0 ? (
-             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-               {freeEvents.map((event) => (
-                 <DiscoveryEventCard
-                   key={event.id}
-                   event={event}
-                   variant="compact"
-                   className="w-full h-auto"
-                   onClick={() => navigate(`/agenda?event=${event.id}`)}
-                   isFavorite={favorites.includes(event.id)}
-                   onFavoriteToggle={() => toggleFavorite(event.id)}
-                   onShare={() => {
-                     const data = getShareData(event);
-                     setShareData({ ...data, eventId: event.id });
-                   }}
-                 />
-               ))}
-             </div>
-           ) : (
-             <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
-               <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
-             </div>
-           )}
-         </section>
-
         {/* Newsletter / Public Registration */}
         <section className="mb-12">
           <div className="bg-secondary/10 rounded-[2.5rem] p-8 sm:p-12 overflow-hidden relative">
@@ -633,6 +597,61 @@ export default function Landing() {
             <MapIcon className="mr-2 h-4 w-4"/> Abrir Mapa
           </Button>
         </section>
+
+         <section className="mb-16 border-t border-border/60 pt-10">
+           <div className="flex items-end justify-between gap-4 mb-5">
+             <div>
+               <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Programação sem ingresso</p>
+               <h2 className="text-2xl font-bold font-display">Rolês gratuitos</h2>
+             </div>
+             <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
+               Ver tudo <ChevronRight className="h-4 w-4" />
+             </Link>
+           </div>
+
+           {freeEventsLoading ? (
+             <div className="flex justify-center py-10">
+               <Loader2 className="h-7 w-7 animate-spin text-primary" />
+             </div>
+           ) : freeEvents.length > 0 ? (
+             <ul className="divide-y divide-border border-y border-border" aria-label="Eventos gratuitos">
+               {freeEvents.map((event) => {
+                 const dateIso = eventDateISO(event.date);
+                 const [year, month, day] = dateIso.split("-").map(Number);
+                 const dateLabel = year && month && day
+                   ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(year, month - 1, day))
+                   : "Data a confirmar";
+                 const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
+                 const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
+
+                 return (
+                   <li key={event.id}>
+                     <Link
+                       to={`/agenda?event=${event.id}`}
+                       className="group grid grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-4 sm:py-5 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
+                     >
+                       <div className="text-xs sm:text-sm text-muted-foreground pl-1 sm:pl-3">
+                         <span className="block font-semibold text-foreground capitalize">{dateLabel}</span>
+                         <span>{timeLabel}</span>
+                       </div>
+                       <div className="min-w-0">
+                         <h3 className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
+                           {event.event_title || "Evento"}
+                         </h3>
+                         <p className="text-xs sm:text-sm text-muted-foreground truncate">{locationLabel}</p>
+                       </div>
+                       <ChevronRight className="h-4 w-4 text-muted-foreground mr-1 sm:mr-3" aria-hidden="true" />
+                     </Link>
+                   </li>
+                 );
+               })}
+             </ul>
+           ) : (
+             <div className="border-y border-border py-8 text-center">
+               <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
+             </div>
+           )}
+         </section>
       </section>
 
       <footer className="py-16 px-6 border-t border-border/40 bg-card/30">
