@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { SuggestInput } from "@/components/ui/SuggestInput";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
@@ -51,11 +51,13 @@ export function DuvidasWhatsappField({ form }: { form: UseFormReturn<any> }) {
           <FormItem>
             <FormLabel>Número com DDD *</FormLabel>
             <FormControl>
-              <Input
+              <SuggestInput
                 placeholder="(21) 99999-9999"
                 inputMode="tel"
                 maxLength={16}
                 className="h-12 text-base"
+                suggestFrom="submissions"
+                suggestColumn="responsavel_duvidas_whatsapp"
                 {...field}
                 value={field.value ?? ""}
                 autoComplete="tel"

@@ -1,7 +1,7 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { SuggestInput } from "@/components/ui/SuggestInput";
+import { SuggestTextarea } from "@/components/ui/SuggestTextarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { CalendarIcon, PartyPopper, ShieldAlert } from "lucide-react";
@@ -266,10 +266,12 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
           <FormItem>
             <FormLabel>Descrição do evento <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
-              <Textarea
+              <SuggestTextarea
                 placeholder="Conta rapidinho como vai ser o rolê..."
                 className="min-h-24"
                 maxLength={500}
+                suggestFrom="public_submissions"
+                suggestColumn="description"
                 {...field}
                 value={field.value ?? ""}
               />
