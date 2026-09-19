@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Compass, Heart, Home, Menu } from "lucide-react";
+import { CalendarPlus, Home, Menu, Music2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,9 +8,8 @@ interface Props {
 
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
-  { label: "Eventos", icon: Compass, path: "/explorar", match: (p: string) => p.startsWith("/explorar") },
-  { label: "Agenda", icon: CalendarDays, path: "/agenda", match: (p: string, s: string) => p === "/agenda" && !s.includes("favorites") },
-  { label: "Favoritos", icon: Heart, path: "/agenda?view=favorites", match: (_p: string, s: string) => s.includes("favorites") },
+  { label: "Atrações", icon: Music2, path: "/artistas", match: (p: string) => p.startsWith("/artistas") || p.startsWith("/artista/") },
+  { label: "Divulgar", icon: CalendarPlus, path: "/divulgador/status", match: (p: string) => p.startsWith("/divulgador") || p.startsWith("/enviar-evento") },
 ];
 
 /**
@@ -33,7 +32,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
       aria-label="Navegação principal"
       className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-4">
         {items.map((item) => {
           const active = item.match(pathname, search);
           const Icon = item.icon;
@@ -62,7 +61,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             className="flex h-14 w-full flex-col items-center justify-center gap-0.5 px-1 text-muted-foreground transition-colors active:text-primary"
           >
             <Menu className="h-5 w-5 shrink-0" />
-            <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Menu</span>
+            <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
           </button>
         </li>
       </ul>
