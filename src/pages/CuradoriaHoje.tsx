@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  addDays,
-  format,
-  parseISO,
-} from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { BriefcaseBusiness, CalendarDays, ChevronLeft, ChevronRight, Clock3, MapPin, Plus, ShoppingBasket, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -243,7 +239,7 @@ function CuradoriaHojeInner() {
               onMouseLeave={() => setHeroPaused(false)}
               onFocus={() => setHeroPaused(true)}
               onBlur={() => setHeroPaused(false)}
-              className="group relative block h-auto aspect-[4/5] w-full overflow-hidden rounded-lg bg-muted p-0 text-left shadow-elevated outline-none ring-offset-background transition-transform duration-300 hover:-translate-y-0.5 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:aspect-[21/9]"
+              className="group relative block h-auto aspect-[16/11] w-full overflow-hidden rounded-lg bg-muted p-0 text-left shadow-elevated outline-none ring-offset-background transition-transform duration-300 hover:-translate-y-0.5 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:aspect-[21/9]"
             >
               <img
                 src={currentFeature.image_url || getEventFallbackImage(currentFeature.category)}
