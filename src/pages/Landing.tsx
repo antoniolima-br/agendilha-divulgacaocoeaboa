@@ -519,6 +519,60 @@ export default function Landing() {
            )}
          </section>
 
+          <section className="mb-16 border-t border-border/60 pt-10">
+            <div className="flex items-end justify-between gap-4 mb-5">
+              <div>
+                <h2 className="text-2xl font-bold font-display">Outros Eventos</h2>
+              </div>
+              <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
+                Ver tudo <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {freeEventsLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-7 w-7 animate-spin text-primary" />
+              </div>
+            ) : freeEvents.length > 0 ? (
+              <ul className="divide-y divide-border border-y border-border" aria-label="Eventos gratuitos">
+                {freeEvents.map((event) => {
+                  const dateIso = eventDateISO(event.date);
+                  const [year, month, day] = dateIso.split("-").map(Number);
+                  const dateLabel = year && month && day
+                    ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(year, month - 1, day))
+                    : "Data a confirmar";
+                  const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
+                  const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
+
+                  return (
+                    <li key={event.id}>
+                      <Link
+                        to={`/agenda?event=${event.id}`}
+                        className="group grid grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-4 sm:py-5 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
+                      >
+                        <div className="text-xs sm:text-sm text-muted-foreground pl-1 sm:pl-3">
+                          <span className="block font-semibold text-foreground capitalize">{dateLabel}</span>
+                          <span>{timeLabel}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
+                            {event.event_title || "Evento"}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground truncate">{locationLabel}</p>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground mr-1 sm:mr-3" aria-hidden="true" />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div className="border-y border-border py-8 text-center">
+                <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
+              </div>
+            )}
+          </section>
+
          {/* "Recomendado para você" removido: já coberto por "No seu radar" para evitar duplicação */}
 
         {/* Newsletter / Public Registration */}
@@ -604,59 +658,6 @@ export default function Landing() {
           </Button>
         </section>
 
-         <section className="mb-16 border-t border-border/60 pt-10">
-           <div className="flex items-end justify-between gap-4 mb-5">
-             <div>
-               <h2 className="text-2xl font-bold font-display">Outros Eventos</h2>
-             </div>
-             <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
-               Ver tudo <ChevronRight className="h-4 w-4" />
-             </Link>
-           </div>
-
-           {freeEventsLoading ? (
-             <div className="flex justify-center py-10">
-               <Loader2 className="h-7 w-7 animate-spin text-primary" />
-             </div>
-           ) : freeEvents.length > 0 ? (
-             <ul className="divide-y divide-border border-y border-border" aria-label="Eventos gratuitos">
-               {freeEvents.map((event) => {
-                 const dateIso = eventDateISO(event.date);
-                 const [year, month, day] = dateIso.split("-").map(Number);
-                 const dateLabel = year && month && day
-                   ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(year, month - 1, day))
-                   : "Data a confirmar";
-                 const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
-                 const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
-
-                 return (
-                   <li key={event.id}>
-                     <Link
-                       to={`/agenda?event=${event.id}`}
-                       className="group grid grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-4 sm:py-5 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
-                     >
-                       <div className="text-xs sm:text-sm text-muted-foreground pl-1 sm:pl-3">
-                         <span className="block font-semibold text-foreground capitalize">{dateLabel}</span>
-                         <span>{timeLabel}</span>
-                       </div>
-                       <div className="min-w-0">
-                         <h3 className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
-                           {event.event_title || "Evento"}
-                         </h3>
-                         <p className="text-xs sm:text-sm text-muted-foreground truncate">{locationLabel}</p>
-                       </div>
-                       <ChevronRight className="h-4 w-4 text-muted-foreground mr-1 sm:mr-3" aria-hidden="true" />
-                     </Link>
-                   </li>
-                 );
-               })}
-             </ul>
-           ) : (
-             <div className="border-y border-border py-8 text-center">
-               <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
-             </div>
-           )}
-         </section>
       </section>
 
       <footer className="py-16 px-6 border-t border-border/40 bg-card/30">
