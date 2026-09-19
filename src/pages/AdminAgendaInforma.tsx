@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Copy, ImageIcon, Send, Star } from "lucide-react";
+import { Copy, Send } from "lucide-react";
 import { toast } from "sonner";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
@@ -91,13 +91,9 @@ export default function AdminAgendaInforma() {
   }, [events, selected, date]);
 
   const chosenEvents = useMemo(() => events.filter((event) => selected[event.id]), [events, selected]);
-  const highlightedEvents = useMemo(
-    () => chosenEvents.filter((event) => Boolean(event.highlight_active || event.is_highlight)),
+  const orderedEvents = useMemo(
+    () => [...chosenEvents].sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "")),
     [chosenEvents],
-  );
-  const remainingEvents = useMemo(
-    () => chosenEvents.filter((event) => !highlightedEvents.includes(event)),
-    [chosenEvents, highlightedEvents],
   );
 
   const eventName = (event: Ev) =>
@@ -119,7 +115,7 @@ export default function AdminAgendaInforma() {
     <div className="space-y-6">
       <SectionHeader
         title="Relatório diário COEABOA"
-        subtitle="Programação válida do dia, separada entre destaques visuais e demais eventos divulgados."
+        subtitle="Programação válida do dia em uma lista limpa, pronta para compartilhar."
         rightElement={
           <div>
             <Label htmlFor="date" className="text-xs">Data</Label>
@@ -189,62 +185,22 @@ export default function AdminAgendaInforma() {
               </span>
             </CardHeader>
             <CardContent>
-              <div className="max-h-[420px] space-y-6 overflow-y-auto rounded-md border bg-muted/20 p-4">
-                <section className="space-y-3">
-                  <div className="flex items-center gap-2 border-b pb-2">
-                    <Star className="h-4 w-4 text-primary" aria-hidden="true" />
-                    <h3 className="text-sm font-semibold">Anúncios Pagos / Destaques</h3>
-                  </div>
-                  {highlightedEvents.length ? (
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {highlightedEvents.map((event) => (
-                        <article key={event.id} className="overflow-hidden rounded-md border bg-card">
-                          {event.image_url ? (
-                            <img
-                              src={event.image_url}
-                              alt={`Flyer de ${eventName(event)}`}
-                              className="aspect-[4/3] w-full object-cover"
-                            />
-                          ) : (
-                            <div className="flex aspect-[4/3] items-center justify-center bg-muted text-muted-foreground">
-                              <ImageIcon className="h-7 w-7" aria-hidden="true" />
-                              <span className="sr-only">Espaço reservado para flyer ou banner</span>
-                            </div>
-                          )}
-                          <div className="space-y-1 p-3">
-                            <p className="text-sm font-semibold">{eventName(event)}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {formatTime(event.start_time)} · {event.location || "Local a confirmar"}
-                            </p>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="py-3 text-center text-sm text-muted-foreground">Nenhum destaque selecionado.</p>
-                  )}
-                </section>
-
-                <section className="space-y-3">
-                  <div className="border-b pb-2">
-                    <h3 className="text-sm font-semibold">Demais Eventos Divulgados</h3>
-                  </div>
-                  {remainingEvents.length ? (
-                    <ul className="divide-y">
-                      {remainingEvents.map((event) => (
-                        <li key={event.id} className="py-2 text-sm">
-                          <span className="font-medium">{formatTime(event.start_time)} · {eventName(event)}</span>
-                          <span className="block text-xs text-muted-foreground">
-                            {event.location || "Local a confirmar"}
-                            {event.address_neighborhood ? ` · ${event.address_neighborhood}` : ""}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="py-3 text-center text-sm text-muted-foreground">Nenhum outro evento selecionado.</p>
-                  )}
-                </section>
+              <div className="max-h-[420px] overflow-y-auto rounded-md border bg-muted/20 p-4">
+                {orderedEvents.length ? (
+                  <ul className="divide-y">
+                    {orderedEvents.map((event) => (
+                      <li key={event.id} className="py-3 text-sm first:pt-0 last:pb-0">
+                        <span className="font-medium">{formatTime(event.start_time)} · {eventName(event)}</span>
+                        <span className="block text-xs text-muted-foreground">
+                          {event.location || "Local a confirmar"}
+                          {event.address_neighborhood ? ` · ${event.address_neighborhood}` : ""}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="py-3 text-center text-sm text-muted-foreground">Nenhum evento selecionado.</p>
+                )}
               </div>
               <div className="flex gap-2 mt-3">
                 <Button onClick={copy} variant="outline" className="flex-1">
