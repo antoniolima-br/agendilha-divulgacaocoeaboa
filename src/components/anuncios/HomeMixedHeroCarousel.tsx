@@ -87,8 +87,8 @@ export function HomeMixedHeroCarousel({
           className="group relative block h-auto w-full rounded-none p-0 text-left hover:bg-card"
           aria-label={`Abrir evento ${title}`}
         >
-          <div className="aspect-[16/11] w-full overflow-hidden bg-muted sm:aspect-[21/9]">
-            <img src={eventImage} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+          <div className="aspect-[4/3] w-full overflow-hidden bg-muted sm:aspect-[16/7]">
+            <img src={eventImage} alt={title} className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
@@ -124,6 +124,37 @@ export function HomeMixedHeroCarousel({
               <span className={cn("h-2 rounded-full bg-muted-foreground/30 transition-all", dotIndex === index ? "w-5 bg-primary" : "w-2")} />
             </Button>
           ))}
+        </div>
+      )}
+
+      {total > 1 && (
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Mais eventos">
+          {items.filter((_, itemIndex) => itemIndex !== index).slice(0, 5).map((event) => {
+            const eventIndex = items.findIndex((candidate) => candidate.id === event.id);
+            const thumbnail = event.image_url || getEventFallbackImage(event.category);
+            return (
+              <Button
+                key={event.id}
+                type="button"
+                variant="ghost"
+                onClick={() => goTo(eventIndex)}
+                className="group h-auto min-w-0 justify-start gap-3 rounded-lg border bg-card p-2 text-left hover:bg-muted sm:p-3"
+                aria-label={`Destacar evento ${event.event_title || "Evento"}`}
+              >
+                <div className="h-16 w-14 shrink-0 overflow-hidden rounded-md bg-muted sm:h-20 sm:w-16">
+                  <img src={thumbnail} alt="" className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.03]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 whitespace-normal text-sm font-semibold leading-snug text-foreground">
+                    {event.event_title || "Evento"}
+                  </p>
+                  {event.address_neighborhood && (
+                    <p className="mt-1 truncate text-xs font-normal text-muted-foreground">{event.address_neighborhood}</p>
+                  )}
+                </div>
+              </Button>
+            );
+          })}
         </div>
       )}
 
