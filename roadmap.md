@@ -34,3 +34,4 @@
 - [x] Criar rota protegida para compartilhar automaticamente o Agendilha Informa pelo WhatsApp
 - [x] Corrigir o atalho “Coé a Boa?” no rodapé da Home
 - [x] Exibir flyers e banners dos eventos cadastrados no destaque da Home
+- [x] Separar os cards de eventos dos anúncios patrocinados na Home
