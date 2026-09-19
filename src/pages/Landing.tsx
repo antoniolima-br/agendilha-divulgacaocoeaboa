@@ -385,7 +385,7 @@ export default function Landing() {
             <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
               <Calendar className="h-8 w-8 text-primary/30 mx-auto mb-3" />
               <p className="text-muted-foreground text-sm mb-4">Hoje a Ilha está em recesso. Veja o que rola nos próximos dias.</p>
-              <Button onClick={() => navigate("/agenda")} variant="outline" className="rounded-full font-bold">
+              <Button onClick={() => navigate("/explorar")} variant="outline" className="rounded-full font-bold">
                 Ver próximos dias
               </Button>
             </div>
