@@ -80,6 +80,8 @@ export function HomeAdsCarousel() {
   }, [index, total]);
 
   if (isLoading || total === 0) return null;
+  const currentAd = visibleAds[index];
+  if (!currentAd) return null;
 
   const openDetails = (ad: Ad) => {
     setPaused(true);
@@ -109,7 +111,7 @@ export function HomeAdsCarousel() {
         onBlurCapture={() => setPaused(false)}
       >
         <div className="mx-auto max-w-3xl" aria-live="polite">
-          <SponsoredSlide ad={visibleAds[index]} onOpen={() => openDetails(visibleAds[index])} />
+          <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
         </div>
 
         {total > 1 && (
