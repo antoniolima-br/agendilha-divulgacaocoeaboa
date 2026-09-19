@@ -180,7 +180,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
         name="category"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Categoria *</FormLabel>
+            <FormLabel>Categoria <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <FrameworkAutocomplete
                 value={field.value}
