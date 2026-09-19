@@ -158,6 +158,12 @@ export default function Landing() {
       () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
       [allEvents],
     );
+    const homeFlyerEvents = useMemo(
+      () => [...allEvents]
+        .sort((a, b) => Number(Boolean(b.image_url)) - Number(Boolean(a.image_url)))
+        .slice(0, 6),
+      [allEvents],
+    );
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
@@ -331,7 +337,7 @@ export default function Landing() {
          </div>
 
          <HomeMixedHeroCarousel
-           events={todayEvents.length > 0 ? todayEvents : visualEvents.slice(0, 3)}
+            events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
          />
  
@@ -664,7 +670,7 @@ export default function Landing() {
         <div className="mx-auto max-w-6xl flex flex-col gap-8">
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/70">
             <Link to="/agenda" className="hover:text-primary transition-colors">Agenda</Link>
-            <Link to="/coe-a-boa" className="hover:text-primary transition-colors">Coé a Boa?</Link>
+            <Link to="/hoje" className="hover:text-primary transition-colors">Coé a Boa?</Link>
             <Link to="/agenda" className="hover:text-primary transition-colors">Agenda Cultural</Link>
             <Link to="/auth" className="hover:text-primary transition-colors">Divulgue seu evento</Link>
             <a href="#contato" className="hover:text-primary transition-colors">Contato</a>

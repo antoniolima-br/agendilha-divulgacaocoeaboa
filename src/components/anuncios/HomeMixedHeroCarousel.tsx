@@ -21,6 +21,8 @@ interface HeroEvent {
   address_neighborhood: string | null;
   category: string | null;
   image_url?: string | null;
+  is_highlight?: boolean | null;
+  highlight_active?: boolean | null;
 }
 
 type HeroItem =
@@ -144,7 +146,7 @@ export function HomeMixedHeroCarousel({
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
             <Badge variant="secondary" className="mb-3">
-              Patrocinado
+              {item.kind === "ad" || item.event.is_highlight || item.event.highlight_active ? "Patrocinado" : "Evento"}
             </Badge>
             <h2 className="max-w-3xl font-display text-2xl font-bold sm:text-4xl">{title}</h2>
             {location && (
