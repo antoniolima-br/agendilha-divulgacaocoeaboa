@@ -159,9 +159,14 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(1);
-    expect(text).toBe(
-      "*Coé a Boa? - 15/09/2026*\n\n" +
-      "• Banda 4X Rock - Linha Vermelha | Aterro do Cocotá | 18:00h",
+    expect(text).toContain("*AGENDILHA* — sua agenda de eventos da Ilha do Governador");
+    expect(text).toContain("📲 Siga no Instagram\nhttps://instagram.com/agendilha?igshid=YmMyMTA2M2Y=");
+    expect(text).toContain("💬 Entre no nosso WhatsApp\nhttps://chat.whatsapp.com/ENHhvKwqqsE2iUdWcZJY4G");
+    expect(text).toContain("🗓️ TERÇA-FEIRA, 15 DE SETEMBRO");
+    expect(text).toContain(
+      "🎙️ 18h *BANDA 4X ROCK - LINHA VERMELHA*\n" +
+      "👉 Aterro do Cocotá\n" +
+      "📌 Parque Manoel Bandeira, s/n - Cocotá",
     );
   });
 
@@ -174,8 +179,8 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(2);
-    expect(text.indexOf("Mais cedo")).toBeLessThan(text.indexOf("Mais tarde"));
-    expect(text).not.toContain("Pendente");
+    expect(text.indexOf("MAIS CEDO")).toBeLessThan(text.indexOf("MAIS TARDE"));
+    expect(text).not.toContain("PENDENTE");
   });
 
   it("aceita status públicos e converte a data UTC para São Paulo", () => {
@@ -186,8 +191,8 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(2);
-    expect(text).toContain("Publicado");
-    expect(text).toContain("Divulgado");
+    expect(text).toContain("PUBLICADO");
+    expect(text).toContain("DIVULGADO");
   });
 
   it("reúne todos os eventos divulgados em uma lista cronológica sem rótulos", () => {
@@ -198,11 +203,11 @@ describe("buildCoeaboaDailyReport", () => {
       { status: "aprovado", date, start_time: "19:00", event_title: "Ingresso", sale_price: "R$ 20" },
     ], date);
 
-    expect(text.indexOf("Grátis")).toBeLessThan(text.indexOf("Ingresso"));
-    expect(text.indexOf("Ingresso")).toBeLessThan(text.indexOf("Destaque"));
-    expect(text).toContain("• Destaque");
-    expect(text).toContain("• Grátis");
-    expect(text).toContain("• Ingresso");
+    expect(text.indexOf("GRÁTIS")).toBeLessThan(text.indexOf("INGRESSO"));
+    expect(text.indexOf("INGRESSO")).toBeLessThan(text.indexOf("DESTAQUE"));
+    expect(text).toContain("*DESTAQUE*");
+    expect(text).toContain("*GRÁTIS*");
+    expect(text).toContain("*INGRESSO*");
     expect(text).not.toContain("ANÚNCIOS PAGOS / DESTAQUES");
     expect(text).not.toContain("DEMAIS EVENTOS DIVULGADOS");
     expect(text).not.toContain("EVENTOS GRATUITOS (NÃO PAGOS)");
