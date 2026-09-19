@@ -23,6 +23,6 @@
 - [x] Renomear a listagem inferior da Home para “Outras programações”
 - [x] Implantar carrossel patrocinado com até 6 anúncios, detalhes e ações de contato
 - [x] Cadastrar anúncios publicados no carrossel e validar WhatsApp, mapa e anúncio completo
-- [ ] Ampliar a gestão de patrocinadores com cadastro e exclusão
-- [ ] Alternar anúncios e eventos no destaque principal da Home
-- [ ] Validar atualização automática e ações dos patrocinadores
+- [x] Ampliar a gestão de patrocinadores com cadastro e exclusão
+- [x] Alternar anúncios e eventos no destaque principal da Home
+- [x] Validar atualização automática e ações dos patrocinadores
