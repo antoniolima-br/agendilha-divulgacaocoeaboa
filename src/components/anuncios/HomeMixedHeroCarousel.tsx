@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Clock3, ExternalLink, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { eventDateISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 
@@ -13,8 +15,10 @@ interface HeroEvent {
   date: string | null;
   start_time: string | null;
   location: string | null;
+  address_street?: string | null;
   address_neighborhood: string | null;
   category: string | null;
+  description?: string | null;
   image_url?: string | null;
   atrativo_style?: string | null;
   is_highlight?: boolean | null;
@@ -31,6 +35,7 @@ export function HomeMixedHeroCarousel({
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<HeroEvent | null>(null);
 
   const items = useMemo(() => events.slice(0, 6), [events]);
 
@@ -62,7 +67,7 @@ export function HomeMixedHeroCarousel({
   if (!item) return null;
 
   const openCurrent = () => {
-    onOpenEvent(item.id);
+    setSelectedEvent(item);
   };
 
   const title = item.event_title || item.atrativo_style || item.category || "Evento";
@@ -160,6 +165,57 @@ export function HomeMixedHeroCarousel({
           })}
         </div>
       )}
+
+      <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+        {selectedEvent && (
+          <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto p-0">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted sm:aspect-video">
+              <img
+                src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
+              />
+              <img
+                src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
+                alt={selectedEvent.event_title || selectedEvent.atrativo_style || "Evento"}
+                className="relative h-full w-full object-contain"
+              />
+            </div>
+
+            <div className="space-y-5 p-5 sm:p-6">
+              <DialogHeader className="pr-7 text-left">
+                <div className="mb-1 flex flex-wrap gap-2">
+                  <Badge variant="secondary">{selectedEvent.is_highlight || selectedEvent.highlight_active ? "Em destaque" : "Evento"}</Badge>
+                  {selectedEvent.category && <Badge variant="outline">{selectedEvent.category}</Badge>}
+                </div>
+                <DialogTitle className="text-xl sm:text-2xl">
+                  {selectedEvent.event_title || selectedEvent.atrativo_style || selectedEvent.category || "Evento"}
+                </DialogTitle>
+                <DialogDescription>Confira as principais informações deste rolê.</DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+                {selectedEvent.date && (
+                  <p className="flex items-center gap-2"><CalendarDays className="h-4 w-4 shrink-0 text-secondary" />{new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${eventDateISO(selectedEvent.date)}T12:00:00Z`))}</p>
+                )}
+                {selectedEvent.start_time && (
+                  <p className="flex items-center gap-2"><Clock3 className="h-4 w-4 shrink-0 text-secondary" />{selectedEvent.start_time.slice(0, 5)}</p>
+                )}
+                {(selectedEvent.location || selectedEvent.address_street || selectedEvent.address_neighborhood) && (
+                  <p className="flex items-start gap-2 sm:col-span-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />{[selectedEvent.location, selectedEvent.address_street, selectedEvent.address_neighborhood].filter(Boolean).join(" · ")}</p>
+                )}
+              </div>
+
+              {selectedEvent.description && <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">{selectedEvent.description}</p>}
+
+              <Button type="button" className="w-full font-bold" onClick={() => onOpenEvent(selectedEvent.id)}>
+                <ExternalLink className="mr-2 h-4 w-4" /> Ver evento completo
+              </Button>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
 
     </section>
   );
