@@ -173,9 +173,12 @@ export function buildTodayWhatsAppSummary(submissions: SummaryEvent[]): {
   return { text, count: items.length };
 }
 
+export function buildWhatsAppShareUrl(text: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
 export function openWhatsAppWithText(text: string) {
-  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-  window.open(url, "_blank");
+  window.open(buildWhatsAppShareUrl(text), "_blank");
 }
 
 /**

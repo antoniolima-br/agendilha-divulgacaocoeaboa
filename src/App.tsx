@@ -43,6 +43,7 @@ const ArtistFeed = lazy(() => import("./pages/ArtistFeed"));
 const AdminMedia = lazy(() => import("./pages/AdminMedia"));
 const AdminAuditLogs = lazy(() => import("./pages/AdminAuditLogs"));
 const AdminAgendaInforma = lazy(() => import("./pages/AdminAgendaInforma"));
+const CompartilharAgendaInforma = lazy(() => import("./pages/CompartilharAgendaInforma"));
 const EventDetail = lazy(() => import("./pages/EventDetail"));
 const PrintEvent = lazy(() => import("./pages/PrintEvent"));
 const EstabelecimentoDetail = lazy(() => import("./pages/EstabelecimentoDetail"));
@@ -234,6 +235,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ADMIN_ARTISTS} element={<AdminArtists />} />
           <Route path={ROUTES.ADMIN_MEDIA} element={<AdminMedia />} />
           <Route path={ROUTES.ADMIN_AGENDA_INFORMA} element={<AdminAgendaInforma />} />
+          <Route path={ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR} element={<CompartilharAgendaInforma />} />
           <Route path={ROUTES.ADMIN_WHATSAPP_TEMPLATES} element={<AdminWhatsAppTemplates />} />
           <Route path={ROUTES.ADMIN_DESTAQUES} element={<AdminDestaques />} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />

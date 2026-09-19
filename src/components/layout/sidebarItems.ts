@@ -22,6 +22,7 @@ import {
   Building2,
   ShoppingBag,
   Settings2
+  ,Share2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
@@ -179,6 +180,13 @@ export const sidebarConfig: SidebarSection[] = [
         label: "AgendIlha Informa",
         path: ROUTES.ADMIN_AGENDA_INFORMA,
         icon: Megaphone,
+        roles: ["admin", "master"]
+      },
+      {
+        id: "compartilhar_agenda_informa",
+        label: "Compartilhar Agendilha Informa",
+        path: ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR,
+        icon: Share2,
         roles: ["admin", "master"]
       },
       {

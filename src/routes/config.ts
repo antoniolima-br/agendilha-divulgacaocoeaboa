@@ -26,6 +26,7 @@ export const ROUTES = {
   ADMIN_MEDIA: "/admin/media",
   ADMIN_AUDIT: "/admin/audit",
   ADMIN_AGENDA_INFORMA: "/admin/agenda-informa",
+  ADMIN_AGENDA_INFORMA_COMPARTILHAR: "/admin/agenda-informa/compartilhar",
   RANKING: "/ranking",
   FORGOT_PASSWORD: "/forgot-password",
   TROCAR_SENHA: "/trocar-senha",
