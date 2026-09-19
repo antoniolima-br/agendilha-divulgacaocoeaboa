@@ -41,7 +41,7 @@ import logo from "@/assets/coeaboa-logo.webp";
 import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
-import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
+import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 
 const sitelinks = [
   { href: "#oferecemos", label: "O que oferecemos" },
@@ -116,6 +116,7 @@ export default function Landing() {
       const { data, error } = await supabase
          .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
+        .in("status", [...PUBLIC_EVENT_STATUSES])
         .gte("date", addDaysToISO(today, -1))
         .order('highlight_active', { ascending: false, nullsFirst: false })
         .order('date', { ascending: true })
@@ -138,6 +139,7 @@ export default function Landing() {
         const { data, error } = await supabase
           .from("public_submissions")
           .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
+          .in("status", [...PUBLIC_EVENT_STATUSES])
           .gte("date", addDaysToISO(today, -1))
           .order("date", { ascending: true })
           .order("start_time", { ascending: true, nullsFirst: false })
