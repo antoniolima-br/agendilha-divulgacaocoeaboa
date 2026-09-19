@@ -139,7 +139,7 @@ describe("openWhatsAppWithText", () => {
 });
 
 describe("buildCoeaboaDailyReport", () => {
-  it("gera o modelo diário com múltiplos atrativos em evento gratuito", () => {
+  it("gera o modelo diário com múltiplos atrativos em evento divulgado", () => {
     const date = "2026-09-15";
     const { text, count } = buildCoeaboaDailyReport([
       {
@@ -161,7 +161,7 @@ describe("buildCoeaboaDailyReport", () => {
     expect(count).toBe(1);
     expect(text).toBe(
       "*Coé a Boa? - 15/09/2026*\n\n" +
-      "🆓 *EVENTOS GRATUITOS (NÃO PAGOS)*\n" +
+      "📋 *DEMAIS EVENTOS DIVULGADOS*\n" +
       "• Banda 4X Rock - Linha Vermelha | Aterro do Cocotá | 18:00h",
     );
   });
@@ -191,7 +191,7 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).toContain("Divulgado");
   });
 
-  it("separa eventos destacados e gratuitos, sem incluir eventos pagos comuns", () => {
+  it("separa destaques dos demais eventos divulgados", () => {
     const date = "2026-09-15";
     const { text, count } = buildCoeaboaDailyReport([
       { status: "aprovado", date, start_time: "20:00", event_title: "Destaque", is_highlight: true, sale_price: "50" },
@@ -199,10 +199,10 @@ describe("buildCoeaboaDailyReport", () => {
       { status: "aprovado", date, start_time: "19:00", event_title: "Ingresso", sale_price: "R$ 20" },
     ], date);
 
-    expect(text).toContain("⭐ *ANÚNCIOS / EVENTOS PAGOS (DESTAQUES)*\n• Destaque");
-    expect(text).toContain("🆓 *EVENTOS GRATUITOS (NÃO PAGOS)*\n• Grátis");
-    expect(text).not.toContain("Ingresso");
-    expect(text).not.toContain("OUTROS EVENTOS");
-    expect(count).toBe(2);
+    expect(text).toContain("⭐ *ANÚNCIOS PAGOS / DESTAQUES*\n• Destaque");
+    expect(text).toContain("📋 *DEMAIS EVENTOS DIVULGADOS*\n• Grátis");
+    expect(text).toContain("• Ingresso");
+    expect(text).not.toContain("EVENTOS GRATUITOS (NÃO PAGOS)");
+    expect(count).toBe(3);
   });
 });
