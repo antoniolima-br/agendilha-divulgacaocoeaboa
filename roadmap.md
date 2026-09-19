@@ -35,3 +35,4 @@
 - [x] Corrigir o atalho “Coé a Boa?” no rodapé da Home
 - [x] Exibir flyers e banners dos eventos cadastrados no destaque da Home
 - [x] Separar os cards de eventos dos anúncios patrocinados na Home
+- [x] Harmonizar os flyers dos eventos e incluir cards menores abaixo do destaque da Home
