@@ -23,7 +23,7 @@ export const SuggestTextarea = React.forwardRef<HTMLTextAreaElement, SuggestText
       limit: suggestLimit,
       refreshKey: revision,
     });
-    const visible = focused && suggestions.filter((suggestion) => suggestion !== term);
+    const visible = focused ? suggestions.filter((suggestion) => suggestion !== term) : [];
 
     return (
       <div className="relative">
