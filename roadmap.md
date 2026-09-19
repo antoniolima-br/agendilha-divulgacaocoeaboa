@@ -22,3 +22,4 @@
 - [x] Unificar o Relatório Diário em uma lista limpa, sem rótulos de destaque
 - [x] Renomear a listagem inferior da Home para “Outras programações”
 - [x] Implantar carrossel patrocinado com até 6 anúncios, detalhes e ações de contato
+- [ ] Cadastrar anúncios publicados no carrossel e validar WhatsApp, mapa e anúncio completo
