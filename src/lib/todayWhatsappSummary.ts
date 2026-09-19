@@ -80,14 +80,7 @@ export function buildCoeaboaDailyReport(
   const header = `*Coé a Boa? - ${formatReportDate(date)}*`;
   if (items.length === 0) return { text: header, count: 0 };
 
-  const highlighted = items.filter((event) => Boolean(event.highlight_active || event.is_highlight));
-  const remaining = items.filter((event) => !highlighted.includes(event));
-  const sections = [
-    highlighted.length ? `⭐ *ANÚNCIOS PAGOS / DESTAQUES*\n${highlighted.map(simpleEventLine).join("\n")}` : null,
-    remaining.length ? `📋 *DEMAIS EVENTOS DIVULGADOS*\n${remaining.map(simpleEventLine).join("\n")}` : null,
-  ].filter((section): section is string => Boolean(section));
-
-  return { text: [header, "", sections.join("\n\n")].join("\n"), count: items.length };
+  return { text: [header, "", items.map(simpleEventLine).join("\n")].join("\n"), count: items.length };
 }
 
 function addDaysISO(iso: string, days: number): string {
