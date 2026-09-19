@@ -90,18 +90,6 @@ export default function AdminAgendaInforma() {
     return buildCoeaboaDailyReport(chosen, date).count;
   }, [events, selected, date]);
 
-  const chosenEvents = useMemo(() => events.filter((event) => selected[event.id]), [events, selected]);
-  const orderedEvents = useMemo(
-    () => [...chosenEvents].sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "")),
-    [chosenEvents],
-  );
-
-  const eventName = (event: Ev) =>
-    (event.submission_atrativos || []).map((item) => item.name).filter(Boolean).join(" - ") ||
-    event.atrativo_name ||
-    event.event_title ||
-    "Evento";
-
   async function copy() {
     await navigator.clipboard.writeText(lines);
     toast.success("Texto copiado!");
@@ -186,21 +174,7 @@ export default function AdminAgendaInforma() {
             </CardHeader>
             <CardContent>
               <div className="max-h-[420px] overflow-y-auto rounded-md border bg-muted/20 p-4">
-                {orderedEvents.length ? (
-                  <ul className="divide-y">
-                    {orderedEvents.map((event) => (
-                      <li key={event.id} className="py-3 text-sm first:pt-0 last:pb-0">
-                        <span className="font-medium">{formatTime(event.start_time)} · {eventName(event)}</span>
-                        <span className="block text-xs text-muted-foreground">
-                          {event.location || "Local a confirmar"}
-                          {event.address_neighborhood ? ` · ${event.address_neighborhood}` : ""}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="py-3 text-center text-sm text-muted-foreground">Nenhum evento selecionado.</p>
-                )}
+                <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed">{lines}</pre>
               </div>
               <div className="flex gap-2 mt-3">
                 <Button onClick={copy} variant="outline" className="flex-1">

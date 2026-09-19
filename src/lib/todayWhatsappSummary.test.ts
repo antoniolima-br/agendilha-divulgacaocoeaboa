@@ -159,9 +159,14 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(1);
-    expect(text).toBe(
-      "*Coé a Boa? - 15/09/2026*\n\n" +
-      "• Banda 4X Rock - Linha Vermelha | Aterro do Cocotá | 18:00h",
+    expect(text).toContain("*AGENDILHA* — sua agenda de eventos da Ilha do Governador");
+    expect(text).toContain("📲 Siga no Instagram\nhttps://instagram.com/agendilha?igshid=YmMyMTA2M2Y=");
+    expect(text).toContain("💬 Entre no nosso WhatsApp\nhttps://chat.whatsapp.com/ENHhvKwqqsE2iUdWcZJY4G");
+    expect(text).toContain("🗓️ TERÇA-FEIRA, 15 DE SETEMBRO");
+    expect(text).toContain(
+      "🎙️ 18h *BANDA 4X ROCK - LINHA VERMELHA*\n" +
+      "👉 Aterro do Cocotá\n" +
+      "📌 Parque Manoel Bandeira, s/n - Cocotá",
     );
   });
 
@@ -200,9 +205,9 @@ describe("buildCoeaboaDailyReport", () => {
 
     expect(text.indexOf("Grátis")).toBeLessThan(text.indexOf("Ingresso"));
     expect(text.indexOf("Ingresso")).toBeLessThan(text.indexOf("Destaque"));
-    expect(text).toContain("• Destaque");
-    expect(text).toContain("• Grátis");
-    expect(text).toContain("• Ingresso");
+    expect(text).toContain("*DESTAQUE*");
+    expect(text).toContain("*GRÁTIS*");
+    expect(text).toContain("*INGRESSO*");
     expect(text).not.toContain("ANÚNCIOS PAGOS / DESTAQUES");
     expect(text).not.toContain("DEMAIS EVENTOS DIVULGADOS");
     expect(text).not.toContain("EVENTOS GRATUITOS (NÃO PAGOS)");

@@ -51,21 +51,30 @@ function eventAttractions(s: SummaryEvent): string {
   return names.join(" - ") || "Evento";
 }
 
-function formatReportDate(iso: string): string {
-  const [year, month, day] = iso.split("-");
-  return `${day}/${month}/${year}`;
+function formatDailyReportDate(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  const weekday = new Intl.DateTimeFormat("pt-BR", { weekday: "long" }).format(date);
+  const monthName = new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(date);
+  return `${weekday}, ${day} de ${monthName}`.toLocaleUpperCase("pt-BR");
 }
 
-function formatReportTime(time?: string | null): string {
-  if (!time) return "Horário a confirmar";
+function formatDailyReportTime(time?: string | null): string {
+  if (!time) return "HORÁRIO A CONFIRMAR";
   const [hour = "", minute = "00"] = time.split(":");
-  return `${hour}:${minute}h`;
+  const normalizedHour = String(Number(hour));
+  return minute === "00" ? `${normalizedHour}h` : `${normalizedHour}h${minute}`;
 }
 
-function simpleEventLine(event: SummaryEvent): string {
-  const title = eventAttractions(event);
+function dailyEventBlock(event: SummaryEvent): string {
+  const title = eventAttractions(event).toLocaleUpperCase("pt-BR");
   const local = event.location || event.estabelecimento_name || "Local a confirmar";
-  return `• ${title} | ${local} | ${formatReportTime(event.start_time)}`;
+  const address = shortAddress(event) || "Endereço a confirmar";
+  return [
+    `🎙️ ${formatDailyReportTime(event.start_time)} *${title}*`,
+    `👉 ${local}`,
+    `📌 ${address}`,
+  ].join("\n");
 }
 
 /** Gera o relatório diário Coé a Boa? pronto para copiar e postar no WhatsApp. */
@@ -77,10 +86,20 @@ export function buildCoeaboaDailyReport(
     .filter((event) => isPublicEventStatus(event.status) && eventDateISO(event.date) === date)
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
-  const header = `*Coé a Boa? - ${formatReportDate(date)}*`;
+  const header = [
+    "*AGENDILHA* — sua agenda de eventos da Ilha do Governador",
+    "",
+    "📲 Siga no Instagram",
+    "https://instagram.com/agendilha?igshid=YmMyMTA2M2Y=",
+    "",
+    "💬 Entre no nosso WhatsApp",
+    "https://chat.whatsapp.com/ENHhvKwqqsE2iUdWcZJY4G",
+    "",
+    `🗓️ ${formatDailyReportDate(date)}`,
+  ].join("\n");
   if (items.length === 0) return { text: header, count: 0 };
 
-  return { text: [header, "", items.map(simpleEventLine).join("\n")].join("\n"), count: items.length };
+  return { text: [header, "", items.map(dailyEventBlock).join("\n\n")].join("\n"), count: items.length };
 }
 
 function addDaysISO(iso: string, days: number): string {
