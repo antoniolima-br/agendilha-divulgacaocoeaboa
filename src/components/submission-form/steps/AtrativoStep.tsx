@@ -304,11 +304,13 @@ function ExtraAtrativos({ form }: { form: UseFormReturn<any> }) {
             placeholder="Nome do outro atrativo"
             selected={!!item.name}
           />
-          <Input
+          <SuggestInput
             placeholder="WhatsApp (opcional)"
             inputMode="tel"
             maxLength={16}
             className="h-11 text-base"
+            suggestFrom="submissions"
+            suggestColumn="atrativo_contact"
             value={item.whatsapp || ""}
             onChange={(e) => update(i, { whatsapp: formatPhoneDisplay(e.target.value) })}
           />

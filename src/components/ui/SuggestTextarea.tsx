@@ -8,10 +8,11 @@ interface SuggestTextareaProps extends React.ComponentProps<typeof Textarea> {
   suggestFrom: string;
   suggestColumn: string;
   suggestLimit?: number;
+  onSuggestionSelect: (value: string) => void;
 }
 
 export const SuggestTextarea = React.forwardRef<HTMLTextAreaElement, SuggestTextareaProps>(
-  ({ suggestFrom, suggestColumn, suggestLimit = 5, value, className, onFocus, onBlur, ...props }, ref) => {
+  ({ suggestFrom, suggestColumn, suggestLimit = 5, onSuggestionSelect, value, className, onFocus, onBlur, ...props }, ref) => {
     const [focused, setFocused] = React.useState(false);
     const term = typeof value === "string" ? value : "";
     const revision = useEntityRevision();
@@ -49,11 +50,7 @@ export const SuggestTextarea = React.forwardRef<HTMLTextAreaElement, SuggestText
                 className={cn("block w-full rounded-sm px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground")}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
-                  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
-                  const textarea = document.activeElement instanceof HTMLTextAreaElement ? document.activeElement : null;
-                  if (!textarea || !nativeSetter) return;
-                  nativeSetter.call(textarea, suggestion);
-                  textarea.dispatchEvent(new Event("input", { bubbles: true }));
+                  onSuggestionSelect(suggestion);
                   setFocused(false);
                 }}
               >

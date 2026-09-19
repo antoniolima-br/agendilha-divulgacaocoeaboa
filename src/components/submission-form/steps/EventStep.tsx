@@ -272,6 +272,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
                 maxLength={500}
                 suggestFrom="public_submissions"
                 suggestColumn="description"
+                onSuggestionSelect={field.onChange}
                 {...field}
                 value={field.value ?? ""}
               />
