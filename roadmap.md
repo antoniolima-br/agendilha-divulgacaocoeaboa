@@ -32,3 +32,5 @@
 - [x] Destacar os eventos de hoje em “Acontece hoje na Ilha” e mostrar os próximos dias em cards patrocinados menores
 - [x] Atualizar o texto do Agendilha Informa com cabeçalho oficial, data por extenso e eventos em três linhas
 - [x] Criar rota protegida para compartilhar automaticamente o Agendilha Informa pelo WhatsApp
+- [x] Corrigir o atalho “Coé a Boa?” no rodapé da Home
+- [x] Exibir flyers e banners dos eventos cadastrados no destaque da Home
