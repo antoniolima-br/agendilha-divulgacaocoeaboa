@@ -7,16 +7,16 @@ import { SponsoredAdDialog } from "@/components/anuncios/SponsoredAdDialog";
 import { useAdCoverUrl } from "@/data/useAdPhotoUrls";
 import { usePublishedAds } from "@/data/useAds";
 import type { Ad } from "@/data/useAds";
-import { useEventFlyerFallbacks } from "@/data/useEventFlyerFallbacks";
+import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
 const AUTOPLAY_MS = 4_000;
 const MAX_SPONSORED_ADS = 6;
 
-function SponsoredSlide({ ad, onOpen, fallbackImage }: { ad: Ad; onOpen: () => void; fallbackImage?: string }) {
+function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
   const cover = useAdCoverUrl(ad.photos);
-  const displayImage = cover || fallbackImage;
+  const displayImage = getSponsoredAdCreative(ad.title) || cover;
   const location = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
 
   return (
@@ -29,7 +29,7 @@ function SponsoredSlide({ ad, onOpen, fallbackImage }: { ad: Ad; onOpen: () => v
     >
       <div className="aspect-video w-full bg-muted">
         {displayImage ? (
-          <img src={displayImage} alt={ad.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+          <img src={displayImage} alt={ad.title} loading="lazy" width={1536} height={864} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground">
             <ImageIcon className="h-10 w-10" aria-hidden="true" />
@@ -52,7 +52,6 @@ function SponsoredSlide({ ad, onOpen, fallbackImage }: { ad: Ad; onOpen: () => v
 
 export function HomeAdsCarousel() {
   const { data: ads = [], isLoading } = usePublishedAds();
-  const { data: eventFlyers = [] } = useEventFlyerFallbacks(MAX_SPONSORED_ADS);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
@@ -85,7 +84,6 @@ export function HomeAdsCarousel() {
   if (isLoading || total === 0) return null;
   const currentAd = visibleAds[index];
   if (!currentAd) return null;
-  const currentFallbackImage = eventFlyers.length > 0 ? eventFlyers[index % eventFlyers.length] : undefined;
 
   const openDetails = (ad: Ad) => {
     setPaused(true);
@@ -115,7 +113,7 @@ export function HomeAdsCarousel() {
         onBlurCapture={() => setPaused(false)}
       >
         <div className="mx-auto max-w-3xl" aria-live="polite">
-          <SponsoredSlide ad={currentAd} fallbackImage={currentFallbackImage} onOpen={() => openDetails(currentAd)} />
+          <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
         </div>
 
         {total > 1 && (
@@ -163,9 +161,6 @@ export function HomeAdsCarousel() {
       <SponsoredAdDialog
         ad={selectedAd}
         open={Boolean(selectedAd)}
-        fallbackImage={selectedAd && eventFlyers.length > 0
-          ? eventFlyers[Math.max(0, visibleAds.findIndex((ad) => ad.id === selectedAd.id)) % eventFlyers.length]
-          : undefined}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedAd(null);

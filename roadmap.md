@@ -27,3 +27,5 @@
 - [x] Alternar anúncios e eventos no destaque principal da Home
 - [x] Validar atualização automática e ações dos patrocinadores
 - [x] Preencher anúncios sem capa com flyers de eventos válidos, sem alterar os dados do patrocinador
+- [x] Substituir flyers provisórios por banners próprios dos anunciantes fictícios
+- [x] Apresentar os eventos válidos da Home como patrocinados no destaque
