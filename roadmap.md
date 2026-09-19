@@ -16,4 +16,4 @@
 - [x] Exibir gratuitos não destacados somente no fim da Home, em lista textual sem flyer ou banner.
 - [x] Confirmar que o carrossel da Home usa anúncios publicados da base, autoplay, pausa no toque/hover/foco e indicadores.
 - [x] Aplicar sugestões da base aos campos textuais editáveis do cadastro de eventos, preservando validações e preenchimentos automáticos existentes.
-- [ ] Renomear os blocos do Relatório Diário para “Anúncios Pagos / Destaques” e “Demais Eventos Divulgados”, removendo o rótulo anterior.
+- [x] Renomear os blocos do Relatório Diário para “Anúncios Pagos / Destaques” e “Demais Eventos Divulgados”, removendo o rótulo anterior.

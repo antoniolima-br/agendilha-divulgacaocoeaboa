@@ -18,6 +18,7 @@ export interface SummaryEvent {
   address_neighborhood?: string | null;
   is_highlight?: boolean | null;
   highlight_active?: boolean | null;
+  image_url?: string | null;
   sale_price?: string | null;
   submission_atrativos?: Array<{ name?: string | null; display_order?: number | null }> | null;
 }
@@ -89,13 +90,13 @@ export function buildCoeaboaDailyReport(
   if (items.length === 0) return { text: header, count: 0 };
 
   const highlighted = items.filter((event) => Boolean(event.highlight_active || event.is_highlight));
-  const free = items.filter((event) => !highlighted.includes(event) && isFreeEvent(event));
+  const remaining = items.filter((event) => !highlighted.includes(event));
   const sections = [
-    highlighted.length ? `⭐ *ANÚNCIOS / EVENTOS PAGOS (DESTAQUES)*\n${highlighted.map(simpleEventLine).join("\n")}` : null,
-    free.length ? `🆓 *EVENTOS GRATUITOS (NÃO PAGOS)*\n${free.map(simpleEventLine).join("\n")}` : null,
+    highlighted.length ? `⭐ *ANÚNCIOS PAGOS / DESTAQUES*\n${highlighted.map(simpleEventLine).join("\n")}` : null,
+    remaining.length ? `📋 *DEMAIS EVENTOS DIVULGADOS*\n${remaining.map(simpleEventLine).join("\n")}` : null,
   ].filter((section): section is string => Boolean(section));
 
-  return { text: [header, "", sections.join("\n\n")].join("\n"), count: highlighted.length + free.length };
+  return { text: [header, "", sections.join("\n\n")].join("\n"), count: items.length };
 }
 
 function addDaysISO(iso: string, days: number): string {
