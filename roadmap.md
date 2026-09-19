@@ -15,4 +15,4 @@
 - [x] Separar o Relatório Diário em “Anúncios / Eventos Pagos (Destaques)” e “Eventos Gratuitos (Não Pagos)”.
 - [x] Exibir gratuitos não destacados somente no fim da Home, em lista textual sem flyer ou banner.
 - [x] Confirmar que o carrossel da Home usa anúncios publicados da base, autoplay, pausa no toque/hover/foco e indicadores.
-- [ ] Aplicar sugestões da base aos campos textuais editáveis do cadastro de eventos, preservando validações e preenchimentos automáticos existentes.
+- [x] Aplicar sugestões da base aos campos textuais editáveis do cadastro de eventos, preservando validações e preenchimentos automáticos existentes.

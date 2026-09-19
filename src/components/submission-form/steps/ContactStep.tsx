@@ -1,5 +1,5 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { SuggestInput } from "@/components/ui/SuggestInput";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
 import { User, Phone, RefreshCw } from "lucide-react";
@@ -45,9 +45,11 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
           <FormItem>
             <FormLabel>Seu nome ou apelido</FormLabel>
             <FormControl>
-              <Input
+              <SuggestInput
                 placeholder="Como quer ser chamado?"
                 className="h-12"
+                suggestFrom="submissions"
+                suggestColumn="responsible_name"
                 {...field}
                 name="name"
                 autoComplete="name"
@@ -72,11 +74,13 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
               WhatsApp para contato
             </FormLabel>
             <FormControl>
-              <Input 
+              <SuggestInput 
                 placeholder="(11) 99999-9999"
                 inputMode="tel"
                 maxLength={16}
                 className="h-12" 
+                suggestFrom="submissions"
+                suggestColumn="phone"
                 {...field} 
                 name="tel"
                 autoComplete="tel"

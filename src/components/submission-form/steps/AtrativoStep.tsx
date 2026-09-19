@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { AtrativoAutocomplete } from "@/components/atrativos/AtrativoAutocomplete";
+import { SuggestInput } from "@/components/ui/SuggestInput";
 
 export const CATEGORIES = QUICK_CATEGORIES;
 
@@ -139,11 +140,13 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
             <FormItem>
               <FormLabel>Celular / WhatsApp (opcional)</FormLabel>
               <FormControl>
-                <Input
+                <SuggestInput
                   placeholder="(21) 99999-9999"
                   inputMode="tel"
                   maxLength={16}
                   className="h-12 text-base"
+                  suggestFrom="submissions"
+                  suggestColumn="atrativo_contact"
                   {...field}
                   autoComplete="tel"
                   onChange={(e) => field.onChange(formatPhoneDisplay(e.target.value))}
@@ -172,10 +175,12 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
           <FormItem>
             <FormLabel>E-mail (opcional)</FormLabel>
             <FormControl>
-              <Input
+              <SuggestInput
                 type="email"
                 placeholder="contato@exemplo.com"
                 className="h-12 text-base"
+                suggestFrom="submission_atrativos"
+                suggestColumn="email"
                 {...field}
                 value={field.value ?? ""}
                 autoComplete="email"
@@ -230,7 +235,14 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
             <FormItem>
               <FormLabel>Qual categoria?</FormLabel>
               <FormControl>
-                <Input placeholder="Ex.: Feira, Palestra, Teatro" className="h-12 text-base" {...field} value={field.value ?? ""} />
+                <SuggestInput
+                  placeholder="Ex.: Feira, Palestra, Teatro"
+                  className="h-12 text-base"
+                  suggestFrom="submission_atrativos"
+                  suggestColumn="category_other"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -292,11 +304,13 @@ function ExtraAtrativos({ form }: { form: UseFormReturn<any> }) {
             placeholder="Nome do outro atrativo"
             selected={!!item.name}
           />
-          <Input
+          <SuggestInput
             placeholder="WhatsApp (opcional)"
             inputMode="tel"
             maxLength={16}
             className="h-11 text-base"
+            suggestFrom="submissions"
+            suggestColumn="atrativo_contact"
             value={item.whatsapp || ""}
             onChange={(e) => update(i, { whatsapp: formatPhoneDisplay(e.target.value) })}
           />
