@@ -15,6 +15,7 @@ import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 interface Ev {
   id: string;
+  status: string;
   event_title: string;
   date: string | null;
   start_time: string | null;
@@ -55,7 +56,7 @@ export default function AdminAgendaInforma() {
     supabase
       .from("submissions")
       .select(
-        "id, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, submission_atrativos(name, display_order)"
+        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, submission_atrativos(name, display_order)"
       )
       .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", addDaysToISO(date, -1))
