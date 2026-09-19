@@ -62,15 +62,6 @@ function formatReportTime(time?: string | null): string {
   return `${hour}:${minute}h`;
 }
 
-function isFreeEvent(event: SummaryEvent): boolean {
-  const value = (event.sale_price ?? "").trim().toLowerCase();
-  if (!value) return true;
-  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
-  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
-  return Number.isFinite(amount) && amount === 0;
-}
-
 function simpleEventLine(event: SummaryEvent): string {
   const title = eventAttractions(event);
   const local = event.location || event.estabelecimento_name || "Local a confirmar";

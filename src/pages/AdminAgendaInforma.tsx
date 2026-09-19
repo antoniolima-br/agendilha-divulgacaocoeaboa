@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Copy, ImageIcon, Send, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -57,7 +56,7 @@ export default function AdminAgendaInforma() {
     supabase
       .from("submissions")
       .select(
-        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, image_url, submission_atrativos(name, display_order)"
+        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, highlight_active, image_url, submission_atrativos(name, display_order)"
       )
       .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", addDaysToISO(date, -1))
