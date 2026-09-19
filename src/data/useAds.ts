@@ -48,8 +48,10 @@ export function usePublishedAds() {
         .from("ads")
         .select(AD_COLUMNS)
         .eq("status", "publicado")
+        .or(`highlight_until.is.null,highlight_until.gt.${new Date().toISOString()}`)
         .order("is_highlight", { ascending: false })
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(6);
       if (error) throw error;
       return normalize(data);
     },

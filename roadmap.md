@@ -21,3 +21,4 @@
 - [x] Preservar autocomplete global e máscaras existentes
 - [x] Unificar o Relatório Diário em uma lista limpa, sem rótulos de destaque
 - [x] Renomear a listagem inferior da Home para “Outras programações”
+- [x] Implantar carrossel patrocinado com até 6 anúncios, detalhes e ações de contato
