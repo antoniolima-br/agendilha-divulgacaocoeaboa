@@ -197,7 +197,7 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
         name="atrativoCategory"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Categoria *</FormLabel>
+            <FormLabel>Categoria <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_CATEGORIES.map((cat) => {
                 const active = field.value === cat.value;

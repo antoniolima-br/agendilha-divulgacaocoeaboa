@@ -12,21 +12,19 @@ interface Item {
 
 function useItems(form: UseFormReturn<any>): Item[] {
   const title = form.watch("eventTitle");
+  const attraction = form.watch("atrativoName");
   const date = form.watch("date");
   const startTime = form.watch("startTime");
-  const locationName = form.watch("locationName");
-  const eventAddress = form.watch("eventAddress");
   const has = (v: unknown) => typeof v === "string" && v.trim().length > 0;
   return [
-    { key: "title", label: "Título do rolê", ok: has(title), step: 1 },
+    { key: "title", label: "Nome do rolê ou atrativo", ok: has(title) || has(attraction), step: 1 },
     { key: "date", label: "Data", ok: has(date), step: 1 },
     { key: "time", label: "Horário", ok: has(startTime), step: 1 },
-    { key: "location", label: "Local (nome e endereço)", ok: has(locationName) && has(eventAddress), step: 1 },
   ];
 }
 
 /**
- * Checklist ao vivo dos 4 campos mínimos exigidos para aprovar, publicar ou agendar.
+ * Checklist ao vivo dos campos mínimos para enviar rapidamente.
  * Atualiza em tempo real conforme o promotor preenche o formulário.
  */
 export function PublishChecklist({

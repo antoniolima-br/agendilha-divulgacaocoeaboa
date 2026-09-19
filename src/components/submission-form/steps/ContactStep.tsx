@@ -43,7 +43,7 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
         name="nickName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Seu nome ou apelido</FormLabel>
+            <FormLabel>Seu nome ou apelido <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Como quer ser chamado?"
@@ -71,7 +71,7 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
           <FormItem>
             <FormLabel className="flex items-center gap-2">
               <Phone className="h-4 w-4" />
-              WhatsApp para contato
+              WhatsApp para contato <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
             </FormLabel>
             <FormControl>
               <SuggestInput 

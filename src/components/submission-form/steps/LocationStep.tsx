@@ -116,7 +116,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="locationName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nome do local/estabelecimento *</FormLabel>
+            <FormLabel>Nome do local/estabelecimento <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <EstabelecimentoAutocomplete
                 value={field.value ?? ""}
@@ -214,7 +214,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="eventAddress"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Endereço resumido *</FormLabel>
+            <FormLabel>Endereço resumido <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Ex.: Rua X, 123 — próximo à Praça Y"
@@ -236,7 +236,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="addressNeighborhood"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Bairro do local *</FormLabel>
+            <FormLabel>Bairro do local <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Ex.: Jardim Guanabara"
@@ -305,7 +305,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
 
       <AutofillIssues
         issues={issues}
-        okMessage="Dados do local conferidos — telefone, CEP/endereço e tipo estão ok."
+        okMessage="Os dados preenchidos do local estão prontos."
       />
     </div>
   );
