@@ -18,9 +18,10 @@ interface SponsoredAdDialogProps {
   ad: Ad | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  fallbackImage?: string;
 }
 
-export function SponsoredAdDialog({ ad, open, onOpenChange }: SponsoredAdDialogProps) {
+export function SponsoredAdDialog({ ad, open, onOpenChange, fallbackImage }: SponsoredAdDialogProps) {
   const cover = useAdCoverUrl(ad?.photos ?? []);
   if (!ad) return null;
 
@@ -37,8 +38,8 @@ export function SponsoredAdDialog({ ad, open, onOpenChange }: SponsoredAdDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto p-0">
         <div className="aspect-video w-full overflow-hidden bg-muted">
-          {cover ? (
-            <img src={cover} alt={ad.title} className="h-full w-full object-cover" />
+          {cover || fallbackImage ? (
+            <img src={cover || fallbackImage} alt={ad.title} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground">
               <ImageIcon className="h-10 w-10" aria-hidden="true" />

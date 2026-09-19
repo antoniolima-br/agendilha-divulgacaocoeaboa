@@ -26,3 +26,4 @@
 - [x] Ampliar a gestão de patrocinadores com cadastro e exclusão
 - [x] Alternar anúncios e eventos no destaque principal da Home
 - [x] Validar atualização automática e ações dos patrocinadores
+- [x] Preencher anúncios sem capa com flyers de eventos válidos, sem alterar os dados do patrocinador

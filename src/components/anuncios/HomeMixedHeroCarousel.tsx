@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SponsoredAdDialog } from "@/components/anuncios/SponsoredAdDialog";
 import { useAdCoverUrl } from "@/data/useAdPhotoUrls";
 import { usePublishedAds, type Ad } from "@/data/useAds";
+import { useEventFlyerFallbacks } from "@/data/useEventFlyerFallbacks";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,10 +27,11 @@ type HeroItem =
   | { key: string; kind: "event"; event: HeroEvent }
   | { key: string; kind: "ad"; ad: Ad };
 
-function SponsorImage({ ad }: { ad: Ad }) {
+function SponsorImage({ ad, fallbackImage }: { ad: Ad; fallbackImage?: string }) {
   const cover = useAdCoverUrl(ad.photos);
-  return cover ? (
-    <img src={cover} alt={ad.title} className="h-full w-full object-cover" />
+  const displayImage = cover || fallbackImage;
+  return displayImage ? (
+    <img src={displayImage} alt={ad.title} className="h-full w-full object-cover" />
   ) : (
     <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
       <ImageIcon className="h-12 w-12" aria-hidden="true" />
@@ -45,6 +47,7 @@ export function HomeMixedHeroCarousel({
   onOpenEvent: (id: string) => void;
 }) {
   const { data: ads = [] } = usePublishedAds();
+  const { data: eventFlyers = [] } = useEventFlyerFallbacks(6);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -112,6 +115,10 @@ export function HomeMixedHeroCarousel({
   const eventImage = item.kind === "event"
     ? item.event.image_url || getEventFallbackImage(item.event.category)
     : null;
+  const adIndex = item.kind === "ad" ? ads.findIndex((ad) => ad.id === item.ad.id) : -1;
+  const sponsorFallbackImage = adIndex >= 0 && eventFlyers.length > 0
+    ? eventFlyers[adIndex % eventFlyers.length]
+    : undefined;
 
   return (
     <section
@@ -134,7 +141,7 @@ export function HomeMixedHeroCarousel({
         >
           <div className="aspect-[16/11] w-full overflow-hidden bg-muted sm:aspect-[21/9]">
             {item.kind === "ad" ? (
-              <SponsorImage ad={item.ad} />
+              <SponsorImage ad={item.ad} fallbackImage={sponsorFallbackImage} />
             ) : (
               <img src={eventImage ?? undefined} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
             )}
@@ -179,6 +186,9 @@ export function HomeMixedHeroCarousel({
       <SponsoredAdDialog
         ad={selectedAd}
         open={Boolean(selectedAd)}
+        fallbackImage={selectedAd && eventFlyers.length > 0
+          ? eventFlyers[Math.max(0, ads.findIndex((ad) => ad.id === selectedAd.id)) % eventFlyers.length]
+          : undefined}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedAd(null);
