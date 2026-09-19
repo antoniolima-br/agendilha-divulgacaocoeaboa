@@ -179,6 +179,18 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).not.toContain("Pendente");
   });
 
+  it("aceita status públicos e converte a data UTC para São Paulo", () => {
+    const date = "2026-09-18";
+    const { text, count } = buildCoeaboaDailyReport([
+      { status: "publicado", date: "2026-09-18T03:00:00.000Z", start_time: "18:00", event_title: "Publicado" },
+      { status: "divulgado", date: "2026-09-19T02:30:00.000Z", start_time: "20:00", event_title: "Divulgado" },
+    ], date);
+
+    expect(count).toBe(2);
+    expect(text).toContain("Publicado");
+    expect(text).toContain("Divulgado");
+  });
+
   it("separa eventos destacados e gratuitos, sem incluir eventos pagos comuns", () => {
     const date = "2026-09-15";
     const { text, count } = buildCoeaboaDailyReport([
