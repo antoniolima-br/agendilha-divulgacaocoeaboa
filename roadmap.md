@@ -30,3 +30,5 @@
 - [x] Substituir flyers provisórios por banners próprios dos anunciantes fictícios
 - [x] Apresentar os eventos válidos da Home como patrocinados no destaque
 - [x] Destacar os eventos de hoje em “Acontece hoje na Ilha” e mostrar os próximos dias em cards patrocinados menores
+- [x] Atualizar o texto do Agendilha Informa com cabeçalho oficial, data por extenso e eventos em três linhas
+- [x] Criar rota protegida para compartilhar automaticamente o Agendilha Informa pelo WhatsApp
