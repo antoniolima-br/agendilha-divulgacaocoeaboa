@@ -306,6 +306,14 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
       <AutofillIssues
         issues={issues}
         okMessage="Os dados preenchidos do local estão prontos."
+      <NovoEstabelecimentoDialog
+        open={novoLocalOpen}
+        onOpenChange={setNovoLocalOpen}
+        initialName={novoLocalNome}
+        initialEndereco={form.getValues("eventAddress")}
+        initialBairro={form.getValues("addressNeighborhood")}
+        onCreated={handleSelectEstab}
+      />
       />
     </div>
   );

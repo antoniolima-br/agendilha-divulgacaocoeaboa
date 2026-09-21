@@ -82,8 +82,9 @@ export function AtrativoAutocomplete({
     enabled: open,
   });
 
+  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   const exactMatch = suggestions.some(
-    (s) => s.name.trim().toLowerCase() === value.trim().toLowerCase(),
+    (s) => normalize(s.name) === normalize(value),
   );
   const duplicateWarning = !selected && exactMatch && value.trim().length >= 2;
   const showNewHint = !exactMatch && value.trim().length >= 2;
