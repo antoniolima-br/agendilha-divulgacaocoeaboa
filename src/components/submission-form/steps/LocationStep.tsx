@@ -73,7 +73,6 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
   };
 
   const iniciarNovoLocal = (nome: string) => {
-    // Abre o modal já com o que foi digitado — nada de redigitar.
     setNovoLocal(true);
     setNovoLocalNome(nome);
     form.setValue("locationName", nome, { shouldValidate: true });
@@ -122,7 +121,6 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
                 value={field.value ?? ""}
                 onChange={(v) => {
                   field.onChange(v);
-                  // Se o usuário editar manualmente após selecionar, desfaz o vínculo
                   if (form.getValues("estabelecimentoId")) {
                     form.setValue("estabelecimentoId", "");
                   }
@@ -165,7 +163,6 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
             </FormItem>
           )}
         />
-
       </div>
 
       <FormField
@@ -306,6 +303,15 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
       <AutofillIssues
         issues={issues}
         okMessage="Os dados preenchidos do local estão prontos."
+      />
+
+      <NovoEstabelecimentoDialog
+        open={novoLocalOpen}
+        onOpenChange={setNovoLocalOpen}
+        initialName={novoLocalNome}
+        initialEndereco={form.getValues("eventAddress")}
+        initialBairro={form.getValues("addressNeighborhood")}
+        onCreated={handleSelectEstab}
       />
     </div>
   );

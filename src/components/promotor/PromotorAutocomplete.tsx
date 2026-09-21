@@ -78,8 +78,9 @@ export function PromotorAutocomplete({
     };
   }, [value, user?.id, refreshKey]);
 
+  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   const exactMatch = suggestions.some(
-    (s) => s.nome.trim().toLowerCase() === value.trim().toLowerCase(),
+    (s) => normalize(s.nome) === normalize(value),
   );
   const duplicateWarning =
     !selected && exactMatch && value.trim().length >= 1;
