@@ -136,9 +136,9 @@ export const sidebarConfig: SidebarSection[] = [
     ]
   },
   {
-    id: "operacao",
-    title: "Operação",
-    roles: ["promoter", "admin", "master"],
+    id: "divulgacao",
+    title: "Divulgação",
+    roles: ["promoter"],
     items: [
       { 
         id: "my_submissions", 
@@ -159,7 +159,38 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Perfil de Divulgador",
         path: ROUTES.PROMOTOR_PERFIL,
         icon: User,
-        roles: ["promoter", "admin", "master"]
+        roles: ["promoter"]
+      }
+    ]
+  },
+  {
+    id: "operacao",
+    title: "Operação",
+    roles: ["admin", "master"],
+    items: [
+      {
+        id: "relatorio_diario",
+        label: "Relatório Diário (Coé a Boa?)",
+        path: ROUTES.ADMIN_AGENDA_INFORMA,
+        icon: Megaphone,
+        roles: ["admin", "master"],
+        children: [
+          {
+            id: "agenda_informa",
+            label: "AgendIlha Informa",
+            path: ROUTES.ADMIN_AGENDA_INFORMA,
+            icon: Megaphone,
+            roles: ["admin", "master"],
+            exact: true
+          },
+          {
+            id: "compartilhar_agenda_informa",
+            label: "Compartilhar Agendilha Informa",
+            path: ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR,
+            icon: Share2,
+            roles: ["admin", "master"]
+          }
+        ]
       },
       { 
         id: "manage_events", 
@@ -174,20 +205,6 @@ export const sidebarConfig: SidebarSection[] = [
         path: ROUTES.ADMIN_MEDIA, 
         icon: Shield, 
         roles: ["admin", "master"] 
-      },
-      {
-        id: "agenda_informa",
-        label: "AgendIlha Informa",
-        path: ROUTES.ADMIN_AGENDA_INFORMA,
-        icon: Megaphone,
-        roles: ["admin", "master"]
-      },
-      {
-        id: "compartilhar_agenda_informa",
-        label: "Compartilhar Agendilha Informa",
-        path: ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR,
-        icon: Share2,
-        roles: ["admin", "master"]
       },
       {
         id: "carrossel",

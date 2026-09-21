@@ -220,10 +220,10 @@ export default function MeusEventos() {
                   )}
                   {isDivulgador && user && r.user_id === user.id && (
                     <div className="pt-1">
-                      {r.status === "publicado" ? (
+                       {["aprovado", "publicado", "divulgado"].includes(r.status) ? (
                         <span className="inline-flex items-center gap-1.5 text-[11px] text-foreground/55">
                           <Lock className="h-3 w-3" />
-                          Já publicado — peça alteração pra curadoria.
+                           Já aprovado — peça alteração pra curadoria.
                         </span>
                       ) : (
                         <Button

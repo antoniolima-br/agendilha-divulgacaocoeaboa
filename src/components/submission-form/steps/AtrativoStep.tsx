@@ -240,6 +240,7 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
                   className="h-12 text-base"
                   suggestFrom="submission_atrativos"
                   suggestColumn="category_other"
+                   autoComplete="off"
                   {...field}
                   value={field.value ?? ""}
                 />
