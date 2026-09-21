@@ -69,6 +69,9 @@ export function useProfile() {
       return;
     }
     loadProfile(user.id);
+    const refreshProfile = () => loadProfile(user.id);
+    window.addEventListener("agendilha:profile-updated", refreshProfile);
+    return () => window.removeEventListener("agendilha:profile-updated", refreshProfile);
   }, [user]);
 
   async function loadProfile(userId: string) {
@@ -119,6 +122,7 @@ export function useProfile() {
       handleError(error, "Erro ao salvar perfil");
     } else {
       setProfile((prev) => ({ ...prev, ...data }));
+      window.dispatchEvent(new Event("agendilha:profile-updated"));
       toast.success("Perfil atualizado!");
     }
 
