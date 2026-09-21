@@ -71,6 +71,14 @@ function isFreeEventPrice(price?: string | null): boolean {
   return Number.isFinite(amount) && amount === 0;
 }
 
+function normalizePreferenceText(value?: string | null): string {
+  return (value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .trim();
+}
+
 function useScrollReveal() {
   const observed = useRef<Set<Element>>(new Set());
   useEffect(() => {
@@ -168,7 +176,10 @@ export default function Landing() {
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
-    const todayEvents = useMemo(() => visualEvents.filter(e => eventDateISO(e.date) === todayStr).slice(0, 6), [visualEvents, todayStr]);
+    const todayEvents = useMemo(
+      () => allEvents.filter((event) => eventDateISO(event.date) === todayStr).slice(0, 6),
+      [allEvents, todayStr],
+    );
 
     const weekDays = useMemo(() => {
       return eachDayOfInterval({
@@ -273,28 +284,33 @@ export default function Landing() {
     }
   };
 
-   const [recommendedEvents, setRecommendedEvents] = useState<any[]>([]);
-   
-   useEffect(() => {
-      if (visualEvents.length > 0) {
-       // Simple IA recommendation logic
-       if (profileLoaded && user) {
-         const prefs = profile.musical_preferences || [];
-          const home = profile.home_location;
-          const work = profile.work_neighborhood;
-         
-         const recs = allEvents.filter(ev => {
-           const matchStyle = prefs.some(p => ev.atrativo_style?.toLowerCase().includes(p.toLowerCase()));
-           const matchNeighborhood = false;
-           return matchStyle || matchNeighborhood;
-         }).slice(0, 5);
-         
-           setRecommendedEvents(recs.length > 0 ? recs : visualEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
-        } else {
-           setRecommendedEvents(visualEvents.filter(e => !todayEvents.find(t => t.id === e.id) && !trendingEvents.find(f => f.id === e.id)).slice(0, 5));
-        }
-     }
-    }, [visualEvents, profileLoaded, user, profile.musical_preferences, profile.home_location, profile.work_neighborhood, todayEvents, trendingEvents]);
+   const recommendedEvents = useMemo(() => {
+     const preferences = profileLoaded && user
+       ? [...(profile.musical_preferences ?? []), ...(profile.event_type_preferences ?? []), ...(profile.followed_styles ?? [])]
+           .map(normalizePreferenceText)
+           .filter(Boolean)
+       : [];
+
+     if (preferences.length === 0) return todayEvents.slice(0, 5);
+
+     const matchesPreferences = (event: (typeof allEvents)[number]) => {
+       const searchable = normalizePreferenceText([
+         event.atrativo_style,
+         event.category,
+         event.event_title,
+         event.description,
+       ].filter(Boolean).join(" "));
+       return preferences.some((preference) => searchable.includes(preference));
+     };
+
+     const matchingToday = todayEvents.filter(matchesPreferences);
+     if (matchingToday.length > 0) return matchingToday.slice(0, 5);
+
+     if (todayEvents.length > 0) return todayEvents.slice(0, 5);
+
+     const matchingUpcoming = allEvents.filter(matchesPreferences);
+     return (matchingUpcoming.length > 0 ? matchingUpcoming : allEvents).slice(0, 5);
+   }, [allEvents, profile.event_type_preferences, profile.followed_styles, profile.musical_preferences, profileLoaded, todayEvents, user]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);

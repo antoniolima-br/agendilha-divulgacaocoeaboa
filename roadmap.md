@@ -41,3 +41,4 @@
 - [x] Agrupar o Relatório Diário e reservar Operação/Governança para administradores
 - [x] Tornar sugestões textuais insensíveis a acentos e maiúsculas
 - [x] Bloquear a edição de eventos aprovados no painel do Divulgador
+- [x] Exibir eventos de hoje em “No seu radar” e aplicar preferências salvas com fallback
