@@ -540,7 +540,13 @@ export default function Landing() {
                 <Loader2 className="h-7 w-7 animate-spin text-primary" />
               </div>
             ) : freeEvents.length > 0 ? (
-              <ul className="divide-y divide-border border-y border-border" aria-label="Eventos gratuitos">
+              <ul
+                className={cn(
+                  "divide-y divide-border border-y border-border",
+                  freeEvents.length >= 4 && "max-h-[13.5rem] overflow-y-auto overscroll-contain pr-1",
+                )}
+                aria-label="Outros eventos"
+              >
                 {freeEvents.map((event) => {
                   const dateIso = eventDateISO(event.date);
                   const [year, month, day] = dateIso.split("-").map(Number);
@@ -554,7 +560,7 @@ export default function Landing() {
                     <li key={event.id}>
                       <Link
                         to={`/agenda?event=${event.id}`}
-                        className="group grid grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-4 sm:py-5 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
+                        className="group grid min-h-[4.5rem] grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-3 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
                       >
                         <div className="text-xs sm:text-sm text-muted-foreground pl-1 sm:pl-3">
                           <span className="block font-semibold text-foreground capitalize">{dateLabel}</span>
@@ -574,7 +580,7 @@ export default function Landing() {
               </ul>
             ) : (
               <div className="border-y border-border py-8 text-center">
-                <p className="text-muted-foreground text-sm">Nenhum rolê gratuito disponível agora. Confira novamente em breve.</p>
+                <p className="text-muted-foreground text-sm">Nenhuma outra programação disponível agora. Confira novamente em breve.</p>
               </div>
             )}
           </section>

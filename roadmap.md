@@ -37,3 +37,7 @@
 - [x] Separar os cards de eventos dos anúncios patrocinados na Home
 - [x] Harmonizar os flyers dos eventos e incluir cards menores abaixo do destaque da Home
 - [x] Preencher integralmente os cards da Home com flyers de eventos reais aprovados
+- [x] Limitar “Outros Eventos” a três linhas visíveis com rolagem a partir do quarto item
+- [x] Agrupar o Relatório Diário e reservar Operação/Governança para administradores
+- [x] Tornar sugestões textuais insensíveis a acentos e maiúsculas
+- [x] Bloquear a edição de eventos aprovados no painel do Divulgador

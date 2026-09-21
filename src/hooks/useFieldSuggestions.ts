@@ -2,6 +2,9 @@ import { useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
 
+const normalizeSearch = (value: string) =>
+  value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
+
 export interface FieldSuggestionSource {
   /** Tabela ou view pública já protegida por RLS. */
   from: string;
@@ -32,17 +35,22 @@ export function useFieldSuggestions({
 }: Options) {
   const fetchPage = useCallback(
     async (q: string, start: number, end: number, signal: AbortSignal) => {
-      let query = supabase
+      const query = supabase
         .from(from as never)
         .select(column)
         .not(column, "is", null)
         .order(column, { ascending: true })
-        .range(start, end)
+        .range(0, Math.max(end, 249))
         .abortSignal(signal);
-      if (q) query = query.ilike(column, `%${q}%`);
       const { data, error } = await query;
       if (error) return [];
-      return (data ?? []) as Record<string, unknown>[];
+      const normalizedQuery = normalizeSearch(q);
+      return ((data ?? []) as Record<string, unknown>[])
+        .filter((row) => {
+          const value = row?.[column];
+          return typeof value === "string" && (!normalizedQuery || normalizeSearch(value).includes(normalizedQuery));
+        })
+        .slice(start, end + 1);
     },
     [from, column],
   );
@@ -65,7 +73,7 @@ export function useFieldSuggestions({
       if (typeof raw !== "string") continue;
       const value = raw.trim();
       if (!value) continue;
-      const key = value.toLowerCase();
+       const key = normalizeSearch(value);
       if (seen.has(key)) continue;
       seen.add(key);
       out.push(value);

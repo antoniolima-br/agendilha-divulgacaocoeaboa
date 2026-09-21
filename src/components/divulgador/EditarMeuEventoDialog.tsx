@@ -23,6 +23,7 @@ export type EventoEditavel = {
   end_time?: string | null;
   location?: string | null;
   description?: string | null;
+  status?: string;
 };
 
 type Props = {
@@ -49,6 +50,11 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
 
   const salvar = async () => {
     if (!form || !user) return;
+    if (["aprovado", "publicado", "divulgado"].includes(form.status ?? "")) {
+      toast.error("Esse evento já foi aprovado", { description: "Peça a alteração pra curadoria." });
+      onOpenChange(false);
+      return;
+    }
     if (!form.event_title?.trim()) {
       toast.error("Falta o nome do rolê", { description: "Coloca um título pra galera reconhecer." });
       return;
@@ -66,7 +72,8 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
           description: form.description || null,
         })
         .eq("id", form.id)
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .not("status", "in", "(aprovado,publicado,divulgado)");
       if (error) throw error;
       toast.success("Prontinho, evento atualizado!");
       onOpenChange(false);

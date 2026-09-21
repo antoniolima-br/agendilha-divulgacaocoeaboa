@@ -46,7 +46,10 @@ export function useAutocompleteSearch<T>({
   const seqRef = useRef(0);
   const pageRef = useRef(0);
 
-  const normalized = useMemo(() => (term ?? "").trim().toLowerCase(), [term]);
+  const normalized = useMemo(
+    () => (term ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim(),
+    [term],
+  );
   const effectiveTerm = normalized.length >= minChars ? normalized : "";
 
   // Invalida o cache quando a fonte de dados muda.

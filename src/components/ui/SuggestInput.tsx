@@ -50,7 +50,7 @@ export const SuggestInput = React.forwardRef<HTMLInputElement, SuggestInputProps
       const seen = new Set<string>();
       const normalized = normalizeOption ? suggestions.map(normalizeOption) : suggestions;
       return [...(extraSuggestions ?? []), ...normalized].filter((opt) => {
-        const key = opt.trim().toLowerCase();
+         const key = opt.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
         if (!key || seen.has(key)) return false;
         seen.add(key);
         return true;
