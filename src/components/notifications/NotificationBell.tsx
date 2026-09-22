@@ -29,17 +29,17 @@ interface AppNotification {
 const PAGE_SIZE = 30;
 
 /**
- * Sino de notificações in-app. Visível apenas para Admin / Admin Master.
+ * Sino de notificações in-app para equipe e divulgadores.
  * Usa Supabase Realtime para receber novos avisos em tempo real.
  */
 export function NotificationBell() {
   const { user, isAdmin } = useAuth();
-  const { isMaster } = useAppPermissions();
+  const { isMaster, isPromoter } = useAppPermissions();
   const navigate = useNavigate();
   const [items, setItems] = useState<AppNotification[]>([]);
   const [open, setOpen] = useState(false);
 
-  const canSee = !!user && (isAdmin || isMaster);
+  const canSee = !!user && (isAdmin || isMaster || isPromoter);
 
   const fetchAll = useCallback(async () => {
     if (!user) return;
@@ -53,18 +53,19 @@ export function NotificationBell() {
   }, [user]);
 
   useEffect(() => {
-    if (!canSee) return;
+    if (!canSee || !user) return;
+    const userId = user.id;
     fetchAll();
 
     const channel = supabase
-      .channel(`realtime:notif:${user!.id}`)
+      .channel(`realtime:notif:${userId}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "app_notifications",
-          filter: `user_id=eq.${user!.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           const n = payload.new as AppNotification;
@@ -72,7 +73,7 @@ export function NotificationBell() {
           toast(n.title, {
             description: n.body ?? undefined,
             action: n.link
-              ? { label: "Ver", onClick: () => navigate(n.link!) }
+              ? { label: "Ver", onClick: () => navigate(n.link ?? "/") }
               : undefined,
           });
         }

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -61,7 +62,8 @@ export function usePublishedAds() {
 
 /** Anúncios do usuário logado. */
 export function useMyAds(userId: string | undefined) {
-  return useQuery({
+  const qc = useQueryClient();
+  const query = useQuery({
     queryKey: [...ADS_KEY, "meus", userId],
     enabled: !!userId,
     queryFn: async (): Promise<Ad[]> => {
@@ -75,6 +77,30 @@ export function useMyAds(userId: string | undefined) {
       return normalizeAds(data);
     },
   });
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel(`my-ads:${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "ads",
+          filter: `user_id=eq.${userId}`,
+        },
+        () => void qc.invalidateQueries({ queryKey: [...ADS_KEY, "meus", userId] }),
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [qc, userId]);
+
+  return query;
 }
 
 /** Todos os anúncios — usado na tela de moderação (RLS libera só para a equipe). */
