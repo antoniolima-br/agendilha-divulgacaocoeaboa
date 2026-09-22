@@ -1,33 +1,33 @@
-# Ajustes integrados do relatório, Home, menu e divulgação
+# Relatório, autocomplete, arquivo e cards sem flyer
 
 ## Resultado esperado
-- Manter o Relatório Diário com uma única lista cronológica, sem o rótulo “Anúncios Pagos / Destaques”.
-- Renomear a listagem inferior da Home para “Outras programações” e remover as chamadas antigas de gratuidade.
-- Organizar o menu administrativo e entregar ao Divulgador um painel próprio e seguro para seus envios.
-- Deixar o cadastro de eventos flexível, preservando apenas data, horário, atrativo e aceite como bloqueios mínimos atuais.
+- O texto do “Coé a Boa?” mostra `Rua, número - Bairro`, tanto na prévia quanto no compartilhamento direto.
+- O cadastro encontra nomes com ou sem acento e mantém o vínculo correto quando um local existente é selecionado.
+- A agenda ganha um acesso “Eventos Anteriores / Arquivo”; eventos de hoje continuam públicos até a virada do dia em São Paulo.
+- Eventos sem flyer recebem artes automáticas com paletas variadas e consistentes, em vez do mesmo fundo para todos.
 
 ## Implementação
-1. **Relatório e Home**
-   - Confirmar e reforçar no gerador e nos testes que nenhum rótulo de destaques aparece no WhatsApp.
-   - Trocar o título da seção inferior para “Outras programações”, inclusive textos de acessibilidade e estado vazio que ainda mencionem “gratuito”.
+1. **Relatório diário**
+   - Centralizar a montagem do endereço na ordem rua/número/bairro, evitando número duplicado.
+   - Incluir `address_number` também na consulta da rota de compartilhamento e ampliar os testes do texto final.
 
-2. **Menu lateral**
-   - Criar o menu pai “Relatório Diário (Coé a Boa?)” com dois acessos internos: relatório e compartilhamento.
-   - Reservar “Operação” e “Governança” para Admin e Master.
-   - Mover “Meus Envios”, “Enviar Evento” e “Perfil de Divulgador” para uma seção própria “Divulgação”, mantendo o painel acessível ao Divulgador sem expor áreas administrativas.
+2. **Autocomplete e vínculo de local**
+   - Normalizar busca e comparação com NFD, remoção de diacríticos e minúsculas em todos os autocompletes do formulário.
+   - Atualizar a busca de estabelecimentos no backend para comparar nome normalizado, mantendo paginação e permissões atuais.
+   - Incluir `estabelecimentoId` no modelo validado do formulário; ao selecionar uma sugestão, preencher os dados uma única vez e preservar o ID até o envio.
+   - Cobrir seleção, edição manual e envio com testes para impedir criação duplicada de local.
 
-3. **Formulário e sugestões**
-   - Revisar as duas etapas e remover marcações ou validações rígidas além do mínimo necessário para cadastrar um evento identificável e aceitar os termos.
-   - Completar as sugestões nos campos textuais do fluxo de divulgação e da edição rápida, usando somente fontes permitidas pelas regras de acesso atuais.
-   - Preservar telefone, e-mail, CEP, datas e horários como campos livres com validação apenas quando preenchidos; não sugerir dados pessoais de outros usuários.
+3. **Eventos anteriores / arquivo**
+   - Criar o modo público `/explorar?view=archive`, acessível pela navegação de eventos, sem mover ou duplicar registros no banco.
+   - Separar eventos por `YYYY-MM-DD` usando o dia de São Paulo: atuais quando `data >= hoje`; arquivo quando `data < hoje`.
+   - Aplicar a mesma regra na Home e na agenda para que o evento do dia só saia após a meia-noite local.
+   - Exibir o arquivo do mais recente para o mais antigo, com busca e filtros existentes.
 
-4. **Painel do Divulgador e trava de aprovação**
-   - Consolidar “Meus eventos” como painel dos envios do usuário, com filtros, status, criação e edição dos registros permitidos.
-   - Bloquear o botão de edição para `aprovado`, `publicado` e `divulgado`, exibindo orientação para procurar a curadoria.
-   - Aplicar a mesma trava no banco: o proprietário poderá alterar somente eventos ainda não aprovados; Admin e Master continuarão podendo editar qualquer status.
-   - Manter a checagem de proprietário em todas as alterações.
+4. **Cards automáticos sem flyer**
+   - Criar um conjunto de paletas semânticas variadas e escolher uma de forma estável pelo evento, evitando troca de cor a cada carregamento.
+   - Aplicar a arte dinâmica aos cards sem imagem e aos flyers automáticos novos, mantendo contraste, leitura e identidade do Coé a Boa?.
+   - Preservar flyers enviados pelos usuários sem qualquer alteração.
 
 ## Validação
-- Atualizar e executar os testes do relatório, menu, formulário e painel.
-- Confirmar no navegador, em celular e desktop, os títulos da Home, o agrupamento do menu e o bloqueio visual de edição.
-- Testar no banco que um Divulgador não altera evento aprovado nem força outro proprietário, e que Admin/Master preservam a edição.
+- Testar relatório, normalização de busca, vínculo do estabelecimento, corte de data e escolha estável de paleta.
+- Conferir no navegador o envio com local existente, a Home no dia atual, o arquivo e cards sem flyer em celular e desktop.
