@@ -4,9 +4,8 @@ import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, MessageCircle, RotateCcw, Save, Settings2, Sparkles } from "lucide-react";
+import { Loader2, MessageCircle, RotateCcw, Save, Settings2 } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -19,14 +18,7 @@ import {
 } from "@/data/useAppSettings";
 import { formatPhoneDisplay, isValidBrazilianMobile, buildWhatsappUrl } from "@/lib/whatsapp";
 
-const KEYS = [
-  SETTING_KEYS.teamWhatsapp,
-  SETTING_KEYS.destaqueEventoTitulo,
-  SETTING_KEYS.destaqueEventoTexto,
-  SETTING_KEYS.destaqueAnuncioTitulo,
-  SETTING_KEYS.destaqueAnuncioTexto,
-  SETTING_KEYS.destaqueCta,
-] as const;
+const KEYS = [SETTING_KEYS.teamWhatsapp] as const;
 
 type Form = Record<string, string>;
 
@@ -63,13 +55,6 @@ export default function AdminSettings() {
       toast.error("Confere o WhatsApp da equipe: precisa ter DDD e número completo.");
       return;
     }
-    const vazio = KEYS.filter(
-      (k) => k !== SETTING_KEYS.teamWhatsapp && !(form[k] ?? "").trim(),
-    );
-    if (vazio.length > 0) {
-      toast.error("Os textos do destaque não podem ficar vazios.");
-      return;
-    }
     try {
       const payload: Form = {};
       KEYS.forEach((k) => (payload[k] = (form[k] ?? "").trim()));
@@ -92,7 +77,7 @@ export default function AdminSettings() {
         </div>
         <h1 className="text-2xl md:text-3xl font-black tracking-tight uppercase">Configurações</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">
-          Número oficial da equipe e os textos do convite de destaque, sem precisar mexer no código.
+          Gerencie o número oficial da equipe.
         </p>
       </header>
 
@@ -137,73 +122,6 @@ export default function AdminSettings() {
                 Testar conversa
               </a>
             )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base font-black">
-            <Sparkles className="h-4 w-4 text-primary" />
-            Convite de destaque
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wide">Título (rolês)</Label>
-            <Input
-              value={form[SETTING_KEYS.destaqueEventoTitulo] ?? ""}
-              maxLength={120}
-              onChange={(e) => set(SETTING_KEYS.destaqueEventoTitulo, e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wide">Texto (rolês)</Label>
-            <Textarea
-              rows={3}
-              maxLength={600}
-              value={form[SETTING_KEYS.destaqueEventoTexto] ?? ""}
-              onChange={(e) => set(SETTING_KEYS.destaqueEventoTexto, e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wide">Título (anúncios)</Label>
-            <Input
-              value={form[SETTING_KEYS.destaqueAnuncioTitulo] ?? ""}
-              maxLength={120}
-              onChange={(e) => set(SETTING_KEYS.destaqueAnuncioTitulo, e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wide">Texto (anúncios)</Label>
-            <Textarea
-              rows={3}
-              maxLength={600}
-              value={form[SETTING_KEYS.destaqueAnuncioTexto] ?? ""}
-              onChange={(e) => set(SETTING_KEYS.destaqueAnuncioTexto, e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wide">Botão de contratação</Label>
-            <Input
-              value={form[SETTING_KEYS.destaqueCta] ?? ""}
-              maxLength={40}
-              onChange={(e) => set(SETTING_KEYS.destaqueCta, e.target.value)}
-            />
-          </div>
-
-          <div className="rounded-2xl border bg-muted/30 p-4 space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              Pré-visualização
-            </p>
-            <p className="font-black text-base">{form[SETTING_KEYS.destaqueEventoTitulo]}</p>
-            <p className="text-sm text-muted-foreground whitespace-pre-line">
-              {form[SETTING_KEYS.destaqueEventoTexto]}
-            </p>
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground">
-              <Sparkles className="h-3.5 w-3.5" />
-              {form[SETTING_KEYS.destaqueCta]}
-            </div>
           </div>
         </CardContent>
       </Card>
