@@ -28,6 +28,7 @@ const collaboratorPermissionMap: Array<[keyof CollaboratorPermissions, Permissio
 ];
 
 type CollaboratorPermissions = {
+  name?: string | null;
   can_submit: boolean;
   can_approve: boolean;
   can_edit: boolean;
@@ -110,7 +111,7 @@ export function useAppPermissions() {
         supabase.from("user_roles").select("role").eq("user_id", userId!),
         supabase
           .from("collaborators")
-          .select("can_submit, can_approve, can_edit, can_delete, is_active")
+          .select("name, can_submit, can_approve, can_edit, can_delete, is_active")
           .eq("user_id", userId!)
           .maybeSingle(),
         supabase.from("profiles").select("role, user_type").eq("user_id", userId!).maybeSingle(),
@@ -163,6 +164,7 @@ export function useAppPermissions() {
   const isAdmin = roles.includes("admin") || isMaster;
   const isPromoter = roles.includes("promoter");
   const isCollaborator = roles.includes("collaborator") || isAdmin;
+  const collaboratorName = data?.collaboratorName ?? null;
 
   return {
     permissions,
@@ -174,6 +176,7 @@ export function useAppPermissions() {
     isAdmin,
     isPromoter,
     isCollaborator,
+    collaboratorName,
     // Explicit capability mappings from legacy usePermissions
     canSubmit: isPromoter || isCollaborator || hasPermission("events.create"),
     canApprove: isAdmin || hasPermission("events.approve"),
