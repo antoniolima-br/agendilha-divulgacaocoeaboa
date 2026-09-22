@@ -59,4 +59,4 @@
 - [x] Manter em Configurações somente o WhatsApp oficial da equipe.
 - [x] Validar tipos e estados vazios em todas as listas e galerias de anúncios.
 
-- [ ] Criar painel do Divulgador com anúncios publicados/aguardando, status visuais e aviso interno de aprovação.
+- [x] Criar painel do Divulgador com anúncios publicados/aguardando, status visuais e aviso interno de aprovação.
