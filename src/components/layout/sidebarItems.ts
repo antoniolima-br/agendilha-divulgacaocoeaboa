@@ -242,7 +242,7 @@ export const sidebarConfig: SidebarSection[] = [
       },
       {
         id: "cadastros_admin",
-        label: "Cadastros",
+        label: "Gerenciamento de Cadastros",
         path: ROUTES.ADMIN_ATRATIVOS,
         icon: FolderKanban,
         roles: ["admin", "master"],

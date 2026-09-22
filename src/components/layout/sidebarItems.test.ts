@@ -41,6 +41,7 @@ describe("sidebarConfig", () => {
       "atrativos_admin",
       "estabelecimentos_admin",
     ]);
+    expect(adminRegistrations?.label).toBe("Gerenciamento de Cadastros");
     expect(adminRegistrations?.children?.map((item) => item.label)).toEqual([
       "Gerenciar Atrativos",
       "Gerenciar Estabelecimentos",
