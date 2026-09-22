@@ -46,6 +46,7 @@ import {
   buildTemplateVars,
   computeKpis,
   filterSubmissions,
+  isActiveSubmission,
 } from "@/components/events-admin/adminEventsHelpers";
 import { AdminEventsToolbar } from "@/components/events-admin/AdminEventsToolbar";
 import { AdminEventsKpis } from "@/components/events-admin/AdminEventsKpis";
@@ -294,11 +295,16 @@ function AdminEventsInner() {
 
   }
 
-  const kpis = useMemo(() => computeKpis(submissions), [submissions]);
+  const activeSubmissions = useMemo(
+    () => submissions.filter((submission) => isActiveSubmission(submission)),
+    [submissions],
+  );
+
+  const kpis = useMemo(() => computeKpis(activeSubmissions), [activeSubmissions]);
 
   const filtered = useMemo(
-    () => filterSubmissions(submissions, { statusFilter, categoryFilter, search }),
-    [submissions, statusFilter, categoryFilter, search],
+    () => filterSubmissions(activeSubmissions, { statusFilter, categoryFilter, search }),
+    [activeSubmissions, statusFilter, categoryFilter, search],
   );
 
 
@@ -313,7 +319,7 @@ function AdminEventsInner() {
          <PublishBlockDialog info={publishBlock} onClose={() => setPublishBlock(null)} />
          <div className="shrink-0">
            <AdminEventsToolbar
-             submissions={submissions}
+             submissions={activeSubmissions}
              filtered={filtered}
              onRefresh={() => fetchAll()}
              onExportPdf={(list) => exportBulkEventsPdf(list)}

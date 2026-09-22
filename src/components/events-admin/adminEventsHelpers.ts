@@ -1,6 +1,7 @@
 import {
   CheckCircle, XCircle, Clock3, AlertCircle, type LucideIcon,
 } from "lucide-react";
+import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 /**
  * Tipos e helpers puros da tela de Gestão de Eventos.
@@ -163,6 +164,38 @@ export function computeKpis(submissions: AdminSubmission[]): AdminEventsKpiData 
     rejected: submissions.filter((s) => s.status === "rejeitado").length,
     ajuste: submissions.filter((s) => s.status === "ajuste").length,
   };
+}
+
+function saoPauloTime(now: Date): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "America/Sao_Paulo",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const hour = parts.find((part) => part.type === "hour")?.value ?? "00";
+  const minute = parts.find((part) => part.type === "minute")?.value ?? "00";
+  return `${hour}:${minute}`;
+}
+
+function normalizedTime(value?: string | null): string {
+  const match = value?.trim().match(/^(\d{1,2}):(\d{2})/);
+  if (!match) return "";
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return "";
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+/** Mantém eventos futuros e os de hoje que ainda não terminaram em São Paulo. */
+export function isActiveSubmission(submission: AdminSubmission, now = new Date()): boolean {
+  const eventDate = eventDateISO(submission.date);
+  const today = saoPauloTodayISO(now);
+  if (!eventDate || eventDate < today) return false;
+  if (eventDate > today) return true;
+
+  const endTime = normalizedTime(submission.end_time);
+  return !endTime || endTime >= saoPauloTime(now);
 }
 
 export function filterSubmissions(
