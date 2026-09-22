@@ -15,14 +15,10 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { callEdge } from "@/lib/edge";
 import { exportUsersToPdf } from "@/lib/pdfExportUsers";
 import {
-  UserKpis,
-  type UserKpisData,
-} from "@/components/admin/users/UserKpis";
-import {
   UserFiltersBar,
-  type QuickChip,
 } from "@/components/admin/users/UserFiltersBar";
 import { UserCard } from "@/components/admin/users/UserCard";
+import { matchesUserSearch } from "@/components/admin/users/userSearch";
 import { ConfirmUserActionDialogs } from "@/components/admin/users/ConfirmUserActionDialogs";
 import { ResetPasswordDialog } from "@/components/admin/users/ResetPasswordDialog";
 import { CreateUserDialog } from "@/components/admin/users/CreateUserDialog";
@@ -95,8 +91,8 @@ export default function AdminUsers() {
       // Hierarquia de Master
       if (!isMaster && (u.status === 'admin' || u.status === 'master')) return false;
 
-      // Filtro de Busca (Nome ou Email)
-      if (filterSearch && !u.responsible_name?.toLowerCase().includes(filterSearch.toLowerCase()) && !u.email?.toLowerCase().includes(filterSearch.toLowerCase())) return false;
+      // Busca global em todos os dados usados para localizar uma conta.
+      if (!matchesUserSearch(u, filterSearch)) return false;
 
       // Filtro de Tipo (grupo): admins ficam separados dos demais
       if (filterType !== "all" && userGroup(u) !== filterType) return false;
@@ -124,43 +120,6 @@ export default function AdminUsers() {
     return true;
     });
   }, [users, isMaster, filterSearch, filterType, filterStatus, filterPeriod]);
-
-  // KPIs gerais (sobre todos os usuários visíveis para o admin atual)
-  const visibleUsers = useMemo(
-    () => (isMaster ? users : users.filter((u) => u.status !== 'admin' && u.status !== 'master')),
-    [users, isMaster]
-  );
-  const kpis = useMemo(() => ({
-    total: visibleUsers.length,
-    publico: visibleUsers.filter((u) => (u.user_type || 'usuario') === 'usuario' && u.status === 'user').length,
-    // Admin/Master não conta como Divulgador — já tem todos os privilégios.
-    divulgadores: visibleUsers.filter(
-      (u) =>
-        u.status !== 'admin' &&
-        u.status !== 'master' &&
-        (u.status === 'collaborator' || u.user_type === 'divulgador' || u.user_type === 'promotor')
-    ).length,
-    artistas: visibleUsers.filter((u) => u.status === 'artist' || u.user_type === 'artist').length,
-    admins: visibleUsers.filter((u) => u.status === 'admin' || u.status === 'master').length,
-    semBairro: visibleUsers.filter((u) => !u.address_neighborhood).length,
-  }), [visibleUsers]);
-
-  // Chips de filtro rápido por status/papel
-  const quickStatusChips: Array<{ key: string; label: string; count: number; color: string }> = useMemo(() => {
-    const base = [
-      { key: 'all', label: 'Todos', count: visibleUsers.length, color: 'bg-muted text-foreground' },
-      { key: 'user', label: 'Público', count: visibleUsers.filter((u) => u.status === 'user').length, color: 'bg-blue-500/10 text-blue-700 border-blue-500/30' },
-      { key: 'collaborator', label: 'Divulgador', count: visibleUsers.filter((u) => u.status === 'collaborator').length, color: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30' },
-      { key: 'artist', label: 'Artista', count: visibleUsers.filter((u) => u.status === 'artist').length, color: 'bg-purple-500/10 text-purple-700 border-purple-500/30' },
-    ];
-    if (isMaster) {
-      base.push(
-        { key: 'admin', label: 'Admin', count: visibleUsers.filter((u) => u.status === 'admin').length, color: 'bg-amber-500/10 text-amber-700 border-amber-500/30' },
-        { key: 'master', label: 'Master', count: visibleUsers.filter((u) => u.status === 'master').length, color: 'bg-rose-500/10 text-rose-700 border-rose-500/30' },
-      );
-    }
-    return base;
-  }, [visibleUsers, isMaster]);
 
   // Resetar página ao filtrar
   useEffect(() => {
@@ -425,7 +384,7 @@ export default function AdminUsers() {
   if (!user || !isAdmin) return <Navigate to="/" replace />;
 
   return (
-    <PageContainer className="space-y-8" maxWidth="5xl">
+    <PageContainer className="space-y-5" maxWidth="5xl">
       <SectionHeader 
         title="Gestão de Usuários" 
         subtitle="Controle de acessos, papéis administrativos e moderação da comunidade."
@@ -472,12 +431,8 @@ export default function AdminUsers() {
 
       <DivulgadorRequestsPanel />
 
-      {/* KPIs */}
-      <UserKpis kpis={kpis as UserKpisData} />
-
       <UserFiltersBar
         isMaster={isMaster}
-        chips={quickStatusChips as QuickChip[]}
         filterSearch={filterSearch}
         setFilterSearch={setFilterSearch}
         filterType={filterType}

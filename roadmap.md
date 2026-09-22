@@ -71,3 +71,4 @@
 - [x] Agrupar Cadastros e Moderação no menu e adicionar rolagem própria às listas de estabelecimentos.
 - [x] Diferenciar os atalhos e títulos administrativos com “Gerenciar Atrativos” e “Gerenciar Estabelecimentos”.
 - [x] Renomear o grupo administrativo para “Gerenciamento de Cadastros”.
+- [x] Simplificar a Gestão de Usuários, removendo indicadores redundantes e destacando a pesquisa global.
