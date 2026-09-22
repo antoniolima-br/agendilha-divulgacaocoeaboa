@@ -1,14 +1,13 @@
 import { useState, useEffect, memo } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useProfile } from "@/hooks/useProfile";
-import { Music, Bell, Check, ChevronsUpDown, Settings2, X } from "lucide-react";
+import { Music, Bell, Check, ChevronsUpDown, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -87,7 +86,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
               <Music className="h-4 w-4" />
               Estilos Musicais
             </h3>
-            <div className="space-y-3 rounded-lg border border-border/70 bg-muted/20 p-4 shadow-sm transition-colors focus-within:border-primary/50">
+            <div className="rounded-lg border border-border/80 bg-card p-3 shadow-card transition-[border-color,box-shadow] duration-200 focus-within:border-primary/40 focus-within:shadow-elevated">
               <Popover open={genresOpen} onOpenChange={setGenresOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -95,7 +94,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
                     variant="outline"
                     role="combobox"
                     aria-expanded={genresOpen}
-                    className="h-12 w-full justify-between rounded-md bg-background px-4 font-medium shadow-none"
+                    className="h-11 w-full justify-between border-0 bg-transparent px-3 font-medium shadow-none hover:bg-muted/50"
                   >
                     <span className={cn("truncate", selectedGenres.length === 0 && "text-muted-foreground")}>
                       {selectedGenres.length === 0
@@ -105,7 +104,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
                     <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start" sideOffset={8}>
                   <Command>
                     <CommandInput placeholder="Buscar estilo..." />
                     <CommandList>
@@ -118,7 +117,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
                               key={genre.id}
                               value={genre.label}
                               onSelect={() => toggleGenre(genre.id)}
-                              className="mb-1 min-h-10 cursor-pointer rounded-md px-3 last:mb-0"
+                              className="mb-1 min-h-10 cursor-pointer rounded-md px-3 transition-colors last:mb-0"
                             >
                               <span className={cn(
                                 "mr-3 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors",
@@ -136,36 +135,6 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
                 </PopoverContent>
               </Popover>
 
-              {selectedGenres.length > 0 ? (
-                <div className="flex flex-wrap gap-2" aria-label="Estilos selecionados">
-                  {selectedGenres.map((genreId) => {
-                    const genre = genres.find((item) => item.id === genreId);
-                    return (
-                      <Badge
-                        key={genreId}
-                        variant="secondary"
-                        className="gap-1.5 rounded-md border border-primary/15 px-2.5 py-1.5 font-medium transition-colors"
-                      >
-                        {genre?.label ?? genreId}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Remover ${genre?.label ?? genreId}`}
-                          className="h-5 w-5 rounded-sm text-muted-foreground hover:bg-background hover:text-foreground"
-                          onClick={() => toggleGenre(genreId)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </Badge>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="px-1 text-xs text-muted-foreground">
-                  Seus estilos escolhidos aparecem aqui.
-                </p>
-              )}
             </div>
           </div>
 
@@ -176,7 +145,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
               Notificações Inteligentes
             </h3>
             
-            <div className="space-y-4 bg-secondary/5 p-6 rounded-3xl border border-border/50">
+            <div className="space-y-4 rounded-lg border border-border/70 bg-card p-5 shadow-card">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label className="text-base font-bold">Push Notifications</Label>
@@ -196,7 +165,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
               <div className="space-y-2 border-t border-border/50 pt-4">
                 <Label className="text-sm font-bold">Frequência</Label>
                 <Select value={frequency} onValueChange={setFrequency}>
-                  <SelectTrigger className="h-10 rounded-xl bg-background">
+                  <SelectTrigger className="h-10 bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -211,7 +180,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
 
         <SheetFooter className="mt-10 sm:justify-start">
           <Button 
-            className="w-full h-14 rounded-full font-black text-lg gradient-sunset shadow-xl"
+            className="h-12 w-full font-bold shadow-elevated"
             onClick={handleSave}
           >
             Salvar Preferências
