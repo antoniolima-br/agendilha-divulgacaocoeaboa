@@ -306,32 +306,35 @@ function AdminEventsInner() {
   if (!user || !hasPermission('events.read')) return <Navigate to="/" replace />;
 
   return (
-    <PageContainer maxWidth="7xl">
+    <PageContainer
+      maxWidth="7xl"
+      className="flex h-[calc(100dvh-5rem)] min-h-0 flex-col space-y-0 overflow-hidden py-4 sm:py-5"
+    >
          <PublishBlockDialog info={publishBlock} onClose={() => setPublishBlock(null)} />
-         <AdminEventsToolbar
-           submissions={submissions}
-           filtered={filtered}
-           onRefresh={() => fetchAll()}
-           onExportPdf={(list) => exportBulkEventsPdf(list)}
-         />
+         <div className="shrink-0">
+           <AdminEventsToolbar
+             submissions={submissions}
+             filtered={filtered}
+             onRefresh={() => fetchAll()}
+             onExportPdf={(list) => exportBulkEventsPdf(list)}
+           />
 
+           <AdminEventsKpis kpis={kpis} activeStatus={statusFilter} onSelectStatus={setStatusFilter} />
 
-         <AdminEventsKpis kpis={kpis} activeStatus={statusFilter} onSelectStatus={setStatusFilter} />
-
-         <AdminEventsFilters
-           search={search}
-           statusFilter={statusFilter}
-           categoryFilter={categoryFilter}
-           onSearchChange={setSearch}
-           onStatusChange={setStatusFilter}
-           onCategoryChange={setCategoryFilter}
-           onClear={() => { setSearch(""); setStatusFilter("all"); setCategoryFilter("all"); toast.info("Filtros limpos"); }}
-         />
-
+           <AdminEventsFilters
+             search={search}
+             statusFilter={statusFilter}
+             categoryFilter={categoryFilter}
+             onSearchChange={setSearch}
+             onStatusChange={setStatusFilter}
+             onCategoryChange={setCategoryFilter}
+             onClear={() => { setSearch(""); setStatusFilter("all"); setCategoryFilter("all"); toast.info("Filtros limpos"); }}
+           />
+         </div>
 
         {/* Main List */}
-        <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-           <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b bg-muted/20 text-[10px] font-black text-muted-foreground uppercase tracking-[0.15em]">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-lg border border-border bg-card shadow-sm [scrollbar-gutter:stable]">
+           <div className="sticky top-0 z-10 hidden grid-cols-12 gap-4 border-b border-border bg-card/95 px-6 py-3 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground backdrop-blur md:grid">
               <div className="col-span-3">Informações do Evento</div>
               <div className="col-span-2">Cronograma</div>
               <div className="col-span-2">Responsável & Contato</div>
