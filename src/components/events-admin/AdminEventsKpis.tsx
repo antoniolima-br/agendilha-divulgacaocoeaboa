@@ -49,7 +49,7 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
   ];
 
   return (
-    <div className="mb-5 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4" aria-label="Filtrar eventos por status">
+    <div className="mb-3 grid grid-cols-2 gap-2 md:grid-cols-4" aria-label="Filtrar eventos por status">
       {metrics.map((metric) => {
         const selected = activeStatus === metric.status;
         return (
@@ -60,7 +60,7 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
             aria-pressed={selected}
             onClick={() => onSelectStatus(metric.status)}
             className={cn(
-              "h-auto min-h-24 justify-start border-2 bg-card p-3 text-left shadow-sm transition-all hover:bg-card hover:shadow-md sm:p-4",
+              "h-auto min-h-20 justify-start border-2 bg-card p-3 text-left shadow-sm transition-all hover:bg-card hover:shadow-md",
               selected ? metric.activeClass : "border-transparent",
             )}
           >
@@ -69,8 +69,8 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
                 <p className={cn("flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider", metric.labelClass)}>
                   {metric.icon}{metric.label}
                 </p>
-                <p className={cn("mt-1 text-2xl font-black sm:text-3xl", metric.valueClass)}>{metric.value}</p>
-                {metric.detail && <p className="mt-1 text-[10px] font-bold text-amber-700/80">{metric.detail}</p>}
+                 <p className={cn("mt-0.5 text-2xl font-black", metric.valueClass)}>{metric.value}</p>
+                 {metric.detail && <p className="mt-0.5 hidden text-[10px] font-bold text-amber-700/80 sm:block">{metric.detail}</p>}
               </div>
               {metric.status === "pendente" && <Clock3 className="mt-1 h-5 w-5 text-amber-500" />}
             </div>

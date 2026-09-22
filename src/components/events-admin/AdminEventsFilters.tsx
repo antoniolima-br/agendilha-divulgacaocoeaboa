@@ -25,7 +25,7 @@ export function AdminEventsFilters({
   onSearchChange, onStatusChange, onCategoryChange, onClear,
 }: AdminEventsFiltersProps) {
   return (
-      <div className="mb-6 grid grid-cols-1 items-center gap-3 rounded-lg border border-border bg-card p-2 shadow-sm md:grid-cols-12">
+      <div className="mb-3 grid grid-cols-1 items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm md:grid-cols-12">
         <div className="md:col-span-5 relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

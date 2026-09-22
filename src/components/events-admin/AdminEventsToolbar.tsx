@@ -55,13 +55,13 @@ export function AdminEventsToolbar({
   }
 
   return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-10">
+    <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
       <div className="space-y-1">
         <div className="flex items-center gap-2 text-primary">
           <LayoutDashboard className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Backoffice</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-black tracking-tight text-foreground uppercase">Gestão de Eventos</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground uppercase md:text-3xl">Gestão de Eventos</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Controle operacional e curadoria da agenda hiperlocal.</p>
       </div>
 

@@ -63,3 +63,4 @@
 - [x] Ocultar o Ranking de Divulgadores e reorganizar o espaçamento do menu lateral.
 - [x] Auditar e corrigir datas, estados públicos e diagnósticos da agenda de eventos futuros.
 - [x] Simplificar a Gestão de Eventos com métricas clicáveis, busca e filtros essenciais, removendo blocos repetidos.
+- [x] Compactar o topo da Gestão de Eventos e manter a listagem em uma área própria de rolagem.
