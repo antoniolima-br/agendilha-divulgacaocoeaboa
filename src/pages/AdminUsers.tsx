@@ -473,7 +473,13 @@ export default function AdminUsers() {
               </span>
               <div className="flex-1 h-px bg-border" />
             </div>
-          <div className="grid grid-cols-1 gap-4">
+          <div
+            className={`grid grid-cols-1 gap-4 ${
+              group.key === "usuario"
+                ? "max-h-[350px] overflow-y-auto overscroll-contain pr-2 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [scrollbar-gutter:stable]"
+                : ""
+            }`}
+          >
             {group.users.map((u) => (
               <UserCard
                 key={u.id}
