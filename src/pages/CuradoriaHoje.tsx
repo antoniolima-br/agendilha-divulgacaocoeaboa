@@ -190,7 +190,7 @@ function CuradoriaHojeInner() {
           </p>
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-4xl font-bold leading-tight sm:text-6xl">Acontece hoje na Ilha</h1>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight">Acontece hoje na Ilha</h1>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                 A curadoria do que tá rolando, do primeiro programa ao último show.
               </p>
@@ -275,7 +275,7 @@ function CuradoriaHojeInner() {
                  <span className="mb-2 inline-flex rounded bg-accent px-2 py-1 text-[10px] font-bold uppercase text-accent-foreground">
                     {currentFeature.is_highlight || currentFeature.highlight_active ? "Em destaque" : "Evento aprovado"}
                 </span>
-                <h3 className="max-w-3xl text-xl font-bold leading-tight sm:text-4xl">
+                <h3 className="max-w-3xl text-lg sm:text-3xl lg:text-4xl font-bold leading-tight">
                   {currentFeature.event_title || "Rolê na Ilha"}
                 </h3>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-background/80 sm:text-sm">
@@ -410,7 +410,7 @@ function CuradoriaHojeInner() {
               <div className="mb-5 flex items-end justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase text-secondary">Programação</p>
-                  <h2 id="programacao-heading" className="mt-1 text-xl font-bold sm:text-3xl">{selectedLabel} na Ilha</h2>
+                  <h2 id="programacao-heading" className="mt-1 text-lg sm:text-2xl lg:text-3xl font-bold">{selectedLabel} na Ilha</h2>
                 </div>
               </div>
 
@@ -445,7 +445,7 @@ function CuradoriaHojeInner() {
               <div className="mb-5 flex items-end justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase text-secondary">Faça parte</p>
-                  <h2 id="acoes-heading" className="mt-1 text-2xl font-bold sm:text-3xl">Movimente a Ilha</h2>
+                  <h2 id="acoes-heading" className="mt-1 text-xl sm:text-2xl lg:text-3xl font-bold">Movimente a Ilha</h2>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

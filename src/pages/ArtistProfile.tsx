@@ -164,7 +164,7 @@ export default function ArtistProfile() {
                  {artist.artist_type === 'both' ? 'Cover & Autoral' : artist.artist_type}
                </Badge>
              </div>
-             <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground drop-shadow-sm">
+             <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground drop-shadow-sm">
                {artist.name}
              </h1>
              <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">

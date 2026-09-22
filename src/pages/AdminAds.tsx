@@ -305,7 +305,7 @@ export default function AdminAds() {
 
                   {ad.status !== "recusado" && (
                     <div className="flex flex-wrap items-end gap-2">
-                      <div className="space-y-1 flex-1 min-w-[220px]">
+                      <div className="space-y-1 w-full sm:min-w-[220px] sm:flex-1">
                         <Label htmlFor={`motivo-${ad.id}`} className="text-xs">
                           Motivo da recusa
                         </Label>

@@ -291,7 +291,7 @@ export default function EventDetail() {
             <Badge className="mb-4 bg-background/90 backdrop-blur-md text-foreground border border-foreground/5 font-semibold uppercase tracking-[0.2em] text-[10px] rounded-full px-3 py-1 shadow-none">
               {event.category || 'Geral'}
             </Badge>
-            <h1 className="font-display font-semibold tracking-[-0.02em] text-background leading-[1.05] text-2xl xs:text-3xl md:text-5xl max-w-3xl line-clamp-3">
+            <h1 className="font-display font-semibold tracking-[-0.02em] text-background leading-[1.05] text-xl xs:text-2xl sm:text-3xl md:text-5xl max-w-3xl line-clamp-3">
               {event.event_title || "Evento"}
             </h1>
           </div>

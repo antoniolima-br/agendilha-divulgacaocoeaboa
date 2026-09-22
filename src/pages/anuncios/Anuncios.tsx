@@ -109,7 +109,7 @@ export default function Anuncios() {
                 </h2>
                 <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
                   {destaques.map((ad) => (
-                    <div key={ad.id} className="min-w-[280px] snap-start">
+                    <div key={ad.id} className="min-w-[240px] xs:min-w-[280px] snap-start">
                       <AdCard ad={ad} />
                     </div>
                   ))}
