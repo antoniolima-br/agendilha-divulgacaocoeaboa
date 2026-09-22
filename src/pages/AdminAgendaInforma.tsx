@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Copy, Send } from "lucide-react";
+import { Copy, Images, MessageSquare, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { buildCoeaboaDailyReport, formatReportAddress, openWhatsAppWithText } from "@/lib/todayWhatsappSummary";
 import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
+import { ROUTES } from "@/routes/config";
 
 interface Ev {
   id: string;
@@ -102,7 +104,7 @@ export default function AdminAgendaInforma() {
   return (
     <div className="space-y-6">
       <SectionHeader
-        title="Relatório diário COEABOA"
+        title="Central de Relatórios / WhatsApp"
         subtitle="Programação válida do dia em uma lista limpa, pronta para compartilhar."
         rightElement={
           <div>
@@ -117,6 +119,21 @@ export default function AdminAgendaInforma() {
           </div>
         }
       />
+
+      <nav className="flex flex-wrap gap-2" aria-label="Ferramentas de relatórios e WhatsApp">
+        <Button asChild variant="secondary" size="sm">
+          <Link to={ROUTES.CARROSSEL}>
+            <Images className="h-4 w-4" />
+            Carrossel WhatsApp
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="sm">
+          <Link to={ROUTES.ADMIN_WHATSAPP_TEMPLATES}>
+            <MessageSquare className="h-4 w-4" />
+            Templates WhatsApp
+          </Link>
+        </Button>
+      </nav>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-4">
