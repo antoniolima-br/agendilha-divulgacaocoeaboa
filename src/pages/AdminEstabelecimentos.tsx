@@ -173,7 +173,7 @@ export default function AdminEstabelecimentos() {
           description={search ? "Tente outra busca." : "Comece cadastrando o primeiro local."}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid max-h-[65dvh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain pr-1 [scrollbar-gutter:stable] md:max-h-[calc(100dvh-18rem)]">
           {filtered.map((e) => (
             <EstabelecimentoCard
               key={e.id}

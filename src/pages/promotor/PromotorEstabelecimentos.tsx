@@ -298,7 +298,7 @@ function PromotorEstabelecimentosInner() {
         </div>
       </Card>
 
-      <div className="space-y-3">
+      <div className="max-h-[65dvh] space-y-3 overflow-y-auto overscroll-contain pr-1 [scrollbar-gutter:stable] md:max-h-[calc(100dvh-12rem)]">
         {loading ? (
           <LoadingState message="Carregando estabelecimentos..." />
         ) : items.length === 0 ? (

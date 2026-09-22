@@ -19,6 +19,7 @@ import {
   Images,
   MessageSquare,
   Building2,
+  FolderKanban,
   ShoppingBag,
   Settings2,
   Share2
@@ -111,19 +112,29 @@ export const sidebarConfig: SidebarSection[] = [
           }
         ]
       },
-      { 
-        id: "artists", 
-        label: "Atrativos", 
-        path: ROUTES.PROMOTOR_ATRATIVOS, 
-        icon: Users, 
-        roles: ["promoter", "admin", "master"] 
-      },
       {
-        id: "estabelecimentos_explorar",
-        label: "Locais/Estabelecimentos",
-        path: ROUTES.PROMOTOR_ESTABELECIMENTOS,
-        icon: Building2,
-        roles: ["promoter", "admin", "master"]
+        id: "cadastros_explorar",
+        label: "Cadastros",
+        path: ROUTES.PROMOTOR_ATRATIVOS,
+        icon: FolderKanban,
+        roles: ["promoter", "admin", "master"],
+        children: [
+          {
+            id: "artists",
+            label: "Atrativos",
+            path: ROUTES.PROMOTOR_ATRATIVOS,
+            icon: Users,
+            roles: ["promoter", "admin", "master"],
+            exact: true
+          },
+          {
+            id: "estabelecimentos_explorar",
+            label: "Locais/Estabelecimentos",
+            path: ROUTES.PROMOTOR_ESTABELECIMENTOS,
+            icon: Building2,
+            roles: ["promoter", "admin", "master"]
+          }
+        ]
       },
     ]
   },
@@ -198,19 +209,29 @@ export const sidebarConfig: SidebarSection[] = [
           }
         ]
       },
-      { 
-        id: "manage_events", 
-        label: "Gerenciar Eventos", 
-        path: ROUTES.ADMIN_EVENTS, 
-        icon: ShieldCheck, 
-        roles: ["admin", "master"] 
-      },
-      { 
-        id: "flyer_moderator", 
-        label: "Moderador de Flyers", 
-        path: ROUTES.ADMIN_MEDIA, 
-        icon: Shield, 
-        roles: ["admin", "master"] 
+      {
+        id: "moderacao",
+        label: "Moderação",
+        path: ROUTES.ADMIN_EVENTS,
+        icon: ShieldCheck,
+        roles: ["admin", "master"],
+        children: [
+          {
+            id: "manage_events",
+            label: "Gerenciar Eventos",
+            path: ROUTES.ADMIN_EVENTS,
+            icon: ShieldCheck,
+            roles: ["admin", "master"],
+            exact: true
+          },
+          {
+            id: "flyer_moderator",
+            label: "Moderador de Flyers",
+            path: ROUTES.ADMIN_MEDIA,
+            icon: Shield,
+            roles: ["admin", "master"]
+          }
+        ]
       },
       {
         id: "configuracoes_admin",
@@ -220,18 +241,28 @@ export const sidebarConfig: SidebarSection[] = [
         roles: ["admin", "master"]
       },
       {
-        id: "atrativos_admin",
-        label: "Atrativos (gestão)",
+        id: "cadastros_admin",
+        label: "Cadastros",
         path: ROUTES.ADMIN_ATRATIVOS,
-        icon: Users,
-        roles: ["admin", "master"]
-      },
-      {
-        id: "estabelecimentos_admin",
-        label: "Estabelecimentos",
-        path: ROUTES.ADMIN_ESTABELECIMENTOS,
-        icon: Building2,
-        roles: ["admin", "master"]
+        icon: FolderKanban,
+        roles: ["admin", "master"],
+        children: [
+          {
+            id: "atrativos_admin",
+            label: "Atrativos",
+            path: ROUTES.ADMIN_ATRATIVOS,
+            icon: Users,
+            roles: ["admin", "master"],
+            exact: true
+          },
+          {
+            id: "estabelecimentos_admin",
+            label: "Locais/Estabelecimentos",
+            path: ROUTES.ADMIN_ESTABELECIMENTOS,
+            icon: Building2,
+            roles: ["admin", "master"]
+          }
+        ]
       },
       {
         id: "divulgadores_admin",
