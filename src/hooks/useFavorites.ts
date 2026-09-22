@@ -1,4 +1,4 @@
- import { useEffect } from "react";
+ import { useEffect, useRef } from "react";
  import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
  import { supabase } from "@/integrations/supabase/client";
  import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +7,7 @@
  export function useFavorites() {
    const { user } = useAuth();
    const queryClient = useQueryClient();
+    const channelInstanceId = useRef(Math.random().toString(36).slice(2));
 
    const { data: favorites = [], isLoading } = useQuery({
      queryKey: ["favorites", user?.id],
@@ -77,7 +78,7 @@
      if (!user) return;
 
      const channel = supabase
-       .channel(`user_favorites_${user.id}`)
+        .channel(`user_favorites_${user.id}_${channelInstanceId.current}`)
       .on(
          "postgres_changes",
          {
@@ -95,7 +96,7 @@
      return () => {
        supabase.removeChannel(channel);
      };
-   }, [user, queryClient]);
+    }, [user?.id, queryClient]);
 
    const isFavorite = (eventId: string) => favorites.includes(eventId);
 
