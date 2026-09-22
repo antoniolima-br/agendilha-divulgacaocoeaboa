@@ -189,5 +189,12 @@ export function useDeleteAd() {
 }
 
 function normalize(rows: unknown): Ad[] {
-  return ((rows ?? []) as Ad[]).map((r) => ({ ...r, photos: r.photos ?? [] }));
+  if (!Array.isArray(rows)) return [];
+
+  return rows
+    .filter((row): row is Ad => Boolean(row) && typeof row === "object")
+    .map((row) => ({
+      ...row,
+      photos: Array.isArray(row.photos) ? row.photos.filter((photo): photo is string => typeof photo === "string") : [],
+    }));
 }
