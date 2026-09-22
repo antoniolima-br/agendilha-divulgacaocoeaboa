@@ -173,7 +173,7 @@ export default function EstabelecimentoDetail() {
             <Building2 className="h-7 w-7 sm:h-8 sm:w-8 text-primary" strokeWidth={1.8} />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-2xl sm:text-4xl font-semibold tracking-tight leading-tight text-foreground break-words">
+            <h1 className="font-display text-xl xs:text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-tight text-foreground break-words">
               {estab.nome}
             </h1>
             <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -266,7 +266,7 @@ export default function EstabelecimentoDetail() {
       {/* Eventos neste lugar */}
       <section className="space-y-4">
         <div>
-          <h2 className="font-display text-xl sm:text-2xl font-semibold tracking-tight">
+          <h2 className="font-display text-lg sm:text-xl md:text-2xl font-semibold tracking-tight">
             Rolês no {estab.nome}
           </h2>
           <p className="text-sm text-foreground/60 mt-1">Próximos eventos confirmados aqui.</p>

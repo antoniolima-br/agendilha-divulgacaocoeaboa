@@ -42,7 +42,7 @@ export const ShareDialog = memo(function ShareDialog({ open, onOpenChange, title
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xs sm:max-w-sm rounded-[2rem] p-6 sm:p-8">
+      <DialogContent className="max-w-[92vw] sm:max-w-sm rounded-[2rem] p-6 sm:p-8">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black font-display text-primary flex items-center gap-2 justify-center">
             <Share2 className="h-6 w-6 text-secondary" />
@@ -53,7 +53,7 @@ export const ShareDialog = memo(function ShareDialog({ open, onOpenChange, title
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4 py-6">
+        <div className="grid grid-cols-1 xs:grid-cols-2 gap-4 py-6">
           <Button 
             variant="outline" 
             className="flex-col h-24 rounded-3xl gap-2 hover:bg-green-50 hover:text-green-600 hover:border-green-200"

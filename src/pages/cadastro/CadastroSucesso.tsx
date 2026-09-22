@@ -31,7 +31,7 @@ export default function CadastroSucesso() {
           <CheckCircle2 className="h-12 w-12 text-green-600" />
         </div>
         <div className="space-y-3">
-          <h1 className="text-3xl font-black font-display text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-black font-display text-foreground">
             {msg.titulo}
           </h1>
           <p className="text-base text-muted-foreground">{msg.texto}</p>

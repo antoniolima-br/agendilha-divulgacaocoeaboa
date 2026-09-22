@@ -218,7 +218,7 @@ export function NovoEstabelecimentoDialog({
             </Select>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="col-span-2 space-y-1.5">
               <Label className="text-sm font-semibold">Endereço</Label>
               <Input
@@ -233,7 +233,7 @@ export function NovoEstabelecimentoDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-sm font-semibold">Bairro</Label>
               <Select value={bairro} onValueChange={setBairro}>

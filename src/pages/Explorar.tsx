@@ -356,7 +356,7 @@ function ExplorarInner() {
           <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-6">
             <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">{isArchive ? "Arquivo" : "Agenda completa"}</span>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-bold mb-4 font-display tracking-tight leading-[1.05] text-balance">
+          <h1 className="mb-4 text-balance font-display text-2xl font-bold leading-tight sm:text-4xl sm:leading-[1.05] lg:text-6xl">
             {isArchive ? "Eventos anteriores" : <>Buscar rolê <span className="text-secondary">na Ilha</span></>}
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto text-balance leading-relaxed">
@@ -391,9 +391,9 @@ function ExplorarInner() {
         </div>
 
         {/* Mobile filters trigger */}
-        <div className="md:hidden mb-6 flex items-center gap-2">
+        <div className="mb-6 flex min-w-0 items-center gap-2 md:hidden">
           <h2 className="sr-only">Buscar e filtrar eventos</h2>
-          <div className="flex-1">{SearchField}</div>
+           <div className="min-w-0 flex-1">{SearchField}</div>
           <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" className="h-11 rounded-full shrink-0 gap-2 font-medium px-4">
@@ -434,7 +434,7 @@ function ExplorarInner() {
           {isArchive ? "Arquivo de eventos" : "Eventos na Ilha do Governador"}
         </h2>
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="aspect-square rounded-3xl bg-muted/40 animate-pulse" />
             ))}
@@ -458,7 +458,7 @@ function ExplorarInner() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {filtered.map(ev => (
               <DiscoveryEventCard
                 key={ev.id}

@@ -115,7 +115,7 @@ export default function EventoEnviado() {
       <main className="flex-1 w-full mx-auto max-w-3xl px-4 py-8 sm:py-12 space-y-8 sm:space-y-10">
         {/* Mensagem central */}
         <div className="text-center space-y-3">
-          <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             <CheckCircle2 className="h-7 w-7 sm:h-10 sm:w-10 text-emerald-400" />
             Evento enviado para curadoria
           </h1>

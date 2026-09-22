@@ -128,7 +128,7 @@ export default function ArtistProfile() {
         }}
       />
       {/* Hero Section */}
-       <div className="relative h-[40vh] md:h-[50vh] w-full overflow-hidden">
+       <div className="relative min-h-[34rem] w-full overflow-hidden sm:min-h-[30rem] md:h-[50vh] md:min-h-[32rem]">
          <div 
            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
            style={{ backgroundImage: `url(${artist.cover_url || 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&q=80'})` }}
@@ -139,7 +139,7 @@ export default function ArtistProfile() {
            <ChevronLeft className="h-5 w-5" />
          </Link>
  
-         <div className="absolute bottom-6 left-6 right-6 flex flex-col md:flex-row md:items-end gap-6">
+          <div className="absolute inset-x-4 bottom-5 flex min-w-0 flex-col gap-4 sm:inset-x-6 md:flex-row md:items-end md:gap-6">
            <div className="relative group">
              <div className="h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-background overflow-hidden shadow-xl">
                <img 
@@ -155,7 +155,7 @@ export default function ArtistProfile() {
              )}
            </div>
  
-           <div className="flex-1 space-y-2">
+             <div className="min-w-0 flex-1 space-y-2">
              <div className="flex items-center gap-2 flex-wrap">
                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
                  {artist.genre || 'Estilo Musical'}
@@ -167,7 +167,7 @@ export default function ArtistProfile() {
              <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground drop-shadow-sm">
                {artist.name}
              </h1>
-             <div className="flex items-center gap-4 text-muted-foreground text-sm font-medium">
+              <div className="flex flex-col gap-2 text-sm font-medium text-muted-foreground xs:flex-row xs:flex-wrap xs:gap-x-4">
                <span className="flex items-center gap-1">
                  <MapPin className="h-4 w-4" /> {artist.neighborhood}, {artist.city}
                </span>
@@ -177,8 +177,8 @@ export default function ArtistProfile() {
              </div>
            </div>
  
-           <div className="flex gap-3">
-             <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20">
+            <div className="flex w-full gap-3 md:w-auto">
+              <Button className="flex-1 rounded-full gap-2 px-6 shadow-lg shadow-primary/20 md:flex-none">
                <Heart className="h-4 w-4" /> Seguir
              </Button>
             <Button variant="outline" size="icon" aria-label="Compartilhar perfil do artista" className="rounded-full">
@@ -189,7 +189,7 @@ export default function ArtistProfile() {
        </div>
  
        {/* Content */}
-       <div className="max-w-7xl mx-auto px-6 mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+       <div className="mx-auto mt-8 grid w-full max-w-screen-xl min-w-0 grid-cols-1 gap-8 px-4 sm:px-6 lg:mt-12 lg:grid-cols-3 lg:gap-12">
          {/* Left Column: Bio & Info */}
           <div className="lg:col-span-2 space-y-12">
             <section>

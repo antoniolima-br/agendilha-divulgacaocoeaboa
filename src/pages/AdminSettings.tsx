@@ -75,7 +75,7 @@ export default function AdminSettings() {
           <Settings2 className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Backoffice</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-black tracking-tight uppercase">Configurações</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight uppercase">Configurações</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">
           Gerencie o número oficial da equipe.
         </p>

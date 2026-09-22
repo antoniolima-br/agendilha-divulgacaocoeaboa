@@ -226,7 +226,7 @@ export default function Ranking() {
               <Trophy className="h-6 w-6 text-secondary" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-semibold text-foreground">
                 Ranking de Divulgadores
               </h1>
               <p className="text-sm text-muted-foreground">

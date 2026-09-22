@@ -568,7 +568,7 @@ export default function ProfileSettings() {
 
       <div className="flex justify-end gap-3 pt-4">
         <Button variant="outline" disabled={loading}>Cancelar</Button>
-        <Button onClick={handleSave} disabled={loading} className="gradient-sunset text-white min-w-[120px]">
+        <Button onClick={handleSave} disabled={loading} className="gradient-sunset text-white w-full sm:min-w-[120px] sm:w-auto">
           {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
           Salvar Alterações
         </Button>
