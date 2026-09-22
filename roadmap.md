@@ -83,4 +83,4 @@
 
 - [x] Completar varredura mobile-first global de containers, grids, tabelas e tipografia
 
-- [ ] Corrigir responsividade do Informe AgendIlha
+- [x] Corrigir responsividade do Informe AgendIlha

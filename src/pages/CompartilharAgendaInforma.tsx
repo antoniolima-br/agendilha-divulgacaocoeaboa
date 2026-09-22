@@ -62,22 +62,22 @@ export default function CompartilharAgendaInforma() {
   }, [shareUrl, state]);
 
   return (
-    <main className="mx-auto flex min-h-[60vh] max-w-lg items-center justify-center px-4 py-12">
-      <section className="w-full text-center" aria-live="polite">
+    <main className="mx-auto flex min-h-[60dvh] w-full max-w-screen-sm items-center justify-center overflow-x-hidden px-4 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] sm:px-6 sm:py-12">
+      <section className="min-w-0 w-full text-center" aria-live="polite">
         {state === "loading" && (
           <>
             <Loader2 className="mx-auto mb-5 h-10 w-10 animate-spin text-primary" />
-            <h1 className="text-2xl font-bold">Preparando o Agendilha Informa</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Buscando os eventos válidos de hoje...</p>
+            <h1 className="break-words text-xl font-bold sm:text-2xl">Preparando o Agendilha Informa</h1>
+            <p className="mt-2 break-words text-sm text-muted-foreground">Buscando os eventos válidos de hoje...</p>
           </>
         )}
 
         {state === "ready" && (
           <>
             <MessageCircle className="mx-auto mb-5 h-10 w-10 text-primary" />
-            <h1 className="text-2xl font-bold">Abrindo o WhatsApp</h1>
+            <h1 className="break-words text-xl font-bold sm:text-2xl">Abrindo o WhatsApp</h1>
             <p className="mt-2 text-sm text-muted-foreground">A programação já está pronta na mensagem.</p>
-            <Button asChild className="mt-6">
+            <Button asChild className="mt-6 w-full sm:w-auto">
               <a href={shareUrl}>Abrir WhatsApp</a>
             </Button>
           </>
@@ -85,16 +85,16 @@ export default function CompartilharAgendaInforma() {
 
         {state === "empty" && (
           <>
-            <h1 className="text-2xl font-bold">Nada para compartilhar hoje</h1>
+            <h1 className="break-words text-xl font-bold sm:text-2xl">Nada para compartilhar hoje</h1>
             <p className="mt-2 text-sm text-muted-foreground">Nenhum evento aprovado foi encontrado para a data de hoje.</p>
           </>
         )}
 
         {state === "error" && (
           <>
-            <h1 className="text-2xl font-bold">Não deu para preparar a mensagem</h1>
+            <h1 className="break-words text-xl font-bold sm:text-2xl">Não deu para preparar a mensagem</h1>
             <p className="mt-2 text-sm text-muted-foreground">Tente novamente para buscar a programação atualizada.</p>
-            <Button onClick={() => void prepareShare()} className="mt-6">
+            <Button onClick={() => void prepareShare()} className="mt-6 w-full sm:w-auto">
               <RefreshCw className="mr-2 h-4 w-4" />
               Tentar novamente
             </Button>
@@ -102,7 +102,7 @@ export default function CompartilharAgendaInforma() {
         )}
 
         {state !== "loading" && (
-          <Button asChild variant="ghost" className="mt-4">
+          <Button asChild variant="ghost" className="mt-4 w-full sm:w-auto">
             <Link to={ROUTES.ADMIN_AGENDA_INFORMA}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar ao relatório
