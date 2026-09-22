@@ -62,3 +62,4 @@
 - [x] Criar painel do Divulgador com anúncios publicados/aguardando, status visuais e aviso interno de aprovação.
 - [x] Ocultar o Ranking de Divulgadores e reorganizar o espaçamento do menu lateral.
 - [x] Auditar e corrigir datas, estados públicos e diagnósticos da agenda de eventos futuros.
+- [x] Simplificar a Gestão de Eventos com métricas clicáveis, busca e filtros essenciais, removendo blocos repetidos.
