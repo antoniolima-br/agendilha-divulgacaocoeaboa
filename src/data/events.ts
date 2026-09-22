@@ -7,6 +7,18 @@ import { useCallback } from "react";
 
 export type Rating = { average: number; total: number };
 
+export function normalizeEvents(value: unknown): AgendaEvent[] {
+  if (Array.isArray(value)) return value as AgendaEvent[];
+
+  if (value && typeof value === "object") {
+    const nestedValue = value as { data?: unknown; events?: unknown };
+    if (Array.isArray(nestedValue.events)) return nestedValue.events as AgendaEvent[];
+    if (Array.isArray(nestedValue.data)) return nestedValue.data as AgendaEvent[];
+  }
+
+  return [];
+}
+
 /**
  * Unified hook for agenda events and related actions.
  * Replacing logic from useAgendaData.ts
@@ -44,7 +56,7 @@ export function useEvents(options: {
         .neq("moderation_status", "blocked");
       
       if (error) throw error;
-      return (data as unknown as AgendaEvent[]) ?? [];
+      return normalizeEvents(data);
     },
     enabled: options.enabled,
     staleTime: options.staleTime ?? 60_000,
@@ -54,11 +66,13 @@ export function useEvents(options: {
     },
   });
 
+  const events = normalizeEvents(eventsQuery.data);
+
   const ratingsQuery = useQuery({
-    queryKey: [...qk.agenda.ratings(), eventsQuery.data?.map((event) => event.id) ?? []],
-    enabled: (options.enabled ?? true) && Boolean(eventsQuery.data?.length),
+    queryKey: [...qk.agenda.ratings(), events.map((event) => event.id)],
+    enabled: (options.enabled ?? true) && events.length > 0,
     queryFn: async (): Promise<Record<string, Rating>> => {
-      const eventIds = eventsQuery.data?.map((event) => event.id) ?? [];
+      const eventIds = events.map((event) => event.id);
       if (eventIds.length === 0) return {};
       const { data, error } = await supabase
         .from("event_ratings_summary")
@@ -94,7 +108,7 @@ export function useEvents(options: {
   }, []);
 
   return {
-    events: eventsQuery.data ?? [],
+    events,
     ratings: ratingsQuery.data ?? {},
     isLoading: eventsQuery.isLoading || ratingsQuery.isLoading,
     isError: eventsQuery.isError || ratingsQuery.isError,
