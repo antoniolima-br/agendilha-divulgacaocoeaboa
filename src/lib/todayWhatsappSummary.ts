@@ -18,6 +18,11 @@ export interface SummaryEvent {
   address_neighborhood?: string | null;
   address_city?: string | null;
   address_state?: string | null;
+  estabelecimento?: {
+    endereco?: string | null;
+    numero?: string | null;
+    bairro?: string | null;
+  } | null;
   is_highlight?: boolean | null;
   highlight_active?: boolean | null;
   image_url?: string | null;
@@ -37,8 +42,10 @@ function formatTime(t?: string | null): string {
 }
 
 export function formatReportAddress(s: SummaryEvent): string {
-  const street = [s.address_street?.trim(), s.address_number?.trim()].filter(Boolean).join(", ");
-  const neighborhood = s.address_neighborhood?.trim();
+  const streetName = s.address_street?.trim() || s.estabelecimento?.endereco?.trim();
+  const streetNumber = s.address_number?.trim() || s.estabelecimento?.numero?.trim();
+  const street = [streetName, streetNumber].filter(Boolean).join(", ");
+  const neighborhood = s.address_neighborhood?.trim() || s.estabelecimento?.bairro?.trim();
   const city = s.address_city?.trim();
   const state = s.address_state?.trim();
   const parts = [street, neighborhood, city, state].filter(Boolean);
