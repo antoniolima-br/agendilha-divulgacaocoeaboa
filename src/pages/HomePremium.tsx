@@ -84,11 +84,12 @@ function EventCard({ event, featured = false }: { event: AgendaEvent; featured?:
   const place = event.address_neighborhood || event.location || "Ilha do Governador";
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={() => navigate(`/evento/${event.id}`)}
       className={cn(
-        "group relative w-full overflow-hidden rounded-2xl bg-card text-left shadow-card ring-1 ring-border/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "group relative block h-auto w-full overflow-hidden whitespace-normal rounded-2xl bg-card p-0 text-left shadow-card ring-1 ring-border/70 transition-all duration-300 hover:-translate-y-1 hover:bg-card hover:shadow-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         featured ? "aspect-[4/5] sm:aspect-[3/4]" : "aspect-[4/5]",
       )}
       aria-label={`Ver ${event.event_title || "programação"}`}
@@ -109,7 +110,7 @@ function EventCard({ event, featured = false }: { event: AgendaEvent; featured?:
           {event.event_title || "Programação na Ilha"}
         </h3>
       </div>
-    </button>
+    </Button>
   );
 }
 
@@ -209,13 +210,15 @@ export default function HomePremium() {
           {isLoading ? (
             <Skeleton className="aspect-[4/5] w-full rounded-2xl sm:aspect-[16/7]" />
           ) : heroEvent ? (
-            <div className="grid gap-4 lg:grid-cols-[1.5fr_0.75fr]">
-              <div className="min-h-0 [&>button]:aspect-[4/5] sm:[&>button]:aspect-[16/8]">
+            <div className={cn("grid gap-4", highlights.length > 1 && "lg:grid-cols-[1.5fr_0.75fr]")}>
+              <div className="min-h-0 [&>button]:aspect-[5/4] sm:[&>button]:aspect-[16/8]">
                 <EventCard event={heroEvent} featured />
               </div>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-                {highlights.slice(1, 3).map((event) => <EventCard key={event.id} event={event} />)}
-              </div>
+              {highlights.length > 1 && (
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+                  {highlights.slice(1, 3).map((event) => <EventCard key={event.id} event={event} />)}
+                </div>
+              )}
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-border p-10 text-center text-muted-foreground">
