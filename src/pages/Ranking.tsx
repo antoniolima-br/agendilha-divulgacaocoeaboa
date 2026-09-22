@@ -220,7 +220,7 @@ export default function Ranking() {
    return (
      <PageContainer maxWidth="6xl">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-2xl bg-secondary/15 border border-secondary/30 flex items-center justify-center">
               <Trophy className="h-6 w-6 text-secondary" />
@@ -238,7 +238,7 @@ export default function Ranking() {
             variant="outline"
             onClick={() => downloadCSV(sorted, filename)}
             disabled={sorted.length === 0}
-            className="gap-2"
+             className="w-full gap-2 md:w-auto"
           >
             <Download className="h-4 w-4" />
             Exportar CSV
@@ -251,8 +251,8 @@ export default function Ranking() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Filtros</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
-              <TabsList className="bg-muted/50">
+             <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)} className="min-w-0">
+               <TabsList className="grid h-auto w-full grid-cols-2 gap-1 bg-muted/50 sm:grid-cols-4">
                 {(Object.keys(periodLabels) as Period[]).map((p) => (
                   <TabsTrigger key={p} value={p} className="text-xs sm:text-sm">
                     {periodLabels[p]}
@@ -323,9 +323,9 @@ export default function Ranking() {
                 Nenhum dado para os filtros selecionados.
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-lg border border-border/40">
-                <Table>
-                  <TableHeader>
+              <div className="w-full min-w-0 rounded-lg border border-border/40">
+                <Table className="min-w-0 md:min-w-full">
+                  <TableHeader className="hidden md:table-header-group">
                     <TableRow className="bg-muted/40">
                       <TableHead className="w-12">#</TableHead>
                       <TableHead
@@ -354,22 +354,22 @@ export default function Ranking() {
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody className="block divide-y divide-border md:table-row-group md:divide-y-0">
                     {sorted.map((r, i) => (
-                      <TableRow key={r.user_id} className="hover:bg-muted/30">
-                        <TableCell className="font-mono text-xs text-muted-foreground">
+                      <TableRow key={r.user_id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 p-4 hover:bg-muted/30 md:table-row md:p-0">
+                        <TableCell className="p-0 font-mono text-xs text-muted-foreground md:table-cell md:p-4">
                           {i + 1}
                         </TableCell>
-                        <TableCell className="font-medium">{r.name}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="min-w-0 truncate p-0 font-medium md:table-cell md:p-4">{r.name}</TableCell>
+                        <TableCell className="p-0 text-right md:table-cell md:p-4">
                           <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20">
                             {r.approved}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right text-muted-foreground">
+                        <TableCell className="col-start-2 p-0 text-xs text-muted-foreground md:table-cell md:p-4 md:text-right md:text-sm">
                           {r.other}
                         </TableCell>
-                        <TableCell className="text-right font-semibold">{r.total}</TableCell>
+                        <TableCell className="p-0 text-right text-xs font-semibold md:table-cell md:p-4 md:text-sm">{r.total}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

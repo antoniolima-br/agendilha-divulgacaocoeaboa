@@ -190,7 +190,7 @@ function CuradoriaHojeInner() {
           </p>
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight">Acontece hoje na Ilha</h1>
+              <h1 className="text-2xl font-bold leading-tight sm:text-4xl lg:text-6xl">Acontece hoje na Ilha</h1>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                 A curadoria do que tá rolando, do primeiro programa ao último show.
               </p>
@@ -210,7 +210,7 @@ function CuradoriaHojeInner() {
                 type="button"
                 variant={dateFilter === item.id ? "default" : "outline"}
                 onClick={() => setDateFilter(item.id)}
-                className="h-10 shrink-0 rounded-full px-5 text-sm font-semibold"
+                 className="shrink-0 rounded-full px-5 text-sm font-semibold"
                 aria-pressed={dateFilter === item.id}
               >
                 {item.label}

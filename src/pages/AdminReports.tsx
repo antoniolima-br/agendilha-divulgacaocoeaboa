@@ -105,7 +105,7 @@ export default function AdminReports() {
 
 
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-muted/30 p-4 rounded-2xl border border-border/50">
+        <div className="grid w-full min-w-0 grid-cols-1 gap-4 rounded-2xl border border-border/50 bg-muted/30 p-4 md:grid-cols-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -152,9 +152,9 @@ export default function AdminReports() {
         />
       ) : (
         <Card className="border-border overflow-hidden rounded-2xl shadow-sm">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-muted/50">
+          <div className="w-full min-w-0">
+            <Table className="min-w-0 md:min-w-full">
+              <TableHeader className="hidden bg-muted/50 md:table-header-group">
                 <TableRow>
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4">Evento</TableHead>
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4 text-center">Data/Hora</TableHead>
@@ -162,14 +162,14 @@ export default function AdminReports() {
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4">Local</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="block divide-y divide-border md:table-row-group md:divide-y-0">
                 {filtered.map((event) => (
-                  <TableRow key={event.id} className="hover:bg-muted/30 transition-colors border-border">
-                    <TableCell className="py-4">
+                  <TableRow key={event.id} className="grid grid-cols-2 gap-3 border-border p-4 transition-colors hover:bg-muted/30 md:table-row md:p-0">
+                    <TableCell className="col-span-2 p-0 md:table-cell md:p-4">
                       <div className="font-bold text-sm">{event.event_title || event.atrativo_name}</div>
                       <div className="text-[10px] text-muted-foreground uppercase font-medium">{event.atrativo_name}</div>
                     </TableCell>
-                    <TableCell className="py-4 text-center">
+                    <TableCell className="p-0 text-left md:table-cell md:p-4 md:text-center">
                       <div className="text-sm font-mono">
                         {(() => {
                           try {
@@ -185,12 +185,12 @@ export default function AdminReports() {
                         {event.start_time || "S/H"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="py-4">
+                    <TableCell className="p-0 text-right md:table-cell md:p-4 md:text-left">
                       <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">
                         {event.address_neighborhood || "ILHA"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="py-4">
+                    <TableCell className="col-span-2 p-0 md:table-cell md:p-4">
                       <div className="text-xs font-medium">{event.location}</div>
                       <div className="text-[10px] text-muted-foreground line-clamp-1">{event.address_street}</div>
                     </TableCell>

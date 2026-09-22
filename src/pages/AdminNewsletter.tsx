@@ -100,7 +100,7 @@ export default function AdminNewsletter() {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
           <Select value={neighborhoodFilter} onValueChange={setNeighborhoodFilter}>
-            <SelectTrigger className="w-full md:w-[200px] h-11 rounded-xl bg-background">
+            <SelectTrigger className="w-full sm:w-[200px] h-11 rounded-xl bg-background">
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
@@ -123,9 +123,9 @@ export default function AdminNewsletter() {
         />
       ) : (
         <Card className="border-border overflow-hidden rounded-2xl shadow-sm">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-muted/50">
+          <div className="w-full min-w-0">
+            <Table className="min-w-0 md:min-w-full">
+              <TableHeader className="hidden bg-muted/50 md:table-header-group">
                 <TableRow>
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4">Inscrito</TableHead>
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4">E-mail</TableHead>
@@ -133,14 +133,14 @@ export default function AdminNewsletter() {
                   <TableHead className="font-bold uppercase text-[10px] tracking-widest py-4">Inscrição</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="block divide-y divide-border md:table-row-group md:divide-y-0">
                 {filtered.map((subscriber) => (
-                  <TableRow key={subscriber.id} className="hover:bg-muted/30 transition-colors border-border">
-                    <TableCell className="font-medium py-4">
+                  <TableRow key={subscriber.id} className="grid grid-cols-1 gap-2 border-border p-4 transition-colors hover:bg-muted/30 xs:grid-cols-2 md:table-row md:p-0">
+                    <TableCell className="p-0 font-medium md:table-cell md:p-4">
                       {subscriber.name || <span className="text-muted-foreground italic">Não informado</span>}
                     </TableCell>
-                    <TableCell className="py-4 font-mono text-xs">{subscriber.email}</TableCell>
-                    <TableCell className="py-4">
+                    <TableCell className="min-w-0 break-all p-0 font-mono text-xs md:table-cell md:p-4">{subscriber.email}</TableCell>
+                    <TableCell className="p-0 md:table-cell md:p-4">
                       {subscriber.neighborhood ? (
                         <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest bg-muted/50 border-none">
                           {subscriber.neighborhood}
@@ -149,7 +149,7 @@ export default function AdminNewsletter() {
                         <span className="text-muted-foreground italic text-xs">Não informado</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-muted-foreground text-xs py-4">
+                    <TableCell className="p-0 text-xs text-muted-foreground md:table-cell md:p-4">
                       {new Date(subscriber.created_at).toLocaleDateString("pt-BR")}
                     </TableCell>
                   </TableRow>

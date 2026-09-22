@@ -130,7 +130,7 @@ export default function MeusEventos() {
           {isDivulgador && (
             <Button
               asChild
-              className="rounded-full h-11 bg-foreground text-background hover:bg-foreground/90 font-semibold tracking-tight shadow-none px-5"
+              className="w-full rounded-full bg-foreground px-5 font-semibold tracking-tight text-background shadow-none hover:bg-foreground/90 sm:w-auto"
             >
               <Link to="/enviar-evento">
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -142,21 +142,23 @@ export default function MeusEventos() {
 
         {/* Card removido daqui pois agora temos a página /divulgador/status dedicada e linkada nos botões principais */}
 
-        <Tabs value={tab} onValueChange={(v) => setTab(v as StatusKey)}>
-          <TabsList className="bg-foreground/[0.04] rounded-full p-1">
-            <TabsTrigger value="todos" className="rounded-full px-4">
+        <Tabs value={tab} onValueChange={(v) => setTab(v as StatusKey)} className="min-w-0">
+          <div className="-mx-4 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:px-0">
+          <TabsList className="w-max bg-foreground/[0.04] rounded-full p-1">
+            <TabsTrigger value="todos" className="shrink-0 rounded-full px-4">
               Todos <span className="ml-1.5 opacity-60">{counts.todos}</span>
             </TabsTrigger>
-            <TabsTrigger value="pendente" className="rounded-full px-4">
+            <TabsTrigger value="pendente" className="shrink-0 rounded-full px-4">
               Em análise <span className="ml-1.5 opacity-60">{counts.pendente}</span>
             </TabsTrigger>
-            <TabsTrigger value="aprovado" className="rounded-full px-4">
+            <TabsTrigger value="aprovado" className="shrink-0 rounded-full px-4">
               Aprovados <span className="ml-1.5 opacity-60">{counts.aprovado}</span>
             </TabsTrigger>
-            <TabsTrigger value="rejeitado" className="rounded-full px-4">
+            <TabsTrigger value="rejeitado" className="shrink-0 rounded-full px-4">
               Rejeitados <span className="ml-1.5 opacity-60">{counts.rejeitado}</span>
             </TabsTrigger>
           </TabsList>
+          </div>
         </Tabs>
 
         {loading ? (
@@ -183,7 +185,7 @@ export default function MeusEventos() {
             {filtered.map((r) => (
               <li
                 key={r.id}
-                className="group flex gap-4 p-4 rounded-2xl border border-foreground/10 hover:border-foreground/25 bg-background transition-colors"
+                className="group flex min-w-0 gap-3 rounded-2xl border border-foreground/10 bg-background p-3 transition-colors hover:border-foreground/25 sm:gap-4 sm:p-4"
               >
                 <div className="hidden sm:block shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-foreground/5">
                   {r.image_url ? (
@@ -201,8 +203,8 @@ export default function MeusEventos() {
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-semibold tracking-tight text-foreground truncate">
+                   <div className="flex min-w-0 flex-col items-start gap-2 xs:flex-row xs:justify-between xs:gap-3">
+                     <h3 className="min-w-0 break-words font-semibold tracking-tight text-foreground xs:truncate">
                       {r.event_title}
                     </h3>
                     <StatusBadge status={r.status} />

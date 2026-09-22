@@ -138,8 +138,8 @@ export default function PromotorPerfil() {
               ))}
             </RadioGroup>
           </div>
-          <div className="pt-2">
-            <Button onClick={onSave} disabled={!canEdit || saving}>
+          <div className="pt-2 flex flex-col sm:flex-row">
+            <Button onClick={onSave} disabled={!canEdit || saving} className="w-full sm:w-auto">
               <Save className="h-4 w-4 mr-1.5" />
               {saving ? "Salvando..." : "Salvar perfil"}
             </Button>
