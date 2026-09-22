@@ -249,7 +249,7 @@ export const sidebarConfig: SidebarSection[] = [
         children: [
           {
             id: "atrativos_admin",
-            label: "Atrativos",
+            label: "Gerenciar Atrativos",
             path: ROUTES.ADMIN_ATRATIVOS,
             icon: Users,
             roles: ["admin", "master"],
@@ -257,7 +257,7 @@ export const sidebarConfig: SidebarSection[] = [
           },
           {
             id: "estabelecimentos_admin",
-            label: "Locais/Estabelecimentos",
+            label: "Gerenciar Estabelecimentos",
             path: ROUTES.ADMIN_ESTABELECIMENTOS,
             icon: Building2,
             roles: ["admin", "master"]
