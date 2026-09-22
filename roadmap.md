@@ -58,3 +58,5 @@
 - [x] Validar visualmente os fluxos públicos em desktop e celular; fluxos autenticados seguem cobertos por testes automatizados.
 - [x] Manter em Configurações somente o WhatsApp oficial da equipe.
 - [x] Validar tipos e estados vazios em todas as listas e galerias de anúncios.
+
+- [x] Criar painel do Divulgador com anúncios publicados/aguardando, status visuais e aviso interno de aprovação.

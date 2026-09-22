@@ -1,14 +1,26 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { ImageIcon, MapPin, Sparkles } from "lucide-react";
+import { CheckCircle2, Clock3, ImageIcon, MapPin, Sparkles, XCircle } from "lucide-react";
 import { useAdCoverUrl } from "@/data/useAdPhotoUrls";
 import { formatPriceBRL } from "@/data/useAdPlans";
 import type { Ad } from "@/data/useAds";
 
 const STATUS_LABEL: Record<Ad["status"], string> = {
-  pendente: "Em análise",
-  publicado: "Publicado",
+  pendente: "Pendente",
+  publicado: "Aprovado",
   recusado: "Recusado",
+};
+
+const STATUS_STYLE: Record<Ad["status"], string> = {
+  pendente: "border-warning/40 bg-warning/15 text-warning-foreground",
+  publicado: "border-success/30 bg-success/10 text-success",
+  recusado: "border-destructive/30 bg-destructive/10 text-destructive",
+};
+
+const STATUS_ICON = {
+  pendente: Clock3,
+  publicado: CheckCircle2,
+  recusado: XCircle,
 };
 
 interface Props {
@@ -23,6 +35,7 @@ export function AdCard({ ad, showStatus = false, to }: Props) {
   const cover = useAdCoverUrl(ad.photos);
   const destino = to ?? `/anuncios/${ad.id}`;
   const local = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
+  const StatusIcon = STATUS_ICON[ad.status];
 
   return (
     <Link
@@ -53,7 +66,8 @@ export function AdCard({ ad, showStatus = false, to }: Props) {
           )}
           <Badge variant="outline">{ad.category}</Badge>
           {showStatus && (
-            <Badge variant={ad.status === "publicado" ? "secondary" : "outline"}>
+            <Badge variant="outline" className={`gap-1 ${STATUS_STYLE[ad.status]}`}>
+              <StatusIcon className="h-3 w-3" aria-hidden="true" />
               {STATUS_LABEL[ad.status]}
             </Badge>
           )}
