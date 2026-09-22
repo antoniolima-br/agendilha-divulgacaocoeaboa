@@ -86,7 +86,7 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
 
   if (total === 0) {
     return (
-      <section className="mb-12" aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+      <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
         <div className="rounded-lg border border-dashed p-6 text-center">
           <Badge variant="outline" className="mb-2 text-[10px] font-semibold uppercase tracking-normal">Publi</Badge>
           <p className="font-semibold">Espaço para parceiros da Ilha</p>
@@ -105,7 +105,7 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
   };
 
   return (
-    <section className="mb-12" aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+    <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
       <div className="mb-6 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 font-display text-2xl font-bold">
           <ShoppingBag className="h-5 w-5 text-primary" />
