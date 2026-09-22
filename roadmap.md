@@ -61,3 +61,4 @@
 
 - [x] Criar painel do Divulgador com anúncios publicados/aguardando, status visuais e aviso interno de aprovação.
 - [x] Ocultar o Ranking de Divulgadores e reorganizar o espaçamento do menu lateral.
+- [x] Auditar e corrigir datas, estados públicos e diagnósticos da agenda de eventos futuros.

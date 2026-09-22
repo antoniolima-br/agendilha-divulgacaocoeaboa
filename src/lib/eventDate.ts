@@ -2,6 +2,13 @@ const SAO_PAULO_TIME_ZONE = "America/Sao_Paulo";
 
 export const PUBLIC_EVENT_STATUSES = ["aprovado", "publicado", "divulgado"] as const;
 
+function isCalendarDate(year: number, month: number, day: number): boolean {
+  const candidate = new Date(Date.UTC(year, month - 1, day, 12));
+  return candidate.getUTCFullYear() === year
+    && candidate.getUTCMonth() === month - 1
+    && candidate.getUTCDate() === day;
+}
+
 export function saoPauloTodayISO(now = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: SAO_PAULO_TIME_ZONE,
@@ -12,12 +19,29 @@ export function saoPauloTodayISO(now = new Date()): string {
 }
 
 export function eventDateISO(value?: string | null): string {
-  if (!value) return "";
-  if (!value.includes("T")) return value.slice(0, 10);
+  const normalized = value?.trim();
+  if (!normalized) return "";
 
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return value.slice(0, 10);
+  const isoDate = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDate) {
+    const [, year, month, day] = isoDate;
+    return isCalendarDate(Number(year), Number(month), Number(day)) ? normalized : "";
+  }
+
+  const brazilianDate = normalized.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (brazilianDate) {
+    const [, day, month, year] = brazilianDate;
+    if (!isCalendarDate(Number(year), Number(month), Number(day))) return "";
+    return `${year}-${month}-${day}`;
+  }
+
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) return "";
   return saoPauloTodayISO(parsed);
+}
+
+export function isValidEventDate(value?: string | null): boolean {
+  return eventDateISO(value) !== "";
 }
 
 export function addDaysToISO(iso: string, days: number): string {
