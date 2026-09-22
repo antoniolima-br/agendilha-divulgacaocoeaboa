@@ -66,3 +66,4 @@
 - [x] Compactar o topo da Gestão de Eventos e manter a listagem em uma área própria de rolagem.
 - [x] Exibir na Gestão de Eventos somente eventos futuros ou ainda em andamento no horário de São Paulo.
 - [x] Unificar Relatório Diário, Carrossel e Templates em uma Central de Relatórios / WhatsApp no menu lateral.
+- [x] Variar layouts, paletas e composições dos flyers padrão gerados automaticamente.
