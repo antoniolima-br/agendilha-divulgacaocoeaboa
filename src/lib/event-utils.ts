@@ -37,3 +37,18 @@ export const getEventFallbackImage = (category: string | null) => {
 export function getFallbackImage(category: string) {
   return getEventFallbackImage(category);
 }
+
+const EVENT_FALLBACK_PALETTES = [
+  "bg-primary text-primary-foreground",
+  "bg-secondary text-secondary-foreground",
+  "bg-foreground text-background",
+  "bg-destructive text-destructive-foreground",
+  "bg-accent text-accent-foreground",
+] as const;
+
+/** Escolhe uma paleta estável para o mesmo evento, sem depender da ordem da lista. */
+export function getEventFallbackPalette(seed: string): string {
+  let hash = 0;
+  for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return EVENT_FALLBACK_PALETTES[hash % EVENT_FALLBACK_PALETTES.length];
+}

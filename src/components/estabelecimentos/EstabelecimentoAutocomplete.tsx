@@ -83,22 +83,12 @@ export function EstabelecimentoAutocomplete({
     (s) => normalize(s.nome) === normalize(value)
   );
 
-  // Seleção = carregar dados. Buscamos o registro completo antes de preencher o
-  // formulário; nenhuma validação de duplicidade acontece aqui.
-  const selecionar = async (s: EstabelecimentoSuggestion) => {
+  // A sugestão já contém os campos públicos necessários. Preencher uma única
+  // vez evita que uma resposta tardia sobrescreva ou apague o vínculo.
+  const selecionar = (s: EstabelecimentoSuggestion) => {
     onChange(s.nome);
     onSelect(s);
     setOpen(false);
-    try {
-      const { data } = await supabase
-        .from("estabelecimentos_public")
-        .select("id, nome, endereco, bairro, cep, numero, complemento, tipo")
-        .eq("id", s.id)
-        .maybeSingle();
-      if (data?.id) onSelect({ ...data, contato: s.contato ?? null } as EstabelecimentoSuggestion);
-    } catch {
-      /* mantém os dados da sugestão */
-    }
   };
 
   return (
@@ -133,7 +123,7 @@ export function EstabelecimentoAutocomplete({
               className="w-full px-4 py-2 text-left hover:bg-muted transition-colors text-sm flex items-start gap-2"
               onMouseDown={(e) => {
                 e.preventDefault();
-                void selecionar(s);
+                selecionar(s);
               }}
             >
               <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />

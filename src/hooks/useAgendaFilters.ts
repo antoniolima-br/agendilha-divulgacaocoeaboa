@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
+import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 export interface AgendaProfileHints {
   home_location?: string | null;
@@ -51,11 +52,10 @@ export function useAgendaFilters(params: {
 
 
   const upcomingEvents = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = saoPauloTodayISO();
     return events.filter((e) => {
-      const d = parseDateToObj(e.date);
-      return !d || d >= today;
+      const date = eventDateISO(e.date);
+      return !date || date >= today;
     });
   }, [events]);
 
@@ -63,7 +63,7 @@ export function useAgendaFilters(params: {
     const term = search.toLowerCase();
     return upcomingEvents.filter((ev) => {
       const matchSearch =
-        ev.event_title.toLowerCase().includes(term) ||
+        (ev.event_title || "").toLowerCase().includes(term) ||
         (ev.description || "").toLowerCase().includes(term);
       const matchCat = categoryFilter === "all" || ev.category === categoryFilter;
       const matchFav = !showFavoritesOnly || isFavorite(ev.id);

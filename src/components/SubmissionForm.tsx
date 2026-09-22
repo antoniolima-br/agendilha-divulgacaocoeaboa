@@ -121,6 +121,7 @@ const formSchema = z.object({
   atrativoLinkedName: z.string().optional(),
 
   locationName: z.string().trim().optional().or(z.literal("")),
+  estabelecimentoId: z.string().uuid().optional().or(z.literal("")),
   eventAddress: z.string().trim().optional().or(z.literal("")),
   locationType: z.enum(["public", "commercial"]).optional(),
   locationContact: z.string().trim().optional().superRefine((val, ctx) => {
@@ -198,7 +199,7 @@ export default function SubmissionForm() {
       category: "", eventTitle: "", date: "", startTime: "",
       ageRating: "Livre", isSuitableForMinors: true,
       atrativoName: "", atrativoType: "", atrativoContact: "", atrativoEmail: "", atrativoCategory: undefined as any,
-      locationName: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
+      locationName: "", estabelecimentoId: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
       fotos: [],
       duvidasSource: "promotor",
       duvidasWhatsapp: "",
@@ -559,7 +560,7 @@ export default function SubmissionForm() {
       };
 
       // Vincula Local/Estabelecimento existente (se o usuário selecionou pelo autocomplete).
-      const selectedEstabId = (values as any).estabelecimentoId || null;
+      const selectedEstabId = values.estabelecimentoId || null;
       if (selectedEstabId) payload.estabelecimento_id = selectedEstabId;
 
       const submissionInsertTimer = startFlowMeasure("event-submission", "submission-insert", currentStep);
