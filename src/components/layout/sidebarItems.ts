@@ -16,8 +16,6 @@ import {
   Eye,
   UserPlus,
   Megaphone,
-  Images,
-  MessageSquare,
   Building2,
   ShoppingBag,
   Settings2,
@@ -162,7 +160,7 @@ export const sidebarConfig: SidebarSection[] = [
     items: [
       {
         id: "relatorio_diario",
-        label: "Relatório Diário (Coé a Boa?)",
+        label: "Central de Relatórios / WhatsApp",
         path: ROUTES.ADMIN_AGENDA_INFORMA,
         icon: Megaphone,
         roles: ["admin", "master"],
@@ -181,6 +179,20 @@ export const sidebarConfig: SidebarSection[] = [
             path: ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR,
             icon: Share2,
             roles: ["admin", "master"]
+          },
+          {
+            id: "carrossel",
+            label: "Carrossel WhatsApp",
+            path: ROUTES.CARROSSEL,
+            icon: Images,
+            roles: ["admin", "master"]
+          },
+          {
+            id: "whatsapp_templates",
+            label: "Templates WhatsApp",
+            path: ROUTES.ADMIN_WHATSAPP_TEMPLATES,
+            icon: MessageSquare,
+            roles: ["admin", "master"]
           }
         ]
       },
@@ -197,20 +209,6 @@ export const sidebarConfig: SidebarSection[] = [
         path: ROUTES.ADMIN_MEDIA, 
         icon: Shield, 
         roles: ["admin", "master"] 
-      },
-      {
-        id: "carrossel",
-        label: "Carrossel WhatsApp",
-        path: "/carrossel",
-        icon: Images,
-        roles: ["admin", "master"]
-      },
-      {
-        id: "whatsapp_templates",
-        label: "Templates WhatsApp",
-        path: ROUTES.ADMIN_WHATSAPP_TEMPLATES,
-        icon: MessageSquare,
-        roles: ["admin", "master"]
       },
       {
         id: "configuracoes_admin",
