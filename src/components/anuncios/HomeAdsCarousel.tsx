@@ -106,12 +106,12 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
 
   return (
     <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 font-display text-2xl font-bold">
+      <div className="mb-5 flex min-w-0 items-center justify-between gap-3 sm:mb-6">
+        <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
           <ShoppingBag className="h-5 w-5 text-primary" />
           {isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}
         </h2>
-        <Button asChild variant="link" className="shrink-0 px-0 font-bold">
+        <Button asChild variant="link" className="shrink-0 px-1 font-bold sm:px-0">
           <Link to="/anuncios">Ver todos</Link>
         </Button>
       </div>

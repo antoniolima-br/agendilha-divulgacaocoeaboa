@@ -30,7 +30,7 @@ function AdList({ ads, emptyMessage }: { ads: ReturnType<typeof normalizeAds>; e
             <p className="px-3 text-xs text-destructive">Motivo: {ad.rejection_reason}</p>
           )}
           {ad.status !== "publicado" && (
-            <Button asChild variant="outline" size="sm" className="font-semibold">
+            <Button asChild variant="outline" size="sm" className="w-full font-semibold sm:w-auto">
               <Link to={`/anuncios/${ad.id}/editar`}>Editar e reenviar</Link>
             </Button>
           )}

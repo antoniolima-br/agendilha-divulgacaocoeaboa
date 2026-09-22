@@ -539,7 +539,7 @@ function AdminEventsInner() {
                         ) : sub.status === 'aprovado' ? (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                               <Button size="icon" variant="outline" className="h-9 w-9 bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm" onClick={() => openReview(sub, 'rejected')}>
+                               <Button size="icon" variant="outline" className="bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm md:h-9 md:w-9" onClick={() => openReview(sub, 'rejected')}>
                                 <XCircle className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
@@ -549,7 +549,7 @@ function AdminEventsInner() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="inline-flex">
-                                <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="h-9 w-9 bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50" onClick={() => openReview(sub, 'approved')}>
+                                <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
                                   <CheckCircle className="h-4 w-4" />
                                 </Button>
                               </span>
@@ -565,7 +565,7 @@ function AdminEventsInner() {
                         {sub.slug && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button size="icon" variant="outline" className="h-9 w-9 bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm" onClick={() => window.open(`/evento/${sub.slug}`, '_blank')}>
+                              <Button size="icon" variant="outline" className="bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm md:h-9 md:w-9" onClick={() => window.open(`/evento/${sub.slug}`, '_blank')}>
                                 <ExternalLink className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
@@ -597,7 +597,7 @@ function AdminEventsInner() {
                               size="icon"
                               variant="outline"
                               className={cn(
-                                "h-9 w-9 transition-all shadow-sm",
+                                "transition-all shadow-sm md:h-9 md:w-9",
                                 sub.is_highlight
                                   ? "bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100"
                                   : "bg-white border-border hover:bg-amber-50 hover:text-amber-600"
