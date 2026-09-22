@@ -76,3 +76,4 @@
 - [x] Aplicar o mesmo padrão compacto de filtros à Gestão de Eventos e ao painel administrativo.
 - [x] Inserir um espaço publicitário rotativo e discreto acima do mapa na Home.
 - [x] Mover o espaço publicitário para baixo do mapa e padronizá-lo com os banners de destaque da Home.
+- [x] Compactar o espaço entre o banner publicitário e o rodapé da Home.
