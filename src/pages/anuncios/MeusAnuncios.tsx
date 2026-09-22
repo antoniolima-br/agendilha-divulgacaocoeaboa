@@ -97,9 +97,10 @@ export default function MeusAnuncios() {
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   Publicados ({publicados.length})
                 </TabsTrigger>
-                <TabsTrigger value="aguardando" className="gap-2 py-2.5">
+                <TabsTrigger value="aguardando" className="gap-1.5 py-2.5 text-xs sm:gap-2 sm:text-sm">
                   <Clock3 className="h-4 w-4 text-warning" />
-                  Aguardando aprovação ({aguardando.length})
+                  <span className="sm:hidden">Aguardando ({aguardando.length})</span>
+                  <span className="hidden sm:inline">Aguardando aprovação ({aguardando.length})</span>
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="publicados" className="mt-4">
