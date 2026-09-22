@@ -8,7 +8,21 @@ import {
   subWeeks, isSameDay
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Search, SlidersHorizontal, X, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Baby,
+  BadgeDollarSign,
+  CalendarDays,
+  CalendarIcon,
+  CalendarRange,
+  ChevronLeft,
+  ChevronRight,
+  ListFilter,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  Sunrise,
+  X,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import { DiscoveryEventCard } from "@/components/DiscoveryEventCard";
@@ -276,17 +290,24 @@ function ExplorarInner() {
   );
 
   const DateChips = (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
+    <div
+      className="grid min-w-max grid-cols-6 gap-1 rounded-lg border border-border bg-muted/60 p-1 shadow-sm"
+      role="group"
+      aria-label="Atalhos de período e tipo"
+    >
       {[
-        { id: "all", label: "Todos" },
-        { id: "today", label: "Hoje" },
-        { id: "tomorrow", label: "Amanhã" },
-        { id: "weekend", label: "Fim de semana" },
-        { id: "free", label: "Gratuitos" },
-        { id: "kids", label: "Para Crianças" },
+        { id: "all", label: "Todos", Icon: ListFilter },
+        { id: "today", label: "Hoje", Icon: CalendarDays },
+        { id: "tomorrow", label: "Amanhã", Icon: Sunrise },
+        { id: "weekend", label: "Fim de semana", Icon: CalendarRange },
+        { id: "free", label: "Gratuitos", Icon: BadgeDollarSign },
+        { id: "kids", label: "Para crianças", Icon: Baby },
       ].map(c => (
-        <button
+        <Button
           key={c.id}
+          type="button"
+          variant="ghost"
+          aria-pressed={datePreset === c.id}
           onClick={() => { 
             setDatePreset(c.id as DatePreset); 
             if (c.id === "today") setCustomDate(new Date());
@@ -294,14 +315,15 @@ function ExplorarInner() {
             else setCustomDate(undefined); 
           }}
           className={cn(
-            "shrink-0 h-9 px-4 rounded-full text-sm font-medium border transition-colors",
+            "h-10 min-w-[7rem] gap-2 rounded-md border border-transparent px-3 text-xs font-semibold shadow-none transition-colors sm:text-sm",
             datePreset === c.id
-              ? "bg-foreground text-background border-foreground"
-              : "bg-transparent text-foreground/80 border-foreground/15 hover:border-foreground/40"
+              ? "bg-background text-primary shadow-sm hover:bg-background hover:text-primary"
+              : "text-muted-foreground hover:bg-background/70 hover:text-foreground"
           )}
         >
+          <c.Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {c.label}
-        </button>
+        </Button>
       ))}
     </div>
   );

@@ -162,7 +162,7 @@ export const sidebarConfig: SidebarSection[] = [
     items: [
       {
         id: "relatorio_diario",
-        label: "Central de Relatórios / WhatsApp",
+        label: "Relatório Diário (Coé a Boa?)",
         path: ROUTES.ADMIN_AGENDA_INFORMA,
         icon: Megaphone,
         roles: ["admin", "master"],
