@@ -160,7 +160,7 @@ function PromotorEstabelecimentosInner() {
   };
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto pb-12">
+    <div className="mx-auto max-w-3xl space-y-5 pb-12 sm:space-y-6">
       <div>
         <PromotorBadge />
         <SectionHeader
@@ -168,14 +168,14 @@ function PromotorEstabelecimentosInner() {
           title="Meus estabelecimentos"
           subtitle="Somente você pode editar os estabelecimentos cadastrados aqui."
           rightElement={
-            <Link to={ROUTES.PROMOTOR_ATRATIVOS}>
-              <Button variant="outline">Ir para Atrativos</Button>
+            <Link to={ROUTES.PROMOTOR_ATRATIVOS} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">Ir para Atrativos</Button>
             </Link>
           }
         />
       </div>
 
-      <Card className="p-5 space-y-4">
+      <Card className="space-y-4 p-4 sm:p-5">
         <h2 className="font-bold text-lg">
           {editing ? "Editar estabelecimento" : "Novo estabelecimento"}
         </h2>
@@ -216,7 +216,7 @@ function PromotorEstabelecimentosInner() {
                   key={t}
                   variant="outline"
                   className={cn(
-                    "cursor-pointer px-3 py-1 rounded-full transition-all",
+                    "inline-flex min-h-11 cursor-pointer items-center rounded-full px-3 py-2 transition-all md:min-h-0 md:py-1",
                     on ? "bg-primary text-primary-foreground border-primary" : "hover:bg-primary/10"
                   )}
                   onClick={() =>
@@ -247,13 +247,13 @@ function PromotorEstabelecimentosInner() {
         {/* Bloco: Extras */}
         <div className="space-y-3">
           <p className="text-xs uppercase font-bold text-muted-foreground tracking-wider">Extras (opcional)</p>
-          <div className="flex items-center gap-2">
+          <div className="flex min-h-11 items-center gap-3">
             <input
               id="temCnpj"
               type="checkbox"
               checked={form.temCnpj}
               onChange={(e) => setForm({ ...form, temCnpj: e.target.checked })}
-              className="h-4 w-4"
+              className="relative h-5 w-5 after:absolute after:-inset-3 after:content-['']"
             />
             <Label htmlFor="temCnpj" className="text-sm cursor-pointer">Tem CNPJ (pessoa jurídica)</Label>
           </div>
@@ -286,12 +286,12 @@ function PromotorEstabelecimentosInner() {
           </div>
         )}
 
-        <div className="flex gap-2">
-          <Button onClick={save} disabled={saving}>
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:flex">
+          <Button className="w-full sm:w-auto" onClick={save} disabled={saving}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : editing ? "Salvar alterações" : (<><Plus className="h-4 w-4 mr-1" /> Cadastrar</>)}
           </Button>
           {editing && (
-            <Button variant="ghost" onClick={reset}>
+            <Button variant="ghost" className="w-full sm:w-auto" onClick={reset}>
               Cancelar
             </Button>
           )}
@@ -307,7 +307,7 @@ function PromotorEstabelecimentosInner() {
           </Card>
         ) : (
           items.map((e) => (
-            <Card key={e.id} className="p-4 flex items-start gap-3">
+            <Card key={e.id} className="flex items-start gap-2 p-3 sm:gap-3 sm:p-4">
               <div className="h-10 w-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
                 <MapPin className="h-5 w-5" />
               </div>
@@ -324,7 +324,7 @@ function PromotorEstabelecimentosInner() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-1">
+               <div className="flex shrink-0 flex-col gap-1 xs:flex-row">
                 <Button size="icon" variant="ghost" onClick={() => startEdit(e)} aria-label="Editar">
                   <Pencil className="h-4 w-4" />
                 </Button>

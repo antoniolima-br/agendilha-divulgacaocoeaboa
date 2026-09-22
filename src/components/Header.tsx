@@ -242,7 +242,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 size="icon" 
                 onClick={handleMobileMenu} 
                 className={cn(
-                  "h-10 w-10 shrink-0 rounded-full bg-white/50 border border-white/40 shadow-sm transition-all"
+                  "shrink-0 rounded-full bg-white/50 border border-white/40 shadow-sm transition-all"
                 )}
               >
                 <Menu className="h-5 w-5 text-foreground" />
@@ -254,7 +254,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
         <MobileTabBar onMenuClick={handleMobileMenu} />
          {!onMobileMenuToggle && (
            <Sheet open={internalMobileOpen} onOpenChange={setInternalMobileOpen}>
-             <SheetContent side="left" className="p-0 w-[280px] sm:w-80 bg-sidebar border-r border-border">
+              <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
                <SidebarMenu onClose={() => setInternalMobileOpen(false)} />
              </SheetContent>
            </Sheet>
@@ -276,7 +276,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   variant="ghost" 
                   size="icon" 
                   onClick={handleMobileMenu} 
-                  className="h-10 w-10 text-primary hover:bg-primary/5 active:scale-90 transition-all"
+                  className="text-primary hover:bg-primary/5 active:scale-90 transition-all"
                 >
                   <Menu className="h-6 w-6" />
                 </Button>
@@ -336,7 +336,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 variant="ghost"
                 size="icon"
                 onClick={handleMobileMenu}
-                className="h-10 w-10 text-primary hover:bg-primary/5 active:scale-90 transition-all shrink-0"
+                className="shrink-0 text-primary hover:bg-primary/5 active:scale-90 transition-all"
                 aria-label="Abrir menu"
               >
                 <Menu className="h-6 w-6" />

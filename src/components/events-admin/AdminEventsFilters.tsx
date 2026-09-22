@@ -28,7 +28,7 @@ export function AdminEventsFilters({
   const activeFilters = [statusFilter, categoryFilter].filter((value) => value !== "all").length;
 
   return (
-      <div className="mb-3 flex items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm">
+      <div className="mb-3 flex min-w-0 items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm">
         <div className="relative min-w-0 flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -59,14 +59,14 @@ export function AdminEventsFilters({
               {activeFilters > 0 && <Button variant="ghost" size="sm" onClick={onClear}>Limpar</Button>}
             </div>
             <Select value={statusFilter} onValueChange={onStatusChange}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os status</SelectItem>
                 {Object.entries(statusConfig).map(([key, cfg]) => <SelectItem key={key} value={key}>{cfg.label}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={categoryFilter} onValueChange={onCategoryChange}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Categoria" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Categoria" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas as categorias</SelectItem>
                 {Object.entries(categoryLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}

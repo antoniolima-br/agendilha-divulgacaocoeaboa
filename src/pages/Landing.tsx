@@ -363,7 +363,7 @@ export default function Landing() {
             <button
               key={g.id}
               onClick={() => navigate(`/agenda?category=${g.id}`)}
-              className="group inline-flex items-center gap-2 shrink-0 h-10 px-4 rounded-full border border-foreground/12 bg-transparent text-foreground/80 hover:text-foreground hover:border-foreground/30 transition-colors"
+              className="group inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-foreground/12 bg-transparent px-4 text-foreground/80 transition-colors hover:border-foreground/30 hover:text-foreground"
             >
               <g.icon className="h-3.5 w-3.5 opacity-70 group-hover:opacity-100" strokeWidth={1.75} />
               <span className="text-sm font-medium tracking-tight">{g.label}</span>
@@ -417,7 +417,7 @@ export default function Landing() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 rounded-full shrink-0" 
+                className="shrink-0 rounded-full md:h-8 md:w-8" 
                 onClick={() => setWeekStart(subWeeks(weekStart, 1))}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -437,7 +437,7 @@ export default function Landing() {
                         navigate(`/explorar?view=custom&date=${dayStr}`);
                       }}
                       className={cn(
-                        "flex flex-col items-center justify-center min-w-[40px] h-14 rounded-xl transition-all relative",
+                        "relative flex h-14 min-w-11 flex-col items-center justify-center rounded-xl transition-all",
                         isSelected 
                           ? "bg-primary text-primary-foreground shadow-md scale-105 z-10" 
                           : "bg-card/40 hover:bg-card/60 text-muted-foreground"
@@ -458,7 +458,7 @@ export default function Landing() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 rounded-full shrink-0" 
+                className="shrink-0 rounded-full md:h-8 md:w-8" 
                 onClick={() => setWeekStart(addDays(weekStart, 7))}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -644,7 +644,7 @@ export default function Landing() {
                         id="whatsapp-consent-landing" 
                         checked={whatsappConsent}
                         onChange={(e) => setWhatsappConsent(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-secondary focus:ring-secondary/20 accent-secondary"
+                    className="relative mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-secondary after:absolute after:-inset-3 after:content-[''] focus:ring-secondary/20 accent-secondary"
                       />
                       <label htmlFor="whatsapp-consent-landing" className="text-xs sm:text-xs font-medium text-foreground/75 leading-snug cursor-pointer break-words">
                         Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
@@ -672,7 +672,7 @@ export default function Landing() {
         </section>
 
         {/* Map Explorer CTA */}
-        <section className="rounded-3xl bg-secondary/5 p-8 flex flex-col sm:flex-row items-center justify-between mb-16 border border-secondary/10 gap-6">
+        <section className="mb-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-secondary/10 bg-secondary/5 p-5 sm:mb-16 sm:flex-row sm:p-8">
           <div className="text-center sm:text-left">
             <h3 className="text-xl font-bold mb-2">Explore a Ilha no mapa</h3>
             <p className="text-muted-foreground text-sm">Estabelecimentos, shows e pontos culturais em toda a Ilha do Governador.</p>
@@ -690,7 +690,7 @@ export default function Landing() {
 
       </section>
 
-      <footer className="py-16 px-6 border-t border-border/40 bg-card/30">
+      <footer className="border-t border-border/40 bg-card/30 px-4 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-6xl flex flex-col gap-8">
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/70">
             <Link to="/agenda" className="hover:text-primary transition-colors">Agenda</Link>

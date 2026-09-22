@@ -42,7 +42,7 @@ export function UserFiltersBar({
   };
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm sm:p-3">
+    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm sm:p-3">
       <div className="relative min-w-0 flex-1">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -58,7 +58,7 @@ export function UserFiltersBar({
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 h-9 w-9 -translate-y-1/2"
+            className="absolute right-0 top-1/2 -translate-y-1/2"
             aria-label="Limpar pesquisa"
             onClick={() => setFilterSearch("")}
           >

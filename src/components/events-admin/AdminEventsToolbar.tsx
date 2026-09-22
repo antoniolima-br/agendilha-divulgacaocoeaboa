@@ -14,9 +14,9 @@ interface AdminEventsToolbarProps {
 }
 
 const outlineBtn =
-  "h-9 sm:h-10 font-bold border-border bg-background hover:bg-muted text-[10px] sm:text-xs px-3 sm:px-4";
+  "min-h-11 flex-1 sm:flex-none md:min-h-0 md:h-10 font-bold border-border bg-background hover:bg-muted text-[10px] sm:text-xs px-3 sm:px-4";
 const summaryBtn =
-  "h-9 sm:h-10 font-bold border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[10px] sm:text-xs px-3 sm:px-4";
+  "min-h-11 flex-1 sm:flex-none md:min-h-0 md:h-10 font-bold border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[10px] sm:text-xs px-3 sm:px-4";
 
 /** Cabeçalho da Gestão de Eventos + ações rápidas (atualizar, PDF, resumos e divulgação). */
 export function AdminEventsToolbar({
@@ -65,7 +65,7 @@ export function AdminEventsToolbar({
         <p className="text-muted-foreground text-xs sm:text-sm">Controle operacional e curadoria da agenda hiperlocal.</p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 items-center gap-2 sm:flex sm:flex-wrap sm:gap-3">
         <Button variant="outline" size="sm" className={outlineBtn} onClick={onRefresh}>
           <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" /> Atualizar
         </Button>
@@ -96,7 +96,7 @@ export function AdminEventsToolbar({
         </Button>
         <Button
           size="sm"
-          className="h-9 sm:h-10 font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 text-[10px] sm:text-xs px-3 sm:px-4"
+          className="min-h-11 flex-1 bg-emerald-600 px-3 text-[10px] font-bold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 sm:flex-none sm:px-4 sm:text-xs md:min-h-0 md:h-10"
           onClick={shareFirstApproved}
         >
           <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />

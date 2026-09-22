@@ -29,10 +29,10 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
   };
 
   return (
-    <div className="flex justify-end">
+    <div className="flex w-full justify-end sm:w-auto">
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant={activeFilters > 0 ? "secondary" : "outline"} className="h-10">
+          <Button variant={activeFilters > 0 ? "secondary" : "outline"} className="w-full sm:w-auto">
             <Filter className="h-4 w-4" /> Filtrar painel
             {activeFilters > 0 && <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] text-primary-foreground">{activeFilters}</span>}
           </Button>
@@ -45,7 +45,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
         <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Período</Label>
           <Select value={filters.period} onValueChange={(v) => updateFilter("period", v)}>
-            <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
+             <SelectTrigger className="bg-background/50 text-xs">
               <SelectValue placeholder="Período" />
             </SelectTrigger>
             <SelectContent>
@@ -60,7 +60,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
         <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Bairro</Label>
           <Select value={filters.neighborhood} onValueChange={(v) => updateFilter("neighborhood", v)}>
-            <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
+             <SelectTrigger className="bg-background/50 text-xs">
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
@@ -75,7 +75,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
         <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Categoria</Label>
           <Select value={filters.category} onValueChange={(v) => updateFilter("category", v)}>
-            <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
+             <SelectTrigger className="bg-background/50 text-xs">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
@@ -93,7 +93,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
         <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</Label>
           <Select value={filters.status} onValueChange={(v) => updateFilter("status", v)}>
-            <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
+             <SelectTrigger className="bg-background/50 text-xs">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>

@@ -72,7 +72,7 @@ export function SidebarMenu({ onClose }: Props) {
   }, []);
 
   return (
-    <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground border-r border-sidebar-border w-full max-w-[280px] shadow-xl overflow-hidden animate-in slide-in-from-left duration-300">
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-xl animate-in slide-in-from-left duration-300 md:max-w-[280px]">
       {/* Header Profile */}
       <div className="p-4 md:p-6 pb-2 shrink-0">
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
@@ -226,7 +226,7 @@ function SidebarNavigationItem({
         <button
           onClick={() => toggleSubmenu(item.id)}
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all group relative",
+             "group relative flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all",
             isActive 
               ? "bg-primary/10 text-primary font-bold" 
               : "hover:bg-primary/5 text-muted-foreground hover:text-primary"
@@ -240,11 +240,11 @@ function SidebarNavigationItem({
         <Link
           to={item.path}
           className={cn(
-            "flex items-center gap-3 px-3 py-3 rounded-xl transition-all group relative",
+             "group relative flex min-h-11 items-center gap-3 rounded-xl px-3 py-3 transition-all",
             isActive 
               ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" 
               : "hover:bg-primary/5 text-muted-foreground hover:text-primary",
-            depth > 0 && "ml-4 py-2"
+             depth > 0 && "ml-2 py-2.5"
           )}
           onClick={() => {
             if (onClose && !hasChildren) onClose();

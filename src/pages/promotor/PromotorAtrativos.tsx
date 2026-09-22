@@ -268,7 +268,7 @@ export default function PromotorAtrativos() {
   };
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto pb-12">
+    <div className="mx-auto max-w-3xl space-y-5 pb-12 sm:space-y-6">
       <div>
         <PromotorBadge />
         <SectionHeader
@@ -276,14 +276,14 @@ export default function PromotorAtrativos() {
           title="Meus atrativos"
           subtitle="Cadastre as atrações sob sua responsabilidade."
           rightElement={
-            <Link to={ROUTES.PROMOTOR_ESTABELECIMENTOS}>
-              <Button variant="outline">Ir para Estabelecimentos</Button>
+            <Link to={ROUTES.PROMOTOR_ESTABELECIMENTOS} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">Ir para Estabelecimentos</Button>
             </Link>
           }
         />
       </div>
 
-      <Card className="p-5 space-y-4">
+      <Card className="space-y-4 p-4 sm:p-5">
         <h2 className="font-bold text-lg">
           {editing ? "Editar atrativo" : "Novo atrativo"}
         </h2>
@@ -348,7 +348,7 @@ export default function PromotorAtrativos() {
                       key={s}
                       variant="outline"
                       className={cn(
-                        "cursor-pointer px-3 py-1 rounded-full transition-all",
+                        "inline-flex min-h-11 cursor-pointer items-center rounded-full px-3 py-2 transition-all md:min-h-0 md:py-1",
                         on ? "bg-primary text-primary-foreground border-primary" : "hover:bg-primary/10"
                       )}
                       onClick={() =>
@@ -471,8 +471,8 @@ export default function PromotorAtrativos() {
           </div>
         )}
 
-        <div className="flex gap-2">
-          <Button onClick={save} disabled={saving}>
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:flex">
+          <Button className="w-full sm:w-auto" onClick={save} disabled={saving}>
             {saving ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : editing ? (
@@ -484,7 +484,7 @@ export default function PromotorAtrativos() {
             )}
           </Button>
           {editing && (
-            <Button variant="ghost" onClick={reset}>
+            <Button variant="ghost" className="w-full sm:w-auto" onClick={reset}>
               Cancelar
             </Button>
           )}
@@ -493,13 +493,13 @@ export default function PromotorAtrativos() {
 
       <div className="space-y-3">
         {items.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 justify-between p-3 rounded-lg bg-muted/40 border">
+          <div className="flex flex-col gap-3 rounded-lg border bg-muted/40 p-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div className="text-xs text-muted-foreground">
               {selected.size > 0
                 ? `${selected.size} atrativo${selected.size > 1 ? "s" : ""} selecionado${selected.size > 1 ? "s" : ""}`
                 : "Selecione atrativos pra gerar um PDF consolidado."}
             </div>
-            <div className="flex gap-2">
+            <div className="grid w-full grid-cols-1 gap-2 xs:grid-cols-2 sm:flex sm:w-auto">
               {selected.size > 0 && (
                 <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>
                   Limpar seleção
@@ -528,7 +528,7 @@ export default function PromotorAtrativos() {
           </Card>
         ) : (
           items.map((a) => (
-            <Card key={a.id} className="p-4 flex items-start gap-3">
+            <Card key={a.id} className="flex items-start gap-2 p-3 sm:gap-3 sm:p-4">
               <Checkbox
                 checked={selected.has(a.id)}
                 onCheckedChange={() => toggleSelected(a.id)}
@@ -551,7 +551,7 @@ export default function PromotorAtrativos() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-1">
+               <div className="flex shrink-0 flex-col gap-1 xs:flex-row">
                 <Button size="icon" variant="ghost" onClick={() => startEdit(a)} aria-label="Editar">
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -600,14 +600,14 @@ export default function PromotorAtrativos() {
         } : null}
         beforeSheets={previewMode === "consolidated" ? (
           <div>
-            <div className="flex items-center justify-between mb-2">
+             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="text-sm font-semibold">Escolha o que entra no PDF</div>
                 <div className="text-xs text-muted-foreground">
                   {selectedItems.length} de {items.length} selecionado{selectedItems.length === 1 ? "" : "s"}
                 </div>
               </div>
-              <div className="flex gap-2">
+               <div className="grid grid-cols-2 gap-2 sm:flex">
                 <Button
                   type="button" size="sm" variant="outline"
                   onClick={() => setSelected(new Set(items.map((a) => a.id)))}
@@ -622,7 +622,7 @@ export default function PromotorAtrativos() {
               {items.map((a) => (
                 <label
                   key={a.id}
-                  className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
+                   className="flex min-h-11 cursor-pointer items-center gap-3 px-3 py-2 text-sm hover:bg-muted/50"
                 >
                   <Checkbox
                     checked={selected.has(a.id)}

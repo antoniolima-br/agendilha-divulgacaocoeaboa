@@ -91,7 +91,7 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="w-full text-left p-4 sm:p-5 flex items-center gap-4"
+          className="flex min-h-11 w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-5"
           aria-expanded={expanded}
         >
           <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -165,7 +165,7 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
                   ID: {estab.id}
                 </p>
                 <div className="flex flex-col gap-4 pt-3 border-t border-border">
-                  <div className="flex flex-wrap gap-2">
+                   <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:flex sm:flex-wrap">
                     {canEdit && (
                       <Button size="sm" variant="outline" className="gap-2" onClick={() => setEditing(true)}>
                         <Pencil className="h-3.5 w-3.5" />
@@ -193,7 +193,7 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
                         size="sm"
                         variant="ghost"
                         disabled={deleting}
-                        className="gap-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 ml-auto"
+                         className="gap-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 sm:ml-auto"
                         onClick={handleDelete}
                       >
                         {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
@@ -202,7 +202,7 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                   <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                     <Button
                       size="sm"
                       variant="outline"
@@ -268,12 +268,12 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
                   <Editable label="Complemento" value={form.complemento} onChange={(v) => setForm({ ...form, complemento: v })} autoComplete="off" />
                   <Editable label="Contato" value={form.contato} onChange={(v) => setForm({ ...form, contato: v })} placeholder="WhatsApp ou e-mail" autoComplete="off" />
                 </div>
-                <div className="flex items-center gap-2 pt-2">
-                  <Button size="sm" onClick={handleSave} disabled={saving || !form.nome.trim()} className="gap-2">
+                 <div className="grid grid-cols-2 gap-2 pt-2 sm:flex sm:items-center">
+                   <Button size="sm" onClick={handleSave} disabled={saving || !form.nome.trim()} className="w-full gap-2 sm:w-auto">
                     {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                     Salvar
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setEditing(false)} disabled={saving}>
+                   <Button size="sm" variant="ghost" className="w-full sm:w-auto" onClick={() => setEditing(false)} disabled={saving}>
                     <X className="h-4 w-4 mr-1" />
                     Cancelar
                   </Button>
