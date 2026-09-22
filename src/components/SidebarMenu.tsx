@@ -108,16 +108,16 @@ export function SidebarMenu({ onClose }: Props) {
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-8 scrollbar-thin scrollbar-thumb-sidebar-border scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-7 scrollbar-thin scrollbar-thumb-sidebar-border scrollbar-track-transparent">
         {filteredSections.map((section, idx) => (
-          <div key={section.id} className="space-y-1.5 animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
-            <div className="flex items-center gap-2 px-3 mb-2.5 opacity-80">
+          <div key={section.id} className="space-y-2 animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
+            <div className="flex items-center gap-2 px-3 mb-3 opacity-80">
               <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">
                 {section.title}
               </h3>
             </div>
             
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {section.items.map(item => (
                 <SidebarNavigationItem 
                   key={item.id}
@@ -226,7 +226,7 @@ function SidebarNavigationItem({
         <button
           onClick={() => toggleSubmenu(item.id)}
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group relative",
+            "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all group relative",
             isActive 
               ? "bg-primary/10 text-primary font-bold" 
               : "hover:bg-primary/5 text-muted-foreground hover:text-primary"
@@ -240,7 +240,7 @@ function SidebarNavigationItem({
         <Link
           to={item.path}
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group relative",
+            "flex items-center gap-3 px-3 py-3 rounded-xl transition-all group relative",
             isActive 
               ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" 
               : "hover:bg-primary/5 text-muted-foreground hover:text-primary",
