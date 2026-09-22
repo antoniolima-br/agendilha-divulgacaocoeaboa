@@ -323,12 +323,12 @@ export default function Landing() {
       <Header />
       
        {/* ── Hero Discovery ── */}
-       <section className="pt-24 sm:pt-36 pb-16 sm:pb-24 px-4 max-w-5xl mx-auto">
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-36">
          <div className="text-center mb-16 sm:mb-24 animate-in fade-in slide-in-from-top-4 duration-1000">
            <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-10">
              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">Curadoria local da Ilha</span>
            </div>
-           <h1 className="text-[2.5rem] xs:text-5xl sm:text-7xl font-bold mb-6 font-display text-foreground tracking-tight leading-[1.05] max-w-4xl mx-auto text-balance">
+           <h1 className="mx-auto mb-6 max-w-4xl text-balance font-display text-2xl font-bold leading-tight text-foreground sm:text-5xl sm:leading-[1.05] lg:text-7xl">
              O melhor da Ilha,<br className="hidden sm:block" /> <span className="text-secondary">em um só lugar.</span>
            </h1>
            <p className="text-secondary/80 text-base sm:text-lg font-light max-w-xl mx-auto mb-12 text-balance leading-relaxed">
@@ -373,12 +373,12 @@ export default function Landing() {
 
         {/* Today's Events */}
         <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
               <TrendingUp className="h-5 w-5 text-primary" />
               Acontece hoje na Ilha
             </h2>
-            <Link to="/agenda" className="text-primary font-bold flex items-center">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
+              <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
           </div>
           {todayEvents.length > 0 ? (
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none">
@@ -494,12 +494,12 @@ export default function Landing() {
          <HomeAdsCarousel />
 
          <section className="mb-12">
-           <div className="flex items-center justify-between mb-6">
-             <h2 className="text-2xl font-bold font-display flex items-center gap-2">
+           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+             <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
                <MapPin className="h-5 w-5 text-primary" />
                {user ? "No seu radar" : "Sugestões para você"}
              </h2>
-             <Link to="/agenda" className="text-primary font-bold flex items-center">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
+             <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
            </div>
            
            {recommendedEvents.length > 0 ? (
@@ -608,7 +608,7 @@ export default function Landing() {
           <div className="bg-secondary/10 rounded-[2.5rem] p-8 sm:p-12 overflow-hidden relative">
             <div className="absolute -right-20 -top-20 h-64 w-64 bg-secondary/20 rounded-full blur-3xl" />
             <div className="relative z-10 max-w-2xl">
-              <h2 className="text-3xl font-black font-display mb-4">Receba o rolê da Ilha no WhatsApp 🎸</h2>
+               <h2 className="mb-4 font-display text-2xl font-black sm:text-3xl">Receba o rolê da Ilha no WhatsApp 🎸</h2>
               <p className="text-muted-foreground mb-8 text-lg">
                 Toda semana, uma curadoria com o que está rolando do Galeão à Ribeira — direto no seu Zap.
               </p>
@@ -679,7 +679,7 @@ export default function Landing() {
           </div>
           <Button 
             variant="secondary" 
-            className="rounded-full h-12 px-8 shadow-md border border-secondary/20 font-bold hover:scale-105 transition-all"
+             className="h-12 w-full rounded-full border border-secondary/20 px-8 font-bold shadow-md transition-all hover:scale-105 sm:w-auto"
             onClick={() => window.open("https://www.google.com/maps/search/eventos+e+bares+na+ilha+do+governador+rio+de+janeiro", "_blank")}
           >
             <MapIcon className="mr-2 h-4 w-4"/> Abrir Mapa
