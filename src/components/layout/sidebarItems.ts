@@ -21,8 +21,7 @@ import {
   Building2,
   FolderKanban,
   ShoppingBag,
-  Settings2,
-  Share2
+  Settings2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
@@ -185,13 +184,6 @@ export const sidebarConfig: SidebarSection[] = [
             icon: Megaphone,
             roles: ["admin", "master"],
             exact: true
-          },
-          {
-            id: "compartilhar_agenda_informa",
-            label: "Compartilhar Agendilha Informa",
-            path: ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR,
-            icon: Share2,
-            roles: ["admin", "master"]
           },
           {
             id: "carrossel",

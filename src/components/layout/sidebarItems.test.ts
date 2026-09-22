@@ -9,10 +9,10 @@ describe("sidebarConfig", () => {
     expect(central?.label).toBe("Relatório Diário (Coé a Boa?)");
     expect(central?.children?.map((item) => item.id)).toEqual([
       "agenda_informa",
-      "compartilhar_agenda_informa",
       "carrossel",
       "whatsapp_templates",
     ]);
+    expect(central?.children?.some((item) => item.id === "compartilhar_agenda_informa")).toBe(false);
     expect(operation?.items.some((item) => item.id === "carrossel")).toBe(false);
     expect(operation?.items.some((item) => item.id === "whatsapp_templates")).toBe(false);
   });
