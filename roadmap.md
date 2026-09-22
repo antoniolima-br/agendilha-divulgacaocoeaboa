@@ -11,7 +11,7 @@
 - [x] Corrigir a exibição de anúncios e eventos recém-aprovados na Home e no Agendilha Informa, respeitando o fuso de São Paulo.
 - [x] Adicionar à Home um carrossel de anúncios publicados com autoplay de 4 segundos, pausa no toque/hover e indicadores.
 - [x] Dar acabamento premium à curadoria diária com destaque amplo, autoplay, filtros de data e região, publicidade, programação e ações rápidas.
-- [x] Simplificar a navegação móvel para Início, Atrações, Divulgar e Perfil.
+- [x] Simplificar a navegação móvel para Início, Divulgar e Perfil, removendo Atrações.
 - [x] Separar o Relatório Diário em “Anúncios / Eventos Pagos (Destaques)” e “Eventos Gratuitos (Não Pagos)”.
 - [x] Exibir gratuitos não destacados somente no fim da Home, em lista textual sem flyer ou banner.
 - [x] Confirmar que o carrossel da Home usa anúncios publicados da base, autoplay, pausa no toque/hover/foco e indicadores.
@@ -55,3 +55,4 @@
 - [x] Remover animação pesada dos cards e otimizar imagens, fontes, vídeos e carrosséis.
 - [x] Evitar cache offline de dados dinâmicos e reduzir o pré-carregamento de pacotes administrativos.
 - [x] Validar visualmente os fluxos públicos em desktop e celular; fluxos autenticados seguem cobertos por testes automatizados.
+- [x] Manter em Configurações somente o WhatsApp oficial da equipe.
