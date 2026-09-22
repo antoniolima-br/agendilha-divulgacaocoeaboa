@@ -36,8 +36,8 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceRoleKey);
     const { user_id: targetUserId, new_password: newPassword, require_change: requireChange } = parsed.data;
-    const { data: targetUser } = await admin.auth.admin.getUserById(targetUserId);
-    if (!targetUser.user) return json({ error: "Usuário não encontrado" }, 404);
+    const { data: targetUser, error: targetError } = await admin.auth.admin.getUserById(targetUserId);
+    if (targetError || !targetUser?.user) return json({ error: "Usuário não encontrado" }, 404);
 
     const { data: targetIsAdmin } = await admin.rpc("is_admin_or_master", { p_user_id: targetUserId });
     if (targetIsAdmin) {
@@ -48,7 +48,10 @@ Deno.serve(async (req) => {
     const { error: updateError } = await admin.auth.admin.updateUserById(targetUserId, { password: newPassword });
     if (updateError) return json({ error: updateError.message }, 400);
 
-    const { error: profileError } = await admin.from("profiles").update({ must_change_password: requireChange }).eq("user_id", targetUserId);
+    const { error: profileError } = await admin.from("profiles").upsert(
+      { user_id: targetUserId, email: targetUser.user.email ?? null, must_change_password: requireChange },
+      { onConflict: "user_id" },
+    );
     if (profileError) return json({ error: "Senha alterada, mas não foi possível definir a troca no próximo acesso" }, 500);
 
     const { error: auditError } = await admin.from("audit_logs").insert({

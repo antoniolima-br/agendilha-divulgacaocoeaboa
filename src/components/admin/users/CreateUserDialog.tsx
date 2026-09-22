@@ -149,7 +149,11 @@ export function CreateUserDialog({ open, onOpenChange, isMaster, onCreated }: Pr
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="new-user-access">Tipo / Perfil inicial</Label>
-              <Select value={form.accessType} onValueChange={(value: typeof form.accessType) => setForm((current) => ({ ...current, accessType: value }))} disabled={saving}>
+              <Select value={form.accessType} onValueChange={(value) => {
+                if (value === "publico" || value === "divulgador" || value === "artista" || value === "admin") {
+                  setForm((current) => ({ ...current, accessType: value }));
+                }
+              }} disabled={saving}>
                 <SelectTrigger id="new-user-access"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="publico">Público</SelectItem>
