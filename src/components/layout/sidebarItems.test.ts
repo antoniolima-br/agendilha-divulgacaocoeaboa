@@ -26,4 +26,33 @@ describe("sidebarConfig", () => {
       expect(section?.roles).not.toContain("promoter");
     }
   });
+
+  it("agrupa atrativos e estabelecimentos em Cadastros", () => {
+    const explore = sidebarConfig.find((section) => section.id === "explorar");
+    const operation = sidebarConfig.find((section) => section.id === "operacao");
+    const exploreRegistrations = explore?.items.find((item) => item.id === "cadastros_explorar");
+    const adminRegistrations = operation?.items.find((item) => item.id === "cadastros_admin");
+
+    expect(exploreRegistrations?.children?.map((item) => item.id)).toEqual([
+      "artists",
+      "estabelecimentos_explorar",
+    ]);
+    expect(adminRegistrations?.children?.map((item) => item.id)).toEqual([
+      "atrativos_admin",
+      "estabelecimentos_admin",
+    ]);
+    expect(explore?.items.some((item) => ["artists", "estabelecimentos_explorar"].includes(item.id))).toBe(false);
+    expect(operation?.items.some((item) => ["atrativos_admin", "estabelecimentos_admin"].includes(item.id))).toBe(false);
+  });
+
+  it("agrupa a gestão de eventos e flyers em Moderação", () => {
+    const operation = sidebarConfig.find((section) => section.id === "operacao");
+    const moderation = operation?.items.find((item) => item.id === "moderacao");
+
+    expect(moderation?.children?.map((item) => item.id)).toEqual([
+      "manage_events",
+      "flyer_moderator",
+    ]);
+    expect(operation?.items.some((item) => ["manage_events", "flyer_moderator"].includes(item.id))).toBe(false);
+  });
 });
