@@ -18,7 +18,7 @@ import { ROUTES } from "@/routes/config";
 import { PromotorRoute } from "@/components/auth/PromotorRoute";
 
 // Critical (above-the-fold) — keep eager
-import HomePremium from "./pages/HomePremium";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
 // Lazy-loaded routes (code-split)
@@ -184,7 +184,7 @@ export const AppRoutes = () => (
       <Suspense fallback={<PageFallback />}>
         <Routes>
         {/* Públicas */}
-        <Route path={ROUTES.LANDING} element={<HomePremium />} />
+        <Route path={ROUTES.LANDING} element={<Landing />} />
         <Route path={ROUTES.EXPLORAR} element={<Explorar />} />
          <Route path={ROUTES.CURADORIA_HOJE} element={<CuradoriaHoje />} />
         <Route path={ROUTES.EVENTO_IMPRIMIR} element={<PrintEvent />} />

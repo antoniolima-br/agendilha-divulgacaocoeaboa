@@ -74,4 +74,3 @@
 - [x] Simplificar a Gestão de Usuários, removendo indicadores redundantes e destacando a pesquisa global.
 - [x] Reunir os filtros da Gestão de Usuários em um único botão compacto com contador de filtros ativos.
 - [x] Aplicar o mesmo padrão compacto de filtros à Gestão de Eventos e ao painel administrativo.
-- [x] Refatorar a Home com composição editorial premium, categorias, eventos, anúncios e convite de WhatsApp.
