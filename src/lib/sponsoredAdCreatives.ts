@@ -1,5 +1,5 @@
-import cervejeirosFreguesia from "@/assets/ad-cervejeiros-freguesia.jpg";
-import pimentaCariocaRibeira from "@/assets/ad-pimenta-carioca-ribeira.jpg";
+import cervejeirosFreguesia from "@/assets/ad-cervejeiros-freguesia.webp";
+import pimentaCariocaRibeira from "@/assets/ad-pimenta-carioca-ribeira.webp";
 
 const FICTIONAL_AD_CREATIVES: Array<{ match: string; image: string }> = [
   { match: "cervejeiros", image: cervejeirosFreguesia },
