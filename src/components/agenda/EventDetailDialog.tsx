@@ -202,7 +202,7 @@ export function EventDetailDialog({
                     </Button>
                   </div>
 
-                  <div className="grid grid-cols-2 xs:flex xs:flex-wrap gap-2.5 sm:gap-3">
+                  <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2.5 sm:gap-3">
                     <Button
                       variant="ghost"
                       className="flex-1 h-12 sm:h-14 rounded-full font-bold text-[10px] sm:text-sm uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-primary/5 active:scale-95 transition-all"

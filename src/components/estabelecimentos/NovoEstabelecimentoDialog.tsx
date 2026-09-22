@@ -219,7 +219,7 @@ export function NovoEstabelecimentoDialog({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="col-span-2 space-y-1.5">
+            <div className="sm:col-span-2 space-y-1.5">
               <Label className="text-sm font-semibold">Endereço</Label>
               <Input
                 value={endereco}
