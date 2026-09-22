@@ -142,11 +142,14 @@ export function useAppPermissions() {
       const profileRole =
         profileData?.role ??
         (PROMOTER_ALIASES.includes((profileData?.user_type ?? "").toLowerCase()) ? "promoter" : null);
-      return computePermissions({
+      return {
+        ...computePermissions({
         roleNames,
         collaborator: collaboratorResponse.data as CollaboratorPermissions | null,
         profileRole,
-      });
+        }),
+        collaboratorName: collaboratorResponse.data?.name ?? null,
+      };
     },
   });
 
