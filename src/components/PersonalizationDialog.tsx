@@ -5,8 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useProfile } from "@/hooks/useProfile";
-import { Music, MapPin, Bell, Sparkles, Check, Settings2 } from "lucide-react";
+import { Music, Bell, Check, ChevronsUpDown, Settings2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -35,6 +37,7 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
   const [pushEnabled, setPushEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(false);
   const [frequency, setFrequency] = useState("weekly");
+  const [genresOpen, setGenresOpen] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -84,22 +87,85 @@ export const PersonalizationDialog = memo(function PersonalizationDialog({ open,
               <Music className="h-4 w-4" />
               Estilos Musicais
             </h3>
-            <div className="flex flex-wrap gap-2">
-              {genres.map(g => (
-                <Badge
-                  key={g.id}
-                  variant={selectedGenres.includes(g.id) ? "default" : "outline"}
-                  className={cn(
-                    "px-4 py-2 rounded-full cursor-pointer transition-all border-2",
-                    selectedGenres.includes(g.id) 
-                      ? "bg-secondary text-white border-secondary" 
-                      : "bg-transparent text-muted-foreground border-border hover:border-secondary/30"
-                  )}
-                  onClick={() => toggleGenre(g.id)}
-                >
-                  {g.label}
-                </Badge>
-              ))}
+            <div className="space-y-3 rounded-lg border border-border/70 bg-muted/20 p-4 shadow-sm transition-colors focus-within:border-primary/50">
+              <Popover open={genresOpen} onOpenChange={setGenresOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={genresOpen}
+                    className="h-12 w-full justify-between rounded-md bg-background px-4 font-medium shadow-none"
+                  >
+                    <span className={cn("truncate", selectedGenres.length === 0 && "text-muted-foreground")}>
+                      {selectedGenres.length === 0
+                        ? "Escolha seus estilos"
+                        : `${selectedGenres.length} ${selectedGenres.length === 1 ? "estilo selecionado" : "estilos selecionados"}`}
+                    </span>
+                    <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Buscar estilo..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhum estilo encontrado.</CommandEmpty>
+                      <CommandGroup className="p-2">
+                        {genres.map((genre) => {
+                          const selected = selectedGenres.includes(genre.id);
+                          return (
+                            <CommandItem
+                              key={genre.id}
+                              value={genre.label}
+                              onSelect={() => toggleGenre(genre.id)}
+                              className="mb-1 min-h-10 cursor-pointer rounded-md px-3 last:mb-0"
+                            >
+                              <span className={cn(
+                                "mr-3 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors",
+                                selected ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background"
+                              )}>
+                                {selected && <Check className="h-3.5 w-3.5" />}
+                              </span>
+                              <span className="flex-1">{genre.label}</span>
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+
+              {selectedGenres.length > 0 ? (
+                <div className="flex flex-wrap gap-2" aria-label="Estilos selecionados">
+                  {selectedGenres.map((genreId) => {
+                    const genre = genres.find((item) => item.id === genreId);
+                    return (
+                      <Badge
+                        key={genreId}
+                        variant="secondary"
+                        className="gap-1.5 rounded-md border border-primary/15 px-2.5 py-1.5 font-medium transition-colors"
+                      >
+                        {genre?.label ?? genreId}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Remover ${genre?.label ?? genreId}`}
+                          className="h-5 w-5 rounded-sm text-muted-foreground hover:bg-background hover:text-foreground"
+                          onClick={() => toggleGenre(genreId)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="px-1 text-xs text-muted-foreground">
+                  Seus estilos escolhidos aparecem aqui.
+                </p>
+              )}
             </div>
           </div>
 
