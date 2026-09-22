@@ -17,7 +17,7 @@ interface HighlightCardProps {
 export function HighlightCard({ event: ev, onSelect, onShare, trackView }: HighlightCardProps) {
   return (
     <Card
-      className="min-w-[280px] xs:min-w-[300px] sm:min-w-[350px] snap-start border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent hover:shadow-lg transition-all cursor-pointer overflow-hidden group event-card"
+      className="w-[calc(100vw-2rem)] max-w-[350px] shrink-0 snap-start border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent hover:shadow-lg transition-all cursor-pointer overflow-hidden group event-card"
       data-event-id={ev.id}
       data-nome={ev.event_title}
       onClick={() => {
