@@ -254,7 +254,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
         <MobileTabBar onMenuClick={handleMobileMenu} />
          {!onMobileMenuToggle && (
            <Sheet open={internalMobileOpen} onOpenChange={setInternalMobileOpen}>
-             <SheetContent side="left" className="p-0 w-[280px] sm:w-80 bg-sidebar border-r border-border">
+              <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
                <SidebarMenu onClose={() => setInternalMobileOpen(false)} />
              </SheetContent>
            </Sheet>

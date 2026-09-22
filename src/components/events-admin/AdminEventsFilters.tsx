@@ -28,7 +28,7 @@ export function AdminEventsFilters({
   const activeFilters = [statusFilter, categoryFilter].filter((value) => value !== "all").length;
 
   return (
-      <div className="mb-3 flex items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm">
+      <div className="mb-3 flex min-w-0 items-center gap-2 rounded-lg border border-border bg-card p-2 shadow-sm">
         <div className="relative min-w-0 flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

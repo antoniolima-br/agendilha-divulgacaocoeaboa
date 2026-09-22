@@ -110,27 +110,27 @@ export default function AdminAgendaInforma() {
         title="Central de Relatórios / WhatsApp"
         subtitle="Programação válida do dia em uma lista limpa, pronta para compartilhar."
         rightElement={
-          <div>
+          <div className="w-full md:w-auto">
             <Label htmlFor="date" className="text-xs">Data</Label>
             <Input
               id="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-[170px]"
+              className="w-full md:w-[170px]"
             />
           </div>
         }
       />
 
-      <nav className="flex flex-wrap gap-2" aria-label="Ferramentas de relatórios e WhatsApp">
-        <Button asChild variant="secondary" size="sm">
+      <nav className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap" aria-label="Ferramentas de relatórios e WhatsApp">
+        <Button asChild variant="secondary" size="sm" className="w-full sm:w-auto">
           <Link to={ROUTES.CARROSSEL}>
             <Images className="h-4 w-4" />
             Carrossel WhatsApp
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
           <Link to={ROUTES.ADMIN_WHATSAPP_TEMPLATES}>
             <MessageSquare className="h-4 w-4" />
             Templates WhatsApp
@@ -138,7 +138,7 @@ export default function AdminAgendaInforma() {
         </Button>
       </nav>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-2 lg:gap-6">
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -154,18 +154,18 @@ export default function AdminAgendaInforma() {
                   Nenhum evento aprovado para esta data.
                 </p>
               ) : (
-                <ul className="space-y-2 max-h-[420px] overflow-y-auto">
+                <ul className="max-h-[min(420px,55dvh)] space-y-2 overflow-y-auto overscroll-contain pr-1">
                   {events.map((e) => (
                     <li
                       key={e.id}
-                      className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/40"
+                       className="flex min-h-11 items-start gap-3 rounded-md p-2 hover:bg-muted/40"
                     >
                       <Checkbox
                         checked={!!selected[e.id]}
                         onCheckedChange={(v) =>
                           setSelected((s) => ({ ...s, [e.id]: Boolean(v) }))
                         }
-                        className="mt-1"
+                         className="mt-1.5"
                       />
                       <div className="text-sm flex-1 min-w-0">
                         <div className="font-medium truncate">
@@ -193,10 +193,10 @@ export default function AdminAgendaInforma() {
               </span>
             </CardHeader>
             <CardContent>
-              <div className="max-h-[420px] overflow-y-auto rounded-md border bg-muted/20 p-4">
+              <div className="max-h-[min(420px,55dvh)] overflow-y-auto overscroll-contain rounded-md border bg-muted/20 p-3 sm:p-4">
                 <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed">{lines}</pre>
               </div>
-              <div className="flex gap-2 mt-3">
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <Button onClick={copy} variant="outline" className="flex-1">
                   <Copy className="h-4 w-4 mr-2" />
                   Copiar texto

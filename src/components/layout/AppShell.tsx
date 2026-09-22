@@ -63,7 +63,7 @@ export function AppShell({
 
         {/* Page Content */}
         <main className={cn(
-          "flex-1 w-full mx-auto p-4 md:p-8 overflow-x-hidden",
+          "mx-auto w-full min-w-0 flex-1 overflow-x-hidden px-3 py-4 sm:px-4 md:p-8",
           maxWidthClasses[maxWidth]
         )}>
           <AppErrorBoundary context="AppShellContent">
@@ -77,7 +77,7 @@ export function AppShell({
 
       {/* Mobile Menu Drawer */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="p-0 w-[280px] sm:w-80 bg-sidebar border-r border-border">
+        <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
           <SidebarMenu onClose={() => setMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>

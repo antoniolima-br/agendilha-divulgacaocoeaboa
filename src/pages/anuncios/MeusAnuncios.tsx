@@ -64,7 +64,7 @@ export default function MeusAnuncios() {
           <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
             Acompanhe seus anúncios e saiba quando cada um entrar no ar.
           </p>
-          <Button asChild className="font-bold">
+          <Button asChild className="w-full font-bold sm:w-auto">
             <Link to={ROUTES.ANUNCIO_NOVO}>
               <Plus className="h-4 w-4 mr-2" />
               Criar anúncio
@@ -93,11 +93,11 @@ export default function MeusAnuncios() {
           <div className="space-y-6">
             <Tabs defaultValue={aguardando.length > 0 ? "aguardando" : "publicados"}>
               <TabsList className="grid h-auto w-full grid-cols-2">
-                <TabsTrigger value="publicados" className="gap-2 py-2.5">
+                <TabsTrigger value="publicados" className="min-w-0 gap-1.5 px-2 py-2.5 sm:gap-2 sm:px-3">
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   Publicados ({publicados.length})
                 </TabsTrigger>
-                <TabsTrigger value="aguardando" className="gap-1.5 py-2.5 text-xs sm:gap-2 sm:text-sm">
+                <TabsTrigger value="aguardando" className="min-w-0 gap-1 px-1.5 py-2.5 text-xs sm:gap-2 sm:px-3 sm:text-sm">
                   <Clock3 className="h-4 w-4 text-warning" />
                   <span className="sm:hidden">Aguardando ({aguardando.length})</span>
                   <span className="hidden sm:inline">Aguardando aprovação ({aguardando.length})</span>
