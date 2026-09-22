@@ -43,9 +43,9 @@
 - [x] Bloquear a edição de eventos aprovados no painel do Divulgador
 - [x] Exibir eventos de hoje em “No seu radar” e aplicar preferências salvas com fallback
 
-- [ ] Garantir endereço completo antes do bairro no Relatório Diário, incluindo o número no compartilhamento direto.
-- [ ] Tornar todos os autocompletes do envio insensíveis a acentos e maiúsculas.
-- [ ] Preservar e salvar corretamente o vínculo com local pré-cadastrado no envio do evento.
-- [ ] Criar acesso público a “Eventos Anteriores / Arquivo” com corte pelo dia de São Paulo.
-- [ ] Manter eventos de hoje ativos até o fim do dia e arquivá-los somente no dia seguinte.
-- [ ] Variar de forma estável as paletas dos cards gerados sem flyer.
+- [x] Garantir endereço completo antes do bairro no Relatório Diário, incluindo o número no compartilhamento direto.
+- [x] Tornar todos os autocompletes do envio insensíveis a acentos e maiúsculas.
+- [x] Preservar e salvar corretamente o vínculo com local pré-cadastrado no envio do evento.
+- [x] Criar acesso público a “Eventos Anteriores / Arquivo” com corte pelo dia de São Paulo.
+- [x] Manter eventos de hoje ativos até o fim do dia e arquivá-los somente no dia seguinte.
+- [x] Variar de forma estável as paletas dos cards gerados sem flyer.
