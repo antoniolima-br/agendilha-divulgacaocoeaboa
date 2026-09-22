@@ -248,7 +248,7 @@ export default function AdminAtrativos() {
                       setExpandedId((v) => (v === a.id ? null : a.id));
                     }}
                     aria-expanded={isExpanded}
-                    className="w-full text-left p-4 flex items-start justify-between gap-3"
+                    className="flex min-h-11 w-full items-start justify-between gap-3 p-3 text-left sm:p-4"
                   >
                     <div className="min-w-0 flex-1">
                       <h4 className="font-bold truncate">{a.name}</h4>
@@ -259,7 +259,7 @@ export default function AdminAtrativos() {
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{a.description}</p>
                       )}
                     </div>
-                    <div className="shrink-0 flex items-center gap-2">
+                    <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center">
                       {a.is_approved ? (
                         <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 inline-flex items-center gap-1">
                           <ShieldCheck className="h-3 w-3" /> aprovado
@@ -311,11 +311,11 @@ export default function AdminAtrativos() {
                           <div className="sm:col-span-2">
                             <Field label="Descrição" value={String(editForm.description ?? "")} onChange={(v) => setEditForm({ ...editForm, description: v })} />
                           </div>
-                          <div className="flex gap-2 pt-2">
-                            <Button size="sm" onClick={() => saveEdit(a.id)} disabled={upsert.isPending}>
+                          <div className="grid grid-cols-2 gap-2 pt-2 sm:flex">
+                            <Button size="sm" className="w-full sm:w-auto" onClick={() => saveEdit(a.id)} disabled={upsert.isPending}>
                               <Check className="h-4 w-4 mr-1" /> Salvar
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
+                            <Button size="sm" variant="ghost" className="w-full sm:w-auto" onClick={() => setEditingId(null)}>
                               <X className="h-4 w-4 mr-1" /> Cancelar
                             </Button>
                           </div>
@@ -325,7 +325,7 @@ export default function AdminAtrativos() {
                           {a.description && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{a.description}</p>}
                           
                           <div className="flex flex-col gap-4 w-full pt-3 border-t border-border">
-                            <div className="flex flex-wrap gap-2">
+                             <div className="grid grid-cols-1 gap-2 xs:grid-cols-2 sm:flex sm:flex-wrap">
                               {canEdit || a.responsavel_id === user.id ? (
                                 <Button size="sm" variant="outline" onClick={() => startEdit(a)}>
                                   <Pencil className="h-4 w-4 mr-1" /> Editar
@@ -375,7 +375,7 @@ export default function AdminAtrativos() {
                               )}
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
+                             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                               <Button
                                 size="sm"
                                 variant="outline"

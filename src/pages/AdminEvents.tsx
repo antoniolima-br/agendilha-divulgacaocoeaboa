@@ -358,8 +358,8 @@ function AdminEventsInner() {
           ) : (
             <div className="divide-y divide-border">
               {filtered.map((sub) => (
-                <div key={sub.id} className="p-5 hover:bg-muted/5 transition-colors">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+             <div key={sub.id} className="p-3 transition-colors hover:bg-muted/5 sm:p-5">
+                   <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-6">
                     {/* Informações Principais */}
                      <div className="col-span-3 space-y-2">
                         <div className="flex items-start gap-3 relative group/flyer">
@@ -478,12 +478,12 @@ function AdminEventsInner() {
                       })()}
                     </div>
 
-                    <div className="col-span-3 flex justify-end flex-wrap gap-1.5">
+                     <div className="col-span-3 flex flex-wrap justify-start gap-2 md:justify-end md:gap-1.5">
                       <TooltipProvider>
                         {/* Ver Detalhes */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button size="icon" variant="outline" className="h-9 w-9 bg-white border-border hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-all shadow-sm" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
+                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -493,7 +493,7 @@ function AdminEventsInner() {
                         {/* Editar (Abre expansão ou poderia ser rota dedicada) */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button size="icon" variant="outline" className="h-9 w-9 bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm" onClick={() => setExpandedId(sub.id)}>
+                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(sub.id)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -506,7 +506,7 @@ function AdminEventsInner() {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                  <span className="inline-flex">
-                                   <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="h-9 w-9 bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50" onClick={() => openReview(sub, 'approved')}>
+                                    <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
                                      <CheckCircle className="h-4 w-4" />
                                    </Button>
                                  </span>
@@ -520,7 +520,7 @@ function AdminEventsInner() {
                              
                              <Tooltip>
                                <TooltipTrigger asChild>
-                                 <Button size="icon" variant="outline" className="h-9 w-9 bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-600 hover:text-white transition-all shadow-sm" onClick={() => openReview(sub, 'ajuste')}>
+                                  <Button size="icon" variant="outline" className="bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-600 hover:text-white transition-all shadow-sm md:h-9 md:w-9" onClick={() => openReview(sub, 'ajuste')}>
                                    <AlertCircle className="h-4 w-4" />
                                  </Button>
                                </TooltipTrigger>
@@ -529,7 +529,7 @@ function AdminEventsInner() {
 
                              <Tooltip>
                                <TooltipTrigger asChild>
-                                 <Button size="icon" variant="outline" className="h-9 w-9 bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm" onClick={() => openReview(sub, 'rejected')}>
+                                  <Button size="icon" variant="outline" className="bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm md:h-9 md:w-9" onClick={() => openReview(sub, 'rejected')}>
                                    <XCircle className="h-4 w-4" />
                                  </Button>
                                </TooltipTrigger>
@@ -613,7 +613,7 @@ function AdminEventsInner() {
                         {/* Menu Adicional (PDF, WhatsApp, Excluir) */}
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost" className="h-9 w-9"><ChevronDown className="h-4 w-4" /></Button>
+                               <Button size="icon" variant="ghost" className="md:h-9 md:w-9"><ChevronDown className="h-4 w-4" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-56">
                             <div className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Distribuição</div>
@@ -695,7 +695,7 @@ function AdminEventsInner() {
                       <div className="md:col-span-2 space-y-6">
                         <div>
                           <h4 className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-3">Conteúdo do Evento</h4>
-                          <div className="bg-background border border-border/60 p-5 rounded-xl shadow-inner">
+                           <div className="rounded-xl border border-border/60 bg-background p-3 shadow-inner sm:p-5">
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">{sub.description || "Sem descrição disponível."}</p>
                           </div>
                         </div>
@@ -707,7 +707,7 @@ function AdminEventsInner() {
                               </div>
                             </div>
                           )}
-                          <div className="pt-4 flex flex-wrap gap-2 border-t border-border/50">
+                          <div className="flex flex-col gap-2 border-t border-border/50 pt-4 sm:flex-row sm:flex-wrap">
                             {sub.status !== 'aprovado' && (
                              (() => {
                                const missing = missingPublishFields(sub);

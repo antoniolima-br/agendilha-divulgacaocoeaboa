@@ -135,7 +135,7 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
               type="button"
               variant="outline"
               size="icon"
-              className="absolute left-0 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full shadow-sm sm:-left-3"
+              className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full shadow-sm sm:-left-3"
               onClick={() => goTo(index - 1)}
               aria-label="Anúncio anterior"
             >
@@ -145,7 +145,7 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
               type="button"
               variant="outline"
               size="icon"
-              className="absolute right-0 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full shadow-sm sm:-right-3"
+              className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full shadow-sm sm:-right-3"
               onClick={() => goTo(index + 1)}
               aria-label="Próximo anúncio"
             >
@@ -158,7 +158,7 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 rounded-full p-0"
+                  className="rounded-full p-0 md:h-8 md:w-8"
                   onClick={() => goTo(dotIndex)}
                   aria-label={`Ver anúncio ${dotIndex + 1}`}
                   aria-current={dotIndex === index ? "true" : undefined}
