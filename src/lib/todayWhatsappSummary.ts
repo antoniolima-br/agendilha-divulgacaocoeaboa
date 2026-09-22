@@ -34,10 +34,10 @@ function formatTime(t?: string | null): string {
   return `${h}h`;
 }
 
-function shortAddress(s: SummaryEvent): string {
-  const parts = [s.address_street, s.address_number].filter(Boolean).join(", ");
-  const bairro = s.address_neighborhood;
-  return [parts, bairro].filter(Boolean).join(" - ");
+export function formatReportAddress(s: SummaryEvent): string {
+  const address = [s.address_street?.trim(), s.address_number?.trim()].filter(Boolean).join(", ");
+  const neighborhood = s.address_neighborhood?.trim();
+  return [address, neighborhood].filter(Boolean).join(" - ");
 }
 
 function eventAttractions(s: SummaryEvent): string {
@@ -69,7 +69,7 @@ function formatDailyReportTime(time?: string | null): string {
 function dailyEventBlock(event: SummaryEvent): string {
   const title = eventAttractions(event).toLocaleUpperCase("pt-BR");
   const local = event.location || event.estabelecimento_name || "Local a confirmar";
-  const address = shortAddress(event) || "Endereço a confirmar";
+  const address = formatReportAddress(event) || "Endereço a confirmar";
   return [
     `🎙️ ${formatDailyReportTime(event.start_time)} *${title}*`,
     `👉 ${local}`,
@@ -121,7 +121,7 @@ function formatDayLabel(iso: string): { weekday: string; date: string } {
 function formatEventBlock(s: SummaryEvent): string {
   const nome = s.atrativo_name || s.event_title;
   const local = s.location || s.estabelecimento_name || "";
-  const address = shortAddress(s);
+  const address = formatReportAddress(s);
   const linhaLocal = [local, address].filter(Boolean).join(" – ");
   const hora = formatTime(s.start_time) + (s.end_time ? ` às ${formatTime(s.end_time)}` : "");
   return [
@@ -155,7 +155,7 @@ export function buildTodayWhatsAppSummary(submissions: SummaryEvent[]): {
   const blocks = items.map((s) => {
     const nome = s.atrativo_name || s.event_title;
     const local = s.location || s.estabelecimento_name || "";
-    const end = shortAddress(s);
+    const end = formatReportAddress(s);
     const linhaLocal = [local, end].filter(Boolean).join(" – ");
     const hora = formatTime(s.start_time) + (s.end_time ? ` às ${formatTime(s.end_time)}` : "");
     return [
