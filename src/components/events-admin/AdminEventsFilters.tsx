@@ -59,14 +59,14 @@ export function AdminEventsFilters({
               {activeFilters > 0 && <Button variant="ghost" size="sm" onClick={onClear}>Limpar</Button>}
             </div>
             <Select value={statusFilter} onValueChange={onStatusChange}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os status</SelectItem>
                 {Object.entries(statusConfig).map(([key, cfg]) => <SelectItem key={key} value={key}>{cfg.label}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={categoryFilter} onValueChange={onCategoryChange}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Categoria" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Categoria" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas as categorias</SelectItem>
                 {Object.entries(categoryLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
