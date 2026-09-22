@@ -16,6 +16,8 @@ import {
   Eye,
   UserPlus,
   Megaphone,
+  Images,
+  MessageSquare,
   Building2,
   ShoppingBag,
   Settings2,
