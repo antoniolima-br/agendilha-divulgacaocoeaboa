@@ -9,7 +9,7 @@ import { Copy, Send } from "lucide-react";
 import { toast } from "sonner";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { buildCoeaboaDailyReport, openWhatsAppWithText } from "@/lib/todayWhatsappSummary";
+import { buildCoeaboaDailyReport, formatReportAddress, openWhatsAppWithText } from "@/lib/todayWhatsappSummary";
 import { addDaysToISO, eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 interface Ev {
@@ -153,7 +153,7 @@ export default function AdminAgendaInforma() {
                            {(e.submission_atrativos || []).map((item) => item.name).filter(Boolean).join(" - ") || e.atrativo_name || e.event_title}
                         </div>
                         <div className="text-xs text-muted-foreground truncate">
-                          {e.location} {e.address_neighborhood && `· ${e.address_neighborhood}`}
+                          {[e.location, formatReportAddress(e)].filter(Boolean).join(" · ") || "Local a confirmar"}
                         </div>
                       </div>
                     </li>

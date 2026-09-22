@@ -3,6 +3,7 @@ import {
   buildTodayWhatsAppSummary,
   buildWeekWhatsAppSummary,
   buildCoeaboaDailyReport,
+  formatReportAddress,
   openWhatsAppWithText,
 } from "./todayWhatsappSummary";
 
@@ -22,6 +23,21 @@ function todayISO() {
     day: "2-digit",
   }).format(new Date());
 }
+
+describe("formatReportAddress", () => {
+  it("monta endereço completo antes do bairro", () => {
+    expect(formatReportAddress({
+      address_street: " Rua Cambaúba ",
+      address_number: " 100 ",
+      address_neighborhood: " Jardim Guanabara ",
+    })).toBe("Rua Cambaúba, 100 - Jardim Guanabara");
+  });
+
+  it("não deixa separadores soltos quando algum campo está vazio", () => {
+    expect(formatReportAddress({ address_neighborhood: "Cocotá" })).toBe("Cocotá");
+    expect(formatReportAddress({ address_street: "Estrada do Galeão" })).toBe("Estrada do Galeão");
+  });
+});
 
 describe("buildWeekWhatsAppSummary", () => {
   const base = {
