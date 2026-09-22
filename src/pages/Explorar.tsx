@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 
 const NEIGHBORHOODS: string[] = [];
 
@@ -81,6 +82,7 @@ function ExplorarInner() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const initialCat = params.get("category") || "all";
+  const isArchive = params.get("view") === "archive";
 
   const [datePreset, setDatePreset] = useState<DatePreset>("all");
   const [customDate, setCustomDate] = useState<Date | undefined>(datePreset === "today" ? new Date() : undefined);
@@ -115,6 +117,11 @@ function ExplorarInner() {
       setCustomDate(undefined);
       return;
     }
+    if (view === "archive") {
+      setDatePreset("all");
+      setCustomDate(undefined);
+      return;
+    }
     const dateParam = params.get("date");
     if (dateParam) {
       const parsed = parseISO(dateParam);
@@ -143,7 +150,10 @@ function ExplorarInner() {
 
   const filtered = useMemo(() => {
     const q = term.trim().toLowerCase();
+    const today = saoPauloTodayISO();
     const list = events.filter(ev => {
+      const isoDate = eventDateISO(ev.date);
+      if (isArchive ? (!isoDate || isoDate >= today) : (isoDate && isoDate < today)) return false;
       if (datePreset !== "free" && datePreset !== "kids" && !presetMatches(ev.date, datePreset as any, customDate)) return false;
       if (datePreset === "free" && (ev.is_highlight || ev.highlight_active || !isFreeEventPrice(ev.sale_price))) return false;
       if (datePreset === "kids" && !ev.is_suitable_for_minors && ev.age_rating !== "Livre") return false;
@@ -157,7 +167,14 @@ function ExplorarInner() {
       return true;
     });
 
-    // Ordem: hoje primeiro, depois próximos dias, por fim os sem data / passados
+    if (isArchive) {
+      return [...list].sort((a, b) => {
+        const dateOrder = (eventDateISO(b.date) || "").localeCompare(eventDateISO(a.date) || "");
+        return dateOrder || (b.start_time || "").localeCompare(a.start_time || "");
+      });
+    }
+
+    // Ordem: hoje primeiro e depois os próximos dias.
     const rank = (ev: (typeof list)[number]) => {
       if (!ev.date) return 3;
       let d: Date;
@@ -173,7 +190,7 @@ function ExplorarInner() {
       if (a.date !== b.date) return (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31");
       return (a.start_time || "").localeCompare(b.start_time || "");
     });
-  }, [events, datePreset, customDate, neighborhood, category, term]);
+  }, [events, datePreset, customDate, neighborhood, category, term, isArchive]);
 
   const activeFiltersCount =
     (datePreset !== "all" ? 1 : 0) +
@@ -309,20 +326,27 @@ function ExplorarInner() {
 
       <section className="pt-24 sm:pt-32 pb-10 px-4 max-w-6xl mx-auto">
         <SeoHead
-          title="Buscar rolê na Ilha — agenda completa | AgendIlha"
-          description="Explore a agenda completa da Ilha do Governador: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."
+          title={isArchive ? "Eventos anteriores — arquivo | AgendIlha" : "Buscar rolê na Ilha — agenda completa | AgendIlha"}
+          description={isArchive ? "Relembre os eventos que já rolaram na Ilha do Governador." : "Explore a agenda completa da Ilha do Governador: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."}
           path="/explorar"
         />
         <div className="text-center mb-8 sm:mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-6">
-            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">Agenda completa</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">{isArchive ? "Arquivo" : "Agenda completa"}</span>
           </div>
           <h1 className="text-4xl sm:text-6xl font-bold mb-4 font-display tracking-tight leading-[1.05] text-balance">
-            Buscar rolê <span className="text-secondary">na Ilha</span>
+            {isArchive ? "Eventos anteriores" : <>Buscar rolê <span className="text-secondary">na Ilha</span></>}
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto text-balance leading-relaxed">
-            Filtre por data e categoria pra encontrar o evento certo.
+            {isArchive ? "Os rolês que já aconteceram ficam guardados aqui." : "Filtre por data e categoria pra encontrar o evento certo."}
           </p>
+          <Button
+            variant="outline"
+            className="mt-5 rounded-full"
+            onClick={() => navigate(isArchive ? "/explorar" : "/explorar?view=archive")}
+          >
+            {isArchive ? "Ver próximos eventos" : "Eventos Anteriores / Arquivo"}
+          </Button>
         </div>
 
         {/* Desktop filters */}
@@ -385,7 +409,7 @@ function ExplorarInner() {
 
         {/* Grid */}
         <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight mb-4">
-          Eventos na Ilha do Governador
+          {isArchive ? "Arquivo de eventos" : "Eventos na Ilha do Governador"}
         </h2>
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
