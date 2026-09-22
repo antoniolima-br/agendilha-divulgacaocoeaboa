@@ -25,12 +25,14 @@ function todayISO() {
 }
 
 describe("formatReportAddress", () => {
-  it("monta endereço completo antes do bairro", () => {
+  it("monta endereço completo com bairro, cidade e estado", () => {
     expect(formatReportAddress({
       address_street: " Rua Cambaúba ",
       address_number: " 100 ",
       address_neighborhood: " Jardim Guanabara ",
-    })).toBe("Rua Cambaúba, 100 - Jardim Guanabara");
+      address_city: " Rio de Janeiro ",
+      address_state: " RJ ",
+    })).toBe("Rua Cambaúba, 100 - Jardim Guanabara - Rio de Janeiro/RJ");
   });
 
   it("não deixa separadores soltos quando algum campo está vazio", () => {
@@ -186,6 +188,8 @@ describe("buildCoeaboaDailyReport", () => {
         address_street: "Parque Manoel Bandeira",
         address_number: "s/n",
         address_neighborhood: "Cocotá",
+        address_city: "Rio de Janeiro",
+        address_state: "RJ",
         submission_atrativos: [
           { name: "Linha Vermelha", display_order: 2 },
           { name: "Banda 4X Rock", display_order: 1 },
@@ -201,7 +205,7 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).toContain(
       "🎙️ 18h *BANDA 4X ROCK - LINHA VERMELHA*\n" +
       "👉 Aterro do Cocotá\n" +
-      "📌 Parque Manoel Bandeira, s/n - Cocotá",
+       "📌 Parque Manoel Bandeira, s/n - Cocotá - Rio de Janeiro/RJ",
     );
   });
 

@@ -16,6 +16,8 @@ export interface SummaryEvent {
   address_street?: string | null;
   address_number?: string | null;
   address_neighborhood?: string | null;
+  address_city?: string | null;
+  address_state?: string | null;
   is_highlight?: boolean | null;
   highlight_active?: boolean | null;
   image_url?: string | null;
@@ -35,9 +37,12 @@ function formatTime(t?: string | null): string {
 }
 
 export function formatReportAddress(s: SummaryEvent): string {
-  const address = [s.address_street?.trim(), s.address_number?.trim()].filter(Boolean).join(", ");
+  const street = [s.address_street?.trim(), s.address_number?.trim()].filter(Boolean).join(", ");
   const neighborhood = s.address_neighborhood?.trim();
-  return [address, neighborhood].filter(Boolean).join(" - ");
+  const city = s.address_city?.trim();
+  const state = s.address_state?.trim();
+  const cityState = city && state ? `${city}/${state}` : city || state;
+  return [street, neighborhood, cityState].filter(Boolean).join(" - ");
 }
 
 function eventAttractions(s: SummaryEvent): string {
