@@ -26,12 +26,19 @@ export function useAgendaData() {
 
   // Realtime → invalidate caches.
   useEffect(() => {
+    let invalidateTimer: number | undefined;
+    const invalidate = (queryKey: readonly unknown[]) => {
+      window.clearTimeout(invalidateTimer);
+      invalidateTimer = window.setTimeout(() => {
+        void qc.invalidateQueries({ queryKey });
+      }, 750);
+    };
     const submissionsChannel = supabase
       .channel("submissions-all-updates")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "submissions" },
-        () => qc.invalidateQueries({ queryKey: qk.agenda.events() }),
+        () => invalidate(qk.agenda.events()),
       )
       .subscribe();
 
@@ -40,11 +47,12 @@ export function useAgendaData() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "event_reviews" },
-        () => qc.invalidateQueries({ queryKey: qk.agenda.ratings() }),
+        () => invalidate(qk.agenda.ratings()),
       )
       .subscribe();
 
     return () => {
+      window.clearTimeout(invalidateTimer);
       supabase.removeChannel(submissionsChannel);
       supabase.removeChannel(ratingsChannel);
     };

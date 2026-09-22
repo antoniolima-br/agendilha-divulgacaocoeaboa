@@ -64,6 +64,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
          loop
          muted={isMuted}
          playsInline
+          preload={isActive ? "metadata" : "none"}
          onClick={togglePlay}
        />
        

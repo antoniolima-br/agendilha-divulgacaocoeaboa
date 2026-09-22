@@ -49,3 +49,9 @@
 - [x] Criar acesso público a “Eventos Anteriores / Arquivo” com corte pelo dia de São Paulo.
 - [x] Manter eventos de hoje ativos até o fim do dia e arquivá-los somente no dia seguinte.
 - [x] Variar de forma estável as paletas dos cards gerados sem flyer.
+- [x] Auditar gargalos de frontend, navegação, dados, cache, imagens, PWA e pacotes.
+- [x] Compartilhar o carregamento do perfil e reduzir consultas repetidas de identificação/permissões.
+- [x] Reduzir avaliações baixadas, estabilizar canais e amortecer atualizações em tempo real.
+- [x] Remover animação pesada dos cards e otimizar imagens, fontes, vídeos e carrosséis.
+- [x] Evitar cache offline de dados dinâmicos e reduzir o pré-carregamento de pacotes administrativos.
+- [x] Validar visualmente os fluxos públicos em desktop e celular; fluxos autenticados seguem cobertos por testes automatizados.

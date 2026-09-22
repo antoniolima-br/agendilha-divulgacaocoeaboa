@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -59,30 +60,25 @@ import { handleError } from "@/lib/error-handler";
 
 export function useProfile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<ProfileAddress>(emptyAddress);
-  const [loaded, setLoaded] = useState(false);
+  const queryClient = useQueryClient();
+  const userId = user?.id ?? null;
 
-  useEffect(() => {
-    if (!user) {
-      setProfile(emptyAddress);
-      setLoaded(false);
-      return;
-    }
-    loadProfile(user.id);
-    const refreshProfile = () => loadProfile(user.id);
-    window.addEventListener("agendilha:profile-updated", refreshProfile);
-    return () => window.removeEventListener("agendilha:profile-updated", refreshProfile);
-  }, [user]);
-
-  async function loadProfile(userId: string) {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (data) {
-      setProfile({
+  const profileQuery = useQuery({
+    queryKey: ["profile", userId],
+    enabled: !!userId,
+    staleTime: 5 * 60_000,
+    gcTime: 15 * 60_000,
+    refetchOnWindowFocus: false,
+    queryFn: async (): Promise<ProfileAddress> => {
+      if (!userId) return emptyAddress;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("company_name, responsible_name, email, phone, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, contact_social, nick_name, home_location, work_neighborhood, musical_preferences, event_type_preferences, role, push_notifications_enabled, email_notifications_enabled, notification_frequency, followed_neighborhoods, followed_styles, onboarding_completed")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return emptyAddress;
+      return {
         company_name: data.company_name || "",
         responsible_name: data.responsible_name || "",
         email: data.email || "",
@@ -106,10 +102,18 @@ export function useProfile() {
         followed_neighborhoods: data.followed_neighborhoods || [],
         followed_styles: data.followed_styles || [],
         onboarding_completed: data.onboarding_completed ?? false,
-      });
-    }
-     setLoaded(true);
-   }
+      };
+    },
+  });
+
+  useEffect(() => {
+    if (!userId) return;
+    const refreshProfile = () => {
+      void queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+    };
+    window.addEventListener("agendilha:profile-updated", refreshProfile);
+    return () => window.removeEventListener("agendilha:profile-updated", refreshProfile);
+  }, [queryClient, userId]);
 
   async function saveProfile(data: Partial<ProfileAddress>) {
     if (!user) return;
@@ -121,12 +125,19 @@ export function useProfile() {
     if (error) {
       handleError(error, "Erro ao salvar perfil");
     } else {
-      setProfile((prev) => ({ ...prev, ...data }));
+      queryClient.setQueryData<ProfileAddress>(["profile", user.id], (previous) => ({
+        ...(previous ?? emptyAddress),
+        ...data,
+      }));
       window.dispatchEvent(new Event("agendilha:profile-updated"));
       toast.success("Perfil atualizado!");
     }
 
   }
 
-  return { profile, loaded, saveProfile };
+  return {
+    profile: profileQuery.data ?? emptyAddress,
+    loaded: !userId || profileQuery.isFetched,
+    saveProfile,
+  };
 }

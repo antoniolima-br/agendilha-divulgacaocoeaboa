@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   LogOut,
@@ -38,15 +38,13 @@ export function SidebarMenu({ onClose }: Props) {
     { enabled: isAdmin || isMaster, staleTime: 60_000 }
   );
 
-  const getCurrentRole = (): Role => {
+  const currentRole = useMemo<Role>(() => {
     if (!user) return "public_guest";
     if (isMaster) return "master";
     if (isAdmin) return "admin";
     if (isPromoter) return "promoter";
     return "public_registered";
-  };
-
-  const currentRole = getCurrentRole();
+  }, [isAdmin, isMaster, isPromoter, user]);
 
   const roleLabels: Record<Role, string> = {
     public_guest: "Visitante",
@@ -56,22 +54,22 @@ export function SidebarMenu({ onClose }: Props) {
     master: "Admin Master"
   };
 
-  const filterItemsByRoleAndRoute = (items: SidebarItem[]) => {
+  const filterItemsByRoleAndRoute = useCallback((items: SidebarItem[]) => {
     return items.filter(item => {
       const hasRole = item.roles.includes(currentRole);
       if (!hasRole) return false;
       return routeExists(item.path);
     });
-  };
+  }, [currentRole]);
 
-  const filteredSections = sidebarConfig.map(section => ({
-    ...section,
-    items: filterItemsByRoleAndRoute(section.items)
-  })).filter(section => section.items.length > 0);
+  const filteredSections = useMemo(() => sidebarConfig.map(section => ({
+      ...section,
+      items: filterItemsByRoleAndRoute(section.items)
+    })).filter(section => section.items.length > 0), [filterItemsByRoleAndRoute]);
 
-  const toggleSubmenu = (id: string) => {
+  const toggleSubmenu = useCallback((id: string) => {
     setOpenSubmenus(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground border-r border-sidebar-border w-full max-w-[280px] shadow-xl overflow-hidden animate-in slide-in-from-left duration-300">

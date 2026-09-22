@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => ({
         // Don't precache HTML — always fetch fresh navigations so mobile clients
         // see new builds immediately instead of being stuck on an old shell.
         globPatterns: ['**/*.{js,css,ico,png,svg,jpg,jpeg,webp}'],
+        globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js'],
         cleanupOutdatedCaches: true,
         // Prompt mode: don't auto-skip — wait for the user to click "Atualizar".
         clientsClaim: false,
@@ -75,18 +76,6 @@ export default defineConfig(({ mode }) => ({
               },
             },
           },
-          {
-            urlPattern: ({ url }) => url.origin === 'https://xwuyzqahfoyhdbmtspwf.supabase.co',
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'supabase-api-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 24 hours
-              },
-              networkTimeoutSeconds: 5,
-            },
-          },
         ],
       },
       manifest: {
@@ -128,16 +117,14 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-core': ['react', 'react-dom'],
-          'router': ['react-router-dom'],
-          'ui-primitives': ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-popover', '@radix-ui/react-dropdown-menu'],
-          'animation': ['framer-motion'],
-          'db-client': ['@supabase/supabase-js', '@tanstack/react-query'],
-          'pdf-gen': ['jspdf', 'jspdf-autotable'],
-          'icons': ['lucide-react'],
-          'utils': ['date-fns', 'zod', 'react-hook-form'],
-          'charts': ['recharts'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('/jspdf/') || id.includes('/jspdf-autotable/')) return 'pdf-gen';
+          if (id.includes('/recharts/')) return 'charts';
+          if (id.includes('/framer-motion/')) return 'animation';
+          if (id.includes('/@supabase/') || id.includes('/@tanstack/react-query/')) return 'db-client';
+          if (id.includes('/react-router-dom/')) return 'router';
+          return undefined;
         },
       },
     },

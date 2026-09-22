@@ -55,9 +55,15 @@ export function useEvents(options: {
   });
 
   const ratingsQuery = useQuery({
-    queryKey: qk.agenda.ratings(),
+    queryKey: [...qk.agenda.ratings(), eventsQuery.data?.map((event) => event.id) ?? []],
+    enabled: (options.enabled ?? true) && Boolean(eventsQuery.data?.length),
     queryFn: async (): Promise<Record<string, Rating>> => {
-      const { data, error } = await supabase.from("event_ratings_summary").select("*");
+      const eventIds = eventsQuery.data?.map((event) => event.id) ?? [];
+      if (eventIds.length === 0) return {};
+      const { data, error } = await supabase
+        .from("event_ratings_summary")
+        .select("event_id, average_rating, total_reviews")
+        .in("event_id", eventIds);
       if (error) throw error;
       
       const map: Record<string, Rating> = {};

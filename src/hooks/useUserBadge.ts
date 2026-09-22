@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { handleError } from "@/lib/error-handler";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 
   export type UserStatus = "master" | "admin" | "collaborator" | "artist" | "user" | null;
 
@@ -33,73 +31,18 @@ function buildInitials(name: string): string {
 export function useUserBadge(): UserBadge {
   const { user, isAdmin } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
-  const [status, setStatus] = useState<UserStatus>(null);
-  const [statusLoaded, setStatusLoaded] = useState(false);
-  const [collabName, setCollabName] = useState<string>("");
-
-  useEffect(() => {
-    if (!user) {
-      setStatus(null);
-      setStatusLoaded(true);
-      setCollabName("");
-      return;
-    }
-
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const { data: userRolesData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id);
-
-        const roleNames = userRolesData?.map(r => r.role).filter(Boolean) || [];
-
-        // Always try to fetch collaborator name (used as display fallback)
-        const { data: collab } = await supabase
-          .from("collaborators")
-          .select("name, is_active")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (cancelled) return;
-        if (collab?.name) setCollabName(collab.name);
-
-        if (roleNames.includes('master')) {
-          setStatus("master");
-        } else if (roleNames.includes('admin') || isAdmin) {
-          setStatus("admin");
-        } else if (profile?.role === 'artist') {
-          setStatus("artist");
-        } else if (collab && collab.is_active !== false) {
-          setStatus("collaborator");
-        } else {
-          setStatus("user");
-        }
-
-        // Auto-populate profile.responsible_name from user_metadata
-        const meta = user.user_metadata as UserMetadata | undefined;
-        const metaName = meta?.full_name || meta?.name || "";
-        if (metaName && profileLoaded) {
-          if (profile && !profile.responsible_name) {
-            await supabase
-              .from("profiles")
-              .update({ responsible_name: metaName })
-              .eq("user_id", user.id);
-          }
-        }
-      } catch (err) {
-        handleError(err, { context: "useUserBadge", silent: true });
-      } finally {
-        if (!cancelled) setStatusLoaded(true);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, isAdmin, profile, profileLoaded]);
+  const { isMaster, isAdmin: hasAdminRole, isCollaborator, collaboratorName, loading } = useAppPermissions();
+  const status: UserStatus = !user
+    ? null
+    : isMaster
+      ? "master"
+      : hasAdminRole || isAdmin
+        ? "admin"
+        : profile.role === "artist"
+          ? "artist"
+          : isCollaborator
+            ? "collaborator"
+            : "user";
 
   // Priority: profile name → company → collaborator name → user metadata → email/phone
   const emailLocal = user?.email?.split("@")[0] || "";
@@ -110,7 +53,7 @@ export function useUserBadge(): UserBadge {
   const name =
     profile.responsible_name ||
     profile.company_name ||
-    collabName ||
+    collaboratorName ||
     metaName ||
     fallback ||
     "Usuário";
@@ -129,6 +72,6 @@ export function useUserBadge(): UserBadge {
     initials,
     status,
     label,
-    loaded: profileLoaded && statusLoaded,
+    loaded: profileLoaded && !loading,
   };
 }

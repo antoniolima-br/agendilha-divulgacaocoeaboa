@@ -46,6 +46,7 @@ export function setupPWA() {
   }
   if (!("serviceWorker" in navigator)) return;
 
+  let cleanupListeners: (() => void) | undefined;
   const updateSW = registerSW({
     immediate: true,
     onNeedRefresh() {
@@ -76,7 +77,13 @@ export function setupPWA() {
       document.addEventListener("visibilitychange", checkForUpdate);
       window.addEventListener("focus", checkForUpdate);
       // Periodic check every 30 minutes for long-lived sessions.
-      setInterval(() => registration.update().catch(() => undefined), 30 * 60 * 1000);
+      const intervalId = window.setInterval(() => registration.update().catch(() => undefined), 30 * 60 * 1000);
+      cleanupListeners = () => {
+        document.removeEventListener("visibilitychange", checkForUpdate);
+        window.removeEventListener("focus", checkForUpdate);
+        window.clearInterval(intervalId);
+      };
     },
   });
+  window.addEventListener("pagehide", () => cleanupListeners?.(), { once: true });
 }
