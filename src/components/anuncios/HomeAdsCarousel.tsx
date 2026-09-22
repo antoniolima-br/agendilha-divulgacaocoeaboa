@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 const AUTOPLAY_MS = 4_000;
 const MAX_SPONSORED_ADS = 6;
 
-function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
+function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () => void; compact?: boolean }) {
   const cover = useAdCoverUrl(ad.photos);
   const displayImage = getSponsoredAdCreative(ad.title) || cover;
   const location = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
@@ -27,7 +27,7 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
       className="group relative h-auto w-full overflow-hidden rounded-lg border bg-card p-0 text-left shadow-sm hover:bg-card hover:shadow-md"
       aria-label={`Abrir detalhes do anúncio ${ad.title}`}
     >
-      <div className="aspect-video w-full bg-muted">
+      <div className={cn("w-full bg-muted", compact ? "h-44 sm:h-52" : "aspect-video")}>
         {displayImage ? (
           <img src={displayImage} alt={ad.title} loading="lazy" width={1536} height={864} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
         ) : (
@@ -36,9 +36,9 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
           </div>
         )}
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-background/95 p-4 backdrop-blur-sm">
-        <Badge variant="secondary" className="mb-2">Patrocinado</Badge>
-        <h3 className="line-clamp-1 text-base font-bold text-foreground sm:text-lg">{ad.title}</h3>
+      <div className={cn("absolute inset-x-0 bottom-0 bg-background/95 backdrop-blur-sm", compact ? "p-3 sm:p-4" : "p-4")}>
+        <Badge variant="secondary" className={cn(compact ? "mb-1.5 text-[10px]" : "mb-2")}>Patrocinado</Badge>
+        <h3 className={cn("line-clamp-1 font-bold text-foreground", compact ? "text-sm sm:text-base" : "text-base sm:text-lg")}>{ad.title}</h3>
         {location && (
           <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -50,7 +50,7 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
   );
 }
 
-export function HomeAdsCarousel() {
+export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase" | "banner" }) {
   const { data, isLoading } = usePublishedAds();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -82,12 +82,15 @@ export function HomeAdsCarousel() {
   }, [index, total]);
 
   if (isLoading) return null;
+  const isBanner = variant === "banner";
+
   if (total === 0) {
     return (
-      <section className="mb-12" aria-label="Anúncios da Ilha">
-        <div className="rounded-lg border border-dashed p-6 text-center">
-          <p className="font-semibold">Nenhum anúncio por aqui agora.</p>
-          <p className="mt-1 text-sm text-muted-foreground">Volte mais tarde para conferir as novidades da Ilha.</p>
+      <section className={isBanner ? "mb-8" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+        <div className={cn("rounded-lg border border-dashed text-center", isBanner ? "p-5" : "p-6")}>
+          <Badge variant="outline" className="mb-2 text-[10px] font-semibold uppercase tracking-normal">Publi</Badge>
+          <p className="font-semibold">Espaço para parceiros da Ilha</p>
+          <p className="mt-1 text-sm text-muted-foreground">Novidades e ofertas aparecem por aqui.</p>
         </div>
       </section>
     );
@@ -102,11 +105,11 @@ export function HomeAdsCarousel() {
   };
 
   return (
-    <section className="mb-12" aria-label="Anúncios da Ilha">
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 font-display text-2xl font-bold">
+    <section className={isBanner ? "mb-8" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+      <div className={cn("flex items-center justify-between gap-3", isBanner ? "mb-3" : "mb-6")}>
+        <h2 className={cn("flex items-center gap-2 font-display font-bold", isBanner ? "text-base" : "text-2xl")}>
           <ShoppingBag className="h-5 w-5 text-primary" />
-          Anúncios da Ilha
+          {isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}
         </h2>
         <Button asChild variant="link" className="shrink-0 px-0 font-bold">
           <Link to="/anuncios">Ver todos</Link>
@@ -122,8 +125,8 @@ export function HomeAdsCarousel() {
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
       >
-        <div className="mx-auto max-w-3xl" aria-live="polite">
-          <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
+        <div className={cn("mx-auto", isBanner ? "max-w-4xl" : "max-w-3xl")} aria-live="polite">
+          <SponsoredSlide ad={currentAd} compact={isBanner} onOpen={() => openDetails(currentAd)} />
         </div>
 
         {total > 1 && (
