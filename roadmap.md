@@ -86,3 +86,5 @@
 - [x] Corrigir responsividade do Informe AgendIlha
 
 - [x] Remover Compartilhar Agendilha Informa da barra lateral
+## Concluído
+- [x] Invalidar o módulo antigo que causava erros `explode` e validar a página inicial atual no navegador.
