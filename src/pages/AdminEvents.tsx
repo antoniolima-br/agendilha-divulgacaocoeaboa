@@ -34,7 +34,6 @@ import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { missingPublishFields, shouldOfferGenericFlyer } from "@/lib/publishValidation";
 import { PublishBlockDialog, type PublishBlockInfo } from "@/components/events-admin/PublishBlockDialog";
-import { ChangeRequestsPanel } from "@/components/events-admin/ChangeRequestsPanel";
 
 
 import {
@@ -317,15 +316,9 @@ function AdminEventsInner() {
          />
 
 
-         <AdminEventsKpis kpis={kpis} onSelectStatus={setStatusFilter} />
-
-
-         <ChangeRequestsPanel
-           focusId={typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("change_request") : null}
-         />
+         <AdminEventsKpis kpis={kpis} activeStatus={statusFilter} onSelectStatus={setStatusFilter} />
 
          <AdminEventsFilters
-           kpis={kpis}
            search={search}
            statusFilter={statusFilter}
            categoryFilter={categoryFilter}
