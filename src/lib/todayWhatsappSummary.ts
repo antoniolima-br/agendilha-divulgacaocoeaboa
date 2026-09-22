@@ -41,8 +41,8 @@ export function formatReportAddress(s: SummaryEvent): string {
   const neighborhood = s.address_neighborhood?.trim();
   const city = s.address_city?.trim();
   const state = s.address_state?.trim();
-  const cityState = city && state ? `${city}/${state}` : city || state;
-  return [street, neighborhood, cityState].filter(Boolean).join(" - ");
+  const parts = [street, neighborhood, city, state].filter(Boolean);
+  return parts.length > 0 ? [...parts, "Brasil"].join(" - ") : "";
 }
 
 function eventAttractions(s: SummaryEvent): string {

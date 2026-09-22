@@ -78,3 +78,4 @@
 - [x] Mover o espaço publicitário para baixo do mapa e padronizá-lo com os banners de destaque da Home.
 - [x] Compactar o espaço entre o banner publicitário e o rodapé da Home.
 - [x] Exibir endereço completo com cidade e estado na prévia do Agendilha Informa.
+- [x] Aplicar o endereço completo na linha 📌 do relatório, inclusive no compartilhamento direto.
