@@ -45,7 +45,7 @@
     --input: 36 27% 92%;
     --ring: 36 31% 70%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 40 33% 97%;
     --sidebar-foreground: 24 12% 20%;
@@ -67,8 +67,8 @@
       radial-gradient(at 88% 14%, hsl(36 27% 88% / 0.55) 0px, transparent 55%),
       radial-gradient(at 65% 88%, hsl(30 24% 60% / 0.25) 0px, transparent 55%);
 
-    --shadow-card: 0 1px 2px hsl(24 12% 12% / 0.04), 0 8px 24px -12px hsl(24 12% 12% / 0.10);
-    --shadow-elevated: 0 4px 16px -4px hsl(24 12% 12% / 0.06), 0 24px 56px -20px hsl(24 12% 12% / 0.15);
+    --shadow-card: 0 1px 2px hsl(24 12% 12% / 0.04), 0 6px 18px -12px hsl(24 12% 12% / 0.12);
+    --shadow-elevated: 0 4px 14px -6px hsl(24 12% 12% / 0.08), 0 20px 44px -20px hsl(24 12% 12% / 0.18);
     --shadow-glass: 0 1px 0 0 hsl(0 0% 100% / 0.5) inset, 0 12px 36px -12px hsl(24 12% 12% / 0.12);
 
     --glass-bg: hsl(40 33% 97% / 0.7);
@@ -94,12 +94,13 @@
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     font-feature-settings: "ss01", "cv11", "cv02";
+    line-height: 1.55;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
   }
 }
 
@@ -155,6 +156,15 @@
   @keyframes marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
