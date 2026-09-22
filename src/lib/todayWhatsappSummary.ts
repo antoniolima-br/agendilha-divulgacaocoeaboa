@@ -121,8 +121,8 @@ function formatDayLabel(iso: string): { weekday: string; date: string } {
 function formatEventBlock(s: SummaryEvent): string {
   const nome = s.atrativo_name || s.event_title;
   const local = s.location || s.estabelecimento_name || "";
-  const bairro = s.address_neighborhood || "";
-  const linhaLocal = [local, bairro].filter(Boolean).join(" – ");
+  const address = shortAddress(s);
+  const linhaLocal = [local, address].filter(Boolean).join(" – ");
   const hora = formatTime(s.start_time) + (s.end_time ? ` às ${formatTime(s.end_time)}` : "");
   return [
     `🎙️ *${nome}*`,

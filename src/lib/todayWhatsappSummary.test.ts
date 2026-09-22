@@ -29,6 +29,8 @@ describe("buildWeekWhatsAppSummary", () => {
     event_title: "Show",
     atrativo_name: null,
     location: "Bar do Zé",
+    address_street: "Rua Cambaúba",
+    address_number: "100",
     address_neighborhood: "Cocotá",
     start_time: "20:00",
     end_time: null,
@@ -62,8 +64,8 @@ describe("buildWeekWhatsAppSummary", () => {
     expect(idxRoda).toBeGreaterThan(idxSamba);
     // Evento com atrativo_name é usado no lugar do event_title
     expect(text).toContain("Feijoada");
-    // Local + bairro
-    expect(text).toContain("👉 Bar do Zé – Cocotá");
+    // Local + endereço completo + bairro
+    expect(text).toContain("👉 Bar do Zé – Rua Cambaúba, 100 - Cocotá");
     // Horário
     expect(text).toContain("🕒 19h");
     // Rodapé
@@ -110,6 +112,23 @@ describe("buildTodayWhatsAppSummary", () => {
     expect(text).toContain("Hoje");
     expect(text).not.toContain("Amanha");
     expect(text).toContain("AGENDILHA — Rolês de hoje na Ilha");
+  });
+
+  it("mostra o endereço completo antes do bairro", () => {
+    const today = todayISO();
+    const { text } = buildTodayWhatsAppSummary([
+      {
+        status: "aprovado",
+        event_title: "Samba",
+        date: today,
+        location: "Clube",
+        address_street: "Rua República Árabe da Síria",
+        address_number: "250",
+        address_neighborhood: "Portuguesa",
+      },
+    ]);
+
+    expect(text).toContain("👉 Clube – Rua República Árabe da Síria, 250 - Portuguesa");
   });
 });
 
