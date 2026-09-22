@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { LoadingState } from "@/components/ui/LoadingState";
@@ -5,14 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Plus, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
-import { useMyAds } from "@/data/useAds";
+import { normalizeAds, useMyAds } from "@/data/useAds";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { ROUTES } from "@/routes/config";
 
 export default function MeusAnuncios() {
   const { user } = useAuth();
   const { isPromoter, isAdmin, loading } = useAppPermissions();
-  const { data: anuncios = [], isLoading } = useMyAds(user?.id);
+  const { data, isLoading } = useMyAds(user?.id);
+  const anuncios = useMemo(() => normalizeAds(data), [data]);
 
   if (loading) return <LoadingState message="Verificando seu acesso…" fullPage />;
   if (!user) return <Navigate to={ROUTES.AUTH} replace />;

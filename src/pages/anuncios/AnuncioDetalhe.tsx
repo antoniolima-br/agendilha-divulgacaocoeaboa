@@ -18,7 +18,8 @@ export default function AnuncioDetalhe() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const { data: ad, isLoading } = useAd(id);
-  const { data: urls = {} } = useAdPhotoUrls(ad?.photos ?? []);
+  const photos = Array.isArray(ad?.photos) ? ad.photos : [];
+  const { data: urls = {} } = useAdPhotoUrls(photos);
   const [destaqueAberto, setDestaqueAberto] = useState(false);
 
   useEffect(() => {
@@ -57,9 +58,9 @@ export default function AnuncioDetalhe() {
         </Button>
 
         <div className="rounded-2xl overflow-hidden border bg-muted aspect-[4/3] flex items-center justify-center">
-          {ad.photos[0] && urls[ad.photos[0]] ? (
+          {photos[0] && urls[photos[0]] ? (
             <img
-              src={urls[ad.photos[0]]}
+              src={urls[photos[0]]}
               alt={ad.title}
               className="h-full w-full object-cover"
             />
@@ -68,9 +69,9 @@ export default function AnuncioDetalhe() {
           )}
         </div>
 
-        {ad.photos.length > 1 && (
+        {photos.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {ad.photos.slice(1).map((p) =>
+            {photos.slice(1).map((p) =>
               urls[p] ? (
                 <img
                   key={p}

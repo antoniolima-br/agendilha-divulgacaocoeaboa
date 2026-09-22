@@ -53,7 +53,7 @@ export function usePublishedAds() {
         .order("created_at", { ascending: false })
         .limit(6);
       if (error) throw error;
-      return normalize(data);
+      return normalizeAds(data);
     },
     staleTime: 60 * 1000,
   });
@@ -72,7 +72,7 @@ export function useMyAds(userId: string | undefined) {
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return normalize(data);
+      return normalizeAds(data);
     },
   });
 }
@@ -88,7 +88,7 @@ export function useAllAds(enabled: boolean) {
         .select(AD_COLUMNS)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return normalize(data);
+      return normalizeAds(data);
     },
   });
 }
@@ -106,7 +106,7 @@ export function useAd(id: string | undefined) {
         .eq("id", id)
         .maybeSingle();
       if (error) throw error;
-      return data ? normalize([data])[0] : null;
+      return data ? normalizeAds([data])[0] ?? null : null;
     },
   });
 }
@@ -133,7 +133,9 @@ export function useCreateAd() {
         .select(AD_COLUMNS)
         .single();
       if (error) throw error;
-      return normalize([data])[0];
+      const created = normalizeAds([data])[0];
+      if (!created) throw new Error("O anúncio salvo voltou com dados inválidos.");
+      return created;
     },
     onSuccess: () => void qc.invalidateQueries({ queryKey: ADS_KEY }),
   });
@@ -188,13 +190,48 @@ export function useDeleteAd() {
   });
 }
 
-function normalize(rows: unknown): Ad[] {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isAdStatus(value: unknown): value is AdStatus {
+  return value === "pendente" || value === "publicado" || value === "recusado";
+}
+
+/** Normaliza respostas e caches antes de qualquer lista de anúncios ser renderizada. */
+export function normalizeAds(rows: unknown): Ad[] {
   if (!Array.isArray(rows)) return [];
 
   return rows
-    .filter((row): row is Ad => Boolean(row) && typeof row === "object")
-    .map((row) => ({
-      ...row,
-      photos: Array.isArray(row.photos) ? row.photos.filter((photo): photo is string => typeof photo === "string") : [],
+    .filter(isRecord)
+    .filter((row) =>
+      typeof row.id === "string" &&
+      typeof row.user_id === "string" &&
+      typeof row.title === "string" &&
+      typeof row.description === "string" &&
+      typeof row.category === "string" &&
+      typeof row.contact_whatsapp === "string" &&
+      isAdStatus(row.status),
+    )
+    .map((row): Ad => ({
+      id: row.id as string,
+      user_id: row.user_id as string,
+      title: row.title as string,
+      description: row.description as string,
+      category: row.category as string,
+      contact_whatsapp: row.contact_whatsapp as string,
+      status: row.status as AdStatus,
+      price_cents: typeof row.price_cents === "number" && Number.isFinite(row.price_cents) ? row.price_cents : null,
+      city: typeof row.city === "string" ? row.city : null,
+      neighborhood: typeof row.neighborhood === "string" ? row.neighborhood : null,
+      photos: Array.isArray(row.photos)
+        ? row.photos.filter((photo): photo is string => typeof photo === "string" && photo.trim().length > 0)
+        : [],
+      rejection_reason: typeof row.rejection_reason === "string" ? row.rejection_reason : null,
+      is_highlight: row.is_highlight === true,
+      highlight_plan_id: typeof row.highlight_plan_id === "string" ? row.highlight_plan_id : null,
+      highlight_until: typeof row.highlight_until === "string" ? row.highlight_until : null,
+      views_count: typeof row.views_count === "number" && Number.isFinite(row.views_count) ? row.views_count : 0,
+      created_at: typeof row.created_at === "string" ? row.created_at : "",
     }));
 }
