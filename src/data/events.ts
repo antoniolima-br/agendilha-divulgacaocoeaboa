@@ -4,6 +4,7 @@ import { handleError } from "@/lib/error-handler";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { qk } from "./queryKeys";
 import { useCallback } from "react";
+import { eventDateISO, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 
 export type Rating = { average: number; total: number };
 
@@ -52,11 +53,27 @@ export function useEvents(options: {
           moderation_status,
           slug
         `)
-        .eq("status", "aprovado")
-        .neq("moderation_status", "blocked");
+        .in("status", [...PUBLIC_EVENT_STATUSES])
+        .or("moderation_status.is.null,moderation_status.neq.blocked");
       
       if (error) throw error;
-      return normalizeEvents(data);
+      const events = normalizeEvents(data);
+
+      if (import.meta.env.DEV) {
+        if (events.length === 0) {
+          console.info("[agenda] Nenhum evento público retornado pela consulta.");
+        }
+
+        const invalidDates = events
+          .filter((event) => !eventDateISO(event.date))
+          .map((event) => ({ id: event.id, date: event.date, status: event.status }));
+
+        if (invalidDates.length > 0) {
+          console.warn("[agenda] Eventos ignorados por data ausente ou inválida:", invalidDates);
+        }
+      }
+
+      return events;
     },
     enabled: options.enabled,
     staleTime: options.staleTime ?? 60_000,

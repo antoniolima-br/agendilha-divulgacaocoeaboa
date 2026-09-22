@@ -1,18 +1,13 @@
 import { toast } from "sonner";
 import { getShareData, buildFullAddress } from "@/lib/sharing";
 import type { AgendaEvent } from "./types";
+import { eventDateISO } from "@/lib/eventDate";
 
 export function parseDateToObj(dateStr: string | null): Date | null {
-  if (!dateStr) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d);
-  }
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-    const [d, m, y] = dateStr.split("/").map(Number);
-    return new Date(y, m - 1, d);
-  }
-  return null;
+  const normalized = eventDateISO(dateStr);
+  if (!normalized) return null;
+  const [year, month, day] = normalized.split("-").map(Number);
+  return new Date(year, month - 1, day, 12);
 }
 
 export function formatDayLabel(dateStr: string | null): string {

@@ -55,7 +55,7 @@ export function useAgendaFilters(params: {
     const today = saoPauloTodayISO();
     return events.filter((e) => {
       const date = eventDateISO(e.date);
-      return !date || date >= today;
+      return date !== "" && date >= today;
     });
   }, [events]);
 
