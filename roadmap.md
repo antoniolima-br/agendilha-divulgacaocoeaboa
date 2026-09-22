@@ -85,4 +85,4 @@
 
 - [x] Corrigir responsividade do Informe AgendIlha
 
-- [ ] Remover Compartilhar Agendilha Informa da barra lateral
+- [x] Remover Compartilhar Agendilha Informa da barra lateral
