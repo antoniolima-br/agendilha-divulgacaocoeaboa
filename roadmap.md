@@ -82,3 +82,5 @@
 - [x] Revisar interface mobile-first: telas principais, alvos de toque e menus/modais responsivos
 
 - [x] Completar varredura mobile-first global de containers, grids, tabelas e tipografia
+
+- [ ] Corrigir responsividade do Informe AgendIlha
