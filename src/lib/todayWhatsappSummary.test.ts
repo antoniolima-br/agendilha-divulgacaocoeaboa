@@ -40,6 +40,19 @@ describe("formatReportAddress", () => {
     expect(formatReportAddress({ address_street: "Estrada do Galeão" })).toBe("Estrada do Galeão - Brasil");
     expect(formatReportAddress({})).toBe("");
   });
+
+  it("completa o logradouro pelo estabelecimento vinculado quando o evento não tem rua", () => {
+    expect(formatReportAddress({
+      address_neighborhood: "Portuguesa",
+      address_city: "Rio de Janeiro",
+      address_state: "RJ",
+      estabelecimento: {
+        endereco: "Rua Haroldo Lôbo",
+        numero: "400",
+        bairro: "Portuguesa",
+      },
+    })).toBe("Rua Haroldo Lôbo, 400 - Portuguesa - Rio de Janeiro - RJ - Brasil");
+  });
 });
 
 describe("buildWeekWhatsAppSummary", () => {

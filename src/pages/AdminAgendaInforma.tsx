@@ -35,6 +35,7 @@ interface Ev {
   highlight_active?: boolean | null;
   image_url: string | null;
   submission_atrativos: Array<{ name: string | null; display_order: number | null }> | null;
+  estabelecimento: { endereco: string | null; numero: string | null; bairro: string | null } | null;
 }
 
 function todayISO() {
@@ -60,7 +61,7 @@ export default function AdminAgendaInforma() {
     supabase
       .from("submissions")
       .select(
-        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, address_city, address_state, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, image_url, submission_atrativos(name, display_order)"
+        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, address_city, address_state, category, atrativo_name, atrativo_style, short_copy, sale_price, is_highlight, image_url, submission_atrativos(name, display_order), estabelecimento:estabelecimentos(endereco, numero, bairro)"
       )
       .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", addDaysToISO(date, -1))
