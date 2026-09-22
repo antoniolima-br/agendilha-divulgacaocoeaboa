@@ -133,6 +133,10 @@ Deno.serve(async (req) => {
         company_type: profile?.company_type || null,
         responsible_name,
         phone,
+        address_neighborhood: profile?.address_neighborhood || null,
+        musical_preferences: Array.isArray(profile?.musical_preferences)
+          ? profile.musical_preferences.filter((item): item is string => typeof item === "string")
+          : [],
       };
     });
 
