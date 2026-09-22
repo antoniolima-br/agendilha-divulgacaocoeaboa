@@ -35,6 +35,7 @@ export function AdCard({ ad, showStatus = false, to }: Props) {
             src={cover}
             alt={ad.title}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover group-hover:scale-105 transition-transform"
           />
         ) : (

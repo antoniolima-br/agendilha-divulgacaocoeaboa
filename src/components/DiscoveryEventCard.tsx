@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Star, Heart, Share2, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, memo } from "react";
 import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -76,12 +75,7 @@ export const DiscoveryEventCard = memo(({
   const showGeneratedArtwork = !officialImage || hasError;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "50px" }}
-      transition={{ duration: 0.35 }}
-    >
+    <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
       <Card
         onClick={onClick}
         role="button"
@@ -108,17 +102,11 @@ export const DiscoveryEventCard = memo(({
            isHorizontal && "aspect-[16/9]",
           isCompact && "aspect-square h-[220px] xs:h-[240px]"
          )}>
-          <AnimatePresence>
             {!isLoaded && !showGeneratedArtwork && (
-              <motion.div
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-muted/10 animate-pulse z-10 p-4"
-              >
+              <div className="absolute inset-0 bg-muted/10 animate-pulse z-10 p-4">
                 <Skeleton className="h-full w-full rounded-2xl" />
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
             {showGeneratedArtwork ? (
               <div className={cn("absolute inset-0 flex items-center justify-center overflow-hidden", palette)} aria-hidden>
@@ -237,7 +225,7 @@ export const DiscoveryEventCard = memo(({
              </div>
          </div>
        </Card>
-    </motion.div>
+    </div>
   );
 });
 

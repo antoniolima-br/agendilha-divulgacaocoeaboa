@@ -30,7 +30,6 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
           <Skeleton className="h-full w-full rounded-lg" />
         </div>
       )}
-      {src && <link rel="prefetch" href={src} as="image" />}
       {showGeneratedArtwork ? (
         <div className={cn("absolute inset-0 flex items-center justify-center", palette)} aria-hidden>
           <span className="select-none font-display text-5xl font-black opacity-15">
@@ -80,7 +79,8 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
           setError(true);
           setIsLoaded(true);
         }}
-        loading="eager"
+        loading="lazy"
+        decoding="async"
       />}
       {(!src || error) && Icon && (
         <div className="absolute inset-0 flex items-center justify-center bg-foreground/10 backdrop-blur-[1px] z-20">

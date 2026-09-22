@@ -94,8 +94,8 @@ export function HomeMixedHeroCarousel({
           aria-label={`Abrir evento ${title}`}
         >
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted sm:aspect-[16/7]">
-            <img src={eventImage} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl" />
-            <img src={eventImage} alt={title} className="relative h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
+            <img src={eventImage} alt="" aria-hidden="true" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl" />
+            <img src={eventImage} alt={title} decoding="async" fetchPriority="high" className="relative h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
@@ -149,8 +149,8 @@ export function HomeMixedHeroCarousel({
                 aria-label={`Destacar evento ${event.event_title || "Evento"}`}
               >
                 <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-muted sm:h-24 sm:w-20">
-                  <img src={thumbnail} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-md" />
-                  <img src={thumbnail} alt="" className="relative h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
+                  <img src={thumbnail} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-md" />
+                  <img src={thumbnail} alt="" loading="lazy" decoding="async" className="relative h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-2 whitespace-normal text-sm font-semibold leading-snug text-foreground">
@@ -174,11 +174,15 @@ export function HomeMixedHeroCarousel({
                 src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
                 alt=""
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
               />
               <img
                 src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
                 alt={selectedEvent.event_title || selectedEvent.atrativo_style || "Evento"}
+                loading="lazy"
+                decoding="async"
                 className="relative h-full w-full object-contain"
               />
             </div>
