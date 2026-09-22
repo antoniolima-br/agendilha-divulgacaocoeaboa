@@ -308,7 +308,7 @@ function AdminEventsInner() {
   return (
     <PageContainer
       maxWidth="7xl"
-      className="flex h-[calc(100dvh-5rem)] min-h-0 flex-col space-y-0 overflow-hidden py-4 sm:py-5"
+      className="flex min-h-0 flex-col space-y-0 py-4 sm:py-5 md:h-[calc(100dvh-5rem)] md:overflow-hidden"
     >
          <PublishBlockDialog info={publishBlock} onClose={() => setPublishBlock(null)} />
          <div className="shrink-0">
@@ -333,7 +333,7 @@ function AdminEventsInner() {
          </div>
 
         {/* Main List */}
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-lg border border-border bg-card shadow-sm [scrollbar-gutter:stable]">
+        <div className="h-[65dvh] min-h-0 shrink-0 overflow-y-auto overscroll-contain rounded-lg border border-border bg-card shadow-sm [scrollbar-gutter:stable] md:h-auto md:flex-1">
            <div className="sticky top-0 z-10 hidden grid-cols-12 gap-4 border-b border-border bg-card/95 px-6 py-3 text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground backdrop-blur md:grid">
               <div className="col-span-3">Informações do Evento</div>
               <div className="col-span-2">Cronograma</div>
