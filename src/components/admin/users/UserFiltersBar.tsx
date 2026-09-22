@@ -6,19 +6,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Users, Filter, Calendar } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-export interface QuickChip {
-  key: string;
-  label: string;
-  count: number;
-  color: string;
-}
+import { Search, Users, Filter, Calendar, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   isMaster: boolean;
-  chips: QuickChip[];
   filterSearch: string;
   setFilterSearch: (v: string) => void;
   filterType: string;
@@ -31,7 +23,6 @@ interface Props {
 
 export function UserFiltersBar({
   isMaster,
-  chips,
   filterSearch,
   setFilterSearch,
   filterType,
@@ -42,45 +33,32 @@ export function UserFiltersBar({
   setFilterPeriod,
 }: Props) {
   return (
-    <>
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        {chips.map((chip) => {
-          const active = filterStatus === chip.key;
-          return (
-            <button
-              key={chip.key}
-              onClick={() => setFilterStatus(chip.key)}
-              className={cn(
-                "inline-flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
-                active
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                  : chip.color + " hover:opacity-80"
-              )}
-            >
-              {chip.label}
-              <span
-                className={cn(
-                  "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold",
-                  active ? "bg-primary-foreground/20" : "bg-background/60"
-                )}
-              >
-                {chip.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 p-3 sm:p-4 bg-card border border-border rounded-xl shadow-sm">
-        <div className="relative">
+    <div className="space-y-3 rounded-lg border border-border bg-card p-3 shadow-sm sm:p-4">
+      <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar por nome ou email..."
-            className="pl-9"
+            type="search"
+            aria-label="Pesquisa global de usuários"
+            placeholder="Pesquisar nome, e-mail, WhatsApp, bairro, tipo ou papel..."
+            className="h-12 pl-10 pr-11 text-base"
             value={filterSearch}
             onChange={(e) => setFilterSearch(e.target.value)}
           />
-        </div>
+          {filterSearch && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-1.5 top-1/2 h-9 w-9 -translate-y-1/2"
+              aria-label="Limpar pesquisa"
+              onClick={() => setFilterSearch("")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
 
         <Select value={filterType} onValueChange={setFilterType}>
           <SelectTrigger className="w-full">
@@ -135,6 +113,6 @@ export function UserFiltersBar({
           </SelectContent>
         </Select>
       </div>
-    </>
+    </div>
   );
 }
