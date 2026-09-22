@@ -1,3 +1,4 @@
+- [ ] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
 - [x] Tornar telefone opcional nos cadastros de atrativos, artistas e estabelecimentos, mantendo validação quando preenchido.
