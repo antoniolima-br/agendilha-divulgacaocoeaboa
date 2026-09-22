@@ -69,3 +69,4 @@
 - [x] Variar layouts, paletas e composições dos flyers padrão gerados automaticamente.
 - [x] Finalizar textos, agrupamento administrativo e filtros segmentados premium em um único bloco.
 - [x] Agrupar Cadastros e Moderação no menu e adicionar rolagem própria às listas de estabelecimentos.
+- [x] Diferenciar os atalhos e títulos administrativos com “Gerenciar Atrativos” e “Gerenciar Estabelecimentos”.

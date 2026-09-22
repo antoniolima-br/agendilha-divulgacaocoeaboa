@@ -111,8 +111,8 @@ export default function AdminEstabelecimentos() {
   return (
     <PageContainer maxWidth="5xl">
       <SectionHeader
-        title="Estabelecimentos"
-        subtitle="Locais cadastrados na agenda — clique no card para ver os detalhes e editar."
+        title="Gerenciar Estabelecimentos"
+        subtitle="Consulte e edite os locais cadastrados na agenda."
         rightElement={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full border border-border">

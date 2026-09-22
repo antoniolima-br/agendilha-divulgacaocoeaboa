@@ -150,8 +150,8 @@ export default function AdminAtrativos() {
   return (
     <PageContainer maxWidth="5xl">
       <SectionHeader
-        title="Atrativos"
-        subtitle="Festas, rodas, shows, projetos — a curadoria oficial da agenda."
+        title="Gerenciar Atrativos"
+        subtitle="Consulte, aprove e edite os atrativos cadastrados na agenda."
         rightElement={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full border border-border">
