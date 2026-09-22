@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarPlus, Home, Menu, Music2 } from "lucide-react";
+import { CalendarPlus, Home, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,7 +8,6 @@ interface Props {
 
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
-  { label: "Atrações", icon: Music2, path: "/artistas", match: (p: string) => p.startsWith("/artistas") || p.startsWith("/artista/") },
   { label: "Divulgar", icon: CalendarPlus, path: "/divulgador/status", match: (p: string) => p.startsWith("/divulgador") || p.startsWith("/enviar-evento") },
 ];
 
@@ -32,7 +31,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
       aria-label="Navegação principal"
       className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="grid grid-cols-4">
+      <ul className="grid grid-cols-3 px-3">
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -41,7 +40,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
               <Link
                 to={item.path}
                 className={cn(
-                  "flex h-14 flex-col items-center justify-center gap-0.5 px-1 transition-colors",
+                  "flex h-16 flex-col items-center justify-center gap-1 px-3 transition-colors",
                   active ? "text-primary" : "text-muted-foreground"
                 )}
               >
@@ -58,7 +57,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             type="button"
             onClick={onMenuClick}
             aria-label="Abrir menu"
-            className="flex h-14 w-full flex-col items-center justify-center gap-0.5 px-1 text-muted-foreground transition-colors active:text-primary"
+            className="flex h-16 w-full flex-col items-center justify-center gap-1 px-3 text-muted-foreground transition-colors active:text-primary"
           >
             <Menu className="h-5 w-5 shrink-0" />
             <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
@@ -71,5 +70,5 @@ export function MobileTabBar({ onMenuClick }: Props) {
 
 /** Espaçador para o conteúdo não ficar embaixo da barra inferior. */
 export function MobileTabBarSpacer() {
-  return <div className="md:hidden h-14 pb-[env(safe-area-inset-bottom)]" aria-hidden="true" />;
+  return <div className="md:hidden h-16 pb-[env(safe-area-inset-bottom)]" aria-hidden="true" />;
 }
