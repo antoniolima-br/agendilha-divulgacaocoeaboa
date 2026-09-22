@@ -5,7 +5,7 @@ import { MapPin, Calendar, Star, Heart, Share2, Music, Utensils, Theater, Trophy
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, memo } from "react";
-import { getEventFallbackImage } from "@/lib/event-utils";
+import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useThumbnailCache } from "@/hooks/useThumbnailCache";
 import { formatBrazilianDate } from "@/lib/date-utils";
@@ -66,9 +66,14 @@ export const DiscoveryEventCard = memo(({
 
   const fallbackImage = useMemo(() => getEventFallbackImage(event.category), [event.category]);
   const officialImage = event.image_url || event.imageUrl;
-  const sourceImage = hasError ? fallbackImage : (officialImage || fallbackImage);
-  const cachedThumb = useThumbnailCache(event.id, isCompact ? sourceImage : undefined);
+  const palette = useMemo(
+    () => getEventFallbackPalette(`${event.id}:${event.category || "outros"}`),
+    [event.category, event.id],
+  );
+  const sourceImage = hasError ? fallbackImage : officialImage;
+  const cachedThumb = useThumbnailCache(event.id, isCompact && sourceImage ? sourceImage : undefined);
   const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
+  const showGeneratedArtwork = !officialImage || hasError;
 
   return (
     <motion.div
@@ -104,7 +109,7 @@ export const DiscoveryEventCard = memo(({
           isCompact && "aspect-square h-[220px] xs:h-[240px]"
          )}>
           <AnimatePresence>
-            {!isLoaded && (
+            {!isLoaded && !showGeneratedArtwork && (
               <motion.div
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -115,21 +120,29 @@ export const DiscoveryEventCard = memo(({
             )}
           </AnimatePresence>
 
-            <img
-              src={finalImage}
-              alt={event.event_title || "Evento"}
-              loading={isLarge ? "eager" : "lazy"}
-              decoding="async"
-              onLoad={() => setIsLoaded(true)}
-              onError={() => {
-                setHasError(true);
-                setIsLoaded(true);
-              }}
-              className={cn(
-               "h-full w-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-[1.06]",
-                !isLoaded ? "opacity-0 scale-105 blur-sm" : "opacity-100 scale-100 blur-0"
-              )}
-            />
+            {showGeneratedArtwork ? (
+              <div className={cn("absolute inset-0 flex items-center justify-center overflow-hidden", palette)} aria-hidden>
+                <span className="select-none font-display text-8xl font-black opacity-15">
+                  {(event.event_title || "Coé").trim().charAt(0).toUpperCase()}
+                </span>
+              </div>
+            ) : (
+              <img
+                src={finalImage}
+                alt={event.event_title || "Evento"}
+                loading={isLarge ? "eager" : "lazy"}
+                decoding="async"
+                onLoad={() => setIsLoaded(true)}
+                onError={() => {
+                  setHasError(true);
+                  setIsLoaded(true);
+                }}
+                className={cn(
+                  "h-full w-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-[1.06]",
+                  !isLoaded ? "opacity-0 scale-105 blur-sm" : "opacity-100 scale-100 blur-0"
+                )}
+              />
+            )}
            <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 from-[12%] via-foreground/30 via-[45%] to-transparent to-[78%] pointer-events-none" />
            
            {/* Top Badges Left */}

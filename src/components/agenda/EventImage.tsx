@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getEventFallbackImage, normalizeText } from "@/lib/event-utils";
+import { getEventFallbackImage, getEventFallbackPalette, normalizeText } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 
 interface EventImageProps {
@@ -15,6 +15,8 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
   const fallback = useMemo(() => getEventFallbackImage(category), [category]);
+  const palette = useMemo(() => getEventFallbackPalette(`${alt}:${category || "outros"}`), [alt, category]);
+  const showGeneratedArtwork = !src || error;
 
   useEffect(() => {
     setIsLoaded(false);
@@ -23,13 +25,19 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
 
   return (
     <div className={cn("relative overflow-hidden bg-muted/20", className)}>
-      {!isLoaded && (
+      {!isLoaded && !showGeneratedArtwork && (
         <div className="absolute inset-0 z-10 p-2">
           <Skeleton className="h-full w-full rounded-lg" />
         </div>
       )}
       {src && <link rel="prefetch" href={src} as="image" />}
-      <img
+      {showGeneratedArtwork ? (
+        <div className={cn("absolute inset-0 flex items-center justify-center", palette)} aria-hidden>
+          <span className="select-none font-display text-5xl font-black opacity-15">
+            {(alt || "Coé").trim().charAt(0).toUpperCase()}
+          </span>
+        </div>
+      ) : <img
         src={error ? fallback : src || fallback}
         alt={alt}
         key={src || "fallback"}
@@ -73,10 +81,10 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
           setIsLoaded(true);
         }}
         loading="eager"
-      />
+      />}
       {(!src || error) && Icon && (
-        <div className="absolute inset-0 bg-black/20 flex items-center justify-center backdrop-blur-[1px] z-20">
-          <Icon className="h-6 w-6 text-white drop-shadow-md" />
+        <div className="absolute inset-0 flex items-center justify-center bg-foreground/10 backdrop-blur-[1px] z-20">
+          <Icon className="h-6 w-6 text-current drop-shadow-md" />
         </div>
       )}
     </div>
