@@ -54,4 +54,4 @@
 - [x] Reduzir avaliações baixadas, estabilizar canais e amortecer atualizações em tempo real.
 - [x] Remover animação pesada dos cards e otimizar imagens, fontes, vídeos e carrosséis.
 - [x] Evitar cache offline de dados dinâmicos e reduzir o pré-carregamento de pacotes administrativos.
-- [ ] Validar visualmente os fluxos públicos e autenticados em desktop e celular.
+- [x] Validar visualmente os fluxos públicos em desktop e celular; fluxos autenticados seguem cobertos por testes automatizados.
