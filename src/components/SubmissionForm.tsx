@@ -723,7 +723,7 @@ export default function SubmissionForm() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 animate-in zoom-in-95 duration-500">
         <CheckCircle2 className="h-20 w-20 text-green-500" />
-        <h1 className="text-3xl font-bold">Sucesso!</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Sucesso!</h1>
         <p className="text-muted-foreground">Seu evento foi enviado para moderação.</p>
         <Button onClick={() => navigate("/agenda")}>Voltar para a Agenda</Button>
       </div>
@@ -731,7 +731,7 @@ export default function SubmissionForm() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="mx-auto w-full max-w-screen-lg min-w-0 px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 space-y-3">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-bold uppercase tracking-widest text-primary">

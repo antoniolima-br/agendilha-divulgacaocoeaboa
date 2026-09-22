@@ -29,9 +29,9 @@ export function MobileTabBar({ onMenuClick }: Props) {
   return (
     <nav
       aria-label="Navegação principal"
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
     >
-      <ul className="grid grid-cols-3 px-3">
+       <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-3 px-2 xs:px-3">
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;

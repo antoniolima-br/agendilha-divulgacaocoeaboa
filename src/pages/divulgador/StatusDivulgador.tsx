@@ -86,7 +86,7 @@ export default function StatusDivulgador() {
             Divulgar novo evento
           </Button>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
             <Button 
               variant="secondary"
               className="rounded-full h-12 font-bold"
@@ -212,7 +212,7 @@ export default function StatusDivulgador() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 text-center">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 text-center">
             <div className="p-4 rounded-2xl border border-foreground/5 bg-foreground/[0.01]">
               <span className="block text-lg font-bold text-primary">Zero</span>
               <span className="text-[10px] uppercase font-bold text-foreground/50 tracking-widest">Custo</span>

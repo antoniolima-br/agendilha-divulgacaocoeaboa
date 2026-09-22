@@ -42,7 +42,7 @@ export default function CadastroEscolha() {
           <p className="text-sm font-bold uppercase tracking-wide text-primary">
             AgendIlha · Coé a Boa
           </p>
-          <h1 className="text-3xl sm:text-4xl font-black font-display text-foreground leading-tight">
+          <h1 className="text-2xl sm:text-4xl font-black font-display text-foreground leading-tight">
             Como você quer participar?
           </h1>
           <p className="text-base text-muted-foreground">

@@ -153,7 +153,7 @@ export default function Auth() {
               )}
               Entrar
             </Button>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
               <Button asChild type="button" variant="outline" className="w-full font-display font-semibold text-[11px] sm:text-xs">
                 <Link to="/forgot-password?tab=senha">
                   <Lock className="mr-1.5 h-3.5 w-3.5" />

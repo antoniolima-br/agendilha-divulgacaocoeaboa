@@ -99,7 +99,7 @@ export default function AdminWhatsAppTemplates() {
           <MessageSquare className="h-4 w-4" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Backoffice</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-black tracking-tight uppercase">Templates WhatsApp</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight uppercase">Templates WhatsApp</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">
           Mensagens enviadas automaticamente ao divulgador quando o evento é aprovado ou rejeitado.
         </p>

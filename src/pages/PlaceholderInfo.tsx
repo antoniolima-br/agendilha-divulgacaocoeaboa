@@ -10,11 +10,11 @@ interface Props {
 
 export function PlaceholderInfo({ title, description, eyebrow = "Em breve" }: Props) {
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 py-16 space-y-4">
+    <div className="mx-auto flex min-h-[70vh] w-full max-w-screen-lg flex-col items-center justify-center space-y-4 px-4 py-16 text-center sm:px-6">
       <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-foreground/55">
         {eyebrow}
       </span>
-      <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight max-w-2xl">
+      <h1 className="max-w-2xl break-words font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
         {title}
       </h1>
       <p className="text-foreground/70 max-w-xl leading-relaxed">{description}</p>
@@ -39,12 +39,12 @@ function InfoPage({
   sections: { heading: string; body: string }[];
 }) {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16 space-y-8">
+    <div className="mx-auto w-full max-w-screen-md space-y-8 px-4 py-16 sm:px-6">
       <header className="space-y-3">
         <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-foreground/55">
           {eyebrow}
         </span>
-        <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="break-words font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{title}</h1>
         <p className="text-foreground/70 leading-relaxed">{intro}</p>
       </header>
 

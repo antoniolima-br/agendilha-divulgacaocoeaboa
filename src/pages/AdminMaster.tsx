@@ -77,7 +77,7 @@ export default function AdminMaster() {
       />
 
       <Tabs defaultValue="intelligence" className="space-y-8">
-        <TabsList className="bg-muted/50 p-1 rounded-full w-full max-w-2xl mx-auto grid grid-cols-4 h-10 sm:h-12">
+        <TabsList className="bg-muted/50 p-1 rounded-full w-full max-w-2xl mx-auto grid grid-cols-2 sm:grid-cols-4 h-auto sm:h-12">
           <TabsTrigger value="intelligence" className="rounded-full gap-2 font-bold text-[10px] sm:text-xs uppercase tracking-widest py-2 px-3">
             <LayoutDashboard className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> <span className="hidden xs:inline">Inteligência</span><span className="xs:hidden">Dados</span>
           </TabsTrigger>

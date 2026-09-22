@@ -90,9 +90,9 @@ export const DiscoveryEventCard = memo(({
           "group cursor-pointer overflow-hidden border-none bg-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-foreground/10 active:scale-[0.985] focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 outline-none",
           isHorizontal ? "w-full" : 
             !className?.includes('w-') && (
-              isLarge ? "w-[260px] xs:w-[280px] sm:w-[320px]" :
-              isCompact ? "w-[180px] xs:w-[220px]" :
-              isSmall ? "w-[150px] xs:w-[180px]" : "w-[150px] xs:w-[180px]"
+              isLarge ? "w-[min(260px,calc(100vw-2rem))] xs:w-[280px] sm:w-[320px]" :
+              isCompact ? "w-[min(180px,calc(100vw-2rem))] xs:w-[220px]" :
+              isSmall ? "w-[min(150px,calc(100vw-2rem))] xs:w-[180px]" : "w-[min(150px,calc(100vw-2rem))] xs:w-[180px]"
             ),
           className
         )}

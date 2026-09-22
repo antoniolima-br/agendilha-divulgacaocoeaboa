@@ -316,7 +316,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
             <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
               <Layout className="h-3 w-3" /> Layout & Estilo
             </Label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
               <Select value={template} onValueChange={setTemplate}>
                 <SelectTrigger className="h-11 rounded-xl">
                   <SelectValue placeholder="Estilo Visual" />
@@ -362,7 +362,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
           </div>
 
           <div className="pt-6 border-t border-border flex flex-col gap-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
               <Button 
                 onClick={handleDownload} 
                 variant="outline" 

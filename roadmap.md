@@ -81,4 +81,4 @@
 - [x] Aplicar o endereço completo na linha 📌 do relatório, inclusive no compartilhamento direto.
 - [x] Revisar interface mobile-first: telas principais, alvos de toque e menus/modais responsivos
 
-- [ ] Completar varredura mobile-first global de containers, grids, tabelas e tipografia
+- [x] Completar varredura mobile-first global de containers, grids, tabelas e tipografia

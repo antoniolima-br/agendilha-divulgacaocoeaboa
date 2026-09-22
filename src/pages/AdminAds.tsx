@@ -203,7 +203,7 @@ export default function AdminAds() {
       <div className="space-y-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight inline-flex items-center gap-2">
+            <h1 className="text-xl sm:text-3xl font-black tracking-tight inline-flex items-center gap-2">
               <ShoppingBag className="h-6 w-6 text-primary" />
               Patrocinadores
             </h1>
@@ -305,7 +305,7 @@ export default function AdminAds() {
 
                   {ad.status !== "recusado" && (
                     <div className="flex flex-wrap items-end gap-2">
-                      <div className="space-y-1 flex-1 min-w-[220px]">
+                      <div className="space-y-1 w-full sm:min-w-[220px] sm:flex-1">
                         <Label htmlFor={`motivo-${ad.id}`} className="text-xs">
                           Motivo da recusa
                         </Label>

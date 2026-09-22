@@ -87,7 +87,7 @@ export default function CadastroPromotor() {
           <p className="text-xs font-bold uppercase tracking-widest text-rose-600">
             Divulgador
           </p>
-          <h1 className="text-3xl font-black font-display leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-black font-display leading-tight">
             Cadastro rápido para divulgar seus eventos
           </h1>
           <p className="text-base text-muted-foreground">

@@ -43,7 +43,7 @@ export default function Anuncios() {
     <PageContainer>
       <div className="space-y-6">
         <header className="space-y-3">
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight inline-flex items-center gap-2">
+          <h1 className="text-xl sm:text-3xl font-black tracking-tight inline-flex items-center gap-2">
             <ShoppingBag className="h-6 w-6 text-primary" />
             Anúncios
           </h1>
@@ -109,7 +109,7 @@ export default function Anuncios() {
                 </h2>
                 <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
                   {destaques.map((ad) => (
-                    <div key={ad.id} className="min-w-[280px] snap-start">
+                    <div key={ad.id} className="min-w-[240px] xs:min-w-[280px] snap-start">
                       <AdCard ad={ad} />
                     </div>
                   ))}

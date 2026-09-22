@@ -164,8 +164,8 @@ export default function ArtistSetup() {
     <div className="min-h-screen bg-slate-50/50">
       
       
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="mx-auto w-full max-w-screen-lg px-4 py-6 sm:px-6 md:py-12">
+        <div className="mx-auto grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           
           {/* Sidebar: Status & Actions */}
           <div className="space-y-6">
@@ -213,9 +213,9 @@ export default function ArtistSetup() {
 
           {/* Main Content: Form Hub */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+            <div className="min-w-0 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm sm:rounded-[2rem]">
               <Tabs defaultValue="basic" className="w-full">
-                <div className="px-6 pt-6 border-b border-slate-50">
+                <div className="border-b border-slate-50 px-4 pt-4 sm:px-6 sm:pt-6">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <div>
                       <h1 className="text-2xl font-black font-display text-primary uppercase tracking-tight">Hub do Artista</h1>
@@ -223,7 +223,7 @@ export default function ArtistSetup() {
                     </div>
                   </div>
                   
-                  <TabsList className="bg-slate-100/50 p-1 h-12 rounded-xl w-full justify-start overflow-x-auto overflow-y-hidden scrollbar-none gap-1">
+                  <TabsList className="h-auto min-h-11 w-full justify-start gap-1 overflow-x-auto overflow-y-hidden rounded-xl bg-slate-100/50 p-1 scrollbar-none">
                     <TabsTrigger value="basic" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm gap-2 text-xs font-bold uppercase tracking-wider">
                       <UserIcon className="h-3.5 w-3.5" /> Básico
                     </TabsTrigger>
@@ -239,7 +239,7 @@ export default function ArtistSetup() {
                   </TabsList>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <TabsContent value="basic" className="mt-0 outline-none">
                     <BasicInfoForm form={form} />
                   </TabsContent>

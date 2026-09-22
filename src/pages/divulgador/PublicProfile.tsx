@@ -105,7 +105,7 @@ export default function PublicProfile() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2 text-center md:text-left">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-              <h1 className="text-3xl font-black tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
                 {profile.company_name || profile.responsible_name || "Divulgador AgendIlha"}
               </h1>
               {/* profile.is_trusted_divulgador check removed as column does not exist */}
