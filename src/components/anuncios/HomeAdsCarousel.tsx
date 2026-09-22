@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SponsoredAdDialog } from "@/components/anuncios/SponsoredAdDialog";
 import { useAdCoverUrl } from "@/data/useAdPhotoUrls";
-import { usePublishedAds } from "@/data/useAds";
+import { normalizeAds, usePublishedAds } from "@/data/useAds";
 import type { Ad } from "@/data/useAds";
 import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { cn } from "@/lib/utils";
@@ -51,13 +51,13 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
 }
 
 export function HomeAdsCarousel() {
-  const { data: ads = [], isLoading } = usePublishedAds();
+  const { data, isLoading } = usePublishedAds();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
 
-  const visibleAds = ads.slice(0, MAX_SPONSORED_ADS);
+  const visibleAds = normalizeAds(data).slice(0, MAX_SPONSORED_ADS);
   const total = visibleAds.length;
   const goTo = useCallback((next: number) => {
     setIndex(total ? (next + total) % total : 0);
@@ -81,7 +81,17 @@ export function HomeAdsCarousel() {
     if (index >= total) setIndex(0);
   }, [index, total]);
 
-  if (isLoading || total === 0) return null;
+  if (isLoading) return null;
+  if (total === 0) {
+    return (
+      <section className="mb-12" aria-label="Anúncios da Ilha">
+        <div className="rounded-lg border border-dashed p-6 text-center">
+          <p className="font-semibold">Nenhum anúncio por aqui agora.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Volte mais tarde para conferir as novidades da Ilha.</p>
+        </div>
+      </section>
+    );
+  }
   const currentAd = visibleAds[index];
   if (!currentAd) return null;
 

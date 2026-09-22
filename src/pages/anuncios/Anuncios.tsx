@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, ShoppingBag, Sparkles } from "lucide-react";
-import { AD_CATEGORIES, usePublishedAds } from "@/data/useAds";
+import { AD_CATEGORIES, normalizeAds, usePublishedAds } from "@/data/useAds";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { ROUTES } from "@/routes/config";
 
 export default function Anuncios() {
-  const { data: anuncios = [], isLoading } = usePublishedAds();
+  const { data, isLoading } = usePublishedAds();
+  const anuncios = useMemo(() => normalizeAds(data), [data]);
   const { isPromoter, isAdmin } = useAppPermissions();
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState<string | null>(null);

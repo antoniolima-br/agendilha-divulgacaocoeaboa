@@ -18,7 +18,7 @@ import { Check, Loader2, Plus, ShoppingBag, Sparkles, Trash2, X } from "lucide-r
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
-import { AD_CATEGORIES, useAllAds, useCreateAd, useDeleteAd, useModerateAd, type Ad, type AdStatus } from "@/data/useAds";
+import { AD_CATEGORIES, normalizeAds, useAllAds, useCreateAd, useDeleteAd, useModerateAd, type Ad, type AdStatus } from "@/data/useAds";
 import { useAdPlans, formatDurationDays, formatPriceBRL } from "@/data/useAdPlans";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,7 +39,8 @@ const FILTROS: { valor: AdStatus | "todos"; label: string }[] = [
 export default function AdminAds() {
   const { user } = useAuth();
   const { isAdmin, loading: permsLoading } = useAppPermissions();
-  const { data: anuncios = [], isLoading } = useAllAds(isAdmin);
+  const { data, isLoading } = useAllAds(isAdmin);
+  const anuncios = useMemo(() => normalizeAds(data), [data]);
   const { data: planos = [] } = useAdPlans(true);
   const moderar = useModerateAd();
   const criar = useCreateAd();

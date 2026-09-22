@@ -56,3 +56,4 @@
 - [x] Evitar cache offline de dados dinâmicos e reduzir o pré-carregamento de pacotes administrativos.
 - [x] Validar visualmente os fluxos públicos em desktop e celular; fluxos autenticados seguem cobertos por testes automatizados.
 - [x] Manter em Configurações somente o WhatsApp oficial da equipe.
+- [x] Validar tipos e estados vazios em todas as listas e galerias de anúncios.

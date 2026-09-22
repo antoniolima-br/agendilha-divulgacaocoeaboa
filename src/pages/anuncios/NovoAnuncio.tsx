@@ -57,7 +57,7 @@ export default function NovoAnuncio() {
     setWhats(formatPhoneDisplay(existente.contact_whatsapp));
     setCity(existente.city ?? "");
     setNeighborhood(existente.neighborhood ?? "");
-    setPhotos(existente.photos);
+    setPhotos(Array.isArray(existente.photos) ? existente.photos : []);
   }, [existente]);
 
   const podeAnunciar = isPromoter || isAdmin;
