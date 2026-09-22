@@ -84,3 +84,5 @@
 - [x] Completar varredura mobile-first global de containers, grids, tabelas e tipografia
 
 - [x] Corrigir responsividade do Informe AgendIlha
+
+- [ ] Remover Compartilhar Agendilha Informa da barra lateral
