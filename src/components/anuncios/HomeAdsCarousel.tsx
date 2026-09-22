@@ -24,7 +24,7 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
       type="button"
       variant="ghost"
       onClick={onOpen}
-      className="group relative h-auto w-full overflow-hidden rounded-lg border bg-card p-0 text-left shadow-sm hover:bg-card hover:shadow-md"
+      className="group relative h-auto w-full overflow-hidden rounded-2xl border border-border/70 bg-card p-0 text-left shadow-card transition-all duration-300 hover:-translate-y-1 hover:bg-card hover:shadow-elevated"
       aria-label={`Abrir detalhes do anúncio ${ad.title}`}
     >
       <div className="aspect-video w-full bg-muted">
@@ -36,8 +36,8 @@ function SponsoredSlide({ ad, onOpen }: { ad: Ad; onOpen: () => void }) {
           </div>
         )}
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-background/95 p-4 backdrop-blur-sm">
-        <Badge variant="secondary" className="mb-2">Patrocinado</Badge>
+      <div className="absolute inset-x-0 bottom-0 bg-background/95 p-4 backdrop-blur-md sm:p-5">
+        <Badge variant="secondary" className="mb-2 rounded-full">Patrocinado</Badge>
         <h3 className="line-clamp-1 text-base font-bold text-foreground sm:text-lg">{ad.title}</h3>
         {location && (
           <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
@@ -102,12 +102,15 @@ export function HomeAdsCarousel() {
   };
 
   return (
-    <section className="mb-12" aria-label="Anúncios da Ilha">
+    <section aria-label="Anúncios da Ilha">
       <div className="mb-6 flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 font-display text-2xl font-bold">
+        <div>
+          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">Destaques parceiros</p>
+          <h2 className="flex items-center gap-2 font-display text-3xl font-bold sm:text-4xl">
           <ShoppingBag className="h-5 w-5 text-primary" />
           Anúncios da Ilha
-        </h2>
+          </h2>
+        </div>
         <Button asChild variant="link" className="shrink-0 px-0 font-bold">
           <Link to="/anuncios">Ver todos</Link>
         </Button>
@@ -122,7 +125,7 @@ export function HomeAdsCarousel() {
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
       >
-        <div className="mx-auto max-w-3xl" aria-live="polite">
+        <div className="mx-auto max-w-4xl" aria-live="polite">
           <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
         </div>
 
