@@ -105,32 +105,32 @@ export default function AdminAgendaInforma() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-4 sm:space-y-6">
       <SectionHeader
         title="Central de Relatórios / WhatsApp"
         subtitle="Programação válida do dia em uma lista limpa, pronta para compartilhar."
         rightElement={
-          <div className="w-full md:w-auto">
+          <div className="w-full min-w-0 sm:w-auto">
             <Label htmlFor="date" className="text-xs">Data</Label>
             <Input
               id="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full md:w-[170px]"
+              className="w-full sm:w-[170px]"
             />
           </div>
         }
       />
 
-      <nav className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap" aria-label="Ferramentas de relatórios e WhatsApp">
-        <Button asChild variant="secondary" size="sm" className="w-full sm:w-auto">
+      <nav className="grid min-w-0 grid-cols-1 gap-2 xs:grid-cols-2" aria-label="Ferramentas de relatórios e WhatsApp">
+        <Button asChild variant="secondary" className="w-full min-w-0 whitespace-normal text-center">
           <Link to={ROUTES.CARROSSEL}>
             <Images className="h-4 w-4" />
             Carrossel WhatsApp
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+        <Button asChild variant="outline" className="w-full min-w-0 whitespace-normal text-center">
           <Link to={ROUTES.ADMIN_WHATSAPP_TEMPLATES}>
             <MessageSquare className="h-4 w-4" />
             Templates WhatsApp
@@ -139,14 +139,14 @@ export default function AdminAgendaInforma() {
       </nav>
 
       <div className="grid min-w-0 gap-4 lg:grid-cols-2 lg:gap-6">
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
+        <div className="min-w-0 space-y-4">
+          <Card className="min-w-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="break-words text-base">
                 Programação do dia ({events.length})
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
               {loading ? (
                 <LoadingState message="Carregando eventos..." className="py-6" />
               ) : events.length === 0 ? (
@@ -154,11 +154,11 @@ export default function AdminAgendaInforma() {
                   Nenhum evento aprovado para esta data.
                 </p>
               ) : (
-                <ul className="max-h-[min(420px,55dvh)] space-y-2 overflow-y-auto overscroll-contain pr-1">
+                <ul className="max-h-[min(380px,48dvh)] space-y-2 overflow-y-auto overscroll-contain pr-1 sm:max-h-[min(420px,55dvh)]">
                   {events.map((e) => (
                     <li
                       key={e.id}
-                       className="flex min-h-11 items-start gap-3 rounded-md p-2 hover:bg-muted/40"
+                        className="flex min-h-11 min-w-0 items-start gap-3 rounded-md p-2 hover:bg-muted/40"
                     >
                       <Checkbox
                         checked={!!selected[e.id]}
@@ -168,11 +168,11 @@ export default function AdminAgendaInforma() {
                          className="mt-1.5"
                       />
                       <div className="text-sm flex-1 min-w-0">
-                        <div className="font-medium truncate">
+                         <div className="break-words font-medium sm:truncate">
                           {formatTime(e.start_time)} —{" "}
                            {(e.submission_atrativos || []).map((item) => item.name).filter(Boolean).join(" - ") || e.atrativo_name || e.event_title}
                         </div>
-                        <div className="text-xs text-muted-foreground truncate">
+                         <div className="mt-0.5 break-words text-xs text-muted-foreground sm:truncate">
                           {[e.location, formatReportAddress(e)].filter(Boolean).join(" · ") || "Local a confirmar"}
                         </div>
                       </div>
@@ -184,24 +184,24 @@ export default function AdminAgendaInforma() {
           </Card>
         </div>
 
-        <div className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-base">Coé a Boa? — pré-visualização</CardTitle>
-              <span className="text-xs text-muted-foreground">
+        <div className="min-w-0 space-y-4">
+          <Card className="min-w-0 overflow-hidden">
+            <CardHeader className="flex flex-col items-start gap-1 space-y-0 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <CardTitle className="min-w-0 break-words text-base">Coé a Boa? — pré-visualização</CardTitle>
+              <span className="shrink-0 text-xs text-muted-foreground">
                 {chosenCount} evento(s)
               </span>
             </CardHeader>
-            <CardContent>
-              <div className="max-h-[min(420px,55dvh)] overflow-y-auto overscroll-contain rounded-md border bg-muted/20 p-3 sm:p-4">
-                <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed">{lines}</pre>
+            <CardContent className="min-w-0 p-4 pt-0 sm:p-6 sm:pt-0">
+              <div className="max-h-[min(380px,48dvh)] min-w-0 overflow-x-hidden overflow-y-auto overscroll-contain rounded-md border bg-muted/20 p-3 sm:max-h-[min(420px,55dvh)] sm:p-4">
+                <pre className="max-w-full whitespace-pre-wrap break-words font-sans text-sm leading-relaxed [overflow-wrap:anywhere]">{lines}</pre>
               </div>
               <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <Button onClick={copy} variant="outline" className="flex-1">
+                 <Button onClick={copy} variant="outline" className="w-full min-w-0 whitespace-normal sm:flex-1">
                   <Copy className="h-4 w-4 mr-2" />
                   Copiar texto
                 </Button>
-                <Button onClick={shareWhats} className="flex-1">
+                 <Button onClick={shareWhats} className="w-full min-w-0 whitespace-normal sm:flex-1">
                   <Send className="h-4 w-4 mr-2" />
                   Compartilhar no WhatsApp
                 </Button>
