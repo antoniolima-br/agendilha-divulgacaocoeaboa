@@ -32,12 +32,13 @@ describe("formatReportAddress", () => {
       address_neighborhood: " Jardim Guanabara ",
       address_city: " Rio de Janeiro ",
       address_state: " RJ ",
-    })).toBe("Rua Cambaúba, 100 - Jardim Guanabara - Rio de Janeiro/RJ");
+    })).toBe("Rua Cambaúba, 100 - Jardim Guanabara - Rio de Janeiro - RJ - Brasil");
   });
 
   it("não deixa separadores soltos quando algum campo está vazio", () => {
-    expect(formatReportAddress({ address_neighborhood: "Cocotá" })).toBe("Cocotá");
-    expect(formatReportAddress({ address_street: "Estrada do Galeão" })).toBe("Estrada do Galeão");
+    expect(formatReportAddress({ address_neighborhood: "Cocotá" })).toBe("Cocotá - Brasil");
+    expect(formatReportAddress({ address_street: "Estrada do Galeão" })).toBe("Estrada do Galeão - Brasil");
+    expect(formatReportAddress({})).toBe("");
   });
 });
 
@@ -205,7 +206,7 @@ describe("buildCoeaboaDailyReport", () => {
     expect(text).toContain(
       "🎙️ 18h *BANDA 4X ROCK - LINHA VERMELHA*\n" +
       "👉 Aterro do Cocotá\n" +
-       "📌 Parque Manoel Bandeira, s/n - Cocotá - Rio de Janeiro/RJ",
+       "📌 Parque Manoel Bandeira, s/n - Cocotá - Rio de Janeiro - RJ - Brasil",
     );
   });
 

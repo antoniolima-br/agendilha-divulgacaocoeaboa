@@ -25,7 +25,7 @@ export default function CompartilharAgendaInforma() {
     const { data, error } = await supabase
       .from("submissions")
       .select(
-        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, atrativo_name, submission_atrativos(name, display_order)",
+        "id, status, event_title, date, start_time, location, address_street, address_number, address_neighborhood, address_city, address_state, atrativo_name, submission_atrativos(name, display_order)",
       )
       .in("status", [...PUBLIC_EVENT_STATUSES])
       .gte("date", addDaysToISO(today, -1))
