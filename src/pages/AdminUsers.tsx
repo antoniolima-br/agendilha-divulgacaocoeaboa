@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { DivulgadorRequestsPanel } from "@/components/admin/DivulgadorRequestsPanel";
 import { Button } from "@/components/ui/button";
-import { Users, Download, Share2, Loader2 } from "lucide-react";
+import { Users, Download, Share2, Loader2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { handleError, getErrorMessage } from "@/lib/error-handler";
 import { buildTempPasswordMessage, formatPhoneDisplay } from "@/lib/whatsapp";
@@ -25,6 +25,8 @@ import {
 import { UserCard } from "@/components/admin/users/UserCard";
 import { ConfirmUserActionDialogs } from "@/components/admin/users/ConfirmUserActionDialogs";
 import { ResetPasswordDialog } from "@/components/admin/users/ResetPasswordDialog";
+import { CreateUserDialog } from "@/components/admin/users/CreateUserDialog";
+import { ChangeUserPasswordDialog } from "@/components/admin/users/ChangeUserPasswordDialog";
 import type {
   UserWithRole,
   ResetResultState,
@@ -75,6 +77,8 @@ export default function AdminUsers() {
   const [resetting, setResetting] = useState<string | null>(null);
   const [resetResult, setResetResult] = useState<ResetResultState | null>(null);
   const [updatingType, setUpdatingType] = useState<string | null>(null);
+  const [createUserOpen, setCreateUserOpen] = useState(false);
+  const [passwordTarget, setPasswordTarget] = useState<UserWithRole | null>(null);
   
   // Paginação
   const [currentPage, setCurrentPage] = useState(1);
@@ -428,6 +432,14 @@ export default function AdminUsers() {
         rightElement={
           <div className="flex items-center gap-2 flex-wrap">
             <Button
+              size="sm"
+              className="rounded-full gap-2 px-3 sm:px-4"
+              onClick={() => setCreateUserOpen(true)}
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Novo Usuário</span>
+            </Button>
+            <Button
               variant="outline"
               size="sm"
               aria-label="Exportar PDF"
@@ -534,6 +546,7 @@ export default function AdminUsers() {
                 onAskToggleMaster={setShowMasterConfirm}
                 onAskDelete={setShowDeleteConfirm}
                 onAskReset={setShowResetConfirm}
+                onAskChangePassword={setPasswordTarget}
               />
             ))}
           </div>
@@ -599,6 +612,18 @@ export default function AdminUsers() {
       <ResetPasswordDialog
         resetResult={resetResult}
         setResetResult={setResetResult}
+      />
+
+      <CreateUserDialog
+        open={createUserOpen}
+        onOpenChange={setCreateUserOpen}
+        isMaster={isMaster}
+        onCreated={fetchUsers}
+      />
+
+      <ChangeUserPasswordDialog
+        user={passwordTarget}
+        onOpenChange={setPasswordTarget}
       />
     </PageContainer>
   );

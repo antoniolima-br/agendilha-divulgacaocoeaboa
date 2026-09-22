@@ -55,6 +55,7 @@ interface UserCardProps {
   onAskToggleMaster: (u: UserWithRole) => void;
   onAskDelete: (u: UserWithRole) => void;
   onAskReset: (u: UserWithRole) => void;
+  onAskChangePassword: (u: UserWithRole) => void;
 }
 
 export function UserCard(props: UserCardProps) {
@@ -83,6 +84,7 @@ export function UserCard(props: UserCardProps) {
     onAskToggleMaster,
     onAskDelete,
     onAskReset,
+    onAskChangePassword,
   } = props;
 
   const [expanded, setExpanded] = useState(false);
@@ -359,6 +361,16 @@ export function UserCard(props: UserCardProps) {
               >
                 {resetting === u.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
                 Resetar senha
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={!isMaster && (u.is_admin || u.status === "master")}
+                className="gap-2"
+                onClick={() => onAskChangePassword(u)}
+              >
+                <KeyRound className="h-4 w-4" />
+                Alterar senha
               </Button>
               <Button
                 size="sm"
