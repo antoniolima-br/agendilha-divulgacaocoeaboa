@@ -671,8 +671,6 @@ export default function Landing() {
           </div>
         </section>
 
-        <HomeAdsCarousel variant="banner" />
-
         {/* Map Explorer CTA */}
         <section className="rounded-3xl bg-secondary/5 p-8 flex flex-col sm:flex-row items-center justify-between mb-16 border border-secondary/10 gap-6">
           <div className="text-center sm:text-left">
@@ -687,6 +685,8 @@ export default function Landing() {
             <MapIcon className="mr-2 h-4 w-4"/> Abrir Mapa
           </Button>
         </section>
+
+        <HomeAdsCarousel variant="banner" />
 
       </section>
 

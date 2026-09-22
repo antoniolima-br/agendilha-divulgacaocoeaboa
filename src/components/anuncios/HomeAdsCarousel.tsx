@@ -86,8 +86,8 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
 
   if (total === 0) {
     return (
-      <section className={isBanner ? "mb-8" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
-        <div className={cn("rounded-lg border border-dashed text-center", isBanner ? "p-5" : "p-6")}>
+      <section className="mb-12" aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+        <div className="rounded-lg border border-dashed p-6 text-center">
           <Badge variant="outline" className="mb-2 text-[10px] font-semibold uppercase tracking-normal">Publi</Badge>
           <p className="font-semibold">Espaço para parceiros da Ilha</p>
           <p className="mt-1 text-sm text-muted-foreground">Novidades e ofertas aparecem por aqui.</p>
@@ -105,9 +105,9 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
   };
 
   return (
-    <section className={isBanner ? "mb-8" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
-      <div className={cn("flex items-center justify-between gap-3", isBanner ? "mb-3" : "mb-6")}>
-        <h2 className={cn("flex items-center gap-2 font-display font-bold", isBanner ? "text-base" : "text-2xl")}>
+    <section className="mb-12" aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2 font-display text-2xl font-bold">
           <ShoppingBag className="h-5 w-5 text-primary" />
           {isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}
         </h2>
@@ -125,8 +125,8 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
       >
-        <div className={cn("mx-auto", isBanner ? "max-w-4xl" : "max-w-3xl")} aria-live="polite">
-          <SponsoredSlide ad={currentAd} compact={isBanner} onOpen={() => openDetails(currentAd)} />
+        <div className="mx-auto max-w-3xl" aria-live="polite">
+          <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
         </div>
 
         {total > 1 && (
