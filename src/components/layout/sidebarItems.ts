@@ -10,7 +10,6 @@ import {
   User,
   ShieldCheck,
   Crown,
-  Trophy,
   PlusCircle,
   LayoutDashboard,
   LogIn,
@@ -125,13 +124,6 @@ export const sidebarConfig: SidebarSection[] = [
         path: ROUTES.PROMOTOR_ESTABELECIMENTOS,
         icon: Building2,
         roles: ["promoter", "admin", "master"]
-      },
-      { 
-        id: "promoter_ranking", 
-        label: "Ranking de Divulgadores", 
-        path: ROUTES.RANKING, 
-        icon: Trophy, 
-        roles: ["admin", "master"] 
       },
     ]
   },
