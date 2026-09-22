@@ -1,8 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface DashboardFiltersProps {
   filters: {
@@ -17,14 +17,11 @@ interface DashboardFiltersProps {
 }
 
 export function DashboardFilters({ filters, setFilters, neighborhoods }: DashboardFiltersProps) {
+  const defaults = { period: "month", neighborhood: "all", category: "all", status: "all", userType: "all" };
+  const activeFilters = Object.entries(defaults).filter(([key, value]) => filters[key as keyof typeof defaults] !== value).length;
+
   const resetFilters = () => {
-    setFilters({
-      period: "month",
-      neighborhood: "all",
-      category: "all",
-      status: "all",
-      userType: "all",
-    });
+    setFilters(defaults);
   };
 
   const updateFilter = (key: string, value: string) => {
@@ -32,16 +29,20 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
   };
 
   return (
-    <Card className="bg-white/60 backdrop-blur-md border-white/40 shadow-sm">
-      <CardContent className="p-4 flex flex-wrap items-end gap-4">
-        <div className="flex items-center gap-2 mr-2">
-          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-            <Filter className="h-4 w-4" />
+    <div className="flex justify-end">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant={activeFilters > 0 ? "secondary" : "outline"} className="h-10">
+            <Filter className="h-4 w-4" /> Filtrar painel
+            {activeFilters > 0 && <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] text-primary-foreground">{activeFilters}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" sideOffset={8} className="w-[min(22rem,calc(100vw-2rem))] space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-bold">Filtrar painel</p>
+            {activeFilters > 0 && <Button variant="ghost" size="sm" onClick={resetFilters}><X className="h-3.5 w-3.5" /> Limpar</Button>}
           </div>
-          <span className="font-bold text-sm">Filtros</span>
-        </div>
-
-        <div className="space-y-1.5 flex-1 min-w-[120px]">
+        <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Período</Label>
           <Select value={filters.period} onValueChange={(v) => updateFilter("period", v)}>
             <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
@@ -56,7 +57,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
           </Select>
         </div>
 
-        <div className="space-y-1.5 flex-1 min-w-[150px]">
+        <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Bairro</Label>
           <Select value={filters.neighborhood} onValueChange={(v) => updateFilter("neighborhood", v)}>
             <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
@@ -71,7 +72,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
           </Select>
         </div>
 
-        <div className="space-y-1.5 flex-1 min-w-[150px]">
+        <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Categoria</Label>
           <Select value={filters.category} onValueChange={(v) => updateFilter("category", v)}>
             <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
@@ -89,7 +90,7 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
           </Select>
         </div>
 
-        <div className="space-y-1.5 flex-1 min-w-[120px]">
+        <div className="space-y-1.5">
           <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</Label>
           <Select value={filters.status} onValueChange={(v) => updateFilter("status", v)}>
             <SelectTrigger className="h-9 bg-white/50 border-white/60 text-xs">
@@ -105,15 +106,8 @@ export function DashboardFilters({ filters, setFilters, neighborhoods }: Dashboa
           </Select>
         </div>
 
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-9 text-xs text-muted-foreground hover:text-foreground"
-          onClick={resetFilters}
-        >
-          <X className="h-3 w-3 mr-1.5" /> Limpar
-        </Button>
-      </CardContent>
-    </Card>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
