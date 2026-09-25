@@ -216,3 +216,5 @@
   color: hsl(var(--primary-foreground));
   box-shadow: var(--shadow-gold);
 }
+.theme-coeaboa, .theme-coeaboa * { scrollbar-width: none; }
+.theme-coeaboa::-webkit-scrollbar, .theme-coeaboa *::-webkit-scrollbar { display: none; }
