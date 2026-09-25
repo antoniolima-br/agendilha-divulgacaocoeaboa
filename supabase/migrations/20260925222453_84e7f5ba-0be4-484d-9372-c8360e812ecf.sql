@@ -1,0 +1,1 @@
+ALTER TABLE public.ads ADD COLUMN IF NOT EXISTS event_location text;
