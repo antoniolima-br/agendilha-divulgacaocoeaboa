@@ -49,6 +49,7 @@ import {
   isActiveSubmission,
 } from "@/components/events-admin/adminEventsHelpers";
 import { AdminEventsToolbar } from "@/components/events-admin/AdminEventsToolbar";
+import { QuickEditEventDialog } from "@/components/events-admin/QuickEditEventDialog";
 import { AdminEventsKpis } from "@/components/events-admin/AdminEventsKpis";
 import { AdminEventsFilters } from "@/components/events-admin/AdminEventsFilters";
 
@@ -72,6 +73,7 @@ function AdminEventsInner() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [quickEdit, setQuickEdit] = useState<Submission | null>(null);
   const [templates, setTemplates] = useState<{ approved: string; rejected: string }>({
     approved: "",
     rejected: "",
@@ -493,11 +495,11 @@ function AdminEventsInner() {
                         {/* Editar (Abre expansão ou poderia ser rota dedicada) */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(sub.id)}>
+                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setQuickEdit(sub)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>Editar / Revisar</TooltipContent>
+                          <TooltipContent>Editar evento</TooltipContent>
                         </Tooltip>
 
                         {/* Aprovar/Rejeitar/Publicar (Dinâmico) */}
@@ -835,6 +837,11 @@ function AdminEventsInner() {
         </DialogContent>
       </Dialog>
 
+      <QuickEditEventDialog
+        event={quickEdit}
+        onClose={() => setQuickEdit(null)}
+        onSaved={(updated) => setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? ({ ...s, ...updated } as Submission) : s)))}
+      />
     </PageContainer>
   );
 }
