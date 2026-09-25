@@ -191,63 +191,28 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
     if (isHome) {
       return (
          <>
-        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/90 backdrop-blur-xl border-b border-white/40 shadow-sm" : "bg-transparent border-b border-transparent"}`}>
-          <div className="mx-auto flex h-16 sm:h-20 max-w-6xl items-center justify-between px-4 sm:px-8">
-            <Link to="/" className="flex items-center gap-2.5 group shrink-0" aria-label="AgendIlha - Página Inicial">
-              <img src={logoCoeABoa} alt="Coé a Boa?" className="h-12 w-12 sm:h-[3.75rem] sm:w-[3.75rem] shrink-0 rounded-full object-cover ring-2 ring-primary/10 shadow-sm group-hover:scale-105 transition-transform" />
-              <div className="flex flex-col leading-none">
-                <span className="font-display text-lg sm:text-xl font-black tracking-tight text-primary">AgendIlha</span>
-                <span className="text-[9px] sm:text-[10px] text-secondary font-black uppercase tracking-[0.15em]">Coé a Boa?</span>
-              </div>
+        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/90 backdrop-blur-xl border-b border-border/60" : "bg-background/60 backdrop-blur-md border-b border-transparent"}`}>
+          <div className="mx-auto grid h-14 w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 sm:h-16 sm:px-8">
+            <Link
+              to="/explorar"
+              className="flex min-h-11 min-w-0 items-center gap-1.5 justify-self-start text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Localização: Ilha do Governador, Rio de Janeiro"
+            >
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+              <span className="truncate">Ilha do Governador, RJ</span>
             </Link>
 
-             {/* Desktop Nav */}
-             <div className="hidden md:flex items-center gap-4">
-               <Link to="/explorar" className="text-sm font-bold text-foreground/70 hover:text-primary transition-colors">Eventos</Link>
-               <Link to="/artistas" className="text-sm font-bold text-foreground/70 hover:text-primary transition-colors">Atrativos</Link>
-               <Link to="/divulgador/status" className="text-sm font-bold text-foreground/70 hover:text-primary transition-colors">Divulgador</Link>
-              <Link to="/agenda?view=favorites" className="relative group">
-                <Heart className="h-5 w-5 text-foreground/70 group-hover:text-primary transition-colors" />
-                {favoritesCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 h-4 w-4 bg-primary text-[10px] font-black text-white rounded-full flex items-center justify-center">
-                    {favoritesCount}
-                  </span>
-                )}
-              </Link>
-               <TooltipProvider delayDuration={150}>
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <Button
-                       size="sm"
-                       aria-label="Divulgar evento — cadastro de divulgador"
-                       onClick={irParaDivulgar}
-                       className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold tracking-tight px-5 h-10 shadow-none transition-transform active:scale-95"
-                     >
-                       Divulgar evento
-                     </Button>
-                   </TooltipTrigger>
-                   <TooltipContent side="bottom" className="max-w-[220px] text-xs leading-snug">
-                     Use este botão para cadastrar seu evento na agenda como divulgador.
-                   </TooltipContent>
-                 </Tooltip>
-               </TooltipProvider>
-              <HeaderUserMenu variant="desktop" hideContext={true} />
-            </div>
+            <Link to="/" className="group shrink-0 justify-self-center" aria-label="Coé a Boa? - Página Inicial">
+              <img src={logoCoeABoa} alt="Coé a Boa?" className="h-9 w-9 rounded-full object-cover ring-1 ring-border transition-transform group-hover:scale-105 sm:h-10 sm:w-10" />
+            </Link>
 
-             {/* Mobile Nav Trigger */}
-             <div className="flex md:hidden items-center gap-2">
-               <UpdateAppButton compact />
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleMobileMenu} 
-                className={cn(
-                  "shrink-0 rounded-full bg-white/50 border border-white/40 shadow-sm transition-all"
-                )}
-              >
-                <Menu className="h-5 w-5 text-foreground" />
-              </Button>
-
+            <div className="flex items-center justify-self-end gap-1">
+              <div className="hidden md:block">
+                <HeaderUserMenu variant="desktop" hideContext={true} />
+              </div>
+              <div className="md:hidden">
+                <UpdateAppButton compact />
+              </div>
             </div>
           </div>
         </header>
