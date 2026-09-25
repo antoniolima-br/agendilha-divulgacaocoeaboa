@@ -113,7 +113,7 @@ export function HomeMixedHeroCarousel({
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(slide.date)}T12:00:00Z`)).replace(".", "")}</span>
                 </div>
               )}
-              <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 pb-8 text-center text-foreground sm:px-8 sm:pb-10">
+              <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 pb-7 pt-4 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
                   {slideDate && (
@@ -139,7 +139,7 @@ export function HomeMixedHeroCarousel({
             <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <div className="absolute inset-x-0 bottom-2 z-20 flex justify-center gap-1" aria-label="Escolher destaque">
+            <div className="absolute inset-x-0 bottom-0.5 z-20 flex justify-center gap-1" aria-label="Escolher destaque">
               {items.map((entry, dotIndex) => (
                 <button key={entry.id} type="button" className="flex h-6 w-6 items-center justify-center" onClick={() => goTo(dotIndex)} aria-label={`Ver destaque ${dotIndex + 1}`} aria-current={dotIndex === index ? "true" : undefined}>
                   <span className={cn("h-1.5 rounded-full bg-background/50 transition-all", dotIndex === index ? "w-5 bg-background" : "w-1.5")} />

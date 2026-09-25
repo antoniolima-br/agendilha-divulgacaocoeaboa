@@ -110,6 +110,7 @@ export default function Landing() {
   const { user } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
+  const todayRowRef = useRef<HTMLDivElement>(null);
    const { ref: loadMoreRef, inView: loadMoreInView } = useInView();
  
    const { 
@@ -391,8 +392,16 @@ export default function Landing() {
               <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
           </div>
           {todayEvents.length > 0 ? (
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none">
+            <div className="relative">
+            {todayEvents.length > 1 && (
+              <div className="absolute -top-14 right-24 hidden gap-1 sm:flex">
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Anterior" onClick={() => todayRowRef.current?.scrollBy({ left: -(todayRowRef.current.clientWidth * 0.8), behavior: "smooth" })}><ChevronLeft className="h-4 w-4" /></Button>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Próximo" onClick={() => todayRowRef.current?.scrollBy({ left: todayRowRef.current.clientWidth * 0.8, behavior: "smooth" })}><ChevronRight className="h-4 w-4" /></Button>
+              </div>
+            )}
+            <div ref={todayRowRef} className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-4 overscroll-x-contain [-webkit-overflow-scrolling:touch] sm:mx-0 sm:gap-6 sm:px-0" aria-label="Acontece hoje na Ilha">
               {todayEvents.map(ev => (
+                <div key={ev.id} className="shrink-0 snap-start">
                 <DiscoveryEventCard 
                   key={ev.id} 
                   event={ev} 
@@ -405,7 +414,9 @@ export default function Landing() {
                     setShareData({ ...data, eventId: ev.id });
                   }}
                 />
+                </div>
               ))}
+            </div>
             </div>
           ) : (
             <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
