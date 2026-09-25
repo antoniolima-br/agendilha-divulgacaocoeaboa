@@ -1,3 +1,4 @@
+import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
@@ -54,7 +55,10 @@ export function useEvents(options: {
           slug
         `)
         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .or("moderation_status.is.null,moderation_status.neq.blocked");
+        .or("moderation_status.is.null,moderation_status.neq.blocked")
+        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
+        .order("date", { ascending: true })
+        .limit(1000);
       
       if (error) throw error;
       const events = normalizeEvents(data);

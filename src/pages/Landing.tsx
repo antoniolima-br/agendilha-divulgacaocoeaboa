@@ -121,7 +121,7 @@ export default function Landing() {
      isFetchingNextPage,
      isLoading: eventsLoading 
    } = useInfiniteQuery({
-    queryKey: qk.agenda.events(),
+    queryKey: ["landing-events"],
     queryFn: async ({ pageParam = 0 }) => {
       const today = saoPauloTodayISO();
       const { data, error } = await supabase
