@@ -133,10 +133,10 @@ export function HomeMixedHeroCarousel({
 
         {total > 1 && (
           <>
-            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
+            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
+            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
               <ChevronRight className="h-4 w-4" />
             </Button>
             <div className="absolute inset-x-0 bottom-0.5 z-20 flex justify-center gap-1" aria-label="Escolher destaque">
