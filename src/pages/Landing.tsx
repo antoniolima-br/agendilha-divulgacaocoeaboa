@@ -763,7 +763,7 @@ export default function Landing() {
 
             {/* Marca / Slogan */}
             <div className="flex items-center justify-center gap-2 order-1 sm:order-2">
-              <img src={logo} alt="Coé a Boa? — Agendilha" className="h-7 w-7 rounded-full ring-1 ring-primary/15" />
+              <img src={logo} alt="Coé a Boa? — Agendilha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-1 ring-primary/15" />
               <div className="leading-tight">
                 <div className="font-display text-sm font-black text-foreground tracking-tight">
                   Coé a Boa? <span className="text-foreground/30">•</span> Agendilha

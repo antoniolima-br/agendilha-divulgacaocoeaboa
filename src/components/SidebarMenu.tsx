@@ -78,7 +78,7 @@ export function SidebarMenu({ onClose }: Props) {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex items-center gap-2.5 group cursor-pointer px-1" onClick={() => { navigate("/"); if (onClose) onClose(); }}>
             <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shadow-lg group-hover:rotate-6 transition-all">
-              <img src={logoCoeABoa} alt="AgendIlha" className="h-8 w-8 rounded-full ring-2 ring-white/20" />
+              <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-white/20" />
             </div>
             <div className="flex flex-col leading-tight">
               <span className="font-display text-xl font-black text-primary tracking-tighter">AgendIlha</span>
