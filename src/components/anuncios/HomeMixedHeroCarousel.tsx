@@ -106,13 +106,19 @@ export function HomeMixedHeroCarousel({
             >
               <img src={slideImage} alt="" aria-hidden="true" decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl" />
               <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="relative h-full w-full object-contain" />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 pb-10 text-background sm:px-8 sm:pb-12">
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              {slide.date && (
+                <div className="absolute left-4 top-4 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:top-6 sm:h-20 sm:w-20">
+                  <span className="font-display text-2xl font-bold leading-none sm:text-3xl">{eventDateISO(slide.date).slice(8, 10)}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(slide.date)}T12:00:00Z`)).replace(".", "")}</span>
+                </div>
+              )}
+              <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 pb-10 text-center text-foreground sm:px-8 sm:pb-12">
                 <Badge variant="secondary" className="mb-3">
                   {slide.is_highlight || slide.highlight_active ? "Em destaque" : "Evento"}
                 </Badge>
-                <h2 className="line-clamp-2 max-w-3xl font-display text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-background/85">
+                <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
                   {slideDate && (
                     <span className="flex items-center gap-1.5 capitalize"><CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />{slideDate}</span>
                   )}
