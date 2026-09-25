@@ -53,7 +53,7 @@ export function HomeMixedHeroCarousel({
   }, []);
 
   useEffect(() => {
-    if (paused || reduceMotion || total < 2) return;
+    if (paused || total < 2) return;
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % total), AUTOPLAY_MS);
     return () => window.clearInterval(timer);
   }, [paused, reduceMotion, total]);
@@ -76,12 +76,6 @@ export function HomeMixedHeroCarousel({
       className="mb-2"
       aria-label="Destaques da Ilha"
       aria-roledescription="carrossel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onTouchStart={() => setPaused(true)}
-      onTouchEnd={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
     >
       <div className="relative w-full overflow-hidden bg-muted aspect-[4/5] xs:aspect-[1/1] sm:aspect-[16/9] lg:aspect-[16/7]">
         {items.map((slide, slideIndex) => {
