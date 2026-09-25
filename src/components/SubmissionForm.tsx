@@ -228,10 +228,7 @@ export default function SubmissionForm() {
         form.setValue("companyName", profile.company_name || profile.responsible_name || "", { shouldDirty: false });
       }
       if (profile.email) form.setValue("email", profile.email, { shouldDirty: false });
-      // Endereço permanece só-se-vazio (usuário costuma variar por evento)
-      if (!currentValues.addressZip) form.setValue("addressZip", profile.address_zip || "");
-      if (!currentValues.addressStreet) form.setValue("addressStreet", profile.address_street || "");
-      if (!currentValues.addressNumber) form.setValue("addressNumber", profile.address_number || "");
+      // Endereço do local NUNCA vem do perfil: cada evento/estabelecimento tem o seu.
 
       // Limpa do localStorage os campos de contato salvos no rascunho —
       // assim, se o usuário atualizar o perfil, o rascunho não sobrescreve com dado velho.
