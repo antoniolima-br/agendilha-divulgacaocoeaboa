@@ -194,13 +194,12 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
          <>
         <header className={`fixed top-0 inset-x-0 z-50 border-b border-border transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-background"}`}>
           <div className="mx-auto w-full max-w-6xl px-3 pb-3 pt-2 sm:px-8">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div className="grid grid-cols-[auto_1fr] items-center gap-2">
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
-                <img src={logoCoeABoa} alt="Coé a Boa?" className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-12 sm:w-12" />
+                <img src={logoCoeABoa} alt="Coé a Boa?" className="h-16 w-16 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[4.5rem] sm:w-[4.5rem]" />
               </Link>
-              <span aria-hidden="true" />
-              <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, RJ">
-                <span className="truncate">Ilha do Governador</span>
+              <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, Rio de Janeiro, RJ, Brasil">
+                <span className="text-right leading-tight">Ilha do Governador,<br />Rio de Janeiro, RJ, Brasil</span>
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
               </Link>
             </div>
