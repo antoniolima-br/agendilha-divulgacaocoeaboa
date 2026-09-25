@@ -51,8 +51,8 @@ export function setupPWA() {
     immediate: true,
     onNeedRefresh() {
       // New build available — ask the user before reloading.
-      toast("Nova versão disponível", {
-        description: "Atualize para receber as últimas melhorias.",
+      toast("Tem novidade no app!", {
+        description: "Toque em Atualizar pra ver a versão mais nova.",
         duration: Infinity,
         action: {
           label: "Atualizar",
@@ -76,8 +76,8 @@ export function setupPWA() {
       };
       document.addEventListener("visibilitychange", checkForUpdate);
       window.addEventListener("focus", checkForUpdate);
-      // Periodic check every 30 minutes for long-lived sessions.
-      const intervalId = window.setInterval(() => registration.update().catch(() => undefined), 30 * 60 * 1000);
+      // Periodic check every 10 minutes for long-lived sessions.
+      const intervalId = window.setInterval(() => registration.update().catch(() => undefined), 10 * 60 * 1000);
       cleanupListeners = () => {
         document.removeEventListener("visibilitychange", checkForUpdate);
         window.removeEventListener("focus", checkForUpdate);
