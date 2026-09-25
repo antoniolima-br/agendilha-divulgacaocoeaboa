@@ -22,6 +22,9 @@ export interface Ad {
   highlight_until: string | null;
   views_count: number;
   created_at: string;
+  ad_type: string;
+  event_date: string | null;
+  event_location: string | null;
 }
 
 export const AD_CATEGORIES = [
@@ -36,7 +39,7 @@ export const AD_CATEGORIES = [
 ] as const;
 
 const AD_COLUMNS =
-  "id, user_id, title, description, category, price_cents, contact_whatsapp, city, neighborhood, photos, status, rejection_reason, is_highlight, highlight_plan_id, highlight_until, views_count, created_at";
+  "id, user_id, title, description, category, price_cents, contact_whatsapp, city, neighborhood, photos, status, rejection_reason, is_highlight, highlight_plan_id, highlight_until, views_count, created_at, ad_type, event_date, event_location";
 
 export const ADS_KEY = ["ads"] as const;
 
@@ -146,6 +149,9 @@ export interface AdInput {
   city: string | null;
   neighborhood: string | null;
   photos: string[];
+  ad_type?: string;
+  event_date?: string | null;
+  event_location?: string | null;
 }
 
 /** Cria um anúncio (entra em análise). */
@@ -259,5 +265,29 @@ export function normalizeAds(rows: unknown): Ad[] {
       highlight_until: typeof row.highlight_until === "string" ? row.highlight_until : null,
       views_count: typeof row.views_count === "number" && Number.isFinite(row.views_count) ? row.views_count : 0,
       created_at: typeof row.created_at === "string" ? row.created_at : "",
+      ad_type: typeof row.ad_type === "string" ? row.ad_type : "gratuito",
+      event_date: typeof row.event_date === "string" ? row.event_date : null,
+      event_location: typeof row.event_location === "string" ? row.event_location : null,
     }));
+}
+
+/** Flyers publicados com data futura — entram no carrossel principal da Home. */
+export function usePublishedFlyerAds() {
+  return useQuery({
+    queryKey: [...ADS_KEY, "flyers-home"],
+    queryFn: async (): Promise<Ad[]> => {
+      const since = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from("ads")
+        .select(AD_COLUMNS)
+        .eq("status", "publicado")
+        .eq("ad_type", "flyer")
+        .gte("event_date", since)
+        .order("event_date", { ascending: true })
+        .limit(6);
+      if (error) throw error;
+      return normalizeAds(data).filter((ad) => ad.photos.length > 0);
+    },
+    staleTime: 60 * 1000,
+  });
 }
