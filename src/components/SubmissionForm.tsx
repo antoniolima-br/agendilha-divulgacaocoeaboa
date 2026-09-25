@@ -104,11 +104,9 @@ const formSchema = z.object({
   atrativoStyle: z.string().trim().optional(),
   atrativoDescription: z.string().trim().max(500).optional(),
   atrativoContact: z.string().trim().optional().superRefine((val, ctx) => {
-    if (!val) return;
-    const v = validateBrazilianMobile(val);
-    if (v.valid === false) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: v.reason });
-    }
+    if (!val || !toE164(val)) return;
+    const err = validateIntlPhone(val);
+    if (err) ctx.addIssue({ code: z.ZodIssueCode.custom, message: err });
   }),
   atrativoEmail: z.string().trim().email("E-mail inválido").optional().or(z.literal("")).or(z.null()),
   atrativoCategory: z.string().trim().optional().or(z.literal("")),
@@ -527,7 +525,7 @@ export default function SubmissionForm() {
         atrativo_name: clean(values.atrativoName),
         atrativo_type: clean(values.atrativoType),
         atrativo_style: clean(values.atrativoStyle),
-        atrativo_contact: clean(values.atrativoContact),
+        atrativo_contact: toE164(values.atrativoContact),
         location_type: values.locationType,
         location_contact: clean(values.locationContact),
         local_tipo: clean((values as any).localTipo),
@@ -580,14 +578,14 @@ export default function SubmissionForm() {
               submission_id: result.id,
               name: clean(values.atrativoName)!,
               category: resolveAtrativoCategory(values),
-              whatsapp: clean(values.atrativoContact),
+              whatsapp: toE164(values.atrativoContact),
               display_order: 0,
             },
             ...extras.map((a, i) => ({
               submission_id: result.id,
               name: clean(a.name)!,
               category: clean(a.category),
-              whatsapp: clean(a.whatsapp),
+              whatsapp: toE164(a.whatsapp),
               display_order: i + 1,
             })),
           ];
@@ -644,8 +642,8 @@ export default function SubmissionForm() {
             category_other: values.atrativoCategory === "Outros" ? clean(values.atrativoCategoryOther) : null,
             type: clean(values.atrativoType),
             style: clean(values.atrativoStyle),
-            contact_whatsapp: clean(values.atrativoContact),
-            contact_info: clean(values.atrativoContact),
+            contact_whatsapp: toE164(values.atrativoContact),
+            contact_info: toE164(values.atrativoContact),
             description: clean(values.atrativoDescription),
             created_by: user.id,
             responsavel_id: user.id

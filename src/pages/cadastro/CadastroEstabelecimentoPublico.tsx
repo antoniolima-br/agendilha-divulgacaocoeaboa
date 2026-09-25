@@ -8,7 +8,8 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle2, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { formatPhoneDisplay, validateBrazilianMobile } from "@/lib/whatsapp";
+import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { submitPublicCadastro } from "@/lib/publicCadastro";
 import { handleError } from "@/lib/error-handler";
 
@@ -51,13 +52,15 @@ export default function CadastroEstabelecimentoPublico() {
     if (!form.tipo) return toast.error("Escolha o tipo do estabelecimento.");
     if (form.tipo === "Outro" && !form.tipoOutro.trim()) return toast.error("Diga qual é o tipo.");
     if (!form.endereco.trim()) return toast.error("Informe o endereço.");
-    if (form.whatsapp.trim() && !validateBrazilianMobile(form.whatsapp).valid)
+    const hasPhone = !!toE164(form.whatsapp);
+    if (hasPhone && validateIntlPhone(form.whatsapp))
       return toast.error("Confira o WhatsApp ou deixe o campo vazio.");
 
     setLoading(true);
     try {
       await submitPublicCadastro("estabelecimento", {
         ...form,
+        whatsapp: hasPhone ? toE164(form.whatsapp)! : "",
         tipo: form.tipo === "Outro" ? form.tipoOutro : form.tipo,
       });
       setSent(true);
@@ -176,7 +179,7 @@ export default function CadastroEstabelecimentoPublico() {
 
         <div className="space-y-2">
           <Label htmlFor="whatsapp">WhatsApp (opcional)</Label>
-          <Input id="whatsapp" name="tel" autoComplete="tel" inputMode="tel" maxLength={16} className="h-12 text-base" value={form.whatsapp} onChange={(e) => set("whatsapp", formatPhoneDisplay(e.target.value))} placeholder="(21) 99999-9999" />
+          <IntlPhoneInput id="whatsapp" className="text-base" value={form.whatsapp} onChange={(v) => set("whatsapp", v)} />
           <p className="text-xs text-muted-foreground">Se informar, use DDD + número.</p>
         </div>
 
