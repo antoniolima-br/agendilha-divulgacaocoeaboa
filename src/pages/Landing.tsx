@@ -319,7 +319,7 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
+    <div className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden font-body selection:bg-primary/15 selection:text-primary">
       <Header />
       
        {/* ── Hero Discovery ── */}
