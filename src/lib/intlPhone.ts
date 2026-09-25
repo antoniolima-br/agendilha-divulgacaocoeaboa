@@ -83,7 +83,7 @@ export function validateIntlPhone(value: string | null | undefined): string | nu
   if (!n) return "Informe o número.";
   if (ddi === "55") {
     const v = validateBrazilianMobile(n);
-    return v.valid ? null : v.reason;
+    return v.valid === false ? v.reason : null;
   }
   const info = DDIS.find((d) => d.code === ddi);
   if (info && (n.length < info.min || n.length > info.max)) {
