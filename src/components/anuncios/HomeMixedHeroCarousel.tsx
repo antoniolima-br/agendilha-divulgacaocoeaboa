@@ -108,7 +108,7 @@ export function HomeMixedHeroCarousel({
               <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-center sm:h-[calc(100%-9.5rem)]" />
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] via-background/60 via-[calc(9.5rem+1.5rem)] to-transparent to-[calc(9.5rem+3.5rem)]" />
               {slide.date && (
-                <div className="absolute left-4 bottom-[7.5rem] z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:bottom-[7rem] sm:h-20 sm:w-20">
+                <div className="absolute left-4 bottom-[10rem] z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:bottom-[10rem] sm:h-20 sm:w-20">
                   <span className="font-display text-2xl font-bold leading-none sm:text-3xl">{eventDateISO(slide.date).slice(8, 10)}</span>
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(slide.date)}T12:00:00Z`)).replace(".", "")}</span>
                 </div>
