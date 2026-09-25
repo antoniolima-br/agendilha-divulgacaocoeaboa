@@ -321,10 +321,18 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
-      
+
+       {/* ── Destaques full-width ── */}
+       <div className="pt-14 sm:pt-16">
+         <HomeMixedHeroCarousel
+           events={homeFlyerEvents}
+           onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
+         />
+       </div>
+
        {/* ── Hero Discovery ── */}
-       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-36">
-         <div className="text-center mb-16 sm:mb-24 animate-in fade-in slide-in-from-top-4 duration-1000">
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-16">
+         <div className="text-center mb-12 sm:mb-16 animate-in fade-in slide-in-from-top-4 duration-1000">
            <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-10">
              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">Curadoria local da Ilha</span>
            </div>
@@ -345,10 +353,6 @@ export default function Landing() {
             </div>
          </div>
 
-         <HomeMixedHeroCarousel
-            events={homeFlyerEvents}
-           onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
-         />
  
         {/* Categories — minimal, monochrome chips */}
         <div className="flex gap-2 overflow-x-auto pb-6 mb-10 scrollbar-none">
