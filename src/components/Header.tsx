@@ -192,28 +192,26 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
     if (isHome) {
       return (
          <>
-        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/90 backdrop-blur-xl border-b border-border/60" : "bg-background/60 backdrop-blur-md border-b border-transparent"}`}>
-          <div className="mx-auto grid h-14 w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 sm:h-16 sm:px-8">
-            <Link
-              to="/explorar"
-              className="flex min-h-11 min-w-0 items-center gap-1.5 justify-self-start text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-              aria-label="Localização: Ilha do Governador, Rio de Janeiro"
-            >
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-              <span className="truncate">Ilha do Governador, RJ</span>
-            </Link>
-
-            <Link to="/" className="group shrink-0 justify-self-center" aria-label="Coé a Boa? - Página Inicial">
-              <img src={logoCoeABoa} alt="Coé a Boa?" className="h-9 w-9 rounded-full object-cover ring-1 ring-border transition-transform group-hover:scale-105 sm:h-10 sm:w-10" />
-            </Link>
-
-            <div className="flex items-center justify-self-end gap-1">
-              <div className="hidden md:block">
-                <HeaderUserMenu variant="desktop" hideContext={true} />
-              </div>
-              <div className="md:hidden">
-                <UpdateAppButton compact />
-              </div>
+        <header className={`fixed top-0 inset-x-0 z-50 border-b border-border transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-background"}`}>
+          <div className="mx-auto w-full max-w-6xl px-3 pb-3 pt-2 sm:px-8">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+              <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
+                <img src={logoCoeABoa} alt="Coé a Boa?" className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-12 sm:w-12" />
+              </Link>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-secondary sm:text-xs">Versão Beta</span>
+              <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, RJ">
+                <span className="truncate">Ilha do Governador</span>
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+              </Link>
+            </div>
+            <div className="mt-1 grid grid-cols-3 gap-2 sm:mx-auto sm:max-w-xl">
+              <Button onClick={irParaDivulgar} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Divulgar</Button>
+              <Button onClick={() => navigate("/anuncios")} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Contratar</Button>
+              {user ? (
+                <Button onClick={handleMobileMenu} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Perfil</Button>
+              ) : (
+                <Button onClick={() => navigate("/auth")} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Logar</Button>
+              )}
             </div>
           </div>
         </header>
