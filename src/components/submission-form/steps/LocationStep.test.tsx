@@ -71,7 +71,7 @@ describe("LocationStep autocomplete", () => {
     expect(values).toMatchObject({
       locationName: "Quiosque da Praia",
       estabelecimentoId: "local-1",
-      eventAddress: "Praia da Bica, 10, Jardim Guanabara",
+      eventAddress: "Praia da Bica, 10",
       addressNeighborhood: "Jardim Guanabara",
       localTipo: "quiosque",
       locationContact: "(21) 99999-8888",

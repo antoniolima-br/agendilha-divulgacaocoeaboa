@@ -59,7 +59,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
       const res = await fetch(`https://viacep.com.br/ws/${d}/json/`);
       const data = await res.json();
       if (data?.erro) return;
-      const endereco = [data.logradouro, data.bairro].filter(Boolean).join(", ");
+      const endereco = (data.logradouro || "").trim();
       if (endereco) form.setValue("eventAddress", endereco, { shouldValidate: true });
       if (data.bairro) form.setValue("addressNeighborhood", data.bairro, { shouldValidate: true });
       if (data.localidade) form.setValue("addressCity", data.localidade);
@@ -83,7 +83,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
   const handleSelectEstab = (s: EstabelecimentoSuggestion) => {
     form.setValue("locationName", s.nome, { shouldValidate: true });
     form.setValue("estabelecimentoId", s.id);
-    const enderecoCompleto = [s.endereco, s.numero, s.bairro].filter(Boolean).join(", ");
+    const enderecoCompleto = [s.endereco, s.numero].filter(Boolean).join(", ");
     if (enderecoCompleto) form.setValue("eventAddress", enderecoCompleto, { shouldValidate: true });
     if (s.bairro) form.setValue("addressNeighborhood", s.bairro, { shouldValidate: true });
     if (s.tipo) {
@@ -115,7 +115,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="locationName"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nome do local/estabelecimento <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
+            <FormLabel>Nome do local/estabelecimento</FormLabel>
             <FormControl>
               <EstabelecimentoAutocomplete
                 value={field.value ?? ""}
@@ -146,7 +146,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
           name="localTipo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de local <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
+              <FormLabel>Tipo de local</FormLabel>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <FormControl>
                   <SelectTrigger className="h-12">
@@ -173,7 +173,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
           const filled = (field.value ?? "").trim().length > 0;
           return (
             <FormItem>
-              <FormLabel>CEP do local (opcional)</FormLabel>
+              <FormLabel>CEP do local</FormLabel>
               <FormControl>
                 <Input
                   placeholder="00000-000"
@@ -211,7 +211,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="eventAddress"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Endereço resumido <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
+            <FormLabel>Endereço resumido</FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Ex.: Rua X, 123 — próximo à Praça Y"
@@ -233,7 +233,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         name="addressNeighborhood"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Bairro do local <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
+            <FormLabel>Bairro do local</FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Ex.: Jardim Guanabara"
@@ -279,7 +279,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
           name="locationContact"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contato do local (opcional)</FormLabel>
+              <FormLabel>Contato do local</FormLabel>
               <FormControl>
                 <SuggestInput
                   placeholder="(21) 99999-9999"
