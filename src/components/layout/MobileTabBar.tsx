@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarPlus, Home, Megaphone, Menu } from "lucide-react";
+import { CalendarPlus, Home, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
   { label: "Divulgar", icon: CalendarPlus, path: "/divulgador/status", match: (p: string) => p.startsWith("/divulgador") || p.startsWith("/enviar-evento") },
-  { label: "Contratar", icon: Megaphone, path: "/anuncios", match: (p: string) => p.startsWith("/anuncios") || p.startsWith("/meus-anuncios") },
 ];
 
 /**
@@ -32,7 +31,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
       aria-label="Navegação principal"
       className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
     >
-      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
+      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-3 px-2 xs:px-3">
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
