@@ -66,18 +66,16 @@ export function HomeMixedHeroCarousel({
   const item = items[index];
   if (!item) return null;
 
-  const openCurrent = () => {
-    setSelectedEvent(item);
-  };
-
-  const title = item.event_title || item.atrativo_style || item.category || "Evento";
-  const location = [item.location, item.address_neighborhood].filter(Boolean).join(" · ");
-  const eventImage = item.image_url || getEventFallbackImage(item.category);
+  const formatDate = (date: string | null) =>
+    date
+      ? new Intl.DateTimeFormat("pt-BR", { weekday: "short", day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(date)}T12:00:00Z`))
+      : null;
 
   return (
     <section
-      className="mb-12"
+      className="mb-2"
       aria-label="Destaques da Ilha"
+      aria-roledescription="carrossel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
@@ -85,86 +83,70 @@ export function HomeMixedHeroCarousel({
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="relative overflow-hidden rounded-lg border bg-card shadow-sm">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={openCurrent}
-          className="group relative block h-auto w-full rounded-none p-0 text-left hover:bg-card"
-          aria-label={`Abrir evento ${title}`}
-        >
-          <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted sm:aspect-[16/7]">
-            <img src={eventImage} alt="" aria-hidden="true" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl" />
-            <img src={eventImage} alt={title} decoding="async" fetchPriority="high" className="relative h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
-            <Badge variant="secondary" className="mb-3">
-              {item.is_highlight || item.highlight_active ? "Em destaque" : "Evento"}
-            </Badge>
-            <h2 className="max-w-3xl font-display text-2xl font-bold sm:text-4xl">{title}</h2>
-            {location && (
-              <p className="mt-2 flex items-center gap-1.5 text-sm text-background/80">
-                <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span className="truncate">{location}</span>
-              </p>
-            )}
-          </div>
-        </Button>
+      <div className="relative w-full overflow-hidden bg-muted aspect-[4/5] xs:aspect-[1/1] sm:aspect-[16/8] lg:aspect-[16/6]">
+        {items.map((slide, slideIndex) => {
+          const active = slideIndex === index;
+          const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
+          const slideImage = slide.image_url || getEventFallbackImage(slide.category);
+          const slideLocation = [slide.location, slide.address_neighborhood].filter(Boolean).join(" · ");
+          const slideDate = formatDate(slide.date);
+          return (
+            <button
+              key={slide.id}
+              type="button"
+              onClick={() => setSelectedEvent(slide)}
+              tabIndex={active ? 0 : -1}
+              aria-hidden={!active}
+              aria-label={`Abrir evento ${slideTitle}`}
+              className={cn(
+                "absolute inset-0 block h-full w-full text-left transition-opacity ease-in-out motion-reduce:transition-none",
+                "duration-1000",
+                active ? "z-10 opacity-100" : "z-0 opacity-0 pointer-events-none",
+              )}
+            >
+              <img src={slideImage} alt="" aria-hidden="true" decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl" />
+              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="relative h-full w-full object-contain" />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 pb-10 text-background sm:px-8 sm:pb-12">
+                <Badge variant="secondary" className="mb-3">
+                  {slide.is_highlight || slide.highlight_active ? "Em destaque" : "Evento"}
+                </Badge>
+                <h2 className="line-clamp-2 max-w-3xl font-display text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-background/85">
+                  {slideDate && (
+                    <span className="flex items-center gap-1.5 capitalize"><CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />{slideDate}</span>
+                  )}
+                  {slide.start_time && (
+                    <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4 shrink-0" aria-hidden="true" />{slide.start_time.slice(0, 5)}</span>
+                  )}
+                  {slideLocation && (
+                    <span className="flex min-w-0 items-center gap-1.5"><MapPin className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="truncate">{slideLocation}</span></span>
+                  )}
+                </div>
+              </div>
+            </button>
+          );
+        })}
 
         {total > 1 && (
           <>
-            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
+            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
+            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full opacity-80 hover:opacity-100" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
               <ChevronRight className="h-4 w-4" />
             </Button>
+            <div className="absolute inset-x-0 bottom-2 z-20 flex justify-center gap-1" aria-label="Escolher destaque">
+              {items.map((entry, dotIndex) => (
+                <button key={entry.id} type="button" className="flex h-6 w-6 items-center justify-center" onClick={() => goTo(dotIndex)} aria-label={`Ver destaque ${dotIndex + 1}`} aria-current={dotIndex === index ? "true" : undefined}>
+                  <span className={cn("h-1.5 rounded-full bg-background/50 transition-all", dotIndex === index ? "w-5 bg-background" : "w-1.5")} />
+                </button>
+              ))}
+            </div>
           </>
         )}
       </div>
 
-      {total > 1 && (
-        <div className="mt-3 flex justify-center gap-1" aria-label="Escolher destaque">
-          {items.map((entry, dotIndex) => (
-            <Button key={entry.id} type="button" variant="ghost" size="icon" className="h-6 w-6 rounded-full p-0" onClick={() => goTo(dotIndex)} aria-label={`Ver destaque ${dotIndex + 1}`} aria-current={dotIndex === index ? "true" : undefined}>
-              <span className={cn("h-2 rounded-full bg-muted-foreground/30 transition-all", dotIndex === index ? "w-5 bg-primary" : "w-2")} />
-            </Button>
-          ))}
-        </div>
-      )}
-
-      {total > 1 && (
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Mais eventos">
-          {items.filter((_, itemIndex) => itemIndex !== index).slice(0, 5).map((event) => {
-            const eventIndex = items.findIndex((candidate) => candidate.id === event.id);
-            const thumbnail = event.image_url || getEventFallbackImage(event.category);
-            return (
-              <Button
-                key={event.id}
-                type="button"
-                variant="ghost"
-                onClick={() => goTo(eventIndex)}
-                className="group h-auto min-w-0 justify-start gap-3 rounded-lg border bg-card p-2 text-left hover:bg-muted sm:p-3"
-                aria-label={`Destacar evento ${event.event_title || "Evento"}`}
-              >
-                <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-muted sm:h-24 sm:w-20">
-                  <img src={thumbnail} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-md" />
-                  <img src={thumbnail} alt="" loading="lazy" decoding="async" className="relative h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="line-clamp-2 whitespace-normal text-sm font-semibold leading-snug text-foreground">
-                    {event.event_title || event.atrativo_style || event.category || "Evento"}
-                  </p>
-                  {event.address_neighborhood && (
-                    <p className="mt-1 truncate text-xs font-normal text-muted-foreground">{event.address_neighborhood}</p>
-                  )}
-                </div>
-              </Button>
-            );
-          })}
-        </div>
-      )}
 
       <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && setSelectedEvent(null)}>
         {selectedEvent && (
