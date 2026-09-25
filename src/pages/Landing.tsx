@@ -170,6 +170,7 @@ export default function Landing() {
       () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
       [allEvents],
     );
+    const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
     const { data: flyerAds = [] } = usePublishedFlyerAds();
     const { data: flyerUrls = {} } = useAdPhotoUrls(flyerAds.map((ad) => ad.photos[0]));
     const homeFlyerEvents = useMemo(() => {
@@ -197,9 +198,19 @@ export default function Landing() {
             image_url: flyerUrls[ad.photos[0]],
           };
         });
-      const events = [...allEvents].sort((a, b) => Number(Boolean(b.image_url)) - Number(Boolean(a.image_url)));
-      return [...flyers, ...events].slice(0, 6);
-    }, [allEvents, flyerAds, flyerUrls]);
+      const today = saoPauloTodayISO();
+      const pool = [...flyers, ...allEvents];
+      const todays = pool.filter((ev) => eventDateISO(ev.date) === today);
+      // Só eventos de hoje; se não houver nenhum, mostra os próximos dias.
+      const base = todays.length > 0 ? todays : pool.filter((ev) => eventDateISO(ev.date) >= today);
+      // Ordem aleatória a cada abertura da página (semente fixa durante a visita).
+      const rand = (id: string) => {
+        let h = heroSeed;
+        for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 2654435761);
+        return h >>> 0;
+      };
+      return [...base].sort((a, b) => rand(a.id) - rand(b.id)).slice(0, 8);
+    }, [allEvents, flyerAds, flyerUrls, heroSeed]);
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
