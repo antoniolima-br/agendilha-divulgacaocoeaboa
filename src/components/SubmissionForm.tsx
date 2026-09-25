@@ -1,3 +1,4 @@
+import { validateIntlPhone, toE164 } from "@/lib/intlPhone";
 import { useState, useEffect, useRef } from "react";
 import { handleError } from "@/lib/error-handler";
 import { logger } from "@/lib/logger";
