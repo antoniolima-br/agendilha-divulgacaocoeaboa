@@ -239,11 +239,10 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
               <FormMessage />
             </FormItem>
           )}
-
-      <ExtraAtrativos form={form} />
-
         />
       )}
+
+      <ExtraAtrativos form={form} />
     </div>
   );
 }
