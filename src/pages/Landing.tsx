@@ -324,7 +324,7 @@ export default function Landing() {
       <Header />
 
        {/* ── Destaques full-width ── */}
-       <div className="pt-[7.25rem] sm:pt-[7.75rem]">
+       <div className="pt-[8.75rem] sm:pt-[9.5rem]">
          <HomeMixedHeroCarousel
            events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
