@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { AtrativoAutocomplete } from "@/components/atrativos/AtrativoAutocomplete";
 import { SuggestInput } from "@/components/ui/SuggestInput";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const CATEGORIES = QUICK_CATEGORIES;
 
@@ -191,35 +192,27 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
         )}
       />
 
-      {/* 4. Categoria — botões grandes */}
+      {/* 4. Categoria — lista suspensa compacta */}
       <FormField
         control={form.control}
         name="atrativoCategory"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Categoria <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
-            <div className="grid grid-cols-2 gap-2">
-              {QUICK_CATEGORIES.map((cat) => {
-                const active = field.value === cat.value;
-                return (
-                  <button
-                    key={cat.value}
-                    type="button"
-                    onClick={() => field.onChange(cat.value)}
-                    aria-pressed={active}
-                    className={cn(
-                      "min-h-14 rounded-xl border px-3 py-3 text-sm font-semibold transition-colors text-left flex items-center gap-2",
-                      active
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-input bg-background hover:bg-muted",
-                    )}
-                  >
-                    {active && <Check className="h-4 w-4 shrink-0" />}
-                    <span>{cat.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <Select value={field.value || undefined} onValueChange={field.onChange}>
+              <FormControl>
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="Escolha a categoria" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {QUICK_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value} className="min-h-11">
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
