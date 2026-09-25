@@ -45,6 +45,10 @@ export default function NovoAnuncio() {
   const [city, setCity] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [photos, setPhotos] = useState<string[]>([]);
+  const [isFlyer, setIsFlyer] = useState(false);
+  const [flyerDate, setFlyerDate] = useState("");
+  const [flyerTime, setFlyerTime] = useState("");
+  const [flyerPlace, setFlyerPlace] = useState("");
   const [destaqueAberto, setDestaqueAberto] = useState(false);
   const [tituloEnviado, setTituloEnviado] = useState<string | null>(null);
 
@@ -58,6 +62,18 @@ export default function NovoAnuncio() {
     setCity(existente.city ?? "");
     setNeighborhood(existente.neighborhood ?? "");
     setPhotos(Array.isArray(existente.photos) ? existente.photos : []);
+    setIsFlyer(existente.ad_type === "flyer");
+    setFlyerPlace(existente.event_location ?? "");
+    if (existente.event_date) {
+      const d = new Date(existente.event_date);
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+      }).formatToParts(d);
+      const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+      setFlyerDate(`${get("year")}-${get("month")}-${get("day")}`);
+      setFlyerTime(`${get("hour")}:${get("minute")}`);
+    }
   }, [existente]);
 
   const podeAnunciar = isPromoter || isAdmin;
@@ -93,7 +109,25 @@ export default function NovoAnuncio() {
       }
     }
 
+    if (isFlyer) {
+      if (photos.length === 0) {
+        toast.error("Manda a imagem do flyer pra ele aparecer no carrossel.");
+        return;
+      }
+      if (!flyerDate || !flyerTime) {
+        toast.error("Coloca a data e o horário do rolê.");
+        return;
+      }
+      if (flyerPlace.trim().length < 2) {
+        toast.error("Diz onde vai rolar.");
+        return;
+      }
+    }
+
     const input = {
+      ad_type: isFlyer ? "flyer" : (existente?.ad_type && existente.ad_type !== "flyer" ? existente.ad_type : "gratuito"),
+      event_date: isFlyer ? `${flyerDate}T${flyerTime}:00-03:00` : null,
+      event_location: isFlyer ? flyerPlace.trim() : null,
       title: title.trim(),
       description: description.trim(),
       category,
@@ -146,6 +180,41 @@ export default function NovoAnuncio() {
         <Card className="rounded-2xl">
           <CardContent className="pt-6">
             <form onSubmit={(e) => void enviar(e)} className="space-y-5">
+              <div className="grid grid-cols-2 gap-2 rounded-xl border border-border p-1" role="radiogroup" aria-label="Tipo de anúncio">
+                {[{ v: false, l: "Anúncio comum" }, { v: true, l: "Flyer de evento" }].map((o) => (
+                  <button
+                    key={o.l}
+                    type="button"
+                    role="radio"
+                    aria-checked={isFlyer === o.v}
+                    onClick={() => setIsFlyer(o.v)}
+                    className={`min-h-11 rounded-lg text-sm font-bold transition-colors ${isFlyer === o.v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+                  >
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+              {isFlyer && (
+                <div className="space-y-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <p className="text-sm text-muted-foreground">
+                    Depois que a equipe aprovar, o flyer entra no carrossel da página inicial até o dia do rolê.
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="flyer-data">Data</Label>
+                      <Input id="flyer-data" type="date" value={flyerDate} onChange={(e) => setFlyerDate(e.target.value)} className="h-11" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="flyer-hora">Horário</Label>
+                      <Input id="flyer-hora" type="time" value={flyerTime} onChange={(e) => setFlyerTime(e.target.value)} className="h-11" />
+                    </div>
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label htmlFor="flyer-local">Local</Label>
+                      <Input id="flyer-local" value={flyerPlace} onChange={(e) => setFlyerPlace(e.target.value)} placeholder="Ex.: Praia da Bica" className="h-11" />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="space-y-1.5">
                 <Label htmlFor="titulo">O que você está anunciando?</Label>
                 <Input
@@ -236,7 +305,7 @@ export default function NovoAnuncio() {
               </div>
 
               <div className="space-y-2">
-                <Label>Fotos</Label>
+                <Label>{isFlyer ? "Imagem do flyer (a primeira vai pro carrossel)" : "Fotos"}</Label>
                 <AdPhotoUploader userId={user.id} paths={photos} onChange={setPhotos} />
               </div>
 
