@@ -218,20 +218,18 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
         )}
       />
 
-      <ExtraAtrativos form={form} />
-
       {form.watch("atrativoCategory") === "Outros" && (
         <FormField
           control={form.control}
           name="atrativoCategoryOther"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Qual categoria?</FormLabel>
+              <FormLabel>Qual é a nova categoria?</FormLabel>
               <FormControl>
                 <SuggestInput
                   placeholder="Ex.: Feira, Palestra, Teatro"
                   className="h-12 text-base"
-                  suggestFrom="submission_atrativos"
+                  suggestFrom="atrativos"
                   suggestColumn="category_other"
                    autoComplete="off"
                   {...field}
@@ -243,6 +241,8 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
           )}
         />
       )}
+
+      <ExtraAtrativos form={form} />
     </div>
   );
 }
