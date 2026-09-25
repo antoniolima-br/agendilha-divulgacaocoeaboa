@@ -155,6 +155,7 @@ export type Database = {
           created_at: string
           description: string
           event_date: string | null
+          event_location: string | null
           highlight_plan_id: string | null
           highlight_until: string | null
           id: string
@@ -178,6 +179,7 @@ export type Database = {
           created_at?: string
           description: string
           event_date?: string | null
+          event_location?: string | null
           highlight_plan_id?: string | null
           highlight_until?: string | null
           id?: string
@@ -201,6 +203,7 @@ export type Database = {
           created_at?: string
           description?: string
           event_date?: string | null
+          event_location?: string | null
           highlight_plan_id?: string | null
           highlight_until?: string | null
           id?: string
