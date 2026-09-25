@@ -69,7 +69,7 @@ export function QuickEditEventDialog({
     const payload: Record<string, string | null> = {};
     FIELDS.forEach((f) => { payload[f] = form[f].trim() || null; });
     payload.status = form.status;
-    const { error } = await supabase.from("submissions").update(payload).eq("id", event.id);
+    const { error } = await supabase.from("submissions").update(payload as never).eq("id", event.id);
     setSaving(false);
     if (error) {
       handleError(error, "Não deu pra salvar o evento agora");
