@@ -7,7 +7,7 @@ import { eventDateISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 
-const AUTOPLAY_MS = 6_000;
+const AUTOPLAY_MS = 4_000;
 
 interface HeroEvent {
   id: string;
@@ -70,20 +70,13 @@ export function HomeMixedHeroCarousel({
     setSelectedEvent(item);
   };
 
-  const titleOf = (e: HeroEvent) => e.event_title || e.atrativo_style || e.category || "Evento";
-  const title = titleOf(item);
+  const title = item.event_title || item.atrativo_style || item.category || "Evento";
   const location = [item.location, item.address_neighborhood].filter(Boolean).join(" · ");
-  const dateLabel = item.date
-    ? new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit", timeZone: "UTC" })
-        .format(new Date(`${eventDateISO(item.date)}T12:00:00Z`))
-        .replace(",", "")
-        .toUpperCase()
-    : null;
-  const timeLabel = item.start_time ? item.start_time.slice(0, 5) : null;
+  const eventImage = item.image_url || getEventFallbackImage(item.category);
 
   return (
     <section
-      className="relative left-1/2 mb-12 w-screen -translate-x-1/2"
+      className="mb-12"
       aria-label="Destaques da Ilha"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -92,7 +85,7 @@ export function HomeMixedHeroCarousel({
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="relative overflow-hidden bg-card">
+      <div className="relative overflow-hidden rounded-lg border bg-card shadow-sm">
         <Button
           type="button"
           variant="ghost"
@@ -101,33 +94,14 @@ export function HomeMixedHeroCarousel({
           aria-label={`Abrir evento ${title}`}
         >
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted sm:aspect-[16/7]">
-            {items.map((entry, i) => {
-              const img = entry.image_url || getEventFallbackImage(entry.category);
-              return (
-                <div
-                  key={entry.id}
-                  aria-hidden={i !== index}
-                  className={cn(
-                    "absolute inset-0 transition-opacity duration-1000 ease-in-out",
-                    i === index ? "opacity-100" : "opacity-0",
-                  )}
-                >
-                  <img src={img} alt="" aria-hidden="true" decoding="async" loading={i === 0 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl" />
-                  <img src={img} alt={titleOf(entry)} decoding="async" loading={i === 0 ? "eager" : "lazy"} className="relative h-full w-full object-contain" />
-                </div>
-              );
-            })}
+            <img src={eventImage} alt="" aria-hidden="true" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl" />
+            <img src={eventImage} alt={title} decoding="async" fetchPriority="high" className="relative h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/25 to-transparent" />
-          <div key={item.id} className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-screen-lg p-5 pb-8 text-background animate-in fade-in slide-in-from-bottom-2 duration-700 sm:p-8 sm:pb-12">
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-5 text-background sm:p-8">
             <Badge variant="secondary" className="mb-3">
               {item.is_highlight || item.highlight_active ? "Em destaque" : "Evento"}
             </Badge>
-            {(dateLabel || timeLabel) && (
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-background/85 sm:text-sm">
-                {[dateLabel, timeLabel].filter(Boolean).join(" · ")}
-              </p>
-            )}
             <h2 className="max-w-3xl font-display text-2xl font-bold sm:text-4xl">{title}</h2>
             {location && (
               <p className="mt-2 flex items-center gap-1.5 text-sm text-background/80">

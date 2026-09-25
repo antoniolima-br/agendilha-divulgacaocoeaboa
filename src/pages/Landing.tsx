@@ -37,7 +37,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
-import { HomeTopBar, HomeBottomBar } from "@/components/home/HomeChrome";
 import logo from "@/assets/coeaboa-logo.webp";
 import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
@@ -320,15 +319,36 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased overflow-x-hidden font-body selection:bg-primary/15 selection:text-primary">
-      <HomeTopBar />
+    <div className="min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
+      <Header />
+      
+       {/* ── Hero Discovery ── */}
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-36">
+         <div className="text-center mb-16 sm:mb-24 animate-in fade-in slide-in-from-top-4 duration-1000">
+           <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-10">
+             <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">Curadoria local da Ilha</span>
+           </div>
+           <h1 className="mx-auto mb-6 max-w-4xl text-balance font-display text-2xl font-bold leading-tight text-foreground sm:text-5xl sm:leading-[1.05] lg:text-7xl">
+             O melhor da Ilha,<br className="hidden sm:block" /> <span className="text-secondary">em um só lugar.</span>
+           </h1>
+           <p className="text-secondary/80 text-base sm:text-lg font-light max-w-xl mx-auto mb-12 text-balance leading-relaxed">
+             Agenda curada de eventos, estabelecimentos e experiências na Ilha do Governador — atualizada todo dia.
+           </p>
 
-        <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-0 sm:px-6 sm:pb-24">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
+                <Button
+                  onClick={() => navigate("/hoje")}
+                  className="w-full sm:w-auto sm:px-10 h-12 sm:h-13 rounded-full font-semibold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-card transition-all"
+                >
+                  Ver o que tem hoje
+                </Button>
+            </div>
+         </div>
+
          <HomeMixedHeroCarousel
             events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
          />
-
  
         {/* Categories — minimal, monochrome chips */}
         <div className="flex gap-2 overflow-x-auto pb-6 mb-10 scrollbar-none">
@@ -721,7 +741,6 @@ export default function Landing() {
           />
         )}
       </Suspense>
-      <HomeBottomBar />
     </div>
   );
 }
