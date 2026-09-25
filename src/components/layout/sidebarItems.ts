@@ -82,6 +82,13 @@ export const sidebarConfig: SidebarSection[] = [
             exact: true
           },
           {
+            id: "contratar",
+            label: "Contratar",
+            path: ROUTES.ANUNCIO_NOVO,
+            icon: ShoppingBag,
+            roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+          },
+          {
             id: "meus_anuncios",
             label: "Meus Anúncios",
             path: ROUTES.MEUS_ANUNCIOS,
