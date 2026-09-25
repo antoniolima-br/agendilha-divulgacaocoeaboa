@@ -290,6 +290,7 @@ function ExplorarInner() {
   );
 
   const DateChips = (
+    <div className="w-full max-w-full overflow-x-auto">
     <div
       className="grid min-w-max grid-cols-6 gap-1 rounded-lg border border-border bg-muted/60 p-1 shadow-sm"
       role="group"
@@ -325,6 +326,7 @@ function ExplorarInner() {
           {c.label}
         </Button>
       ))}
+    </div>
     </div>
   );
 

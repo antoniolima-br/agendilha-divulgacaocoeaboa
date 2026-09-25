@@ -108,7 +108,7 @@ export function HomeMixedHeroCarousel({
               <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-center sm:h-[calc(100%-9.5rem)]" />
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] via-background/60 via-[calc(9.5rem+1.5rem)] to-transparent to-[calc(9.5rem+3.5rem)]" />
               {slide.date && (
-                <div className="absolute left-4 bottom-[7.5rem] z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:bottom-[7rem] sm:h-20 sm:w-20">
+                <div className="absolute left-4 bottom-[10rem] z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:bottom-[10rem] sm:h-20 sm:w-20">
                   <span className="font-display text-2xl font-bold leading-none sm:text-3xl">{eventDateISO(slide.date).slice(8, 10)}</span>
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(slide.date)}T12:00:00Z`)).replace(".", "")}</span>
                 </div>
@@ -133,10 +133,10 @@ export function HomeMixedHeroCarousel({
 
         {total > 1 && (
           <>
-            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
+            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-1/2 z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
+            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
               <ChevronRight className="h-4 w-4" />
             </Button>
             <div className="absolute inset-x-0 bottom-0.5 z-20 flex justify-center gap-1" aria-label="Escolher destaque">
