@@ -471,7 +471,7 @@ export default function SubmissionForm() {
                 date: clean(values.date),
                 startTime: clean(values.startTime),
                 location: clean(values.locationName),
-                category: clean(values.atrativoCategory) || clean(values.category),
+                category: resolveAtrativoCategory(values) || clean(values.category),
               });
               const generatedBlob = await (await fetch(dataUrl)).blob();
               return {
@@ -520,7 +520,7 @@ export default function SubmissionForm() {
         address_zip: clean(values.addressZip),
         description: clean(values.description),
         video_link: clean(values.videoLink),
-        category: clean(values.atrativoCategory) || clean(values.category),
+        category: resolveAtrativoCategory(values) || clean(values.category),
         contact_social: clean(values.contactSocial),
         additional_details: clean(values.additionalDetails),
         stage: clean(values.stage) || 'submitted',
@@ -580,7 +580,7 @@ export default function SubmissionForm() {
             {
               submission_id: result.id,
               name: clean(values.atrativoName)!,
-              category: clean(values.atrativoCategory),
+              category: resolveAtrativoCategory(values),
               whatsapp: clean(values.atrativoContact),
               display_order: 0,
             },
@@ -641,7 +641,8 @@ export default function SubmissionForm() {
         if (!atrativoLinkedId && user?.id && clean(values.atrativoName)) {
           await supabaseClient.from("atrativos").insert({
             name: clean(values.atrativoName)!,
-            tipo_atrativo: clean(values.atrativoCategory),
+            tipo_atrativo: resolveAtrativoCategory(values),
+            category_other: values.atrativoCategory === "Outros" ? clean(values.atrativoCategoryOther) : null,
             type: clean(values.atrativoType),
             style: clean(values.atrativoStyle),
             contact_whatsapp: clean(values.atrativoContact),
@@ -884,3 +885,10 @@ export default function SubmissionForm() {
   );
 }
 
+
+/** Categoria final do atrativo: usa o texto digitado quando a opção é "Outra categoria". */
+function resolveAtrativoCategory(values: { atrativoCategory?: string; atrativoCategoryOther?: string }) {
+  const cat = (values.atrativoCategory ?? "").trim();
+  if (cat === "Outros") return (values.atrativoCategoryOther ?? "").trim() || "Outros";
+  return cat || null;
+}
