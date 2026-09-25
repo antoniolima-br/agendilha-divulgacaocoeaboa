@@ -720,6 +720,7 @@ export default function Landing() {
           />
         )}
       </Suspense>
+      <HomeBottomBar />
     </div>
   );
 }
