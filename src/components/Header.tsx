@@ -25,6 +25,7 @@ import {
   ExternalLink,
   Share2
 } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
  import logoCoeABoa from "@/assets/coeaboa-logo.webp";
 import { Button } from "@/components/ui/button";
