@@ -198,15 +198,14 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-12 sm:w-12" />
               </Link>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-secondary sm:text-xs">Versão Beta</span>
+              <span aria-hidden="true" />
               <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, RJ">
                 <span className="truncate">Ilha do Governador</span>
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-1 grid grid-cols-3 gap-2 sm:mx-auto sm:max-w-xl">
+            <div className="mt-1 grid grid-cols-2 gap-2 sm:mx-auto sm:max-w-md">
               <Button onClick={irParaDivulgar} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Divulgar</Button>
-              <Button onClick={() => navigate("/anuncios")} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Contratar</Button>
               {user ? (
                 <Button onClick={handleMobileMenu} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Perfil</Button>
               ) : (
