@@ -111,6 +111,7 @@ export default function Landing() {
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
   const todayRowRef = useRef<HTMLDivElement>(null);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
    const { ref: loadMoreRef, inView: loadMoreInView } = useInView();
  
    const { 
@@ -324,7 +325,7 @@ export default function Landing() {
       <Header />
 
        {/* ── Destaques full-width ── */}
-       <div className="pt-[8.75rem] sm:pt-[9.5rem]">
+       <div className="pt-[9.75rem] sm:pt-[10.5rem]">
          <HomeMixedHeroCarousel
            events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
@@ -332,18 +333,8 @@ export default function Landing() {
        </div>
 
        {/* ── Hero Discovery ── */}
-       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-16">
-         <div className="text-center mb-12 sm:mb-16 animate-in fade-in slide-in-from-top-4 duration-1000">
-           <div className="inline-flex items-center justify-center px-3.5 py-1 rounded-full border border-accent mb-10">
-             <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">Curadoria local da Ilha</span>
-           </div>
-           <h1 className="mx-auto mb-6 max-w-4xl text-balance font-display text-2xl font-bold leading-tight text-foreground sm:text-5xl sm:leading-[1.05] lg:text-7xl">
-             O melhor da Ilha,<br className="hidden sm:block" /> <span className="text-secondary">em um só lugar.</span>
-           </h1>
-           <p className="text-secondary/80 text-base sm:text-lg font-light max-w-xl mx-auto mb-12 text-balance leading-relaxed">
-             Agenda curada de eventos, estabelecimentos e experiências na Ilha do Governador — atualizada todo dia.
-           </p>
-
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-8">
+         <div className="mb-8 text-center">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
                 <Button
                   onClick={() => navigate("/hoje")}
@@ -356,7 +347,18 @@ export default function Landing() {
 
  
         {/* Categories — minimal, monochrome chips */}
-        <div className="flex gap-2 overflow-x-auto pb-6 mb-10 scrollbar-none">
+        <div className="mb-10">
+        <button
+          type="button"
+          onClick={() => setCategoriesOpen((v) => !v)}
+          aria-expanded={categoriesOpen}
+          className="mx-auto flex min-h-11 items-center gap-2 rounded-full border border-border px-5 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground"
+        >
+          Categorias
+          <ChevronRight className={cn("h-4 w-4 transition-transform", categoriesOpen && "rotate-90")} />
+        </button>
+        {categoriesOpen && (
+        <div className="mt-4 flex flex-wrap justify-center gap-2 animate-fade-in">
           {genres.map((g) => (
             <button
               key={g.id}
@@ -367,6 +369,8 @@ export default function Landing() {
               <span className="text-sm font-medium tracking-tight">{g.label}</span>
             </button>
           ))}
+        </div>
+        )}
         </div>
 
         {/* Abas temporais */}
@@ -432,7 +436,10 @@ export default function Landing() {
         {/* Featured Events */}
         <section className="mb-12">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <h2 className="text-2xl font-bold font-display">Eventos em alta</h2>
+            <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
+              <h2 className="text-2xl font-bold font-display">Eventos em alta</h2>
+              <Link to="/agenda" className="btn-gold inline-flex min-h-10 shrink-0 items-center gap-1 rounded-full px-4 text-xs font-bold uppercase tracking-wide">Ver agenda completa <ChevronRight className="h-3.5 w-3.5" /></Link>
+            </div>
             
             <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               <Button 
