@@ -1,3 +1,4 @@
+import { validateIntlPhone, toE164 } from "@/lib/intlPhone";
 import { useState, useEffect, useRef } from "react";
 import { handleError } from "@/lib/error-handler";
 import { logger } from "@/lib/logger";
@@ -54,10 +55,8 @@ const formSchema = z.object({
   nickName: z.string().trim().max(50).optional().or(z.literal("")),
   basicPhone: z.string().trim().optional().superRefine((val, ctx) => {
     if (!val) return;
-    const v = validateBrazilianMobile(val);
-    if (v.valid === false) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: v.reason });
-    }
+    const reason = validateIntlPhone(val);
+    if (reason) ctx.addIssue({ code: z.ZodIssueCode.custom, message: reason });
   }),
 
   companyName: z.string().trim().max(100).optional(),
@@ -506,7 +505,7 @@ export default function SubmissionForm() {
         company_name: clean(values.companyName) || clean(values.nickName) || clean(profile?.responsible_name) || null,
         // responsible_name é preenchido abaixo com o nome do responsável (Fase 7).
         email: clean(values.email),
-        phone: clean(values.basicPhone),
+        phone: toE164(values.basicPhone),
         event_title: eventTitle,
         date: clean(values.date),
         start_time: clean(values.startTime),

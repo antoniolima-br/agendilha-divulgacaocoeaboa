@@ -3,7 +3,8 @@ import { SuggestInput } from "@/components/ui/SuggestInput";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
 import { User, Phone, RefreshCw } from "lucide-react";
-import { formatPhoneDisplay, validateBrazilianMobile } from "@/lib/whatsapp";
+import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+import { validateIntlPhone } from "@/lib/intlPhone";
 
 interface ContactStepProps {
   form: UseFormReturn<any>;
@@ -64,9 +65,8 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
         control={form.control}
         name="basicPhone"
         render={({ field }) => {
-          const v = validateBrazilianMobile(field.value);
-          const showOk = field.value && v.valid;
-          const showErr = field.value && !v.valid;
+          const err = field.value ? validateIntlPhone(field.value) : null;
+          const showOk = field.value && !err;
           return (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
@@ -74,19 +74,10 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
               WhatsApp para contato <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
             </FormLabel>
             <FormControl>
-              <SuggestInput 
-                placeholder="(11) 99999-9999"
-                inputMode="tel"
-                maxLength={16}
-                className="h-12" 
-                suggestFrom="submissions"
-                suggestColumn="phone"
-                {...field} 
-                name="tel"
-                autoComplete="tel"
-                onChange={(e) => {
-                  field.onChange(formatPhoneDisplay(e.target.value));
-                }}
+              <IntlPhoneInput
+                ref={field.ref}
+                value={field.value}
+                onChange={field.onChange}
                 onBlur={() => {
                   field.onBlur();
                   form.trigger("basicPhone");
@@ -94,12 +85,10 @@ export function ContactStep({ form, onRestoreFromProfile, hasProfile }: ContactS
               />
             </FormControl>
             {showOk ? (
-              <p className="text-xs text-emerald-600">✓ Celular válido para receber WhatsApp.</p>
-            ) : showErr && "reason" in v ? (
-              <p className="text-xs text-destructive">{v.reason}</p>
+              <p className="text-xs text-primary">✓ Número válido.</p>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Use DDD + 9 + 8 dígitos. Apenas celulares brasileiros recebem WhatsApp.
+                Escolha o país e digite o número com DDD/código de área.
               </p>
             )}
             <FormMessage />
