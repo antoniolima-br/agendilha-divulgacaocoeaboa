@@ -42,6 +42,8 @@ import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
+import { usePublishedFlyerAds } from "@/data/useAds";
+import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 
 const sitelinks = [
@@ -168,12 +170,36 @@ export default function Landing() {
       () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
       [allEvents],
     );
-    const homeFlyerEvents = useMemo(
-      () => [...allEvents]
-        .sort((a, b) => Number(Boolean(b.image_url)) - Number(Boolean(a.image_url)))
-        .slice(0, 6),
-      [allEvents],
-    );
+    const { data: flyerAds = [] } = usePublishedFlyerAds();
+    const { data: flyerUrls = {} } = useAdPhotoUrls(flyerAds.map((ad) => ad.photos[0]));
+    const homeFlyerEvents = useMemo(() => {
+      const spParts = (iso: string) => {
+        const parts = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+        }).formatToParts(new Date(iso));
+        const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+        return { date: `${get("year")}-${get("month")}-${get("day")}`, time: `${get("hour")}:${get("minute")}` };
+      };
+      const flyers = flyerAds
+        .filter((ad) => ad.event_date && flyerUrls[ad.photos[0]])
+        .map((ad) => {
+          const { date, time } = spParts(ad.event_date as string);
+          return {
+            id: `ad:${ad.id}`,
+            event_title: ad.title,
+            date,
+            start_time: time,
+            location: ad.event_location,
+            address_neighborhood: ad.neighborhood,
+            category: ad.category,
+            description: ad.description,
+            image_url: flyerUrls[ad.photos[0]],
+          };
+        });
+      const events = [...allEvents].sort((a, b) => Number(Boolean(b.image_url)) - Number(Boolean(a.image_url)));
+      return [...flyers, ...events].slice(0, 6);
+    }, [allEvents, flyerAds, flyerUrls]);
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
@@ -328,7 +354,7 @@ export default function Landing() {
        <div className="pt-[9.75rem] sm:pt-[10.5rem]">
          <HomeMixedHeroCarousel
            events={homeFlyerEvents}
-           onOpenEvent={(id) => navigate(`/agenda?event=${id}`)}
+           onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
          />
        </div>
 
