@@ -245,7 +245,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               </div>
 
               <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 hover:opacity-80 transition-opacity group shrink-0" aria-label="AgendIlha - Página Inicial">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-primary/5 shadow-sm" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
                 <div className="flex flex-col leading-[1]">
                   <span className="font-display text-lg sm:text-xl font-black text-primary tracking-tight">AgendIlha</span>
                   <span className="text-[9px] sm:text-[10px] text-secondary font-black uppercase tracking-[0.15em]">Coé a Boa?</span>
@@ -305,7 +305,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               </Button>
 
               <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity min-w-0">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-8 w-8 sm:h-9 sm:w-9 rounded-full shadow-sm shrink-0" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full shadow-sm" />
                 <div className="flex flex-col leading-none min-w-0">
                   <span className="font-display text-base sm:text-lg font-black text-primary tracking-tight truncate">AgendIlha</span>
                   <span className="text-[8px] sm:text-[9px] text-secondary font-black uppercase tracking-widest opacity-80">Coé a Boa?</span>
