@@ -174,26 +174,6 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
         )}
       />
 
-      {/* Categoria do evento */}
-      <FormField
-        control={form.control}
-        name="category"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Categoria <span className="text-xs font-normal text-muted-foreground">(opcional)</span></FormLabel>
-            <FormControl>
-              <FrameworkAutocomplete
-                value={field.value}
-                onValueChange={field.onChange}
-                options={EVENT_CATEGORIES}
-                placeholder="Selecione a categoria"
-                emptyText="Nenhuma categoria encontrada."
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       </>)}
 
