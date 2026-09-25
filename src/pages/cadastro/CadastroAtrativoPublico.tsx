@@ -8,7 +8,8 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle2, Loader2, Music } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { formatPhoneDisplay, validateBrazilianMobile } from "@/lib/whatsapp";
+import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { submitPublicCadastro } from "@/lib/publicCadastro";
 import { handleError } from "@/lib/error-handler";
 
@@ -43,14 +44,13 @@ export default function CadastroAtrativoPublico() {
     if (!form.category) return toast.error("Escolha a categoria.");
     if (form.category === "Outros" && !form.categoryOther.trim())
       return toast.error("Diga qual é a categoria.");
-    if (form.whatsapp.trim()) {
-      const v = validateBrazilianMobile(form.whatsapp);
-      if (!v.valid) return toast.error("Confira o WhatsApp ou deixe o campo vazio.");
-    }
+    const hasPhone = !!toE164(form.whatsapp);
+    if (hasPhone && validateIntlPhone(form.whatsapp))
+      return toast.error("Confira o WhatsApp ou deixe o campo vazio.");
 
     setLoading(true);
     try {
-      await submitPublicCadastro("atrativo", form);
+      await submitPublicCadastro("atrativo", { ...form, whatsapp: hasPhone ? toE164(form.whatsapp)! : "" });
       setSent(true);
       window.scrollTo(0, 0);
     } catch (err) {
@@ -145,7 +145,7 @@ export default function CadastroAtrativoPublico() {
 
         <div className="space-y-2">
           <Label htmlFor="whatsapp">WhatsApp (opcional)</Label>
-          <Input id="whatsapp" name="tel" autoComplete="tel" inputMode="tel" maxLength={16} className="h-12 text-base" value={form.whatsapp} onChange={(e) => set("whatsapp", formatPhoneDisplay(e.target.value))} placeholder="(21) 99999-9999" />
+          <IntlPhoneInput id="whatsapp" className="text-base" value={form.whatsapp} onChange={(v) => set("whatsapp", v)} />
           <p className="text-xs text-muted-foreground">Se informar, use DDD + número.</p>
         </div>
 

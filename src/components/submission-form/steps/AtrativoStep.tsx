@@ -1,3 +1,5 @@
+import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -135,22 +137,16 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
         control={form.control}
         name="atrativoContact"
         render={({ field }) => {
-          const v = validateBrazilianMobile(field.value);
-          const showErr = field.value && !v.valid;
+          const hasPhone = !!toE164(field.value);
+          const showErr = hasPhone && !!validateIntlPhone(field.value);
           return (
             <FormItem>
               <FormLabel>Celular / WhatsApp (opcional)</FormLabel>
               <FormControl>
-                <SuggestInput
-                  placeholder="(21) 99999-9999"
-                  inputMode="tel"
-                  maxLength={16}
-                  className="h-12 text-base"
-                  suggestFrom="submissions"
-                  suggestColumn="atrativo_contact"
-                  {...field}
-                  autoComplete="tel"
-                  onChange={(e) => field.onChange(formatPhoneDisplay(e.target.value))}
+                <IntlPhoneInput
+                  ref={field.ref}
+                  value={field.value}
+                  onChange={field.onChange}
                   onBlur={() => {
                     field.onBlur();
                     form.trigger("atrativoContact");
@@ -158,9 +154,9 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
                 />
               </FormControl>
               {showErr ? (
-                <p className="text-xs text-destructive">Informe um WhatsApp válido com DDD.</p>
+                <p className="text-xs text-destructive">Confira o número do WhatsApp.</p>
               ) : (
-                <p className="text-xs text-muted-foreground">Se informar, use DDD + número.</p>
+                <p className="text-xs text-muted-foreground">Escolha o país e digite o número.</p>
               )}
               <FormMessage />
             </FormItem>
@@ -298,15 +294,9 @@ function ExtraAtrativos({ form }: { form: UseFormReturn<any> }) {
             placeholder="Nome do outro atrativo"
             selected={!!item.name}
           />
-          <SuggestInput
-            placeholder="WhatsApp (opcional)"
-            inputMode="tel"
-            maxLength={16}
-            className="h-11 text-base"
-            suggestFrom="submissions"
-            suggestColumn="atrativo_contact"
+          <IntlPhoneInput
             value={item.whatsapp || ""}
-            onChange={(e) => update(i, { whatsapp: formatPhoneDisplay(e.target.value) })}
+            onChange={(v) => update(i, { whatsapp: v })}
           />
         </div>
       ))}
