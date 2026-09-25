@@ -12,6 +12,7 @@ import { NovoEstabelecimentoDialog } from "@/components/estabelecimentos/NovoEst
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AutofillIssues } from "../AutofillIssues";
+import { AddressAiCheck } from "../AddressAiCheck";
 import { checkLocationAutofill, formatCep, cepDigits, validateCep } from "@/lib/autofillValidation";
 import { formatPhoneDisplay } from "@/lib/whatsapp";
 
@@ -250,6 +251,8 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
           </FormItem>
         )}
       />
+
+      <AddressAiCheck form={form} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField
