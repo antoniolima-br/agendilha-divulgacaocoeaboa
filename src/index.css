@@ -216,5 +216,8 @@
   color: hsl(var(--primary-foreground));
   box-shadow: var(--shadow-gold);
 }
-.theme-coeaboa, .theme-coeaboa * { scrollbar-width: none; }
-.theme-coeaboa::-webkit-scrollbar, .theme-coeaboa *::-webkit-scrollbar { display: none; }
+/* Rolagem limpa em todo o app: sem barras visíveis, toque e mouse seguem funcionando */
+html, body, * { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
