@@ -327,6 +327,7 @@ function ExplorarInner() {
         </Button>
       ))}
     </div>
+    </div>
   );
 
   const Selects = (
