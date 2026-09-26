@@ -29,6 +29,7 @@ import type { AgendaEvent } from "@/components/agenda/types";
 import { exportEditorialAgendaPdf } from "@/lib/pdfExport";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
+import { AgendaFlyerUpload } from "@/components/agenda/AgendaFlyerUpload";
 
 export default function AgendaCultural() {
   return (
@@ -40,7 +41,7 @@ export default function AgendaCultural() {
 
 function AgendaCulturalInner() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { profile } = useProfile();
   const { isDivulgador } = useDivulgadorStatus();
   const { favorites, isFavorite } = useFavorites();
@@ -126,6 +127,8 @@ function AgendaCulturalInner() {
             toast.success("PDF da agenda gerado!");
           }}
         />
+
+        {user && isAdmin && <AgendaFlyerUpload events={events} userId={user.id} />}
 
         <AgendaLoginBanner
           isLoggedIn={!!user}
