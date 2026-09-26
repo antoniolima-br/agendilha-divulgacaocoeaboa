@@ -589,28 +589,52 @@ export default function Landing() {
 
           {(() => {
             const labels: Record<string, string> = { musica: "Música", gastronomia: "Gastronomia", cultura: "Cultura", esporte: "Esporte", promocoes: "Promoções", turismo: "Turismo", outros: "Outros" };
-            const counts = new Map<string, number>();
+            const groups = new Map<string, any[]>();
             allEvents.forEach((ev: any) => {
               const c = String(ev?.category || "").trim();
-              if (c) counts.set(c, (counts.get(c) || 0) + 1);
+              if (!c) return;
+              if (!groups.has(c)) groups.set(c, []);
+              groups.get(c)!.push(ev);
             });
-            const cats = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+            const cats = [...groups.entries()].sort((a, b) => b[1].length - a[1].length);
             if (cats.length === 0) return null;
             return (
-              <section className="mb-12" aria-label="Categorias">
-                <h2 className="mb-4 font-display text-xl font-bold sm:text-2xl">Categorias</h2>
-                <div className="flex flex-wrap gap-2">
-                  {cats.map(([c, n]) => (
-                    <Link
-                      key={c}
-                      to={`/agenda?categoria=${encodeURIComponent(c)}`}
-                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border/60 bg-card/60 px-4 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
-                    >
-                      {labels[c] || c.charAt(0).toUpperCase() + c.slice(1)}
-                      <span className="rounded-full bg-primary/15 px-2 text-xs text-primary">{n}</span>
-                    </Link>
-                  ))}
-                </div>
+              <section className="mb-12 space-y-8" aria-label="Categorias">
+                <h2 className="font-display text-xl font-bold sm:text-2xl">Categorias</h2>
+                {cats.map(([c, evs]) => (
+                  <div key={c}>
+                    <div className="mb-3 flex items-center justify-between gap-3 border-b border-border/60 pb-2">
+                      <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                        {labels[c] || c.charAt(0).toUpperCase() + c.slice(1)} <span className="text-muted-foreground">· {evs.length}</span>
+                      </h3>
+                      <Link to={`/agenda?categoria=${encodeURIComponent(c)}`} className="flex min-h-11 items-center text-sm font-bold text-primary">
+                        Ver tudo <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                    <ul className="space-y-3">
+                      {evs.slice(0, 3).map((ev: any) => (
+                        <li key={ev.id}>
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/agenda?event=${ev.id}`)}
+                            className="flex w-full items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-2.5 text-left transition-colors hover:border-primary/60"
+                          >
+                            {ev.image_url ? (
+                              <img src={ev.image_url} alt="" loading="lazy" className="h-20 w-16 shrink-0 rounded-xl object-cover" />
+                            ) : (
+                              <div className="h-20 w-16 shrink-0 rounded-xl bg-muted" aria-hidden />
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-semibold">{ev.event_title || ev.location || "Evento"}</p>
+                              <p className="mt-1 text-xs text-muted-foreground">{formatEventDateTimeBR(ev.date, ev.start_time)}</p>
+                              {ev.location && <p className="mt-0.5 truncate text-xs text-muted-foreground">{ev.location}</p>}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </section>
             );
           })()}
