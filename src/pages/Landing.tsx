@@ -587,6 +587,34 @@ export default function Landing() {
            )}
          </section>
 
+          {(() => {
+            const labels: Record<string, string> = { musica: "Música", gastronomia: "Gastronomia", cultura: "Cultura", esporte: "Esporte", promocoes: "Promoções", turismo: "Turismo", outros: "Outros" };
+            const counts = new Map<string, number>();
+            allEvents.forEach((ev: any) => {
+              const c = String(ev?.category || "").trim();
+              if (c) counts.set(c, (counts.get(c) || 0) + 1);
+            });
+            const cats = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+            if (cats.length === 0) return null;
+            return (
+              <section className="mb-12" aria-label="Categorias">
+                <h2 className="mb-4 font-display text-xl font-bold sm:text-2xl">Categorias</h2>
+                <div className="flex flex-wrap gap-2">
+                  {cats.map(([c, n]) => (
+                    <Link
+                      key={c}
+                      to={`/agenda?categoria=${encodeURIComponent(c)}`}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border/60 bg-card/60 px-4 text-sm font-semibold transition-colors hover:border-primary hover:text-primary"
+                    >
+                      {labels[c] || c.charAt(0).toUpperCase() + c.slice(1)}
+                      <span className="rounded-full bg-primary/15 px-2 text-xs text-primary">{n}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            );
+          })()}
+
           <section className="mb-16 border-t border-border/60 pt-10">
             <div className="flex items-end justify-between gap-4 mb-5">
               <div>
