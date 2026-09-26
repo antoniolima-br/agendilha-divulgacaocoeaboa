@@ -219,7 +219,8 @@ export default function Landing() {
       };
       return [...base].sort((a, b) => rand(a.id) - rand(b.id)).slice(0, 8);
     }, [allEvents, flyerAds, flyerUrls, heroSeed]);
-    const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
+    const todayStart = useMemo(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); }, []);
+    const [weekStart, setWeekStart] = useState(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); });
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
@@ -391,7 +392,8 @@ export default function Landing() {
                 variant="ghost" 
                 size="icon" 
                 className="shrink-0 rounded-full md:h-8 md:w-8" 
-                onClick={() => setWeekStart(subWeeks(weekStart, 1))}
+                onClick={() => setWeekStart((w) => { const prev = subWeeks(w, 1); return prev < todayStart ? todayStart : prev; })}
+                disabled={weekStart <= todayStart}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
