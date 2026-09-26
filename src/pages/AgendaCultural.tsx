@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, Clock3, MapPin, Users } from "lucide-react";
+import { CalendarDays, Users } from "lucide-react";
 import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
 import { toast } from "sonner";
 
