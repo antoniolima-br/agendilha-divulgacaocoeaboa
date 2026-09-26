@@ -462,18 +462,6 @@ export default function Landing() {
              </div>
            )}
         </section>
-        {/* Abas temporais */}
-        <nav aria-label="Quando" className="mb-8 grid grid-cols-3 overflow-hidden rounded-md border border-border bg-card text-center">
-          {[
-            { label: "Hoje", to: "/explorar?view=today" },
-            { label: "Amanhã", to: `/explorar?view=custom&date=${addDaysToISO(todayStr, 1)}` },
-            { label: "Próximos dias", to: "/explorar" },
-          ].map((tab, i) => (
-            <Link key={tab.label} to={tab.to} className={cn("flex min-h-11 items-center justify-center px-2 text-xs font-semibold uppercase tracking-wide transition-colors sm:text-sm", i === 0 ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-muted")}>
-              {tab.label}
-            </Link>
-          ))}
-        </nav>
         {/* Today's Events */}
         <section className="mb-12">
            <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
@@ -523,8 +511,6 @@ export default function Landing() {
         </section>
 
          {/* Recommendations AI Sections */}
-         <div className="mb-4 rounded-md border border-border bg-card py-3 text-center text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Publicidade geral</div>
-         <HomeAdsCarousel />
 
          <section className="mb-12">
            <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
