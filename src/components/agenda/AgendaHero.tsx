@@ -47,9 +47,6 @@ export function AgendaHero({
         <h1 className="max-w-full break-words font-display text-2xl font-black leading-tight text-primary drop-shadow-sm sm:text-5xl sm:leading-[0.95] lg:text-7xl">
           Coé a Boa? <span className="block text-2xl sm:text-4xl mt-2 text-foreground/90">Agenda Cultural da Ilha do Governador</span>
         </h1>
-        <p className="text-foreground/80 text-lg sm:text-2xl font-medium max-w-2xl mx-auto leading-relaxed px-2 sm:px-4 text-balance contrast-125">
-          A agenda cultural da Ilha do Governador.
-        </p>
       </div>
 
       {isLoggedIn && hasRecommendations && (
