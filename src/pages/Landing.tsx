@@ -44,7 +44,7 @@ import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
-import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
+import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 
 const sitelinks = [
   { href: "#oferecemos", label: "O que oferecemos" },
