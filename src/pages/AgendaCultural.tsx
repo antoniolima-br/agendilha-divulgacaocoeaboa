@@ -29,7 +29,6 @@ import type { AgendaEvent } from "@/components/agenda/types";
 import { exportEditorialAgendaPdf } from "@/lib/pdfExport";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
-import { AgendaFlyerUpload } from "@/components/agenda/AgendaFlyerUpload";
 
 export default function AgendaCultural() {
   return (
@@ -128,7 +127,6 @@ function AgendaCulturalInner() {
           }}
         />
 
-        {user && isAdmin && <AgendaFlyerUpload events={events} userId={user.id} />}
 
         <AgendaLoginBanner
           isLoggedIn={!!user}

@@ -55,7 +55,7 @@ export function AgendaLoginBanner({
             Destaques para você 🌴
           </h3>
           <p className="text-muted-foreground text-sm font-medium">
-            Confira o que a equipe do AgendIlha preparou para você.
+            Confira o que a equipe do Coé a Boa? preparou para você.
           </p>
         </div>
       </div>
