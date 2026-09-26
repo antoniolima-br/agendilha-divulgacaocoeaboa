@@ -383,8 +383,7 @@ export default function Landing() {
         <section className="mb-12">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
-              <h2 className="text-2xl font-bold font-display">Eventos em alta</h2>
-              <Link to="/agenda" className="btn-gold inline-flex min-h-10 shrink-0 items-center gap-1 rounded-full px-4 text-xs font-bold uppercase tracking-wide">Ver agenda completa <ChevronRight className="h-3.5 w-3.5" /></Link>
+              <h2 className="text-2xl font-bold font-display">Agenda</h2>
             </div>
             
             <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
@@ -465,11 +464,11 @@ export default function Landing() {
            )}
         </section>
         {/* Today's Events */}
-        <section className="mb-12">
-           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+        <section className="-mt-8 mb-12">
+           <div className="mb-4 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
               <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
               <TrendingUp className="h-5 w-5 text-primary" />
-              Acontece hoje na Ilha
+              Acontece hoje
             </h2>
               <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
           </div>
