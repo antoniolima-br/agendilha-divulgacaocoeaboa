@@ -1,3 +1,4 @@
+import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { CalendarDays, Copy, FileDown, MapPin, Megaphone, MessageCircle, Music as MusicIcon, Play, Settings2, Sparkles, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RecommendationCard } from "@/components/agenda/RecommendationCard";
@@ -104,7 +105,7 @@ export function AgendaHero({
                     key={ev.id}
                     event={ev}
                     icon={MusicIcon}
-                    caption={`${ev.category} • ${ev.date}`}
+                    caption={[ev.category, formatEventDateTimeBR(ev.date, ev.start_time)].filter(Boolean).join(" • ")}
                     onSelect={onSelectEvent}
                     onShare={onShare}
                   />

@@ -53,3 +53,14 @@ export function addDaysToISO(iso: string, days: number): string {
 export function isPublicEventStatus(status?: string | null): boolean {
   return PUBLIC_EVENT_STATUSES.includes(status as (typeof PUBLIC_EVENT_STATUSES)[number]);
 }
+/** Data/hora legível em PT-BR: "Sáb., 26 de set. às 18:00". */
+export function formatEventDateTimeBR(date?: string | null, time?: string | null): string {
+  const iso = eventDateISO(date);
+  if (!iso) return "";
+  const d = new Date(`${iso}T12:00:00Z`);
+  const wd = new Intl.DateTimeFormat("pt-BR", { weekday: "short", timeZone: "UTC" }).format(d).replace(".", "");
+  const mo = new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(d).replace(".", "");
+  const label = `${wd.charAt(0).toUpperCase()}${wd.slice(1)}., ${iso.slice(8, 10)} de ${mo.charAt(0).toUpperCase()}${mo.slice(1)}.`;
+  const t = time?.match(/(\d{2}):(\d{2})/);
+  return t ? `${label} às ${t[1]}:${t[2]}` : label;
+}

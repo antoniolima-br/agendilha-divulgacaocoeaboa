@@ -3,7 +3,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, Clock3, ExternalLink, MapPin }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { eventDateISO } from "@/lib/eventDate";
+import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 
@@ -83,7 +83,7 @@ export function HomeMixedHeroCarousel({
           const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
           const slideImage = slide.image_url || getEventFallbackImage(slide.category);
           const slideLocation = [slide.location, slide.address_neighborhood].filter(Boolean).join(" · ");
-          const slideDate = formatDate(slide.date);
+          const slideDate = formatEventDateTimeBR(slide.date, slide.start_time);
           return (
             <button
               key={slide.id}
@@ -101,20 +101,11 @@ export function HomeMixedHeroCarousel({
               <img src={slideImage} alt="" aria-hidden="true" decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl" />
               <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-center sm:h-[calc(100%-9.5rem)]" />
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] via-background/60 via-[calc(9.5rem+1.5rem)] to-transparent to-[calc(9.5rem+3.5rem)]" />
-              {slide.date && (
-                <div className="absolute left-4 bottom-[10rem] z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-primary bg-background/70 text-foreground backdrop-blur-sm sm:left-8 sm:bottom-[10rem] sm:h-20 sm:w-20">
-                  <span className="font-display text-2xl font-bold leading-none sm:text-3xl">{eventDateISO(slide.date).slice(8, 10)}</span>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(new Date(`${eventDateISO(slide.date)}T12:00:00Z`)).replace(".", "")}</span>
-                </div>
-              )}
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
                   {slideDate && (
-                    <span className="flex items-center gap-1.5 capitalize"><CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />{slideDate}</span>
-                  )}
-                  {slide.start_time && (
-                    <span className="flex items-center gap-1.5"><Clock3 className="h-4 w-4 shrink-0" aria-hidden="true" />{slide.start_time.slice(0, 5)}</span>
+                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />{slideDate}</span>
                   )}
                   {slideLocation && (
                     <span className="flex min-w-0 items-center gap-1.5"><MapPin className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="truncate">{slideLocation}</span></span>
