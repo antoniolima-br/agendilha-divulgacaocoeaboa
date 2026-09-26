@@ -369,107 +369,7 @@ export default function Landing() {
          />
        </div>
 
-       {/* ── Hero Discovery ── */}
        <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-8">
-         <div className="mb-8 text-center">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
-                <Button
-                  onClick={() => navigate("/hoje")}
-                  className="w-full sm:w-auto sm:px-10 h-12 sm:h-13 rounded-full font-semibold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-card transition-all"
-                >
-                  Ver o que tem hoje
-                </Button>
-            </div>
-         </div>
-
- 
-        {/* Categories — minimal, monochrome chips */}
-        <div className="mb-10">
-        <button
-          type="button"
-          onClick={() => setCategoriesOpen((v) => !v)}
-          aria-expanded={categoriesOpen}
-          className="mx-auto flex min-h-11 items-center gap-2 rounded-full border border-border px-5 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground"
-        >
-          Categorias
-          <ChevronRight className={cn("h-4 w-4 transition-transform", categoriesOpen && "rotate-90")} />
-        </button>
-        {categoriesOpen && (
-        <div className="mt-4 flex flex-wrap justify-center gap-2 animate-fade-in">
-          {genres.map((g) => (
-            <button
-              key={g.id}
-              onClick={() => navigate(`/agenda?category=${g.id}`)}
-              className="group inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-foreground/12 bg-transparent px-4 text-foreground/80 transition-colors hover:border-foreground/30 hover:text-foreground"
-            >
-              <g.icon className="h-3.5 w-3.5 opacity-70 group-hover:opacity-100" strokeWidth={1.75} />
-              <span className="text-sm font-medium tracking-tight">{g.label}</span>
-            </button>
-          ))}
-        </div>
-        )}
-        </div>
-
-        {/* Abas temporais */}
-        <nav aria-label="Quando" className="mb-8 grid grid-cols-3 overflow-hidden rounded-md border border-border bg-card text-center">
-          {[
-            { label: "Hoje", to: "/explorar?view=today" },
-            { label: "Amanhã", to: `/explorar?view=custom&date=${addDaysToISO(todayStr, 1)}` },
-            { label: "Próximos dias", to: "/explorar" },
-          ].map((tab, i) => (
-            <Link key={tab.label} to={tab.to} className={cn("flex min-h-11 items-center justify-center px-2 text-xs font-semibold uppercase tracking-wide transition-colors sm:text-sm", i === 0 ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-muted")}>
-              {tab.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Today's Events */}
-        <section className="mb-12">
-           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
-              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Acontece hoje na Ilha
-            </h2>
-              <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
-          </div>
-          {todayEvents.length > 0 ? (
-            <div className="relative">
-            {todayEvents.length > 1 && (
-              <div className="absolute -top-14 right-24 hidden gap-1 sm:flex">
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Anterior" onClick={() => todayRowRef.current?.scrollBy({ left: -(todayRowRef.current.clientWidth * 0.8), behavior: "smooth" })}><ChevronLeft className="h-4 w-4" /></Button>
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Próximo" onClick={() => todayRowRef.current?.scrollBy({ left: todayRowRef.current.clientWidth * 0.8, behavior: "smooth" })}><ChevronRight className="h-4 w-4" /></Button>
-              </div>
-            )}
-            <div ref={todayRowRef} className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-4 pb-4 overscroll-x-contain [-webkit-overflow-scrolling:touch] sm:mx-0 sm:gap-6 sm:px-0" aria-label="Acontece hoje na Ilha">
-              {todayEvents.map(ev => (
-                <div key={ev.id} className="shrink-0 snap-start">
-                <DiscoveryEventCard 
-                  key={ev.id} 
-                  event={ev} 
-                  variant="compact"
-                  onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                  isFavorite={favorites.includes(ev.id)}
-                  onFavoriteToggle={() => toggleFavorite(ev.id)}
-                  onShare={() => {
-                    const data = getShareData(ev);
-                    setShareData({ ...data, eventId: ev.id });
-                  }}
-                />
-                </div>
-              ))}
-            </div>
-            </div>
-          ) : (
-            <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
-              <Calendar className="h-8 w-8 text-primary/30 mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm mb-4">Hoje a Ilha está em recesso. Veja o que rola nos próximos dias.</p>
-              <Button onClick={() => navigate("/explorar")} variant="outline" className="rounded-full font-bold">
-                Ver próximos dias
-              </Button>
-            </div>
-          )}
-        </section>
-
         {/* Featured Events */}
         <section className="mb-12">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -553,6 +453,65 @@ export default function Landing() {
                <Loader2 className="h-8 w-8 animate-spin text-primary" />
              </div>
            )}
+        </section>
+        {/* Abas temporais */}
+        <nav aria-label="Quando" className="mb-8 grid grid-cols-3 overflow-hidden rounded-md border border-border bg-card text-center">
+          {[
+            { label: "Hoje", to: "/explorar?view=today" },
+            { label: "Amanhã", to: `/explorar?view=custom&date=${addDaysToISO(todayStr, 1)}` },
+            { label: "Próximos dias", to: "/explorar" },
+          ].map((tab, i) => (
+            <Link key={tab.label} to={tab.to} className={cn("flex min-h-11 items-center justify-center px-2 text-xs font-semibold uppercase tracking-wide transition-colors sm:text-sm", i === 0 ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-muted")}>
+              {tab.label}
+            </Link>
+          ))}
+        </nav>
+        {/* Today's Events */}
+        <section className="mb-12">
+           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Acontece hoje na Ilha
+            </h2>
+              <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
+          </div>
+          {todayEvents.length > 0 ? (
+            <div className="relative">
+            {todayEvents.length > 1 && (
+              <div className="absolute -top-14 right-24 hidden gap-1 sm:flex">
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Anterior" onClick={() => todayRowRef.current?.scrollBy({ left: -(todayRowRef.current.clientWidth * 0.8), behavior: "smooth" })}><ChevronLeft className="h-4 w-4" /></Button>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Próximo" onClick={() => todayRowRef.current?.scrollBy({ left: todayRowRef.current.clientWidth * 0.8, behavior: "smooth" })}><ChevronRight className="h-4 w-4" /></Button>
+              </div>
+            )}
+            <div ref={todayRowRef} className="flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth pb-4 overscroll-x-contain [-webkit-overflow-scrolling:touch] sm:gap-4" aria-label="Acontece hoje na Ilha">
+              {todayEvents.map(ev => (
+                <div key={ev.id} className="w-[calc((100%-1rem)/3)] min-w-0 shrink-0 snap-start sm:w-[calc((100%-2rem)/3)]">
+                <DiscoveryEventCard 
+                  key={ev.id} 
+                  event={ev} 
+                  variant="compact"
+                  className="w-full h-auto"
+                  onClick={() => navigate(`/agenda?event=${ev.id}`)}
+                  isFavorite={favorites.includes(ev.id)}
+                  onFavoriteToggle={() => toggleFavorite(ev.id)}
+                  onShare={() => {
+                    const data = getShareData(ev);
+                    setShareData({ ...data, eventId: ev.id });
+                  }}
+                />
+                </div>
+              ))}
+            </div>
+            </div>
+          ) : (
+            <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
+              <Calendar className="h-8 w-8 text-primary/30 mx-auto mb-3" />
+              <p className="text-muted-foreground text-sm mb-4">Hoje a Ilha está em recesso. Veja o que rola nos próximos dias.</p>
+              <Button onClick={() => navigate("/explorar")} variant="outline" className="rounded-full font-bold">
+                Ver próximos dias
+              </Button>
+            </div>
+          )}
         </section>
 
          {/* Recommendations AI Sections */}
