@@ -1,3 +1,4 @@
+import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ export function HighlightCard({ event: ev, onSelect, onShare, trackView }: Highl
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-orange-500" />
             <span>
-              {ev.date} {ev.start_time ? `• ${ev.start_time}` : ""}
+              {formatEventDateTimeBR(ev.date, ev.start_time)}
             </span>
           </div>
           <div className="flex items-center gap-2">
