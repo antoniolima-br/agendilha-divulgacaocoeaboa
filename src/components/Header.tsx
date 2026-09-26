@@ -203,14 +203,11 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-1 grid grid-cols-2 gap-2 sm:mx-auto sm:max-w-md">
-              <Button onClick={irParaDivulgar} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Divulgar</Button>
-              {user ? (
-                <Button onClick={handleMobileMenu} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Perfil</Button>
-              ) : (
-                <Button onClick={() => navigate("/auth")} className="btn-gold h-10 rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Logar</Button>
-              )}
-            </div>
+            {!user && (
+              <div className="mt-1 sm:mx-auto sm:max-w-xs">
+                <Button onClick={() => navigate("/auth")} className="btn-gold h-10 w-full rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Logar</Button>
+              </div>
+            )}
           </div>
         </header>
         <MobileTabBar onMenuClick={handleMobileMenu} />

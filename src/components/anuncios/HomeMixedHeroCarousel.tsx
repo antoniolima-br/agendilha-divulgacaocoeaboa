@@ -143,6 +143,11 @@ export function HomeMixedHeroCarousel({
           </>
         )}
       </div>
+      {(item.location || item.atrativo_style) && (
+        <p className="mx-auto mt-2 max-w-6xl truncate px-4 text-center font-display text-sm font-semibold uppercase tracking-wide text-primary sm:text-base">
+          {item.location || item.atrativo_style}
+        </p>
+      )}
 
 
       <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && setSelectedEvent(null)}>

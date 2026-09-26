@@ -113,7 +113,15 @@ export default function Landing() {
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
   const todayRowRef = useRef<HTMLDivElement>(null);
-  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const row = todayRowRef.current;
+      if (!row || row.scrollWidth <= row.clientWidth) return;
+      const atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 4;
+      row.scrollTo({ left: atEnd ? 0 : row.scrollLeft + row.clientWidth, behavior: "smooth" });
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, []);
    const { ref: loadMoreRef, inView: loadMoreInView } = useInView();
  
    const { 
