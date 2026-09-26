@@ -216,33 +216,18 @@ function AgendaCulturalInner() {
                           <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                             {dayIso === "sem-data" ? "Data a confirmar" : formatEventDateTimeBR(dayIso)}
                           </h3>
-                          <ul className="flex flex-col gap-3">
-                            {dayEvents.map((ev) => {
-                              const title = ev.event_title || ev.category || "Evento";
-                              const place = [ev.location, ev.address_neighborhood].filter(Boolean).join(" · ");
-                              return (
-                                <li key={ev.id}>
-                                  <button
-                                    type="button"
-                                    onClick={() => { trackView?.(ev.id); setSelectedEvent(ev); }}
-                                    className="flex w-full items-stretch gap-3 rounded-2xl border border-border bg-card p-2.5 text-left transition-colors hover:border-primary/40 sm:gap-4 sm:p-3"
-                                  >
-                                    <img src={ev.image_url || "/placeholder.svg"} alt={title} loading="lazy" decoding="async" className="h-24 w-20 shrink-0 rounded-xl object-cover sm:h-28 sm:w-24" />
-                                    <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-                                      {ev.category && <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{ev.category}</span>}
-                                      <span className="line-clamp-2 font-display text-base font-bold leading-tight text-foreground">{title}</span>
-                                      {ev.start_time && (
-                                        <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock3 className="h-3.5 w-3.5 shrink-0" />{String(ev.start_time).slice(0, 5)}</span>
-                                      )}
-                                      {place && (
-                                        <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{place}</span></span>
-                                      )}
-                                    </div>
-                                  </button>
-                                </li>
-                              );
-                            })}
-                          </ul>
+                          <div className="flex flex-col gap-3">
+                            {dayEvents.map((ev) => (
+                              <DayEventCard
+                                key={ev.id}
+                                event={ev}
+                                onSelect={setSelectedEvent}
+                                onShare={handleShare}
+                                trackView={trackView}
+                                trackShare={trackShare}
+                              />
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
