@@ -522,22 +522,48 @@ export default function Landing() {
            </div>
            
            {recommendedEvents.length > 0 ? (
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none">
-              {recommendedEvents.map(ev => (
-                <DiscoveryEventCard 
-                  key={ev.id} 
-                  event={ev} 
-                  variant="compact"
-                  onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                  isFavorite={favorites.includes(ev.id)}
-                  onFavoriteToggle={() => toggleFavorite(ev.id)}
-                  onShare={() => {
-                    const data = getShareData(ev);
-                    setShareData({ ...data, eventId: ev.id });
-                  }}
-                />
-              ))}
-            </div>
+            <ul className="flex flex-col gap-3">
+              {recommendedEvents.map((ev: any) => {
+                const title = ev.event_title || ev.atrativo_style || ev.category || "Evento";
+                const iso = ev.date ? eventDateISO(ev.date) : null;
+                const dateLabel = iso
+                  ? new Intl.DateTimeFormat("pt-BR", { weekday: "short", day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`))
+                  : null;
+                const place = [ev.location, ev.address_neighborhood].filter(Boolean).join(" · ");
+                return (
+                  <li key={ev.id}>
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/agenda?event=${ev.id}`)}
+                      className="flex w-full items-stretch gap-3 rounded-2xl border border-border bg-card p-2.5 text-left transition-colors hover:border-primary/40 sm:gap-4 sm:p-3"
+                    >
+                      <img
+                        src={ev.image_url || "/placeholder.svg"}
+                        alt={title}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-24 w-20 shrink-0 rounded-xl object-cover sm:h-28 sm:w-24"
+                      />
+                      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
+                        {ev.category && (
+                          <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{ev.category}</span>
+                        )}
+                        <h3 className="line-clamp-2 font-display text-base font-bold leading-tight text-foreground">{title}</h3>
+                        <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                          {dateLabel && <span className="flex items-center gap-1 capitalize"><Calendar className="h-3.5 w-3.5 shrink-0" />{dateLabel}</span>}
+                          {ev.start_time && <span>{String(ev.start_time).slice(0, 5)}</span>}
+                        </p>
+                        {place && (
+                          <p className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{place}</span>
+                          </p>
+                        )}
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
            ) : (
             <div className="bg-muted/30 rounded-3xl p-10 text-center border-2 border-dashed border-primary/10">
               <Sparkles className="h-10 w-10 text-primary/20 mx-auto mb-4" />
