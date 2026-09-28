@@ -264,6 +264,48 @@ function AdminEventsInner() {
     }
   }
 
+  const [regenerating, setRegenerating] = useState(false);
+  async function regenerateAutoFlyers() {
+    setRegenerating(true);
+    try {
+      const { data, error } = await supabase
+        .from("submissions")
+        .select("id, event_title, atrativo_name, company_name, date, start_time, location, category, image_url")
+        .like("image_url", "%/fallback-%");
+      if (error) throw error;
+      let ok = 0;
+      for (const s of (data ?? []) as any[]) {
+        try {
+          const dataUrl = await generateFallbackFlyer({
+            title: s.event_title || s.atrativo_name || s.company_name || "Evento",
+            date: s.date,
+            startTime: s.start_time,
+            location: s.location,
+            category: s.category ?? null,
+          });
+          const blob = await (await fetch(dataUrl)).blob();
+          const filePath = `${user?.id ?? "admin"}/fallback-${s.id}-${Date.now()}.jpg`;
+          const { error: upErr } = await supabase.storage
+            .from("event-flyers")
+            .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
+          if (upErr) throw upErr;
+          const { data: { publicUrl } } = supabase.storage.from("event-flyers").getPublicUrl(filePath);
+          const { error: updErr } = await supabase.from("submissions").update({ image_url: publicUrl }).eq("id", s.id);
+          if (updErr) throw updErr;
+          ok++;
+        } catch (e) {
+          console.warn("[refazer flyer]", s.id, e);
+        }
+      }
+      toast.success(`${ok} flyers refeitos com a data certinha.`);
+      fetchAll();
+    } catch (e) {
+      handleError(e, "Não deu pra refazer os flyers");
+    } finally {
+      setRegenerating(false);
+    }
+  }
+
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${label} copiado!`);
@@ -326,6 +368,12 @@ function AdminEventsInner() {
              onRefresh={() => fetchAll()}
              onExportPdf={(list) => exportBulkEventsPdf(list)}
            />
+
+           <div className="mb-3 flex justify-end">
+             <Button size="sm" variant="outline" disabled={regenerating} onClick={regenerateAutoFlyers}>
+               {regenerating ? "Refazendo flyers..." : "Refazer flyers automáticos"}
+             </Button>
+           </div>
 
            <AdminEventsKpis kpis={kpis} activeStatus={statusFilter} onSelectStatus={setStatusFilter} />
 
