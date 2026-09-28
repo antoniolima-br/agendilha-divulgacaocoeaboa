@@ -82,12 +82,10 @@ export function formatSubmissionDate(iso: string) {
 
 export function formatEventDate(dateStr: string | null) {
   if (!dateStr) return "—";
-  // Aceita ISO (YYYY-MM-DD) e DD/MM/YYYY
-  if (dateStr.includes("-")) {
-    const [y, m, d] = dateStr.split("-");
-    return `${d}/${m}/${y}`;
-  }
-  return dateStr;
+  const iso = eventDateISO(dateStr);
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
 }
 
 export function buildWhatsAppMessage(sub: AdminSubmission): string {

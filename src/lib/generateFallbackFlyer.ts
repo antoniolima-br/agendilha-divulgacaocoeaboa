@@ -1,4 +1,5 @@
 // Generates a lightweight 1080x1080 flyer when an event has no uploaded artwork.
+import { formatEventDateTimeBR } from "./eventDate";
 
 export interface FallbackFlyerData {
   title: string;
@@ -173,7 +174,12 @@ function drawTitle(ctx: CanvasRenderingContext2D, title: string, style: Fallback
 
 function drawInfo(ctx: CanvasRenderingContext2D, data: FallbackFlyerData, style: FallbackFlyerStyle, size: number) {
   const { palette, layout } = style;
-  const when = [data.date, data.startTime].filter((value) => typeof value === "string" && value.trim()).join("  •  ") || "A confirmar";
+  const rawDate = typeof data.date === "string" ? data.date.trim() : "";
+  const looksTechnical = /^\d{4}-\d{2}-\d{2}/.test(rawDate) || /^\d{2}\/\d{2}\/\d{4}$/.test(rawDate);
+  const friendly = looksTechnical ? formatEventDateTimeBR(rawDate, data.startTime) : "";
+  const when = friendly
+    || [rawDate, data.startTime?.match(/\d{2}:\d{2}/)?.[0]].filter(Boolean).join(" às ")
+    || "A confirmar";
   const where = data.location?.trim() || "A confirmar";
   const x = layout === "split" ? 560 : 54;
   const y = size - 260;
