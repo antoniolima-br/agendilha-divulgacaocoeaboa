@@ -198,9 +198,17 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-24 w-24 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[6.75rem] sm:w-[6.75rem]" />
               </Link>
-              <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, Rio de Janeiro, RJ, Brasil">
-                <span className="text-right leading-tight">Ilha do Governador,<br />Rio de Janeiro, RJ, Brasil</span>
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+              <Link to="/explorar" className="flex min-h-11 min-w-0 flex-col items-end justify-self-end text-right hover:opacity-90" aria-label="Localização: Rio de Janeiro, Brasil">
+                <span className="flex items-center gap-1.5 font-display text-base font-semibold leading-tight text-foreground sm:text-lg">
+                  <MapPin className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  Rio de Janeiro, Brasil
+                </span>
+                <span className="mt-0.5 text-xs capitalize leading-tight text-primary sm:text-sm">
+                  {(() => {
+                    const s = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date());
+                    return s.replace(/ de (\p{L})/gu, (_m, c) => ` de ${c.toUpperCase()}`);
+                  })()}
+                </span>
               </Link>
             </div>
             {!user && (
