@@ -65,11 +65,13 @@ export function HomeMixedHeroCarousel({
               sum += v; sq += v * v;
             }
             const m = sum / w;
-            return Math.sqrt(Math.max(0, sq / w - m * m)) < 10;
+            return { m, flat: Math.sqrt(Math.max(0, sq / w - m * m)) < 10 };
           };
+          const same = (y: number, ref: number) => { const r = flat(y); return r.flat && Math.abs(r.m - ref) < 10; };
           const max = Math.floor(h * 0.35);
-          let top = 0; while (top < max && flat(top)) top++;
-          let bot = 0; while (bot < max && flat(h - 1 - bot)) bot++;
+          const t0 = flat(0), b0 = flat(h - 1);
+          let top = 0; if (t0.flat) while (top < max && same(top, t0.m)) top++;
+          let bot = 0; if (b0.flat) while (bot < max && same(h - 1 - bot, b0.m)) bot++;
           if (!cancelled) setTrims((prev) => ({ ...prev, [slide.id]: { t: top / h, b: bot / h } }));
         } catch { /* CORS: sem recorte */ }
       };
@@ -142,7 +144,7 @@ export function HomeMixedHeroCarousel({
               )}
             >
               <div className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] overflow-hidden"><img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 w-full object-fill" style={(() => { const t = trims[slide.id]?.t ?? 0; const b = trims[slide.id]?.b ?? 0; const k = Math.max(0.3, 1 - t - b); return { top: `${(-t / k) * 100}%`, height: `${100 / k}%` }; })()} /></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[calc(9.5rem+1.5rem)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[9.5rem]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
