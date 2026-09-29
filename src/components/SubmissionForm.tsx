@@ -452,9 +452,10 @@ export default function SubmissionForm() {
         imageUrl = publicUrl;
       }
 
-      // Fallback: se o usuário não enviou flyer nem escolheu imagem, gera um flyer
-      // genérico da marca para o espaço do evento nunca ficar vazio.
-      if (!imageUrl) {
+      // Envio gratuito: não gera flyer automático. O flyer profissional é
+      // benefício exclusivo do Evento em Destaque (pago).
+      const IS_FREE_SUBMISSION = true;
+      if (!imageUrl && !IS_FREE_SUBMISSION) {
         try {
           const { blob, filePath } = await measureFlowOperation(
             "event-submission",
@@ -497,6 +498,7 @@ export default function SubmissionForm() {
 
       // Map camelCase form fields → snake_case DB columns
       const payload: any = {
+        is_free: IS_FREE_SUBMISSION && !imageUrl,
         company_name: clean(values.companyName) || clean(values.nickName) || clean(profile?.responsible_name) || null,
         // responsible_name é preenchido abaixo com o nome do responsável (Fase 7).
         email: clean(values.email),
