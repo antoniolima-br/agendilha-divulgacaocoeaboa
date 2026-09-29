@@ -50,6 +50,7 @@ export function useEvents(options: {
           description, 
           views_count,
           is_highlight,
+          is_free,
           status,
           moderation_status,
           slug
