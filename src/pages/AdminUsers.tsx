@@ -1,3 +1,4 @@
+import { AdminLevelsPanel } from "@/components/admin/users/AdminLevelsPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -554,6 +555,8 @@ export default function AdminUsers() {
           )}
         </div>
       )}
+
+      <AdminLevelsPanel users={users} />
 
       <ConfirmUserActionDialogs
         adminTarget={showAdminConfirm}
