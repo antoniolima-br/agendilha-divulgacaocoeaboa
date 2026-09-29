@@ -36,6 +36,7 @@ export function HomeMixedHeroCarousel({
   const [paused, setPaused] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<HeroEvent | null>(null);
+  const [ratios, setRatios] = useState<Record<string, number>>({});
 
   const items = useMemo(() => events.slice(0, 6), [events]);
 
@@ -77,7 +78,9 @@ export function HomeMixedHeroCarousel({
       aria-label="Destaques da Ilha"
       aria-roledescription="carrossel"
     >
-      <div className="relative w-full overflow-hidden bg-muted aspect-[4/5] xs:aspect-[1/1] sm:aspect-[16/9] lg:aspect-[16/7]">
+      <div className="relative w-full overflow-hidden bg-background">
+        <div aria-hidden="true" className="w-full max-h-[75vh]" style={{ aspectRatio: String(ratios[items[index]?.id] ?? 4 / 5) }} />
+        <div aria-hidden="true" className="h-[9.5rem]" />
         {items.map((slide, slideIndex) => {
           const active = slideIndex === index;
           const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
@@ -98,8 +101,8 @@ export function HomeMixedHeroCarousel({
                 active ? "z-10 opacity-100" : "z-0 opacity-0 pointer-events-none",
               )}
             >
-              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-[center_17%]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] via-background/60 via-[calc(9.5rem+1.5rem)] to-transparent to-[calc(9.5rem+3.5rem)]" />
+              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-contain object-top" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[calc(9.5rem+1.5rem)]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
