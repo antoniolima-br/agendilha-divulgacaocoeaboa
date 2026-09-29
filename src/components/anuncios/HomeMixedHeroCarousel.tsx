@@ -143,21 +143,13 @@ export function HomeMixedHeroCarousel({
       <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && setSelectedEvent(null)}>
         {selectedEvent && (
           <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto p-0">
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted sm:aspect-video">
-              <img
-                src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
-              />
+            <div className="relative w-full overflow-hidden bg-muted">
               <img
                 src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
                 alt={selectedEvent.event_title || selectedEvent.atrativo_style || "Evento"}
                 loading="lazy"
                 decoding="async"
-                className="relative h-full w-full object-contain"
+                className="block h-auto w-full"
               />
             </div>
 
