@@ -33,27 +33,36 @@ Deno.serve(async (req) => {
     const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
     const { data: events } = await sb
       .from("public_submissions")
-      .select("event_title, date, start_time, location, address_neighborhood, category, description, slug, id")
+      .select("event_title, date, start_time, end_time, location, address_neighborhood, category, description, slug, id, is_highlight")
       .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", today)
       .order("date", { ascending: true })
       .limit(60);
 
+    const { data: settings } = await sb.from("app_settings").select("key, value").in("key", ["team_whatsapp", "team_contact_name", "live_overrides"]);
+    const setting = (k: string) => String((settings ?? []).find((r: any) => r.key === k)?.value ?? "").trim();
+    let overrides: Record<string, boolean> = {};
+    try { overrides = JSON.parse(setting("live_overrides") || "{}"); } catch { /* */ }
+    const nowHM = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+    const isLive = (e: any) => {
+      if (e.id in overrides) return !!overrides[e.id];
+      if (String(e.date ?? "").slice(0, 10) !== today || !e.start_time) return false;
+      const s = String(e.start_time).slice(0, 5), en = String(e.end_time || "23:59").slice(0, 5);
+      return en > s ? nowHM >= s && nowHM <= en : nowHM >= s || nowHM <= en;
+    };
+
     const agenda = (events ?? [])
       .map((e: any) =>
-        `- ${e.event_title ?? "Rolê sem título"} | ${String(e.date ?? "").slice(0, 10)} ${e.start_time ?? ""} | ${e.location ?? ""}${e.address_neighborhood ? ` (${e.address_neighborhood})` : ""} | ${e.category ?? ""} | link: /evento/${e.slug ?? e.id}${e.description ? ` | ${String(e.description).slice(0, 160)}` : ""}`,
+        `- ${isLive(e) ? "🔴 ROLANDO AGORA | " : ""}${e.is_highlight ? "⭐ DESTAQUE | " : ""}${e.event_title ?? "Rolê sem título"} | ${String(e.date ?? "").slice(0, 10)} ${e.start_time ?? ""} | ${e.location ?? ""}${e.address_neighborhood ? ` (${e.address_neighborhood})` : ""} | ${e.category ?? ""} | link: /evento/${e.slug ?? e.id}${e.description ? ` | ${String(e.description).slice(0, 160)}` : ""}`,
       )
       .join("\n");
 
-    void agenda;
-
-    const { data: settings } = await sb.from("app_settings").select("key, value").in("key", ["team_whatsapp", "team_contact_name"]);
-    const setting = (k: string) => String((settings ?? []).find((r: any) => r.key === k)?.value ?? "").trim();
     const teamPhone = setting("team_whatsapp").replace(/\D/g, "");
     const teamName = setting("team_contact_name") || "a equipe comercial do Coé a Boa?";
+    const waLink = teamPhone ? `https://wa.me/${teamPhone.startsWith("55") ? teamPhone : "55" + teamPhone}?text=${encodeURIComponent("Coé! Quero anunciar/destacar meu evento no Coé a Boa?")}` : "";
     const comercial = teamPhone
-      ? `Atendente humano responsável: **${teamName}**. WhatsApp para fechar a parceria: [chamar no WhatsApp](https://wa.me/${teamPhone.startsWith("55") ? teamPhone : "55" + teamPhone}). Sempre passe o nome e esse link quando a pessoa quiser valores, pacotes ou fechar.`
-      : `Ainda não há WhatsApp comercial cadastrado. Para valores e pacotes, oriente a preencher o formulário em [Anunciar](/anuncios/novo) que a equipe responde.`;
+      ? `Atendente: **${teamName}**. Sempre que a pessoa perguntar preço, valores, pacotes, quiser anunciar, destacar ou patrocinar, entregue os DOIS links: [chamar no WhatsApp](${waLink}) e [Anunciar](/anuncios/novo).`
+      : `Para valores e pacotes, oriente a preencher o formulário em [Anunciar](/anuncios/novo).`;
     const system = `Você é o "Guia do Koé", o assistente virtual oficial do portal Coé a Boa? (AgendIlha), na Ilha do Governador (Rio de Janeiro).
 
 ### 1. Personalidade e tom de voz
@@ -71,7 +80,7 @@ Deno.serve(async (req) => {
 
 ### 3. Agenda oficial em tempo real (use EXCLUSIVAMENTE estes eventos)
 ${agenda || "(nenhum rolê cadastrado nos próximos dias)"}
-Cruze o que a pessoa pede com essa agenda. Não invente eventos, horários ou preços. Se nada combinar, diga com leveza e sugira o mais próximo.
+Eventos marcados com 🔴 ROLANDO AGORA estão acontecendo neste momento: priorize quando pedirem algo pra agora. Cruze o que a pessoa pede com essa agenda. Não invente eventos, horários ou preços. Se nada combinar, diga com leveza e sugira o mais próximo.
 
 ### 4. Diretrizes de resposta
 - Natural, direta e empolgante. Faça uma pergunta por vez.
