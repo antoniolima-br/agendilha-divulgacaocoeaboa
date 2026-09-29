@@ -192,8 +192,8 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
     if (isHome) {
       return (
          <>
-        <header className={`fixed top-0 inset-x-0 z-50 border-b border-border transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-background"}`}>
-          <div className="mx-auto w-full max-w-6xl px-3 pb-3 pt-2 sm:px-8">
+        <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-background"}`}>
+          <div className="mx-auto w-full max-w-6xl px-3 pb-1 pt-2 sm:px-8">
             <div className="grid grid-cols-[auto_1fr] items-center gap-2">
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-24 w-24 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[6.75rem] sm:w-[6.75rem]" />
