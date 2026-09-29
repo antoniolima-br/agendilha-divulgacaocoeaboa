@@ -7,7 +7,6 @@ import { MessageCircle, X, Send, Square } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const SUGGESTIONS = ["O que tem hoje?", "Quero um rock", "Rolê de fim de semana", "Algo pra ir com a família"];
 
 export function CoezinhoChat() {
   const [open, setOpen] = useState(false);
@@ -77,17 +76,6 @@ export function CoezinhoChat() {
                 <p className="text-sm">
                   Coé! Seja bem-vindo 🌴 Qual é a boa de hoje? Tá afim de um som, um barzinho ou um rolê na Ilha? Me conta o que você procura!
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {SUGGESTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => send(s)}
-                      className="rounded-full border border-primary/40 px-3 py-1.5 text-xs text-primary hover:bg-primary/10"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
               </div>
             )}
 
