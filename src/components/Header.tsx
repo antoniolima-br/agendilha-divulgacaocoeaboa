@@ -230,19 +230,9 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
           <div className="mx-auto flex h-16 sm:h-18 max-w-5xl items-center justify-between px-4 sm:px-6 gap-2">
             <div className="flex items-center gap-2">
               {/* Mobile Menu Trigger for Agenda - Always show trigger */}
-              <div className="flex items-center">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={handleMobileMenu} 
-                  className="text-primary hover:bg-primary/5 active:scale-90 transition-all"
-                >
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </div>
 
               <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 hover:opacity-80 transition-opacity group shrink-0" aria-label="AgendIlha - Página Inicial">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-24 w-24 sm:h-[6.75rem] sm:w-[6.75rem] shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
                 <div className="flex flex-col leading-[1]">
                   <span className="font-display text-lg sm:text-xl font-black text-primary tracking-tight">AgendIlha</span>
                   <span className="text-[9px] sm:text-[10px] text-secondary font-black uppercase tracking-[0.15em]">Coé a Boa?</span>
@@ -291,18 +281,9 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
           {/* Row 1: menu + brand + user */}
           <div className="flex h-16 items-center justify-between gap-3">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleMobileMenu}
-                className="shrink-0 text-primary hover:bg-primary/5 active:scale-90 transition-all"
-                aria-label="Abrir menu"
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
 
               <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity min-w-0">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-24 w-24 sm:h-[6.75rem] sm:w-[6.75rem] shrink-0 rounded-full shadow-sm" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full shadow-sm" />
                 <div className="flex flex-col leading-none min-w-0">
                   <span className="font-display text-base sm:text-lg font-black text-primary tracking-tight truncate">AgendIlha</span>
                   <span className="text-[8px] sm:text-[9px] text-secondary font-black uppercase tracking-widest opacity-80">Coé a Boa?</span>
