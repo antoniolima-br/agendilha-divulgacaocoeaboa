@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.cadastro-publico]
 verify_jwt = false
+
+[functions.coezinho]
+verify_jwt = false
