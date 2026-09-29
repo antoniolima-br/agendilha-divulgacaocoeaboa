@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
 
 ### 3. Agenda oficial em tempo real (use EXCLUSIVAMENTE estes eventos)
 ${agenda || "(nenhum rolê cadastrado nos próximos dias)"}
-Cruze o que a pessoa pede com essa agenda. Não invente eventos, horários ou preços. Se nada combinar, diga com leveza e sugira o mais próximo.
+Eventos marcados com 🔴 ROLANDO AGORA estão acontecendo neste momento: priorize quando pedirem algo pra agora. Cruze o que a pessoa pede com essa agenda. Não invente eventos, horários ou preços. Se nada combinar, diga com leveza e sugira o mais próximo.
 
 ### 4. Diretrizes de resposta
 - Natural, direta e empolgante. Faça uma pergunta por vez.
