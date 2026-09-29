@@ -2,6 +2,7 @@ import { QueryCache, QueryClient, QueryClientProvider, MutationCache } from "@ta
 import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
+import { CoezinhoChat } from "@/components/coezinho/CoezinhoChat";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SubmissionProvider } from "@/contexts/SubmissionContext";
@@ -297,6 +298,7 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <AppRoutes />
+            <CoezinhoChat />
           </AuthProvider>
         </BrowserRouter>
       </AppErrorBoundary>
