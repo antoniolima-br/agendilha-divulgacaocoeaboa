@@ -99,7 +99,7 @@ export function HomeMixedHeroCarousel({
               )}
             >
               <img src={slideImage} alt="" aria-hidden="true" decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl" />
-              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-center sm:h-[calc(100%-9.5rem)]" />
+              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-contain object-center" />
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] via-background/60 via-[calc(9.5rem+1.5rem)] to-transparent to-[calc(9.5rem+3.5rem)]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
