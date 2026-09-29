@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
     const { data: events } = await sb
       .from("public_submissions")
       .select("event_title, date, start_time, location, address_neighborhood, category, description, slug, id")
-      .in("status", ["aprovado", "approved", "publicado", "published"])
+      .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", today)
       .order("date", { ascending: true })
       .limit(60);
