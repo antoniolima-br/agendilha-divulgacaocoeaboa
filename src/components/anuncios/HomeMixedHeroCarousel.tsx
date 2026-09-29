@@ -78,7 +78,7 @@ export function HomeMixedHeroCarousel({
               else if (miss < 1 && n > 0) { n++; miss++; }
               else break;
             }
-            return Math.max(0, n - miss + (n > 0 ? 1 : 0));
+            return Math.max(0, n - miss - 1);
           };
           const top = Math.min(max, scan((i) => i));
           const bot = Math.min(max, scan((i) => h - 1 - i));
