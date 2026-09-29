@@ -498,7 +498,7 @@ export default function SubmissionForm() {
 
       // Map camelCase form fields → snake_case DB columns
       const payload: any = {
-        is_free: IS_FREE_SUBMISSION && !imageUrl,
+        is_free: IS_FREE_SUBMISSION,
         company_name: clean(values.companyName) || clean(values.nickName) || clean(profile?.responsible_name) || null,
         // responsible_name é preenchido abaixo com o nome do responsável (Fase 7).
         email: clean(values.email),
