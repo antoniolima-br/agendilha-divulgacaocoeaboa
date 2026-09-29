@@ -107,6 +107,16 @@ function useScrollReveal() {
 }
 
 export default function Landing() {
+  const [headerH, setHeaderH] = useState(129);
+  useEffect(() => {
+    const h = document.querySelector("header");
+    if (!h) return;
+    const upd = () => setHeaderH(Math.round(h.getBoundingClientRect().height));
+    upd();
+    const ro = new ResizeObserver(upd);
+    ro.observe(h);
+    return () => ro.disconnect();
+  }, []);
   useScrollReveal();
   const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
@@ -371,7 +381,7 @@ export default function Landing() {
       <Header />
 
        {/* ── Destaques full-width ── */}
-       <div className="pt-[129px] sm:pt-[137px]">
+       <div style={{ paddingTop: headerH }}>
          <HomeMixedHeroCarousel
            events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
