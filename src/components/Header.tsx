@@ -196,7 +196,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
           <div className="mx-auto w-full max-w-6xl px-3 pb-3 pt-2 sm:px-8">
             <div className="grid grid-cols-[auto_1fr] items-center gap-2">
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
-                <img src={logoCoeABoa} alt="Coé a Boa?" className="h-16 w-16 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[4.5rem] sm:w-[4.5rem]" />
+                <img src={logoCoeABoa} alt="Coé a Boa?" className="h-24 w-24 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[6.75rem] sm:w-[6.75rem]" />
               </Link>
               <Link to="/explorar" className="flex min-h-11 min-w-0 items-center gap-1 justify-self-end text-xs text-muted-foreground hover:text-foreground" aria-label="Localização: Ilha do Governador, Rio de Janeiro, RJ, Brasil">
                 <span className="text-right leading-tight">Ilha do Governador,<br />Rio de Janeiro, RJ, Brasil</span>
@@ -242,7 +242,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               </div>
 
               <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 hover:opacity-80 transition-opacity group shrink-0" aria-label="AgendIlha - Página Inicial">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-24 w-24 sm:h-[6.75rem] sm:w-[6.75rem] shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
                 <div className="flex flex-col leading-[1]">
                   <span className="font-display text-lg sm:text-xl font-black text-primary tracking-tight">AgendIlha</span>
                   <span className="text-[9px] sm:text-[10px] text-secondary font-black uppercase tracking-[0.15em]">Coé a Boa?</span>
@@ -302,7 +302,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               </Button>
 
               <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity min-w-0">
-                <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full shadow-sm" />
+                <img src={logoCoeABoa} alt="AgendIlha" className="h-24 w-24 sm:h-[6.75rem] sm:w-[6.75rem] shrink-0 rounded-full shadow-sm" />
                 <div className="flex flex-col leading-none min-w-0">
                   <span className="font-display text-base sm:text-lg font-black text-primary tracking-tight truncate">AgendIlha</span>
                   <span className="text-[8px] sm:text-[9px] text-secondary font-black uppercase tracking-widest opacity-80">Coé a Boa?</span>
