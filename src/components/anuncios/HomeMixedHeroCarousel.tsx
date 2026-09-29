@@ -39,6 +39,7 @@ export function HomeMixedHeroCarousel({
   const [ratios, setRatios] = useState<Record<string, number>>({});
   const [trims, setTrims] = useState<Record<string, { t: number; b: number }>>({});
 
+  const items = useMemo(() => events.slice(0, 6), [events]);
   useEffect(() => {
     let cancelled = false;
     items.forEach((slide) => {
@@ -78,7 +79,6 @@ export function HomeMixedHeroCarousel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const items = useMemo(() => events.slice(0, 6), [events]);
 
   const total = items.length;
   const goTo = useCallback((next: number) => {
