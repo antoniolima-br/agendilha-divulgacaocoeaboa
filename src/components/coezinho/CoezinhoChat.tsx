@@ -28,7 +28,7 @@ export function CoezinhoChat() {
 
   const { messages, sendMessage, status, stop } = useChat({
     transport,
-    onError: () => toast.error("Não rolou falar com o Coezinho agora. Tenta de novo em instantes."),
+    onError: () => toast.error("Não rolou falar com o Guia agora. Tenta de novo em instantes."),
   });
   const busy = status === "submitted" || status === "streaming";
 
@@ -48,11 +48,11 @@ export function CoezinhoChat() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Falar com o Coezinho"
+          aria-label="Falar com o Guia do Coé a Boa"
           className="fixed bottom-20 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-lg transition hover:scale-105 md:bottom-6"
         >
           <MessageCircle className="h-5 w-5" />
-          <span className="text-sm">Coezinho</span>
+          <span className="text-sm">Guia do Coé a Boa</span>
         </button>
       )}
 
@@ -62,7 +62,7 @@ export function CoezinhoChat() {
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-lg">🌴</div>
               <div>
-                <p className="font-bold leading-tight">Coezinho</p>
+                <p className="font-bold leading-tight">Guia do Coé a Boa</p>
                 <p className="text-xs opacity-80">Teu parceiro de rolê na Ilha</p>
               </div>
             </div>
@@ -75,7 +75,7 @@ export function CoezinhoChat() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-sm">
-                  E aí! Sou o Coezinho 😎 Me conta: tá afim de curtir o quê? Rock, samba, comida boa, um rolê tranquilo? Te falo o que tá rolando na Ilha.
+                  Coé! Seja bem-vindo 🌴 Qual é a boa de hoje? Tá afim de um som, um barzinho ou um rolê na Ilha? Me conta o que você procura!
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {SUGGESTIONS.map((s) => (

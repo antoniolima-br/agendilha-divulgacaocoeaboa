@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) return json({ error: "O Coezinho tá fora do ar agora. Tenta daqui a pouco." }, 500);
+    if (!apiKey) return json({ error: "O Guia tá fora do ar agora. Tenta daqui a pouco." }, 500);
 
     const body = await req.json().catch(() => ({}));
     const messages = Array.isArray(body?.messages) ? (body.messages as UIMessage[]).slice(-30) : [];
@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
       )
       .join("\n");
 
-    const system = `Você é o Coezinho, o parceiro do Coé a Boa? que manja de tudo que rola na Ilha do Governador (Rio de Janeiro).
+    const system = `Você é o Guia do Coé a Boa, o parceiro do Coé a Boa? que manja de tudo que rola na Ilha do Governador (Rio de Janeiro).
 Jeito: jovial, informal, íntimo, como um amigo da Ilha. Fale direto com "você". NUNCA use a palavra "morador". Nunca diga que é IA, robô ou assistente virtual.
 Frases curtas, emojis com moderação, português do Brasil. Respostas curtas (até ~5 linhas ou uma listinha de até 4 rolês).
 Seu papel: descobrir o que a pessoa tá afim de curtir (estilo, dia, bairro, com quem vai, grana) fazendo no máximo uma pergunta por vez, e recomendar rolês da agenda abaixo.
@@ -85,7 +85,7 @@ ${agenda || "(agenda vazia no momento — diga que ainda não tem rolê cadastra
         onError: (err: any) => {
           const status = err?.statusCode ?? err?.status;
           if (status === 429) return "Muita gente falando comigo agora 😅 Tenta de novo em instantes.";
-          if (status === 402) return "O Coezinho deu uma pausa. Tenta mais tarde.";
+          if (status === 402) return "O Guia deu uma pausa. Tenta mais tarde.";
           return "Deu ruim aqui. Tenta de novo daqui a pouco.";
         },
       }),
