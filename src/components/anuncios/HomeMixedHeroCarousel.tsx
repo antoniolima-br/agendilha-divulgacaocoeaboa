@@ -37,6 +37,46 @@ export function HomeMixedHeroCarousel({
   const [reduceMotion, setReduceMotion] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<HeroEvent | null>(null);
   const [ratios, setRatios] = useState<Record<string, number>>({});
+  const [trims, setTrims] = useState<Record<string, { t: number; b: number }>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    items.forEach((slide) => {
+      const src = slide.image_url;
+      if (!src || trims[slide.id]) return;
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        try {
+          const w = 80;
+          const h = Math.max(1, Math.round((img.naturalHeight / img.naturalWidth) * w));
+          const c = document.createElement("canvas");
+          c.width = w; c.height = h;
+          const ctx = c.getContext("2d");
+          if (!ctx) return;
+          ctx.drawImage(img, 0, 0, w, h);
+          const d = ctx.getImageData(0, 0, w, h).data;
+          const flat = (y: number) => {
+            let sum = 0, sq = 0;
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              const v = (d[i] + d[i + 1] + d[i + 2]) / 3;
+              sum += v; sq += v * v;
+            }
+            const m = sum / w;
+            return Math.sqrt(Math.max(0, sq / w - m * m)) < 10;
+          };
+          const max = Math.floor(h * 0.35);
+          let top = 0; while (top < max && flat(top)) top++;
+          let bot = 0; while (bot < max && flat(h - 1 - bot)) bot++;
+          if (!cancelled) setTrims((prev) => ({ ...prev, [slide.id]: { t: top / h, b: bot / h } }));
+        } catch { /* CORS: sem recorte */ }
+      };
+      img.src = src;
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
 
   const items = useMemo(() => events.slice(0, 6), [events]);
 
@@ -79,7 +119,7 @@ export function HomeMixedHeroCarousel({
       aria-roledescription="carrossel"
     >
       <div className="relative w-full overflow-hidden bg-background">
-        <div aria-hidden="true" className="w-full" style={{ aspectRatio: String(ratios[items[index]?.id] ?? 4 / 5) }} />
+        <div aria-hidden="true" className="w-full" style={{ aspectRatio: String((ratios[items[index]?.id] ?? 4 / 5) / Math.max(0.3, 1 - (trims[items[index]?.id]?.t ?? 0) - (trims[items[index]?.id]?.b ?? 0))) }} />
         <div aria-hidden="true" className="h-[9.5rem]" />
         {items.map((slide, slideIndex) => {
           const active = slideIndex === index;
@@ -101,7 +141,7 @@ export function HomeMixedHeroCarousel({
                 active ? "z-10 opacity-100" : "z-0 opacity-0 pointer-events-none",
               )}
             >
-              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-top" />
+              <div className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] overflow-hidden"><img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 w-full object-fill" style={(() => { const t = trims[slide.id]?.t ?? 0; const b = trims[slide.id]?.b ?? 0; const k = Math.max(0.3, 1 - t - b); return { top: `${(-t / k) * 100}%`, height: `${100 / k}%` }; })()} /></div>
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[calc(9.5rem+1.5rem)]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
