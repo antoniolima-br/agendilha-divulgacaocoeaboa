@@ -79,7 +79,7 @@ export function HomeMixedHeroCarousel({
       aria-roledescription="carrossel"
     >
       <div className="relative w-full overflow-hidden bg-background">
-        <div aria-hidden="true" className="w-full max-h-[75vh]" style={{ aspectRatio: String(ratios[items[index]?.id] ?? 4 / 5) }} />
+        <div aria-hidden="true" className="w-full" style={{ aspectRatio: String(ratios[items[index]?.id] ?? 4 / 5) }} />
         <div aria-hidden="true" className="h-[9.5rem]" />
         {items.map((slide, slideIndex) => {
           const active = slideIndex === index;
@@ -101,7 +101,7 @@ export function HomeMixedHeroCarousel({
                 active ? "z-10 opacity-100" : "z-0 opacity-0 pointer-events-none",
               )}
             >
-              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-contain object-top" />
+              <img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] w-full object-cover object-top" />
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[calc(9.5rem+1.5rem)]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
