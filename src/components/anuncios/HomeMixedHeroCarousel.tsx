@@ -69,9 +69,19 @@ export function HomeMixedHeroCarousel({
           };
           const same = (y: number, ref: number) => { const r = flat(y); return r.flat && Math.abs(r.m - ref) < 10; };
           const max = Math.floor(h * 0.35);
-          const t0 = flat(0), b0 = flat(h - 1);
-          let top = 0; if (t0.flat) while (top < max && same(top, t0.m)) top++;
-          let bot = 0; if (b0.flat) while (bot < max && same(h - 1 - bot, b0.m)) bot++;
+          void same;
+          // Corta todas as linhas lisas (qualquer cor) no topo/base, tolerando 1 linha de transição.
+          const scan = (row: (i: number) => number) => {
+            let n = 0, miss = 0;
+            while (n < max) {
+              if (flat(row(n)).flat) { n++; miss = 0; }
+              else if (miss < 1 && n > 0) { n++; miss++; }
+              else break;
+            }
+            return Math.max(0, n - miss - 1);
+          };
+          const top = Math.min(max, scan((i) => i));
+          const bot = Math.min(max, scan((i) => h - 1 - i));
           if (!cancelled) setTrims((prev) => ({ ...prev, [slide.id]: { t: top / h, b: bot / h } }));
         } catch { /* CORS: sem recorte */ }
       };
