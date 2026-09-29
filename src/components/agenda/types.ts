@@ -11,6 +11,7 @@ export interface AgendaEvent {
   category: string | null;
   company_name: string | null;
   is_highlight: boolean;
+  is_free?: boolean | null;
   status?: string;
   image_url?: string | null;
   latitude?: number | null;

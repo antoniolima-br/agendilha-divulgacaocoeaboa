@@ -167,6 +167,11 @@ export function useAppPermissions() {
   const isMaster = roles.includes("master");
   const isAdmin = roles.includes("admin") || isMaster;
   const isPromoter = roles.includes("promoter");
+  // Níveis administrativos: Sênior (moderação ampla) e Financeiro (único que dá baixa).
+  const isSenior = roles.includes("senior") || isMaster;
+  const isFinanceiro = roles.includes("financeiro");
+  const canSettlePayments = isFinanceiro || isMaster;
+  const canViewFinance = isAdmin || isSenior || isFinanceiro;
   const isCollaborator = roles.includes("collaborator") || isAdmin;
   const collaboratorName = data?.collaboratorName ?? null;
 
@@ -181,6 +186,10 @@ export function useAppPermissions() {
     isPromoter,
     isCollaborator,
     collaboratorName,
+    isSenior,
+    isFinanceiro,
+    canSettlePayments,
+    canViewFinance,
     // Explicit capability mappings from legacy usePermissions
     canSubmit: isPromoter || isCollaborator || hasPermission("events.create"),
     canApprove: isAdmin || hasPermission("events.approve"),

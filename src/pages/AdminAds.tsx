@@ -1,3 +1,4 @@
+import { PaymentStatus } from "@/components/admin/PaymentStatus";
 import { useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -241,6 +242,7 @@ export default function AdminAds() {
               <Card key={ad.id} className="rounded-2xl">
                 <CardContent className="pt-6 space-y-4">
                   <AdCard ad={ad} showStatus />
+                  {ad.is_highlight && <PaymentStatus itemType="anuncio" itemId={ad.id} />}
 
                   <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
                     {ad.description}

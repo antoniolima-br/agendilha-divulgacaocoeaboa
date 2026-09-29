@@ -1363,6 +1363,45 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_records: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          notes: string | null
+          receipt_path: string | null
+          settled_at: string
+          settled_by: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          notes?: string | null
+          receipt_path?: string | null
+          settled_at?: string
+          settled_by?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          notes?: string | null
+          receipt_path?: string | null
+          settled_at?: string
+          settled_by?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pin_reset_attempts: {
         Row: {
           created_at: string
@@ -1795,6 +1834,7 @@ export type Database = {
           image_url: string | null
           image_url_story: string | null
           image_url_whatsapp: string | null
+          is_free: boolean
           is_highlight: boolean | null
           is_suitable_for_minors: boolean | null
           latitude: number | null
@@ -1895,6 +1935,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_free?: boolean
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
           latitude?: number | null
@@ -1995,6 +2036,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_free?: boolean
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
           latitude?: number | null
@@ -2533,6 +2575,7 @@ export type Database = {
           image_url: string | null
           image_url_story: string | null
           image_url_whatsapp: string | null
+          is_free: boolean | null
           is_highlight: boolean | null
           is_suitable_for_minors: boolean | null
           latitude: number | null
@@ -2601,6 +2644,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_free?: boolean | null
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
           latitude?: number | null
@@ -2669,6 +2713,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_free?: boolean | null
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
           latitude?: number | null
@@ -2891,7 +2936,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "master"
+      app_role: "admin" | "user" | "master" | "senior" | "financeiro"
       editorial_status:
         | "recebido"
         | "em_revisao"
@@ -3029,7 +3074,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "master"],
+      app_role: ["admin", "user", "master", "senior", "financeiro"],
       editorial_status: [
         "recebido",
         "em_revisao",

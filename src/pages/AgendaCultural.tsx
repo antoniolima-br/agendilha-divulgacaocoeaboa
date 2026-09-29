@@ -184,7 +184,7 @@ function AgendaCulturalInner() {
 
             {loading ? (
               <AgendaListSkeleton />
-            ) : filters.sortedDays.length === 0 ? (
+            ) : filters.sortedDays.length === 0 && filters.freeEvents.length === 0 ? (
               <AgendaEmptyState
                 hasFilters={filters.hasActiveFilters}
                 onClearFilters={filters.clearFilters}
@@ -256,6 +256,27 @@ function AgendaCulturalInner() {
                     </div>
                   </section>
                 ))}
+
+                {filters.freeEvents.length > 0 && (
+                  <section className="rounded-2xl border border-border/60 bg-card/40 p-4 sm:p-5">
+                    <h2 className="text-sm font-bold uppercase tracking-[0.16em] text-muted-foreground mb-3">
+                      Também rola por aí
+                    </h2>
+                    <ul className="divide-y divide-border/50 text-sm">
+                      {filters.freeEvents.map((ev) => (
+                        <li key={ev.id} className="py-2">
+                          <button type="button" onClick={() => setSelectedEvent(ev)} className="text-left w-full hover:text-primary">
+                            <span className="font-medium">{ev.event_title || "Rolê"}</span>
+                            <span className="text-muted-foreground"> · {formatEventDateTimeBR(ev.date, ev.start_time)}{ev.location ? ` · ${ev.location}` : ""}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      Quer mais visibilidade? <a href="/anuncios/novo" className="font-semibold text-primary underline">Destaque seu rolê</a> e ganhe flyer profissional e lugar no topo.
+                    </p>
+                  </section>
+                )}
               </div>
             )}
           </div>

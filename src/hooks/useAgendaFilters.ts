@@ -105,6 +105,7 @@ export function useAgendaFilters(params: {
   const grouped = useMemo(() => {
     const map: Record<string, AgendaDayGroup> = {};
     for (const ev of filteredEvents) {
+      if (isFreeMention(ev)) continue;
       const d = parseDateToObj(ev.date);
       const key = d
         ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
@@ -120,6 +121,16 @@ export function useAgendaFilters(params: {
     }
     return map;
   }, [filteredEvents]);
+
+  // Eventos gratuitos (sem destaque) vão para o fim, como menção de texto.
+  const freeEvents = useMemo(
+    () =>
+      filteredEvents
+        .filter(isFreeMention)
+        .slice()
+        .sort((a, b) => `${a.date ?? ""} ${a.start_time ?? ""}`.localeCompare(`${b.date ?? ""} ${b.start_time ?? ""}`)),
+    [filteredEvents],
+  );
 
   const sortedDays = useMemo(
     () =>
@@ -159,7 +170,12 @@ export function useAgendaFilters(params: {
     trendingEvents,
     grouped,
     sortedDays,
+    freeEvents,
     hasActiveFilters,
     clearFilters,
   };
+}
+
+function isFreeMention(ev: { is_free?: boolean | null; is_highlight?: boolean | null }) {
+  return !!ev.is_free && !ev.is_highlight;
 }
