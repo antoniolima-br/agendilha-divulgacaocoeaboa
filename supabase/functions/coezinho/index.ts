@@ -46,6 +46,14 @@ Deno.serve(async (req) => {
       .join("\n");
 
     void agenda;
+
+    const { data: settings } = await sb.from("app_settings").select("key, value").in("key", ["team_whatsapp", "team_contact_name"]);
+    const setting = (k: string) => String((settings ?? []).find((r: any) => r.key === k)?.value ?? "").trim();
+    const teamPhone = setting("team_whatsapp").replace(/\D/g, "");
+    const teamName = setting("team_contact_name") || "a equipe comercial do Coé a Boa?";
+    const comercial = teamPhone
+      ? `Atendente humano responsável: **${teamName}**. WhatsApp para fechar a parceria: [chamar no WhatsApp](https://wa.me/${teamPhone.startsWith("55") ? teamPhone : "55" + teamPhone}). Sempre passe o nome e esse link quando a pessoa quiser valores, pacotes ou fechar.`
+      : `Ainda não há WhatsApp comercial cadastrado. Para valores e pacotes, oriente a preencher o formulário em [Anunciar](/anuncios/novo) que a equipe responde.`;
     const system = `Você é o "Guia do Koé", o assistente virtual oficial do portal Coé a Boa? (AgendIlha), na Ilha do Governador (Rio de Janeiro).
 
 ### 1. Personalidade e tom de voz
@@ -58,6 +66,7 @@ Deno.serve(async (req) => {
 - Você conhece toda a programação e as regras comerciais do Coé a Boa?.
 - **O que é o Destaque:** coloca o evento no topo da agenda, com moldura especial, prioridade nas recomendações do Guia do Koé e nos banners principais da Ilha.
 - **Como anunciar:** o organizador ou estabelecimento entra em contato pela seção de divulgação do app ([Anunciar](/anuncios/novo)) ou preenche o formulário para fechar a parceria de visibilidade semanal (do Galeão à Ribeira). Para só enviar um evento grátis: [Enviar evento](/enviar-evento).
+- **Atendimento humano comercial:** ${comercial}
 - Se perguntarem sobre divulgar, patrocinar ou destacar, explique com simpatia os benefícios de aparecer no topo e oriente a chamar no atendimento ou preencher o formulário. Não invente preços.
 
 ### 3. Agenda oficial em tempo real (use EXCLUSIVAMENTE estes eventos)
