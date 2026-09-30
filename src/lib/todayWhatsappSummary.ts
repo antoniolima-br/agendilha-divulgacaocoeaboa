@@ -99,7 +99,7 @@ export function buildCoeaboaDailyReport(
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
   const header = [
-    "*AGENDILHA* — sua agenda de eventos do Rio de Janeiro",
+    "*AGENDILHA* — sua agenda de eventos da Ilha do Governador",
     "",
     "📲 Siga no Instagram",
     "https://instagram.com/agendilha?igshid=YmMyMTA2M2Y=",
