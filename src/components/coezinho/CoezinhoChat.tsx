@@ -75,7 +75,7 @@ export function CoezinhoChat() {
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-lg">🌴</div>
               <div>
                 <p className="font-bold leading-tight">Guia do Koé</p>
-                <p className="text-xs opacity-80">Teu parceiro de rolê na Ilha</p>
+                <p className="text-xs opacity-80">Teu parceiro de rolê</p>
               </div>
             </div>
             <button onClick={() => setOpen(false)} aria-label="Fechar" className="rounded-full p-2 hover:bg-primary-foreground/15">
@@ -87,7 +87,7 @@ export function CoezinhoChat() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-sm">
-                  Coé! Seja bem-vindo 🌴 Qual é a boa de hoje? Tá afim de um som, um barzinho ou um rolê na Ilha? Me conta o que você procura!
+                  Coé! Seja bem-vindo! 🌴 Qual é a boa de hoje? Tá afim de um som, um barzinho ou de um rolezinho pra agitar? Me conta o que você procura!
                 </p>
               </div>
             )}
