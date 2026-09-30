@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarPlus, Home, Menu } from "lucide-react";
+import { Home, Menu, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,8 +8,18 @@ interface Props {
 
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
-  { label: "Divulgar", icon: CalendarPlus, path: "/divulgador/status", match: (p: string) => p.startsWith("/divulgador") || p.startsWith("/enviar-evento") },
 ];
+
+export const OPEN_KOE_EVENT = "koe:open";
+
+export function isTabBarHidden(pathname: string) {
+  return (
+    pathname.startsWith("/evento/") ||
+    pathname.startsWith("/enviar-evento") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/cadastro")
+  );
+}
 
 /**
  * Barra de navegação inferior — só no mobile.
@@ -18,13 +28,7 @@ const items = [
 export function MobileTabBar({ onMenuClick }: Props) {
   const { pathname } = useLocation();
 
-  const hidden =
-    pathname.startsWith("/evento/") ||
-    pathname.startsWith("/enviar-evento") ||
-    pathname.startsWith("/auth") ||
-    pathname.startsWith("/cadastro");
-
-  if (hidden) return null;
+  if (isTabBarHidden(pathname)) return null;
 
   return (
     <nav
@@ -53,6 +57,17 @@ export function MobileTabBar({ onMenuClick }: Props) {
             </li>
           );
         })}
+        <li className="flex min-w-0 items-center justify-center">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(OPEN_KOE_EVENT))}
+            aria-label="Falar com o Guia do Koé"
+            className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-primary-foreground shadow-md transition active:scale-95"
+          >
+            <MessageCircle className="h-4 w-4 shrink-0" />
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none">Guia do Koé</span>
+          </button>
+        </li>
         <li className="min-w-0">
           <button
             type="button"
