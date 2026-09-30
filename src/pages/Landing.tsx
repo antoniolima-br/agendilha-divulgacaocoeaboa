@@ -799,17 +799,9 @@ export default function Landing() {
 
       </section>
 
-      <footer className="border-t border-border/40 bg-card/30 px-4 py-12 sm:px-6 sm:py-16">
-        <div className="mx-auto max-w-6xl flex flex-col gap-8">
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-foreground/70">
-            <Link to="/agenda" className="hover:text-primary transition-colors">Agenda</Link>
-            <Link to="/hoje" className="hover:text-primary transition-colors">Coé a Boa?</Link>
-            <Link to="/agenda" className="hover:text-primary transition-colors">Agenda Cultural</Link>
-            <Link to="/auth" className="hover:text-primary transition-colors">Divulgue seu evento</Link>
-            <a href="#contato" className="hover:text-primary transition-colors">Contato</a>
-          </nav>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 pt-6 border-t border-border/40 text-center sm:text-left">
+      <footer className="border-t border-border/40 bg-card/30 px-4 py-5 sm:px-6 sm:py-6">
+        <div className="mx-auto max-w-6xl flex flex-col">
+          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-3 text-center sm:text-left">
             {/* Copyright */}
             <div className="text-xs text-foreground/60 font-medium order-2 sm:order-1">
               © {new Date().getFullYear()} — Todos os direitos reservados
