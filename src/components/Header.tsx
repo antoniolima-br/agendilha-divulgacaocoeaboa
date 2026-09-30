@@ -211,11 +211,14 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 </span>
               </Link>
             </div>
-            {!user && (
-              <div className="mt-1 sm:mx-auto sm:max-w-xs">
-                <Button onClick={() => navigate("/auth")} className="btn-gold h-10 w-full rounded-full text-xs font-bold uppercase tracking-wide hover:opacity-90">Logar</Button>
-              </div>
-            )}
+            <div className={`mt-1.5 grid gap-2 sm:mx-auto sm:max-w-xl ${user ? "grid-cols-3" : "grid-cols-4"}`}>
+              {!user && (
+                <Button onClick={() => navigate("/auth")} className="btn-gold h-10 rounded-full px-1 text-[11px] font-bold uppercase tracking-wide hover:opacity-90 sm:text-xs">Logar</Button>
+              )}
+              <Button onClick={irParaDivulgar} className="btn-gold h-10 rounded-full px-1 text-[11px] font-bold uppercase tracking-wide hover:opacity-90 sm:text-xs">Divulgar</Button>
+              <Button onClick={() => navigate("/anuncios/novo")} className="btn-gold h-10 rounded-full px-1 text-[11px] font-bold uppercase tracking-wide hover:opacity-90 sm:text-xs">Contratar</Button>
+              <Button onClick={() => document.getElementById("radar")?.scrollIntoView({ behavior: "smooth" })} className="btn-gold h-10 rounded-full px-1 text-[11px] font-bold uppercase tracking-wide hover:opacity-90 sm:text-xs">Meu radar</Button>
+            </div>
           </div>
         </header>
         <MobileTabBar onMenuClick={handleMobileMenu} />
