@@ -24,7 +24,7 @@ export function buildNotificationMessage(
         ? `🗓️ ${formatBrazilianDate(sub.date)}${sub.start_time ? ` às ${sub.start_time}` : ""}`
         : "",
       ``,
-      `Seu evento será divulgado na agenda cultural da Ilha do Governador.`,
+      `Seu evento será divulgado na agenda cultural do Rio de Janeiro.`,
       ``,
       `Acesse: https://coeaboa.lovable.app/`,
     ]

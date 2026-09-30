@@ -4,7 +4,7 @@ import { categoryLabels, getDayOfWeek, getWeekRange, type Submission } from "@/c
 export function buildWhatsAppMessage(sub: Submission): string {
   const dayOfWeek = getDayOfWeek(sub.date || "");
   const lines = [
-    `*AGENDILHA* - sua agenda de eventos da Ilha do Governador`,
+    `*AGENDILHA* - sua agenda de eventos do Rio de Janeiro`,
     `*Para mais informações:*`,
     `https://coeaboa.lovable.app/`,
     "",

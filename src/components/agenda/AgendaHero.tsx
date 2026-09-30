@@ -45,7 +45,7 @@ export function AgendaHero({
           </span>
         </div>
         <h1 className="max-w-full break-words font-display text-2xl font-black leading-tight text-primary drop-shadow-sm sm:text-5xl sm:leading-[0.95] lg:text-7xl">
-          Coé a Boa? <span className="block text-2xl sm:text-4xl mt-2 text-foreground/90">Agenda Cultural da Ilha do Governador</span>
+          Coé a Boa? <span className="block text-2xl sm:text-4xl mt-2 text-foreground/90">Agenda Cultural do Rio de Janeiro</span>
         </h1>
       </div>
 

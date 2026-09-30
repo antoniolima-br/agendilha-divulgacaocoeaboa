@@ -289,7 +289,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
                 <div className="pt-4 border-t border-white/10 flex justify-between items-center text-[8px] sm:text-[10px] font-bold text-white/40 tracking-widest uppercase">
                   <span>@coeaboa</span>
                   <span>#agendilha</span>
-                  <span>Ilha do Governador</span>
+                  <span>Rio de Janeiro</span>
                 </div>
               </div>
             </div>

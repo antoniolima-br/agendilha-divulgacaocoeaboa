@@ -203,7 +203,7 @@ function drawFooter(doc: jsPDF, isLastPage: boolean) {
      doc.setFontSize(7);
      doc.setTextColor(...MEDIUM_TEXT);
      doc.setFont("helvetica", "normal");
-     doc.text("A plataforma oficial de eventos da Ilha do Governador", MARGIN, FOOTER_Y + 9);
+     doc.text("A plataforma oficial de eventos do Rio de Janeiro", MARGIN, FOOTER_Y + 9);
    }
 }
 

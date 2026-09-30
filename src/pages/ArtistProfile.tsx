@@ -113,7 +113,7 @@ export default function ArtistProfile() {
         title={`${artist.name} — Atrativo na Ilha | AgendIlha`}
         description={
           (artist.bio as string | null)?.trim() ||
-          `Conheça ${artist.name}${artist.genre ? ` (${artist.genre})` : ""}, atrativo da Ilha do Governador, e veja os próximos shows na agenda do AgendIlha.`
+          `Conheça ${artist.name}${artist.genre ? ` (${artist.genre})` : ""}, atrativo do Rio de Janeiro, e veja os próximos shows na agenda do AgendIlha.`
         }
         path={`/artista/${artist.id}`}
         type="profile"

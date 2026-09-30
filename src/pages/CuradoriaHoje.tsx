@@ -178,7 +178,7 @@ function CuradoriaHojeInner() {
     <div className="min-h-screen bg-background text-foreground antialiased">
       <SeoHead
         title="Hoje na Ilha — Coé a Boa?"
-        description="Veja a curadoria de eventos de hoje na Ilha do Governador, com destaques e programação completa."
+        description="Veja a curadoria de eventos de hoje no Rio de Janeiro, com destaques e programação completa."
         path="/hoje"
       />
       <Header />

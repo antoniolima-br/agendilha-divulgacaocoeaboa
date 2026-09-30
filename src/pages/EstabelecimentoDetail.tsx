@@ -137,7 +137,7 @@ export default function EstabelecimentoDetail() {
     <div className="container mx-auto max-w-4xl px-4 py-6 sm:py-10 space-y-8 pb-24">
       <SeoHead
         title={`${estab.nome}${estab.bairro ? ` — ${estab.bairro}` : ""} | AgendIlha`}
-        description={`${estab.nome}${estab.tipo ? `, ${estab.tipo}` : ""}${estab.bairro ? ` no bairro ${estab.bairro}` : ""} na Ilha do Governador. Veja endereço, contato e os próximos eventos por lá.`}
+        description={`${estab.nome}${estab.tipo ? `, ${estab.tipo}` : ""}${estab.bairro ? ` no bairro ${estab.bairro}` : ""} no Rio de Janeiro. Veja endereço, contato e os próximos eventos por lá.`}
         path={`/lugar/${estab.id}`}
         image={estab.fotos?.[0] || undefined}
         jsonLd={{

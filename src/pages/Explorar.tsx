@@ -351,7 +351,7 @@ function ExplorarInner() {
       <section className="pt-24 sm:pt-32 pb-10 px-4 max-w-6xl mx-auto">
         <SeoHead
           title={isArchive ? "Eventos anteriores — arquivo | AgendIlha" : "Buscar rolê na Ilha — agenda completa | AgendIlha"}
-          description={isArchive ? "Relembre os eventos que já rolaram na Ilha do Governador." : "Explore a agenda completa da Ilha do Governador: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."}
+          description={isArchive ? "Relembre os eventos que já rolaram no Rio de Janeiro." : "Explore a agenda completa do Rio de Janeiro: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."}
           path="/explorar"
         />
         <div className="text-center mb-8 sm:mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
@@ -433,7 +433,7 @@ function ExplorarInner() {
 
         {/* Grid */}
         <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight mb-4">
-          {isArchive ? "Arquivo de eventos" : "Eventos na Ilha do Governador"}
+          {isArchive ? "Arquivo de eventos" : "Eventos no Rio de Janeiro"}
         </h2>
         {isLoading ? (
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
