@@ -389,9 +389,17 @@ export default function Landing() {
   }, []);
   const [homeBairro, setHomeBairro] = useState("all");
   const [homeCat, setHomeCat] = useState("all");
+  const [homeNbh, setHomeNbh] = useState("all");
   const homeBairros = useMemo(() => activeRegions(allEvents), [allEvents]);
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
-  const homeFiltered = useMemo(() => allEvents.filter((e: any) => homeBairro === "all" || regionOf(e) === homeBairro), [allEvents, homeBairro]);
+  const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
+  const regionNbhs = useMemo(() => homeBairro === "all" ? [] :
+    [...new Set(allEvents.filter((e: any) => regionOf(e) === homeBairro).map(nbhName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")),
+    [allEvents, homeBairro]);
+  useEffect(() => { if (homeNbh !== "all" && !regionNbhs.includes(homeNbh)) setHomeNbh("all"); }, [regionNbhs, homeNbh]);
+  const homeFiltered = useMemo(() => allEvents.filter((e: any) =>
+    (homeBairro === "all" || regionOf(e) === homeBairro) && (homeNbh === "all" || nbhName(e) === homeNbh)),
+    [allEvents, homeBairro, homeNbh]);
   return (
     <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
@@ -433,10 +441,21 @@ export default function Landing() {
                <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Local:</span><SelectValue /></span>
              </SelectTrigger>
              <SelectContent>
-               <SelectItem value="all">Todos os locais</SelectItem>
-               {homeBairros.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
-             </SelectContent>
-           </Select>
+                <SelectItem value="all">Todas as regiões</SelectItem>
+                {homeBairros.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {regionNbhs.length > 0 && (
+              <Select value={homeNbh} onValueChange={setHomeNbh}>
+                <SelectTrigger aria-label="Filtrar por bairro" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
+                  <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Bairro:</span><SelectValue /></span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os bairros</SelectItem>
+                  {regionNbhs.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            )}
            <Select value={homeCat} onValueChange={setHomeCat}>
              <SelectTrigger aria-label="Filtrar por categoria" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
                <span className="flex min-w-0 items-center gap-2"><Sparkles className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Categoria:</span><SelectValue /></span>
