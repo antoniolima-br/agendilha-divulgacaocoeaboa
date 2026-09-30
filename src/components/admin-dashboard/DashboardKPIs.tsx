@@ -124,7 +124,7 @@ export function DashboardKPIs({ stats }: DashboardKPIsProps) {
       <KPICard icon={XCircle} label="Cancelados" value={stats.cancelledEvents} tone="text-rose-600 bg-rose-50 border-rose-100" description="Eventos que foram rejeitados pela curadoria ou cancelados pelo autor." onClick={() => navigate("/admin/events?status=cancelled")} />
       <KPICard icon={Star} label="Favoritos" value={stats.totalFavorites} tone="text-orange-600 bg-orange-50 border-orange-100" description="Total de marcações de interesse realizadas pelos usuários nos eventos." />
       <KPICard icon={Music} label="Artistas" value={stats.totalArtists} tone="text-purple-600 bg-purple-50 border-purple-100" description="Base de músicos, bandas e artistas locais cadastrados como atrativos." onClick={() => navigate("/admin/artists")} />
-      <KPICard icon={Building2} label="Estabelecimentos" value={stats.totalPlaces} tone="text-cyan-600 bg-cyan-50 border-cyan-100" description="Casas de show, bares e locais físicos parceiros da AgendIlha." onClick={() => navigate("/admin/estabelecimentos")} />
+      <KPICard icon={Building2} label="Estabelecimentos" value={stats.totalPlaces} tone="text-cyan-600 bg-cyan-50 border-cyan-100" description="Casas de show, bares e locais físicos parceiros da Coé a Boa?." onClick={() => navigate("/admin/estabelecimentos")} />
       <KPICard icon={MapPin} label="Bairros Ativos" value={stats.neighborhoodsWithEvents} tone="text-red-600 bg-red-50 border-red-100" description="Número de bairros diferentes que possuem ao menos um evento ativo." />
     </div>
   );

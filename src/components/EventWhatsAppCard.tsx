@@ -87,7 +87,7 @@ export const EventWhatsAppCard = forwardRef<HTMLDivElement, { event: FlyerEvent 
               A
             </div>
             <div className="leading-none">
-              <div className="text-[34px] font-black tracking-tight">AGENDILHA informa:</div>
+              <div className="text-[34px] font-black tracking-tight">COÉ A BOA? informa:</div>
               <div className="text-[16px] uppercase tracking-[0.3em] mt-2" style={{ color: "#c9b99a" }}>
                 Curadoria local da Ilha
               </div>

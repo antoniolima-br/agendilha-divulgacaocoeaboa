@@ -95,7 +95,7 @@ export function TermosPage() {
         },
         {
           heading: "Mudanças e contato",
-          body: "Se estes termos mudarem, avisamos no app. Dúvida ou pedido de remoção de conteúdo? Fala com a gente pelo WhatsApp que consta no rodapé do evento ou no perfil do AgendIlha.",
+          body: "Se estes termos mudarem, avisamos no app. Dúvida ou pedido de remoção de conteúdo? Fala com a gente pelo WhatsApp que consta no rodapé do evento ou no perfil do Coé a Boa?.",
         },
       ]}
     />

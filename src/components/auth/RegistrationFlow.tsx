@@ -207,7 +207,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
         return (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-xl font-bold font-display">Como você quer usar o Coé a Boa??</h2>
+              <h2 className="text-xl font-bold font-display">Como você quer usar o Coé a Boa?</h2>
               <p className="text-sm text-muted-foreground">Escolha o perfil que melhor descreve você.</p>
             </div>
             <div className="grid gap-4">
@@ -269,7 +269,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
                   placeholder="(21) 98765-4321"
                 />
                 <p className="text-[10px] text-muted-foreground">
-                  É o teu login no AgendIlha. Celular com DDD e 9 na frente.
+                  É o teu login no Coé a Boa? Celular com DDD e 9 na frente.
                 </p>
               </div>
               {(type === "promoter" || type === "artist") && (

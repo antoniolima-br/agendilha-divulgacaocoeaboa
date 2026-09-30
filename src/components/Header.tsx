@@ -441,7 +441,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                     <DropdownMenuItem 
                       onClick={async () => {
                         const shareUrl = `${window.location.origin}/divulgador/${user.id}`;
-                        const shareText = `Confira meu perfil de divulgador no AgendIlha: ${shareUrl}`;
+                        const shareText = `Confira meu perfil de divulgador no Coé a Boa?: ${shareUrl}`;
                         
                         if (navigator.share) {
                           try {

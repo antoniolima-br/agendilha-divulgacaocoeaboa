@@ -1,11 +1,11 @@
 /**
- * Changelog do AgendIlha.
+ * Changelog do Coé a Boa?.
  *
  * Como usar:
  *  1. Antes de publicar uma nova versão, aumente APP_VERSION (ex.: "2026.06.30").
  *  2. Adicione um novo item no TOPO da lista UPDATES com o mesmo número de versão.
  *  3. Escreva como se fosse uma conversa entre amigos da Ilha (guia de voz do Coé a Boa?):
- *     - "title": comece SEMPRE com "Novidade no AgendIlha:" ou "Novo jeito de…".
+ *     - "title": comece SEMPRE com "Novidade no Coé a Boa?:" ou "Novo jeito de…".
  *       Curto, até 60 caracteres, sem ponto final.
  *     - "items": 2–4 bullets, cada um com 1 frase curta no padrão
  *       "[O que mudou]. [Como usar, em linguagem do dia a dia]."
@@ -29,7 +29,7 @@ export const UPDATES: AppUpdate[] = [
   {
     version: "2026.06.30",
     date: "30/06/2026",
-    title: "Novidade no AgendIlha: app no celular e sininho de avisos",
+    title: "Novidade no Coé a Boa?: app no celular e sininho de avisos",
     items: [
       "Dá pra instalar o Coé a Boa? no celular. Toca em 'Instalar' no rodapé e ele vira app na sua tela inicial.",
       "Chegou versão nova do app. Aparece um aviso no topo — toca em 'Atualizar' e pronto, sem ficar preso em tela antiga.",

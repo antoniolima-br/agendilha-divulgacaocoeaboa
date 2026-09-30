@@ -46,7 +46,7 @@ export const getShareData = (ev?: Event) => {
     const time = ev.start_time ? `${ev.start_time}` : "";
     const addr = buildFullAddress(ev);
     const eventDetails = `🗓️ *${ev.event_title}*${time ? `\n⏰ ${time}` : ""}${addr ? `\n📍 ${addr}` : ""}`;
-    text = `${eventDetails}\n\n🌴 Veja os detalhes no AgendIlha:`;
+    text = `${eventDetails}\n\n🌴 Veja os detalhes no Coé a Boa?:`;
   } else {
     text = `🌴 *Confira a Agenda Cultural do Rio de Janeiro!* 🌴\n\nVeja a programação completa e atualizada em:`;
   }

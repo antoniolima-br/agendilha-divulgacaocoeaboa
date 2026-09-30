@@ -96,7 +96,7 @@ export default function CadastroEstabelecimentoPublico() {
         <title>Cadastro de estabelecimento | Coé a Boa?</title>
         <meta
           name="description"
-          content="Cadastre seu bar, restaurante ou casa de eventos para entrar na agenda do AgendIlha."
+          content="Cadastre seu bar, restaurante ou casa de eventos para entrar na agenda do Coé a Boa?."
         />
       </Helmet>
 

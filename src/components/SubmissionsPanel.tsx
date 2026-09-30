@@ -360,7 +360,7 @@ export default function SubmissionsPanel({ children }: { children: React.ReactNo
                       {sub.status === "pending" && (
                         <>
                           <p className="text-xs text-muted-foreground italic">
-                            ⏳ Em análise pela coordenação do AgendIlha.
+                            ⏳ Em análise pela coordenação do Coé a Boa?.
                           </p>
                           {sub.rejection_reason && (
                             <div className="rounded-md border border-[hsl(45,93%,47%)]/40 bg-[hsl(45,93%,47%)]/10 p-3 text-sm">

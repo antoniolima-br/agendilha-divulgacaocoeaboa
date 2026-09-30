@@ -81,7 +81,7 @@ export default function CadastroAtrativoPublico() {
         <title>Cadastro de atrativo | Coé a Boa?</title>
         <meta
           name="description"
-          content="Cadastre seu atrativo (artista, banda, DJ ou atração) para entrar na agenda do AgendIlha."
+          content="Cadastre seu atrativo (artista, banda, DJ ou atração) para entrar na agenda do Coé a Boa?."
         />
       </Helmet>
 

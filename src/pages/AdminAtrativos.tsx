@@ -382,7 +382,7 @@ export default function AdminAtrativos() {
                                 className="gap-2 text-primary border-primary/20 hover:bg-primary/5"
                                 onClick={async () => {
                                   const shareUrl = `${window.location.origin}/explorar?term=${encodeURIComponent(a.name)}`;
-                                  const shareText = `Confira o atrativo "${a.name}" no AgendIlha: ${shareUrl}`;
+                                  const shareText = `Confira o atrativo "${a.name}" no Coé a Boa?: ${shareUrl}`;
                                   
                                   if (navigator.share) {
                                     try {
@@ -414,7 +414,7 @@ export default function AdminAtrativos() {
                                 className="gap-2 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                                 onClick={() => {
                                   const shareUrl = `${window.location.origin}/explorar?term=${encodeURIComponent(a.name)}`;
-                                  const shareText = encodeURIComponent(`Confira o atrativo "${a.name}" no AgendIlha: ${shareUrl}`);
+                                  const shareText = encodeURIComponent(`Confira o atrativo "${a.name}" no Coé a Boa?: ${shareUrl}`);
                                   window.open(`https://wa.me/?text=${shareText}`, '_blank');
                                 }}
                               >

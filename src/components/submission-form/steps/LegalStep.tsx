@@ -161,7 +161,7 @@ export function LegalStep({ form, isPublished = false, submissionId }: { form: U
           <span>Combinado antes de mandar</span>
         </div>
         <p>1. Você garante que as informações do rolê são verdadeiras.</p>
-        <p>2. A gente dá uma olhada rápida antes de publicar no AgendIlha.</p>
+        <p>2. A gente dá uma olhada rápida antes de publicar no Coé a Boa?</p>
         <p>3. Se rolar algo impróprio ou falso, tiramos do ar.</p>
       </div>
 
@@ -481,7 +481,7 @@ export function LegalStep({ form, isPublished = false, submissionId }: { form: U
             </FormControl>
             <div className="space-y-1 leading-none">
               <FormLabel className="cursor-pointer">
-                Declaro que as informações deste evento são verdadeiras e que estou ciente das regras de divulgação do AgendIlha.
+                Declaro que as informações deste evento são verdadeiras e que estou ciente das regras de divulgação do Coé a Boa?.
               </FormLabel>
               <FormMessage />
             </div>
