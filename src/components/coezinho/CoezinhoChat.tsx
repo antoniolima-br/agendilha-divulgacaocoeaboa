@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { isTabBarHidden, OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 import { MessageCircle, X, Send, Square } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -42,13 +43,25 @@ export function CoezinhoChat() {
     setInput("");
   };
 
+  const { pathname } = useLocation();
+  const inTabBar = !isTabBarHidden(pathname);
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_KOE_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_KOE_EVENT, onOpen);
+  }, []);
+
   return (
     <>
       {!open && (
         <button
           onClick={() => setOpen(true)}
           aria-label="Falar com o Guia do Koé"
-          className="fixed bottom-20 right-4 z-50 flex items-center gap-2 rounded-full bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-lg transition hover:scale-105 md:bottom-6"
+          className={cn(
+            "fixed bottom-6 right-4 z-50 items-center gap-2 rounded-full bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-lg transition hover:scale-105",
+            inTabBar ? "hidden md:flex" : "flex",
+          )}
         >
           <MessageCircle className="h-5 w-5" />
           <span className="text-sm">Guia do Koé</span>
