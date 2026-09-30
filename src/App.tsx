@@ -65,6 +65,7 @@ const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
+const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
 const AdminAdPlans = lazy(() => import("./pages/AdminAdPlans"));
 const AdminAds = lazy(() => import("./pages/AdminAds"));
 const Anuncios = lazy(() => import("./pages/anuncios/Anuncios"));
@@ -242,6 +243,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ADMIN_DESTAQUES} element={<AdminDestaques />} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
           <Route path="/admin/rolando-agora" element={<AdminRolandoAgora />} />
+          <Route path="/admin/aprovar-eventos" element={<AdminAprovarEventos />} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />
           <Route path={ROUTES.ADMIN_ESTABELECIMENTOS} element={<AdminEstabelecimentos />} />
           <Route path={ROUTES.ADMIN_ATRATIVOS} element={<AdminAtrativos />} />
