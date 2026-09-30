@@ -43,7 +43,7 @@ function styleEmoji(style?: string | null, category?: string | null): string {
 function buildTagline(e: FlyerEvent): string {
   if (e.tagline) return e.tagline;
   const style = e.music_style?.trim();
-  const place = e.address_neighborhood || e.location || "Ilha do Governador";
+  const place = e.address_neighborhood || e.location || "Rio de Janeiro";
   if (style) return `${style} em ${place}!`;
   if (e.description) {
     const s = e.description.replace(/\s+/g, " ").trim();

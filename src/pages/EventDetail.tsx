@@ -250,7 +250,7 @@ export default function EventDetail() {
                 eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
                 location: {
                   "@type": "Place",
-                  name: event.location || "Ilha do Governador",
+                  name: event.location || "Rio de Janeiro",
                   address: {
                     "@type": "PostalAddress",
                     streetAddress: [event.address_street, event.address_number]

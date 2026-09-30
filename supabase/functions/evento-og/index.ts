@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
   const cleanEventTitle = sanitizeText(ev?.event_title, MAX_TITLE);
   const title = cleanEventTitle
     ? `${cleanEventTitle} — AgendIlha`
-    : "AgendIlha — Agenda Cultural da Ilha do Governador";
+    : "AgendIlha — Agenda Cultural do Rio de Janeiro";
 
   const descSource =
     sanitizeText(ev?.description, MAX_DESC) ||

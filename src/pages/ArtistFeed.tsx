@@ -221,7 +221,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
      >
       <SeoHead
         title="Atrativos da Ilha — vídeos de artistas | AgendIlha"
-        description="Assista aos vídeos dos artistas e atrativos da Ilha do Governador e descubra quem vai tocar nos próximos rolês da agenda."
+        description="Assista aos vídeos dos artistas e atrativos do Rio de Janeiro e descubra quem vai tocar nos próximos rolês da agenda."
         path="/artistas"
       />
        {mediaItems.map((item, index) => (

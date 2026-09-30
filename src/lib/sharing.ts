@@ -39,7 +39,7 @@ export const getShareData = (ev?: Event) => {
   const url = getShareUrl(ev?.id);
   
   let text = isAgenda 
-    ? "Confira a programação completa da Ilha do Governador!" 
+    ? "Confira a programação completa do Rio de Janeiro!" 
     : `Confira este evento e a agenda completa no AgendIlha!`;
 
   if (ev) {
@@ -48,7 +48,7 @@ export const getShareData = (ev?: Event) => {
     const eventDetails = `🗓️ *${ev.event_title}*${time ? `\n⏰ ${time}` : ""}${addr ? `\n📍 ${addr}` : ""}`;
     text = `${eventDetails}\n\n🌴 Veja os detalhes no AgendIlha:`;
   } else {
-    text = `🌴 *Confira a Agenda Cultural da Ilha do Governador!* 🌴\n\nVeja a programação completa e atualizada em:`;
+    text = `🌴 *Confira a Agenda Cultural do Rio de Janeiro!* 🌴\n\nVeja a programação completa e atualizada em:`;
   }
 
   return { title, text, url };

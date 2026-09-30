@@ -439,7 +439,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-bold font-display">Bem-vindo ao AgendIlha!</h2>
-              <p className="text-muted-foreground">Sua conta foi criada com sucesso. Aproveite o melhor da Ilha do Governador.</p>
+              <p className="text-muted-foreground">Sua conta foi criada com sucesso. Aproveite o melhor do Rio de Janeiro.</p>
             </div>
             <Button className="w-full" onClick={onComplete}>
               Começar a Explorar

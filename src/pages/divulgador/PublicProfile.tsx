@@ -85,7 +85,7 @@ export default function PublicProfile() {
     <div className="min-h-screen bg-background">
       <SeoHead 
         title={`${profile.responsible_name || profile.company_name || 'Divulgador'} — AgendIlha`}
-        description={`Veja todos os eventos publicados por ${profile.responsible_name || profile.company_name} na Ilha do Governador.`}
+        description={`Veja todos os eventos publicados por ${profile.responsible_name || profile.company_name} no Rio de Janeiro.`}
         path={`/divulgador/${userId}`}
       />
       

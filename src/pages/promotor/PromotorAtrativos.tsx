@@ -416,7 +416,7 @@ export default function PromotorAtrativos() {
               <SuggestInput
                 value={form.cidade_regiao}
                 onChange={(e) => setForm({ ...form, cidade_regiao: e.target.value })}
-                placeholder="Ilha do Governador"
+                placeholder="Rio de Janeiro"
                 suggestFrom="atrativos_public"
                 suggestColumn="cidade_regiao"
               />

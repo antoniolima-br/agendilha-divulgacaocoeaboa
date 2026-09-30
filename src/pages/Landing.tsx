@@ -779,11 +779,11 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Map Explorer CTA */}
-        <section className="mb-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-secondary/10 bg-secondary/5 p-5 sm:mb-16 sm:flex-row sm:p-8">
+        {false && (
+                <section className="mb-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-secondary/10 bg-secondary/5 p-5 sm:mb-16 sm:flex-row sm:p-8">
           <div className="text-center sm:text-left">
             <h3 className="text-xl font-bold mb-2">Explore a Ilha no mapa</h3>
-            <p className="text-muted-foreground text-sm">Estabelecimentos, shows e pontos culturais em toda a Ilha do Governador.</p>
+            <p className="text-muted-foreground text-sm">Estabelecimentos, shows e pontos culturais no Rio de Janeiro.</p>
           </div>
           <Button 
             variant="secondary" 
@@ -793,6 +793,7 @@ export default function Landing() {
             <MapIcon className="mr-2 h-4 w-4"/> Abrir Mapa
           </Button>
         </section>
+        )}
 
         <HomeAdsCarousel variant="banner" />
 

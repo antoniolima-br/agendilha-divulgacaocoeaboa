@@ -71,11 +71,11 @@ export function TermosPage() {
     <InfoPage
       eyebrow="Termos"
       title="Termos de Uso do AgendIlha"
-      intro="O AgendIlha (Coé a Boa?) é uma agenda cultural curada da Ilha do Governador. Ao usar o app, você concorda com as regras abaixo."
+      intro="O AgendIlha (Coé a Boa?) é uma agenda cultural curada do Rio de Janeiro. Ao usar o app, você concorda com as regras abaixo."
       sections={[
         {
           heading: "O que o AgendIlha faz",
-          body: "A gente reúne, revisa e divulga eventos da Ilha do Governador. O AgendIlha cura a programação, mas não organiza, vende ingresso nem responde pela realização dos rolês publicados.",
+          body: "A gente reúne, revisa e divulga eventos do Rio de Janeiro. O AgendIlha cura a programação, mas não organiza, vende ingresso nem responde pela realização dos rolês publicados.",
         },
         {
           heading: "Quem divulga é responsável pelas informações",
