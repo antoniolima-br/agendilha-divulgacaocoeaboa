@@ -74,7 +74,7 @@ export function ReportButton({ eventId, eventTitle }: ReportButtonProps) {
               Denunciar Evento
             </DialogTitle>
             <DialogDescription>
-              Ajude-nos a manter o AgendIlha seguro. Por que você está denunciando "{eventTitle}"?
+              Ajude-nos a manter o Coé a Boa? seguro. Por que você está denunciando "{eventTitle}"?
             </DialogDescription>
           </DialogHeader>
 

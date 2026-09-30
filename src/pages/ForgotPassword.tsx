@@ -132,7 +132,7 @@ export default function ForgotPassword() {
     <div className="flex items-center justify-center min-h-screen bg-background px-4 py-8">
       <div className="w-full max-w-sm rounded-2xl bg-card shadow-elevated p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-1">
-          <h1 className="font-display text-2xl font-black text-primary tracking-tight">AgendIlha</h1>
+          <h1 className="font-display text-2xl font-black text-primary tracking-tight">Coé a Boa?</h1>
           <h2 className="text-sm font-bold text-foreground">Recuperar acesso</h2>
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
             Resolve na hora, sem esperar ninguém

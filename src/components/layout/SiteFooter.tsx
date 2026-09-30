@@ -28,12 +28,12 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
         <div className="flex min-w-0 items-center justify-center gap-2 order-1 sm:order-2">
           <img
             src={logo}
-            alt="Coé a Boa? — Agendilha"
+            alt="Coé a Boa?"
             className="h-7 w-7 rounded-full ring-1 ring-primary/15"
           />
           <div className="min-w-0 leading-tight">
             <div className="font-display text-sm font-black text-foreground tracking-tight">
-              Coé a Boa? <span className="text-foreground/30">•</span> Agendilha
+              Coé a Boa?
             </div>
             <div className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-semibold">
               Transparência e Cultura

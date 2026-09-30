@@ -157,7 +157,7 @@ export default function AdminUsers() {
     const MAX_USERS = 50;
     const selectedUsers = filteredUsers.slice(0, MAX_USERS);
     
-    let text = `*Relatório de Usuários Agendilha (${new Date().toLocaleDateString("pt-BR")})*\n`;
+    let text = `*Relatório de Usuários Coé a Boa? (${new Date().toLocaleDateString("pt-BR")})*\n`;
     text += `Total filtrado: ${filteredUsers.length} usuários\n\n`;
     
     text += selectedUsers.map((u, index) => 

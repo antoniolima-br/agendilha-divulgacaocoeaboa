@@ -224,7 +224,7 @@ export function EventWhatsAppCardExport({ event }: { event: FlyerEvent }) {
         await navigator.share({
           files: [file],
           title: event.event_title,
-          text: `${event.event_title} — via AgendIlha`,
+          text: `${event.event_title} — via Coé a Boa?`,
         });
       } else {
         const a = document.createElement("a");

@@ -40,7 +40,7 @@ export const getShareData = (ev?: Event) => {
   
   let text = isAgenda 
     ? "Confira a programação completa do Rio de Janeiro!" 
-    : `Confira este evento e a agenda completa no AgendIlha!`;
+    : `Confira este evento e a agenda completa no Coé a Boa?!`;
 
   if (ev) {
     const time = ev.start_time ? `${ev.start_time}` : "";

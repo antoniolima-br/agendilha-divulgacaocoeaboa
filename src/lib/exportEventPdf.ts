@@ -72,7 +72,7 @@ function drawHeader(doc: jsPDF, title: string, subtitle: string) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("AgendIlha", 14, 12);
+  doc.text("Coé a Boa?", 14, 12);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text(subtitle, 14, 20);
@@ -110,7 +110,7 @@ function drawCover(doc: jsPDF, cover: PdfCover) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("AgendIlha", 14, 12);
+  doc.text("Coé a Boa?", 14, 12);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text(cover.subtitle || "Capa", 14, 20);
@@ -241,7 +241,7 @@ function renderAtrativoPage(
   index: number,
   total: number,
 ) {
-  drawHeader(doc, a.name || "Atrativo sem nome", `Ficha ${index + 1} de ${total} — Atrativos AgendIlha`);
+  drawHeader(doc, a.name || "Atrativo sem nome", `Ficha ${index + 1} de ${total} — Atrativos Coé a Boa?`);
 
   const rows: [string, string][] = [
     ["Tipo", a.tipo_atrativo || "—"],

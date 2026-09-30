@@ -36,7 +36,7 @@ export function SeoHead({ title, description, path, image, type = "website", jso
       <meta property="og:description" content={desc} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
-      <meta property="og:site_name" content="AgendIlha" />
+      <meta property="og:site_name" content="Coé a Boa?" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={desc} />

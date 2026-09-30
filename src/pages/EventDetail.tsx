@@ -188,7 +188,7 @@ export default function EventDetail() {
       return;
     }
     const phone = duvidasPhone.startsWith("55") ? duvidasPhone : `55${duvidasPhone}`;
-    const msg = `Oi! Vi o rolê *${event.event_title}* no AgendIlha e queria tirar uma dúvida.`;
+    const msg = `Oi! Vi o rolê *${event.event_title}* no Coé a Boa? e queria tirar uma dúvida.`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -220,7 +220,7 @@ export default function EventDetail() {
           || [event.location, event.address_neighborhood].filter(Boolean).join(" — ")
           || "Confira este evento no AgendIlha.";
         const description = rawDesc.replace(/\s+/g, " ").trim().slice(0, 150);
-        const title = `${event.event_title} — AgendIlha`;
+        const title = `${event.event_title} — Coé a Boa?`;
         return (
           <Helmet>
             <title>{title}</title>
@@ -532,7 +532,7 @@ export default function EventDetail() {
             </div>
 
             <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 px-1">
-              Publicado no AgendIlha · #{event.id.slice(0, 6)}
+              Publicado no Coé a Boa? · #{event.id.slice(0, 6)}
             </p>
           </aside>
         </div>

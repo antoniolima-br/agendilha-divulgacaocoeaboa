@@ -384,7 +384,7 @@ export default function EventoEnviado() {
       <footer className="border-t border-slate-800 bg-slate-950 py-6 sm:py-8">
         <div className="mx-auto max-w-3xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs sm:text-sm text-slate-300 font-medium text-center sm:text-left">
-            Agendilha / COEABOA? — Transparência e Cultura
+            Coé a Boa? — Transparência e Cultura
           </p>
           <nav className="flex items-center gap-6 text-xs sm:text-sm">
             <a

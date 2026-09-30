@@ -78,10 +78,10 @@ export function SidebarMenu({ onClose }: Props) {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex items-center gap-2.5 group cursor-pointer px-1" onClick={() => { navigate("/"); if (onClose) onClose(); }}>
             <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shadow-lg group-hover:rotate-6 transition-all">
-              <img src={logoCoeABoa} alt="AgendIlha" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-white/20" />
+              <img src={logoCoeABoa} alt="Coé a Boa?" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-white/20" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="font-display text-xl font-black text-primary tracking-tighter">AgendIlha</span>
+              <span className="font-display text-xl font-black text-primary tracking-tighter">Coé a Boa?</span>
               <span className="text-[10px] text-secondary font-black uppercase tracking-widest opacity-90">Coé a Boa?</span>
             </div>
           </div>
@@ -166,7 +166,7 @@ export function SidebarMenu({ onClose }: Props) {
         )}
         <div className="mt-4 text-center">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground/30">
-            © {new Date().getFullYear()} AgendIlha · Coé a Boa?
+            © {new Date().getFullYear()} Coé a Boa?
           </p>
         </div>
       </div>
@@ -326,7 +326,7 @@ function PwaInstallButton() {
       onClick={handleInstall}
     >
       <Download className="h-4 w-4 shrink-0 transition-all duration-300 group-hover:scale-110" />
-      <span className="font-bold text-sm tracking-tight">Instalar AgendIlha</span>
+      <span className="font-bold text-sm tracking-tight">Instalar Coé a Boa?</span>
     </Button>
   );
 }

@@ -28,7 +28,7 @@ export function EventSocialCard({ sub }: EventSocialCardProps) {
               <div className="flex items-center gap-2">
                 <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-2xl shadow-lg border border-white/30">🌴</div>
                 <div className="flex flex-col">
-                  <span className="font-display font-black text-2xl tracking-tighter leading-none">AgendIlha</span>
+                  <span className="font-display font-black text-2xl tracking-tighter leading-none">Coé a Boa?</span>
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70">Agenda Cultural</span>
                 </div>
               </div>

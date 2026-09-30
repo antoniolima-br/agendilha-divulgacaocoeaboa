@@ -23,7 +23,7 @@ const ITEMS: LinkItem[] = [
     path: ROUTES.ENVIAR_EVENTO,
     icon: CalendarPlus,
     message: (url) =>
-      `Fala! Cadastra teu rolê na AgendIlha por aqui, é rapidinho: ${url}`,
+      `Fala! Cadastra teu rolê na Coé a Boa? por aqui, é rapidinho: ${url}`,
   },
   {
     key: "atrativo",
@@ -32,7 +32,7 @@ const ITEMS: LinkItem[] = [
     path: ROUTES.CADASTRO_ATRATIVO,
     icon: Music,
     message: (url) =>
-      `Fala! Cadastra teu atrativo (artista, banda, DJ) na AgendIlha aqui: ${url}`,
+      `Fala! Cadastra teu atrativo (artista, banda, DJ) na Coé a Boa? aqui: ${url}`,
   },
   {
     key: "estabelecimento",
@@ -41,7 +41,7 @@ const ITEMS: LinkItem[] = [
     path: ROUTES.CADASTRO_ESTABELECIMENTO,
     icon: Store,
     message: (url) =>
-      `Fala! Cadastra teu bar/restaurante na AgendIlha aqui: ${url}`,
+      `Fala! Cadastra teu bar/restaurante na Coé a Boa? aqui: ${url}`,
   },
 ];
 

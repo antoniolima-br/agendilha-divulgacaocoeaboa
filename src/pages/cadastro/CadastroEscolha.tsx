@@ -40,7 +40,7 @@ export default function CadastroEscolha() {
       <div className="mx-auto max-w-md px-4 py-10 sm:py-16 space-y-8">
         <header className="text-center space-y-3">
           <p className="text-sm font-bold uppercase tracking-wide text-primary">
-            AgendIlha · Coé a Boa
+            Coé a Boa?
           </p>
           <h1 className="text-2xl sm:text-4xl font-black font-display text-foreground leading-tight">
             Como você quer participar?

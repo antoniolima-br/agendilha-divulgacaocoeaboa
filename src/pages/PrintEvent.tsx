@@ -127,7 +127,7 @@ export default function PrintEvent() {
           style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
         >
           <div className="-mx-8 -mt-8 mb-6 bg-slate-900 text-white px-8 py-4">
-            <div className="text-lg font-bold">AgendIlha</div>
+            <div className="text-lg font-bold">Coé a Boa?</div>
             <div className="text-[10px] opacity-80">Ficha do evento — prévia compartilhada</div>
           </div>
 

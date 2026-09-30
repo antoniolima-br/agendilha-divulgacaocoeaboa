@@ -405,7 +405,7 @@ export function UserCard(props: UserCardProps) {
                   if (navigator.share) {
                     try {
                       await navigator.share({
-                        title: 'Perfil no AgendIlha',
+                        title: 'Perfil no Coé a Boa?',
                         text: shareText,
                         url: shareUrl,
                       });

@@ -110,7 +110,7 @@ export default function Carrossel() {
             ← Agenda
           </Link>
           <div className="text-xs uppercase tracking-[0.18em] text-foreground/60">
-            Carrossel AgendIlha
+            Carrossel Coé a Boa?
           </div>
           <div className="text-sm tabular-nums text-foreground/60 w-16 text-right">{counter}</div>
         </div>

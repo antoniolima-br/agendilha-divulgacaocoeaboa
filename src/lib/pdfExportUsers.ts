@@ -30,7 +30,7 @@ export async function exportUsersToPdf(users: UserPdfRow[]): Promise<void> {
     new Date(u.created_at).toLocaleDateString("pt-BR"),
   ]);
 
-  doc.text("Relatório de Usuários - Agendilha", 14, 15);
+  doc.text("Relatório de Usuários - Coé a Boa?", 14, 15);
   autoTable(doc, { head: [columns], body: rows, startY: 20 });
   doc.save(`usuarios_agendilha_${new Date().toISOString().split("T")[0]}.pdf`);
 }

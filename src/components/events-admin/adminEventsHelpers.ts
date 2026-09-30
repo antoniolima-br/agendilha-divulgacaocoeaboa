@@ -104,7 +104,7 @@ export function buildApprovalMessage(sub: AdminSubmission): string {
     : `${window.location.origin}/agenda`;
   return (
     `${greeting}\n\n` +
-    `✅ *Seu evento foi aprovado pela curadoria do AgendIlha!*\n\n` +
+    `✅ *Seu evento foi aprovado pela curadoria do Coé a Boa?!*\n\n` +
     `🎉 *${sub.event_title || "Evento"}*\n` +
     `📅 ${formatEventDate(sub.date)}${sub.start_time ? ` às ${sub.start_time}` : ""}\n` +
     (sub.location ? `📍 ${sub.location}\n` : "") +

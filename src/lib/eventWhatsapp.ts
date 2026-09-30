@@ -4,7 +4,7 @@ import { categoryLabels, getDayOfWeek, getWeekRange, type Submission } from "@/c
 export function buildWhatsAppMessage(sub: Submission): string {
   const dayOfWeek = getDayOfWeek(sub.date || "");
   const lines = [
-    `*AGENDILHA* - sua agenda de eventos do Rio de Janeiro`,
+    `*COÉ A BOA?* - sua agenda de eventos do Rio de Janeiro`,
     `*Para mais informações:*`,
     `https://coeaboa.lovable.app/`,
     "",
@@ -24,7 +24,7 @@ export function buildBulkWhatsAppMessage(events: Submission[]): string {
   const formatBR = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
   const highlights = events.filter(e => e.is_highlight);
   const lines: string[] = [
-    `🌴 *AGENDILHA* - O que tem de bom na Ilha?`,
+    `🌴 *COÉ A BOA?* - O que tem de bom na Ilha?`,
     `📅 Semana de ${formatBR(start)} a ${formatBR(endOfWeek)}`,
     ``,
   ];

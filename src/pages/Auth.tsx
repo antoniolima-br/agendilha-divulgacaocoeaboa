@@ -97,7 +97,7 @@ export default function Auth() {
         <div className="text-center">
           <div className="flex flex-col items-center mb-4">
             <h1 className="font-display text-2xl font-black text-primary tracking-tight">
-              AgendIlha
+              Coé a Boa?
             </h1>
             <span className="text-[10px] text-secondary font-black uppercase tracking-widest">Coé a Boa?</span>
           </div>

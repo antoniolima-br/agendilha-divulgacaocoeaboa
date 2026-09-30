@@ -78,7 +78,7 @@ export default function CadastroAtrativoPublico() {
   return (
     <main className="min-h-screen px-4 py-8 max-w-lg mx-auto">
       <Helmet>
-        <title>Cadastro de atrativo | AgendIlha</title>
+        <title>Cadastro de atrativo | Coé a Boa?</title>
         <meta
           name="description"
           content="Cadastre seu atrativo (artista, banda, DJ ou atração) para entrar na agenda do AgendIlha."

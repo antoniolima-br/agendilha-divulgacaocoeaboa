@@ -121,12 +121,12 @@ function buildWhatsAppMessage(sub: any): string {
   if (sub.contact_social) lines.push(`📱 ${sub.contact_social}`);
   if (sub.video_link) lines.push(`🎬 ${sub.video_link}`);
   if (sub.additional_details) lines.push(`ℹ️ ${sub.additional_details}`);
-  lines.push("", "Divulgação via AgendIlha / Coé a Boa? 🌴");
+  lines.push("", "Divulgação via Coé a Boa? / Coé a Boa? 🌴");
   return encodeURIComponent(lines.join("\n"));
 }
 
 function buildBulkWhatsAppMessage(subs: any[]): string {
-  const lines = ["📋 *Eventos AgendIlha* 🌴", ""];
+  const lines = ["📋 *Eventos Coé a Boa?* 🌴", ""];
   subs.forEach((sub, i) => {
     lines.push(`${i + 1}. 📌 *${sub.event_title || "Evento"}*`);
     lines.push(`   📅 ${sub.date || ""} às ${sub.start_time || ""}${sub.end_time ? ` - ${sub.end_time}` : ""}`);
@@ -134,7 +134,7 @@ function buildBulkWhatsAppMessage(subs: any[]): string {
     if (sub.description) lines.push(`   ${sub.description}`);
     lines.push("");
   });
-  lines.push("Divulgação via AgendIlha / Coé a Boa? 🌴");
+  lines.push("Divulgação via Coé a Boa? / Coé a Boa? 🌴");
   return encodeURIComponent(lines.join("\n"));
 }
 

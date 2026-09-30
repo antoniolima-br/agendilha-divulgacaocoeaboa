@@ -93,7 +93,7 @@ export default function CadastroEstabelecimentoPublico() {
   return (
     <main className="min-h-screen px-4 py-8 max-w-lg mx-auto">
       <Helmet>
-        <title>Cadastro de estabelecimento | AgendIlha</title>
+        <title>Cadastro de estabelecimento | Coé a Boa?</title>
         <meta
           name="description"
           content="Cadastre seu bar, restaurante ou casa de eventos para entrar na agenda do AgendIlha."

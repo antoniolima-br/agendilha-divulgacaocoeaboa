@@ -71,8 +71,8 @@ export function LegalStep({ form, isPublished = false, submissionId }: { form: U
 
   const phoneValidation = validateBrazilianMobile(duvidasWhatsapp);
   const previewMessage = eventTitle
-    ? `Oi! Vi o rolê "${eventTitle}" no AgendIlha e queria tirar uma dúvida.`
-    : `Oi! Vi um rolê no AgendIlha e queria tirar uma dúvida.`;
+    ? `Oi! Vi o rolê "${eventTitle}" no Coé a Boa? e queria tirar uma dúvida.`
+    : `Oi! Vi um rolê no Coé a Boa? e queria tirar uma dúvida.`;
   const previewUrl = phoneValidation.valid ? buildWhatsappUrl(duvidasWhatsapp, previewMessage) : null;
 
   const lockedTooltip =

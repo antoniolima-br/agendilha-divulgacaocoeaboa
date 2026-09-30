@@ -158,11 +158,11 @@ function drawHeader(doc: jsPDF) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-    doc.text("AgendIlha", MARGIN + 16, 6.5);
+    doc.text("Coé a Boa?", MARGIN + 16, 6.5);
     doc.setFontSize(7.5);
     doc.setTextColor(255, 255, 255, 0.9);
     doc.setFont("helvetica", "bold");
-    doc.text("AgendIlha / Coé a Boa?", MARGIN + 16, 10.5);
+    doc.text("Coé a Boa? / Coé a Boa?", MARGIN + 16, 10.5);
     doc.setFontSize(5);
     doc.text("A AGENDA DA ILHA", MARGIN + 16, 13);
 
@@ -183,12 +183,12 @@ function drawFooter(doc: jsPDF, isLastPage: boolean) {
     doc.setFontSize(7);
     doc.setTextColor(...MEDIUM_TEXT);
     doc.setFont("helvetica", "normal");
-    doc.text(`Gerado em ${new Date().toLocaleDateString("pt-BR")} • AgendIlha`, MARGIN, FOOTER_Y);
+    doc.text(`Gerado em ${new Date().toLocaleDateString("pt-BR")} • Coé a Boa?`, MARGIN, FOOTER_Y);
     
     // Brand signature in footer - more prominent balance
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...DARK_TEXT);
-    doc.text("AgendIlha", PAGE_W - MARGIN - 20, FOOTER_Y, { align: "right" });
+    doc.text("Coé a Boa?", PAGE_W - MARGIN - 20, FOOTER_Y, { align: "right" });
     doc.setTextColor(...BRAND_ORANGE);
     doc.text("Coé a Boa?", PAGE_W - MARGIN, FOOTER_Y, { align: "right" });
  
@@ -425,7 +425,7 @@ export async function exportEditorialAgendaPdf(events: EventData[], title: strin
    doc.setTextColor(255, 255, 255);
    doc.setFont("helvetica", "bold");
     doc.setFontSize(36);
-    doc.text("AgendIlha", PAGE_W/2, 65, { align: "center" });
+    doc.text("Coé a Boa?", PAGE_W/2, 65, { align: "center" });
     
     doc.setFontSize(14);
     doc.setTextColor(255, 255, 255, 0.9);

@@ -1,6 +1,6 @@
 /**
  * Lista única e padronizada dos bairros atendidos pela plataforma
- * AgendIlha / Coé a Boa. Reutilizada em todos os formulários,
+ * Coé a Boa? / Coé a Boa. Reutilizada em todos os formulários,
  * validações e filtros. Não duplicar esta lista em outros arquivos.
  */
 export const BAIRROS = [

@@ -252,7 +252,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
                   "font-black tracking-tightest leading-[0.85] uppercase",
                   format === "feed" ? "text-5xl sm:text-7xl" : format === "story" ? "text-4xl sm:text-6xl" : "text-5xl sm:text-6xl"
                 )} style={{ color: template === 'samba' ? '#ea580c' : 'white' }}>
-                  {data.title || "AgendIlha"}
+                  {data.title || "Coé a Boa?"}
                 </h2>
                 
                 <div className={cn(
