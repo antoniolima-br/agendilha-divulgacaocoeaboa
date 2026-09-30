@@ -42,7 +42,7 @@ export function useEvents(options: {
           date, 
           start_time, 
           location, 
-          address_neighborhood, 
+          address_neighborhood, address_city, 
           category, 
           image_url, 
           age_rating, 

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { activeRegions, regionOf } from "@/lib/regions";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { Link, useNavigate } from "react-router-dom";
@@ -388,8 +389,9 @@ export default function Landing() {
   }, []);
   const [homeBairro, setHomeBairro] = useState("all");
   const [homeCat, setHomeCat] = useState("all");
-  const homeBairros = useMemo(() => [...new Set(allEvents.map((e: any) => String(e.address_neighborhood || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")), [allEvents]);
-  const homeFiltered = useMemo(() => allEvents.filter((e: any) => homeBairro === "all" || String(e.address_neighborhood || "").trim() === homeBairro), [allEvents, homeBairro]);
+  const homeBairros = useMemo(() => activeRegions(allEvents), [allEvents]);
+  useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
+  const homeFiltered = useMemo(() => allEvents.filter((e: any) => homeBairro === "all" || regionOf(e) === homeBairro), [allEvents, homeBairro]);
   return (
     <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
