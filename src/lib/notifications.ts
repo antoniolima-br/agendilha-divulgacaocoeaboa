@@ -17,7 +17,7 @@ export function buildNotificationMessage(
     return [
       `✅ *Evento Aprovado!*`,
       ``,
-      `Olá${sub.responsible_name ? `, ${sub.responsible_name}` : ""}! Seu evento foi aprovado no *AgendIlha*! 🎉`,
+      `Olá${sub.responsible_name ? `, ${sub.responsible_name}` : ""}! Seu evento foi aprovado no *Coé a Boa?*! 🎉`,
       ``,
       `📌 *${sub.event_title}*`,
       sub.date

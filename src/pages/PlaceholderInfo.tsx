@@ -70,12 +70,12 @@ export function TermosPage() {
   return (
     <InfoPage
       eyebrow="Termos"
-      title="Termos de Uso do AgendIlha"
-      intro="O AgendIlha (Coé a Boa?) é uma agenda cultural curada do Rio de Janeiro. Ao usar o app, você concorda com as regras abaixo."
+      title="Termos de Uso do Coé a Boa?"
+      intro="O Coé a Boa? é uma agenda cultural curada do Rio de Janeiro. Ao usar o app, você concorda com as regras abaixo."
       sections={[
         {
-          heading: "O que o AgendIlha faz",
-          body: "A gente reúne, revisa e divulga eventos do Rio de Janeiro. O AgendIlha cura a programação, mas não organiza, vende ingresso nem responde pela realização dos rolês publicados.",
+          heading: "O que o Coé a Boa? faz",
+          body: "A gente reúne, revisa e divulga eventos do Rio de Janeiro. O Coé a Boa? cura a programação, mas não organiza, vende ingresso nem responde pela realização dos rolês publicados.",
         },
         {
           heading: "Quem divulga é responsável pelas informações",
@@ -91,11 +91,11 @@ export function TermosPage() {
         },
         {
           heading: "Uso do conteúdo",
-          body: "Você pode compartilhar links e cards do AgendIlha livremente. Copiar a base de eventos em massa, raspar dados automaticamente ou republicar como se fosse seu não é permitido.",
+          body: "Você pode compartilhar links e cards do Coé a Boa? livremente. Copiar a base de eventos em massa, raspar dados automaticamente ou republicar como se fosse seu não é permitido.",
         },
         {
           heading: "Mudanças e contato",
-          body: "Se estes termos mudarem, avisamos no app. Dúvida ou pedido de remoção de conteúdo? Fala com a gente pelo WhatsApp que consta no rodapé do evento ou no perfil do AgendIlha.",
+          body: "Se estes termos mudarem, avisamos no app. Dúvida ou pedido de remoção de conteúdo? Fala com a gente pelo WhatsApp que consta no rodapé do evento ou no perfil do Coé a Boa?.",
         },
       ]}
     />
@@ -107,7 +107,7 @@ export function PrivacidadePage() {
     <InfoPage
       eyebrow="Privacidade"
       title="Política de Privacidade"
-      intro="Aqui você vê, sem enrolação, quais dados o AgendIlha coleta, por que coleta e o que você pode pedir a qualquer momento."
+      intro="Aqui você vê, sem enrolação, quais dados o Coé a Boa? coleta, por que coleta e o que você pode pedir a qualquer momento."
       sections={[
         {
           heading: "Dados que coletamos",
@@ -123,7 +123,7 @@ export function PrivacidadePage() {
         },
         {
           heading: "Quem tem acesso interno",
-          body: "Apenas a equipe de curadoria e administração do AgendIlha, e só no que é necessário pra revisar cadastros e eventos. Usamos serviços de nuvem para banco de dados, autenticação e armazenamento de imagens.",
+          body: "Apenas a equipe de curadoria e administração do Coé a Boa?, e só no que é necessário pra revisar cadastros e eventos. Usamos serviços de nuvem para banco de dados, autenticação e armazenamento de imagens.",
         },
         {
           heading: "Por quanto tempo guardamos",
@@ -131,7 +131,7 @@ export function PrivacidadePage() {
         },
         {
           heading: "Seus direitos",
-          body: "Você pode ver, corrigir ou apagar seus dados e pedir a exclusão da conta. Chama a gente pelo WhatsApp do AgendIlha e resolvemos.",
+          body: "Você pode ver, corrigir ou apagar seus dados e pedir a exclusão da conta. Chama a gente pelo WhatsApp do Coé a Boa? e resolvemos.",
         },
       ]}
     />

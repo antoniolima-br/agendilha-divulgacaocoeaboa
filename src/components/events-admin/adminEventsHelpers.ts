@@ -92,7 +92,7 @@ export function buildWhatsAppMessage(sub: AdminSubmission): string {
   if (sub.short_copy) return encodeURIComponent(sub.short_copy);
   const date = formatEventDate(sub.date);
   const url = sub.slug ? `${window.location.origin}/evento/${sub.slug}` : `${window.location.origin}/agenda`;
-  const msg = `🗓️ *${sub.event_title || "Evento"}*\n⏰ ${date} às ${sub.start_time || "--:--"}\n📍 ${sub.location || "Local não informado"}\n\n🌴 Veja mais no AgendIlha: ${url}`;
+  const msg = `🗓️ *${sub.event_title || "Evento"}*\n⏰ ${date} às ${sub.start_time || "--:--"}\n📍 ${sub.location || "Local não informado"}\n\n🌴 Veja mais no Coé a Boa?: ${url}`;
   return encodeURIComponent(msg);
 }
 
@@ -104,7 +104,7 @@ export function buildApprovalMessage(sub: AdminSubmission): string {
     : `${window.location.origin}/agenda`;
   return (
     `${greeting}\n\n` +
-    `✅ *Seu evento foi aprovado pela curadoria do AgendIlha!*\n\n` +
+    `✅ *Seu evento foi aprovado pela curadoria do Coé a Boa?!*\n\n` +
     `🎉 *${sub.event_title || "Evento"}*\n` +
     `📅 ${formatEventDate(sub.date)}${sub.start_time ? ` às ${sub.start_time}` : ""}\n` +
     (sub.location ? `📍 ${sub.location}\n` : "") +
@@ -121,7 +121,7 @@ export function buildRejectionMessage(sub: AdminSubmission, reason?: string | nu
     : "";
   return (
     `${greeting}\n\n` +
-    `Sobre o evento *${sub.event_title || "Evento"}* enviado ao AgendIlha:\n\n` +
+    `Sobre o evento *${sub.event_title || "Evento"}* enviado ao Coé a Boa?:\n\n` +
     `❌ Infelizmente ele *não foi aprovado* pela curadoria neste momento.${reasonLine}\n` +
     `Você pode revisar e reenviar a qualquer momento em:\n` +
     `${window.location.origin}/meus-eventos\n\n` +

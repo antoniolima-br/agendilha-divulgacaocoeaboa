@@ -59,7 +59,7 @@ export function PwaInstallNotice() {
           <div className="flex-1 min-w-0 pr-6">
             <h4 className="font-bold text-sm tracking-tight">Agenda na sua tela</h4>
             <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
-              Tenha o AgendIlha sempre à mão. Instale agora no seu celular.
+              Tenha o Coé a Boa? sempre à mão. Instale agora no seu celular.
             </p>
           </div>
           <button 

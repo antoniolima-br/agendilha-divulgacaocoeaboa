@@ -219,7 +219,7 @@ export default function ArtistSetup() {
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <div>
                       <h1 className="text-2xl font-black font-display text-primary uppercase tracking-tight">Hub do Artista</h1>
-                      <p className="text-sm text-muted-foreground font-medium">Gerencie sua identidade artística no AgendIlha.</p>
+                      <p className="text-sm text-muted-foreground font-medium">Gerencie sua identidade artística no Coé a Boa?</p>
                     </div>
                   </div>
                   

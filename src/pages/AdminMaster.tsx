@@ -63,7 +63,7 @@ export default function AdminMaster() {
     <div className="space-y-8 animate-fade-in pb-12">
       <SectionHeader 
         title="Dashboard Estratégico"
-        subtitle="Monitoramento em tempo real e inteligência analítica da plataforma AgendIlha."
+        subtitle="Monitoramento em tempo real e inteligência analítica da plataforma Coé a Boa?."
         rightElement={
           <div className="flex flex-wrap gap-2">
             <Link to="/master/logs">

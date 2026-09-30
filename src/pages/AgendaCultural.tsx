@@ -196,7 +196,7 @@ function AgendaCulturalInner() {
                   <section>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-3 w-3 rounded-full bg-orange-500 animate-pulse" />
-                      <h2 className="text-2xl font-bold font-display">Destaques AgendIlha</h2>
+                      <h2 className="text-2xl font-bold font-display">Destaques Coé a Boa?</h2>
                     </div>
                     <div className="space-y-6">
                       {Object.entries(

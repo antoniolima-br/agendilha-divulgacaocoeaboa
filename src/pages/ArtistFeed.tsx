@@ -95,7 +95,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
              </div>
            </div>
          )}
-         <p className="text-sm line-clamp-2 text-white/90">Descubra novos sons locais no AgendIlha! 🎸✨</p>
+         <p className="text-sm line-clamp-2 text-white/90">Descubra novos sons locais no Coé a Boa?! 🎸✨</p>
        </div>
  
        {/* Interaction Sidebar */}
@@ -220,7 +220,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
        onScroll={handleScroll}
      >
       <SeoHead
-        title="Atrativos da Ilha — vídeos de artistas | AgendIlha"
+        title="Atrativos da Ilha — vídeos de artistas | Coé a Boa?"
         description="Assista aos vídeos dos artistas e atrativos do Rio de Janeiro e descubra quem vai tocar nos próximos rolês da agenda."
         path="/artistas"
       />

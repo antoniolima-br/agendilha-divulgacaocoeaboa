@@ -117,7 +117,7 @@ export function PrintPreviewDialog({
               style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
             >
               <div className="-mx-8 -mt-8 bg-slate-900 text-white px-8 py-4">
-                <div className="text-lg font-bold">AgendIlha</div>
+                <div className="text-lg font-bold">Coé a Boa?</div>
                 <div className="text-[10px] opacity-80">{cover.subtitle || "Capa"}</div>
               </div>
               <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
@@ -145,7 +145,7 @@ export function PrintPreviewDialog({
             >
               {/* header (matches PDF drawHeader: slate-900 band) */}
               <div className="-mx-8 -mt-8 mb-6 bg-slate-900 text-white px-8 py-4">
-                <div className="text-lg font-bold">AgendIlha</div>
+                <div className="text-lg font-bold">Coé a Boa?</div>
                 <div className="text-[10px] opacity-80">
                   {sheet.subtitle || `Página ${idx + 1} de ${sheets.length}`}
                 </div>

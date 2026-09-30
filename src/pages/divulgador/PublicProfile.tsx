@@ -84,7 +84,7 @@ export default function PublicProfile() {
   return (
     <div className="min-h-screen bg-background">
       <SeoHead 
-        title={`${profile.responsible_name || profile.company_name || 'Divulgador'} — AgendIlha`}
+        title={`${profile.responsible_name || profile.company_name || 'Divulgador'} — Coé a Boa?`}
         description={`Veja todos os eventos publicados por ${profile.responsible_name || profile.company_name} no Rio de Janeiro.`}
         path={`/divulgador/${userId}`}
       />
@@ -106,7 +106,7 @@ export default function PublicProfile() {
           <div className="space-y-2 text-center md:text-left">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-                {profile.company_name || profile.responsible_name || "Divulgador AgendIlha"}
+                {profile.company_name || profile.responsible_name || "Divulgador Coé a Boa?"}
               </h1>
               {/* profile.is_trusted_divulgador check removed as column does not exist */}
 

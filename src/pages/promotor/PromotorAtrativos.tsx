@@ -88,7 +88,7 @@ export default function PromotorAtrativos() {
 
   const atrativoToSheet = (a: Atrativo, idx: number, total: number): PrintPreviewSheet => ({
     title: a.name,
-    subtitle: total > 1 ? `Ficha ${idx + 1} de ${total} — Atrativos AgendIlha` : "Ficha do atrativo",
+    subtitle: total > 1 ? `Ficha ${idx + 1} de ${total} — Atrativos Coé a Boa?` : "Ficha do atrativo",
     description: a.description,
     rows: [
       { label: "Tipo", value: a.tipo_atrativo || a.type || "—" },

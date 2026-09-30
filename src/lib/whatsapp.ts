@@ -144,7 +144,7 @@ export function buildTempPasswordMessage({
   const greeting = name ? `Olá, ${name}! 👋` : "Olá! 👋";
   const extra = customNote?.trim() ? `\n\n📝 ${customNote.trim()}` : "";
   return (
-    `🔐 *AgendIlha — Senha temporária*\n\n` +
+    `🔐 *Coé a Boa? — Senha temporária*\n\n` +
     `${greeting}\n\n` +
     `Sua nova senha de acesso é: *${tempPassword}*\n\n` +
     `👉 Acesse: ${loginUrl}\n` +

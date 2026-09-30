@@ -400,12 +400,12 @@ export function UserCard(props: UserCardProps) {
                 className="gap-2 text-primary border-primary/20 hover:bg-primary/5"
                 onClick={async () => {
                   const shareUrl = `${window.location.origin}/divulgador/${u.id}`;
-                  const shareText = `Confira o perfil de ${u.responsible_name || 'divulgador'} no AgendIlha: ${shareUrl}`;
+                  const shareText = `Confira o perfil de ${u.responsible_name || 'divulgador'} no Coé a Boa?: ${shareUrl}`;
                   
                   if (navigator.share) {
                     try {
                       await navigator.share({
-                        title: 'Perfil no AgendIlha',
+                        title: 'Perfil no Coé a Boa?',
                         text: shareText,
                         url: shareUrl,
                       });
@@ -432,7 +432,7 @@ export function UserCard(props: UserCardProps) {
                 className="gap-2 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                 onClick={() => {
                   const shareUrl = `${window.location.origin}/divulgador/${u.id}`;
-                  const shareText = encodeURIComponent(`Confira o perfil de ${u.responsible_name || 'divulgador'} no AgendIlha: ${shareUrl}`);
+                  const shareText = encodeURIComponent(`Confira o perfil de ${u.responsible_name || 'divulgador'} no Coé a Boa?: ${shareUrl}`);
                   window.open(`https://wa.me/?text=${shareText}`, '_blank');
                 }}
               >

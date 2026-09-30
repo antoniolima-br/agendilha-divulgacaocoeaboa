@@ -350,7 +350,7 @@ function ExplorarInner() {
 
       <section className="pt-24 sm:pt-32 pb-10 px-4 max-w-6xl mx-auto">
         <SeoHead
-          title={isArchive ? "Eventos anteriores — arquivo | AgendIlha" : "Buscar rolê na Ilha — agenda completa | AgendIlha"}
+          title={isArchive ? "Eventos anteriores — arquivo | Coé a Boa?" : "Buscar rolê na Ilha — agenda completa | Coé a Boa?"}
           description={isArchive ? "Relembre os eventos que já rolaram no Rio de Janeiro." : "Explore a agenda completa do Rio de Janeiro: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."}
           path="/explorar"
         />

@@ -91,7 +91,7 @@ export function InstallBanner() {
         <Download className="h-5 w-5" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold leading-tight">Instale o AgendIlha no celular</p>
+        <p className="text-sm font-semibold leading-tight">Instale o Coé a Boa? no celular</p>
         <p className="text-xs text-muted-foreground leading-snug">
           {iosHint
             ? "No Safari, toque em Compartilhar e depois em 'Adicionar à Tela de Início'."

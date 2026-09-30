@@ -27,12 +27,12 @@ export default function StatusDivulgador() {
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/divulgador/${user?.id}`;
-    const shareText = `Confira meu perfil no AgendIlha e acompanhe meus eventos: ${shareUrl}`;
+    const shareText = `Confira meu perfil no Coé a Boa? e acompanhe meus eventos: ${shareUrl}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Meu Perfil no AgendIlha',
+          title: 'Meu Perfil no Coé a Boa?',
           text: shareText,
           url: shareUrl,
         });
@@ -51,7 +51,7 @@ export default function StatusDivulgador() {
 
   const handleWhatsAppShare = () => {
     const shareUrl = `${window.location.origin}/divulgador/${user?.id}`;
-    const shareText = encodeURIComponent(`Confira meu perfil no AgendIlha e acompanhe meus eventos: ${shareUrl}`);
+    const shareText = encodeURIComponent(`Confira meu perfil no Coé a Boa? e acompanhe meus eventos: ${shareUrl}`);
     window.open(`https://wa.me/?text=${shareText}`, '_blank');
   };
 

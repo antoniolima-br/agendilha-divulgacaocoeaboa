@@ -1,5 +1,5 @@
 /**
- * Fonte única de verdade pra telefone/WhatsApp no AgendIlha.
+ * Fonte única de verdade pra telefone/WhatsApp no Coé a Boa?
  *
  * O WhatsApp é o identificador da conta: ele vira um e-mail sintético
  * (`55DDDNUMERO@phone.agendilha.app`). Se cadastro, login e recuperação

@@ -167,7 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (raw.includes("already registered") || raw.includes("already exists") || raw.includes("user_already")) {
         return {
           error: new Error(
-            "Esse WhatsApp já tem conta no AgendIlha. Entra pelo login ou usa “Esqueci minha senha”.",
+            "Esse WhatsApp já tem conta no Coé a Boa? Entra pelo login ou usa “Esqueci minha senha”.",
           ),
         };
       }

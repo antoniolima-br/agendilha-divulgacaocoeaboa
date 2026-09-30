@@ -41,7 +41,7 @@ export function AgendaHero({
       <div className="flex flex-col items-center gap-4 sm:gap-6">
         <div className="inline-flex items-center justify-center px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-2 shadow-sm">
           <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-primary">
-            AgendIlha
+            Coé a Boa?
           </span>
         </div>
         <h1 className="max-w-full break-words font-display text-2xl font-black leading-tight text-primary drop-shadow-sm sm:text-5xl sm:leading-[0.95] lg:text-7xl">

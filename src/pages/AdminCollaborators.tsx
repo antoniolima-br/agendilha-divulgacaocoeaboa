@@ -132,7 +132,7 @@ export default function AdminCollaborators() {
     <div className="space-y-8 max-w-5xl mx-auto">
       <SectionHeader 
         title="Colaboradores" 
-        subtitle="Gerencie os membros da equipe e suas permissões operacionais no AgendIlha."
+        subtitle="Gerencie os membros da equipe e suas permissões operacionais no Coé a Boa?"
         rightElement={
           <Button size="sm" onClick={openNewDialog} className="rounded-full px-6 font-bold shadow-sm">
             <Plus className="h-4 w-4 mr-1.5" />
