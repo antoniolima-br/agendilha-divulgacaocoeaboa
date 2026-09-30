@@ -46,6 +46,16 @@ import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 
+const HOME_CATEGORIES = [
+  { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
+  { key: "gastronomia", label: "Gastronomia", hint: "Buteco, restaurante e lanches", match: ["gastronomia"] },
+  { key: "musica", label: "Shows", hint: "Rock, samba, pagode e mais", match: ["musica", "música", "shows", "show"] },
+  { key: "cultura", label: "Cultura", hint: "Teatro, dança, circo e afins", match: ["cultura", "teatro"] },
+  { key: "esporte", label: "Esporte", hint: "Jogos, corridas e aulas", match: ["esporte"] },
+  { key: "promocoes", label: "Promoções", hint: "Ofertas da região", match: ["promocoes", "promoções"] },
+  { key: "outros", label: "Outros", hint: "Tudo o que não cabe acima", match: ["outros"] },
+];
+
 const sitelinks = [
   { href: "#oferecemos", label: "O que oferecemos" },
   { href: "#ecossistema", label: "Ecossistema" },
@@ -376,283 +386,116 @@ export default function Landing() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  const [homeBairro, setHomeBairro] = useState("all");
+  const [homeCat, setHomeCat] = useState("all");
+  const homeBairros = useMemo(() => [...new Set(allEvents.map((e: any) => String(e.address_neighborhood || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")), [allEvents]);
+  const homeFiltered = useMemo(() => allEvents.filter((e: any) => homeBairro === "all" || String(e.address_neighborhood || "").trim() === homeBairro), [allEvents, homeBairro]);
   return (
     <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
 
-       {/* ── Destaques full-width ── */}
+       {/* ── Faixa de dias ── */}
        <div style={{ paddingTop: headerH }}>
+         <div className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-2 sm:px-6">
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => setWeekStart((w) => { const prev = subWeeks(w, 1); return prev < todayStart ? todayStart : prev; })} disabled={weekStart <= todayStart}>
+             <ChevronLeft className="h-4 w-4" />
+           </Button>
+           <div className="grid flex-1 grid-cols-7 gap-0.5">
+             {weekDays.map((day) => {
+               const dayStr = format(day, "yyyy-MM-dd");
+               const isSel = format(customDate || new Date(), "yyyy-MM-dd") === dayStr;
+               return (
+                 <button key={dayStr} onClick={() => { setCustomDate(day); navigate(`/explorar?view=custom&date=${dayStr}`); }}
+                   className={cn("flex min-h-11 flex-col items-center justify-center rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
+                   <span className="text-[8px] font-bold uppercase leading-none tracking-wide sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
+                   <span className="mt-0.5 text-[11px] font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
+                 </button>
+               );
+             })}
+           </div>
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+             <ChevronRight className="h-4 w-4" />
+           </Button>
+         </div>
          <HomeMixedHeroCarousel
            events={homeFlyerEvents}
            onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
          />
        </div>
 
-       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-8">
-        {/* Featured Events */}
-        <section className="mb-12">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-start">
-              <h2 className="text-2xl font-bold font-display">Agenda</h2>
-            </div>
-            
-            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="shrink-0 rounded-full md:h-8 md:w-8" 
-                onClick={() => setWeekStart((w) => { const prev = subWeeks(w, 1); return prev < todayStart ? todayStart : prev; })}
-                disabled={weekStart <= todayStart}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              
-              <div className="flex gap-1">
-                {weekDays.map((day) => {
-                  const dayStr = format(day, "yyyy-MM-dd");
-                  const hasEvents = daysWithEvents.has(dayStr);
-                  const isSelected = format(customDate || new Date(), "yyyy-MM-dd") === dayStr;
-                  
-                  return (
-                    <button
-                      key={day.toString()}
-                      onClick={() => {
-                        setCustomDate(day);
-                        navigate(`/explorar?view=custom&date=${dayStr}`);
-                      }}
-                      className={cn(
-                        "relative flex h-14 min-w-11 flex-col items-center justify-center rounded-xl transition-all",
-                        isSelected 
-                          ? "bg-primary text-primary-foreground shadow-md scale-105 z-10" 
-                          : "bg-card/40 hover:bg-card/60 text-muted-foreground"
-                      )}
-                    >
-                      <span className="text-[10px] uppercase font-bold tracking-tighter opacity-70">
-                        {format(day, "EEE", { locale: ptBR })}
-                      </span>
-                      <span className="text-sm font-black">{format(day, "dd")}</span>
-                      {hasEvents && !isSelected && (
-                        <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-primary/40" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-5 sm:px-6 sm:pb-24 sm:pt-8">
+         {/* Filtros Local / Categoria */}
+         <div className="mb-8 space-y-2">
+           <Select value={homeBairro} onValueChange={setHomeBairro}>
+             <SelectTrigger aria-label="Filtrar por local" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
+               <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Local:</span><SelectValue /></span>
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">Todos os locais</SelectItem>
+               {homeBairros.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+             </SelectContent>
+           </Select>
+           <Select value={homeCat} onValueChange={setHomeCat}>
+             <SelectTrigger aria-label="Filtrar por categoria" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
+               <span className="flex min-w-0 items-center gap-2"><Sparkles className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Categoria:</span><SelectValue /></span>
+             </SelectTrigger>
+             <SelectContent>
+               <SelectItem value="all">Geral</SelectItem>
+               {HOME_CATEGORIES.map((c) => <SelectItem key={c.key} value={c.key}>{c.label}</SelectItem>)}
+             </SelectContent>
+           </Select>
+         </div>
 
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="shrink-0 rounded-full md:h-8 md:w-8" 
-                onClick={() => setWeekStart(addDays(weekStart, 7))}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+         {/* Seções por categoria */}
+         <div className="mb-10 space-y-8" aria-label="Categorias">
+           {HOME_CATEGORIES.filter((c) => homeCat === "all" || c.key === homeCat).map((c) => {
+             const evs = homeFiltered.filter((ev: any) => c.match.includes(String(ev?.category || "").toLowerCase().trim()));
+             return (
+               <section key={c.key}>
+                 <div className="mb-3 flex items-end justify-between gap-3 border-b border-primary/25 pb-1.5">
+                   <h2 className="min-w-0 font-display text-sm font-bold uppercase tracking-[0.12em] text-foreground">
+                     {c.label} <span className="font-medium normal-case tracking-normal text-muted-foreground">/ {c.hint}</span>
+                   </h2>
+                   {evs.length > 2 && (
+                     <Link to={`/agenda?categoria=${encodeURIComponent(c.match[0])}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3.5 w-3.5" /></Link>
+                   )}
+                 </div>
+                 {evs.length > 0 ? (
+                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
+                     {evs.slice(0, 4).map((ev: any) => (
+                       <button key={ev.id} type="button" onClick={() => navigate(`/agenda?event=${ev.id}`)} className="group min-w-0 text-left">
+                         <div className="aspect-[4/5] overflow-hidden rounded-xl bg-muted ring-1 ring-border transition group-hover:ring-primary/60">
+                           {ev.image_url ? (
+                             <img src={ev.image_url} alt={ev.event_title || "Evento"} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                           ) : (
+                             <div className="flex h-full items-center justify-center p-3 text-center font-display text-sm font-bold text-primary">{ev.event_title || "Evento"}</div>
+                           )}
+                         </div>
+                         <p className="mt-2 line-clamp-2 font-display text-sm font-extrabold uppercase leading-tight text-foreground">{ev.event_title || ev.location || "Evento"}</p>
+                         {ev.location && <p className="mt-0.5 truncate text-xs text-muted-foreground">{ev.location}{ev.address_neighborhood ? ` · ${ev.address_neighborhood}` : ""}</p>}
+                         <p className="mt-0.5 text-xs text-primary">{formatEventDateTimeBR(ev.date, ev.start_time)}</p>
+                       </button>
+                     ))}
+                   </div>
+                 ) : (
+                   <p className="rounded-xl border border-dashed border-border px-4 py-4 text-center text-xs text-muted-foreground">
+                     Nada por aqui ainda{homeBairro !== "all" ? " nesse local" : ""}. Tem um rolê assim? <Link to="/anuncios/novo" className="font-bold text-primary">Divulgue</Link>.
+                   </p>
+                 )}
+               </section>
+             );
+           })}
+         </div>
 
-            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-              {trendingEvents.map(ev => (
-                <DiscoveryEventCard 
-                  key={ev.id} 
-                  event={ev} 
-                  variant="compact"
-                  className="w-full h-auto"
-                  onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                  isFavorite={favorites.includes(ev.id)}
-                  onFavoriteToggle={() => toggleFavorite(ev.id)}
-                  onShare={() => {
-                    const data = getShareData(ev);
-                    setShareData({ ...data, eventId: ev.id });
-                  }}
-                />
-              ))}
-            </div>
-           {hasNextPage && (
-             <div ref={loadMoreRef} className="w-full py-10 flex justify-center">
-               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-             </div>
-           )}
-        </section>
-        {/* Today's Events */}
-        <section className="-mt-8 mb-12">
-           <div className="mb-4 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
-              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              Acontece hoje
-            </h2>
-              <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
-          </div>
-          {todayEvents.length > 0 ? (
-            <div className="relative">
-            {todayEvents.length > 1 && (
-              <div className="absolute -top-14 right-24 hidden gap-1 sm:flex">
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Anterior" onClick={() => todayRowRef.current?.scrollBy({ left: -(todayRowRef.current.clientWidth * 0.8), behavior: "smooth" })}><ChevronLeft className="h-4 w-4" /></Button>
-                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Próximo" onClick={() => todayRowRef.current?.scrollBy({ left: todayRowRef.current.clientWidth * 0.8, behavior: "smooth" })}><ChevronRight className="h-4 w-4" /></Button>
-              </div>
-            )}
-            <div ref={todayRowRef} className="flex snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth pb-4 overscroll-x-contain [-webkit-overflow-scrolling:touch] sm:gap-4" aria-label="Acontece hoje na Ilha">
-              {todayEvents.map(ev => (
-                <div key={ev.id} className="w-[calc((100%-1rem)/3)] min-w-0 shrink-0 snap-start sm:w-[calc((100%-2rem)/3)]">
-                <DiscoveryEventCard 
-                  key={ev.id} 
-                  event={ev} 
-                  variant="compact"
-                  className="w-full h-auto"
-                  onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                  isFavorite={favorites.includes(ev.id)}
-                  onFavoriteToggle={() => toggleFavorite(ev.id)}
-                  onShare={() => {
-                    const data = getShareData(ev);
-                    setShareData({ ...data, eventId: ev.id });
-                  }}
-                />
-                </div>
-              ))}
-            </div>
-            </div>
-          ) : (
-            <div className="bg-muted/30 rounded-3xl p-8 text-center border border-dashed border-primary/15">
-              <Calendar className="h-8 w-8 text-primary/30 mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm mb-4">Hoje a Ilha está em recesso. Veja o que rola nos próximos dias.</p>
-              <Button onClick={() => navigate("/explorar")} variant="outline" className="rounded-full font-bold">
-                Ver próximos dias
-              </Button>
-            </div>
-          )}
-        </section>
-
-         {/* Recommendations AI Sections */}
-
-         <section className="mb-12">
-           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
-             <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
-               <MapPin className="h-5 w-5 text-primary" />
-               {user ? "No seu radar" : "Sugestões para você"}
-             </h2>
-             <Link to="/agenda" className="flex min-h-11 shrink-0 items-center self-start font-bold text-primary xs:self-auto">Ver tudo <ChevronRight className="h-4 w-4"/></Link>
-           </div>
-           
-           {recommendedEvents.length > 0 ? (
-            <ul className="flex flex-col gap-3">
-              {recommendedEvents.map((ev: any) => {
-                const title = ev.event_title || ev.atrativo_style || ev.category || "Evento";
-                const iso = ev.date ? eventDateISO(ev.date) : null;
-                const dateLabel = iso
-                  ? new Intl.DateTimeFormat("pt-BR", { weekday: "short", day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`))
-                  : null;
-                const place = [ev.location, ev.address_neighborhood].filter(Boolean).join(" · ");
-                return (
-                  <li key={ev.id}>
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                      className="flex w-full items-stretch gap-3 rounded-2xl border border-border bg-card p-2.5 text-left transition-colors hover:border-primary/40 sm:gap-4 sm:p-3"
-                    >
-                      <img
-                        src={ev.image_url || "/placeholder.svg"}
-                        alt={title}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-24 w-20 shrink-0 rounded-xl object-cover sm:h-28 sm:w-24"
-                      />
-                      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-                        {ev.category && (
-                          <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">{ev.category}</span>
-                        )}
-                        <h3 className="line-clamp-2 font-display text-base font-bold leading-tight text-foreground">{title}</h3>
-                        <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                          {dateLabel && <span className="flex items-center gap-1 capitalize"><Calendar className="h-3.5 w-3.5 shrink-0" />{dateLabel}</span>}
-                          {ev.start_time && <span>{String(ev.start_time).slice(0, 5)}</span>}
-                        </p>
-                        {place && (
-                          <p className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{place}</span>
-                          </p>
-                        )}
-                      </div>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-           ) : (
-            <div className="bg-muted/30 rounded-3xl p-10 text-center border-2 border-dashed border-primary/10">
-              <Sparkles className="h-10 w-10 text-primary/20 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-foreground/80 mb-2">Ainda não temos sugestões personalizadas</h3>
-              <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
-                {!user 
-                  ? "Crie uma conta e selecione seus estilos favoritos para que nossa IA recomende os melhores eventos para você."
-                  : "Complete seu perfil com seus estilos musicais favoritos para receber recomendações exclusivas."}
-              </p>
-              {!user ? (
-                <Button onClick={() => navigate("/auth")} variant="outline" className="rounded-full font-bold">
-                  Criar minha conta
-                </Button>
-              ) : (
-                <Button onClick={() => setPersonalizationOpen(true)} variant="outline" className="rounded-full font-bold">
-                  Definir Preferências
-                </Button>
-              )}
-            </div>
-           )}
-         </section>
-
-          {(() => {
-            const labels: Record<string, string> = { musica: "Música", gastronomia: "Gastronomia", cultura: "Cultura", esporte: "Esporte", promocoes: "Promoções", turismo: "Turismo", outros: "Outros" };
-            const groups = new Map<string, any[]>();
-            allEvents.forEach((ev: any) => {
-              const c = String(ev?.category || "").trim();
-              if (!c) return;
-              if (!groups.has(c)) groups.set(c, []);
-              groups.get(c)!.push(ev);
-            });
-            const cats = [...groups.entries()].sort((a, b) => b[1].length - a[1].length);
-            if (cats.length === 0) return null;
-            return (
-              <section className="mb-12 space-y-8" aria-label="Categorias">
-                <h2 className="font-display text-xl font-bold sm:text-2xl">Categorias</h2>
-                {cats.map(([c, evs]) => (
-                  <div key={c}>
-                    <div className="mb-3 flex items-center justify-between gap-3 border-b border-border/60 pb-2">
-                      <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                        {labels[c] || c.charAt(0).toUpperCase() + c.slice(1)} <span className="text-muted-foreground">· {evs.length}</span>
-                      </h3>
-                      <Link to={`/agenda?categoria=${encodeURIComponent(c)}`} className="flex min-h-11 items-center text-sm font-bold text-primary">
-                        Ver tudo <ChevronRight className="h-4 w-4" />
-                      </Link>
-                    </div>
-                    <ul className="space-y-3">
-                      {evs.slice(0, 3).map((ev: any) => (
-                        <li key={ev.id}>
-                          <button
-                            type="button"
-                            onClick={() => navigate(`/agenda?event=${ev.id}`)}
-                            className="flex w-full items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-2.5 text-left transition-colors hover:border-primary/60"
-                          >
-                            {ev.image_url ? (
-                              <img src={ev.image_url} alt="" loading="lazy" className="h-20 w-16 shrink-0 rounded-xl object-cover" />
-                            ) : (
-                              <div className="h-20 w-16 shrink-0 rounded-xl bg-muted" aria-hidden />
-                            )}
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate font-semibold">{ev.event_title || ev.location || "Evento"}</p>
-                              <p className="mt-1 text-xs text-muted-foreground">{formatEventDateTimeBR(ev.date, ev.start_time)}</p>
-                              {ev.location && <p className="mt-0.5 truncate text-xs text-muted-foreground">{ev.location}</p>}
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </section>
-            );
-          })()}
+         {/* Publicidade geral */}
+         <div className="mb-10">
+           <HomeAdsCarousel variant="banner" />
+         </div>
 
           <section className="mb-16 border-t border-border/60 pt-10">
             <div className="flex items-end justify-between gap-4 mb-5">
               <div>
-                <h2 className="text-2xl font-bold font-display">Outras programações</h2>
+                <h2 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">Veja mais eventos pra hoje</h2>
               </div>
               <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
                 Ver tudo <ChevronRight className="h-4 w-4" />
@@ -794,8 +637,6 @@ export default function Landing() {
           </Button>
         </section>
         )}
-
-        <HomeAdsCarousel variant="banner" />
 
       </section>
 
