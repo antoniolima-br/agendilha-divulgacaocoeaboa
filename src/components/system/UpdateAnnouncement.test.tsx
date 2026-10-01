@@ -47,7 +47,7 @@ describe("UpdateAnnouncement", () => {
     const current = UPDATES.find((u) => u.version === APP_VERSION) ?? UPDATES[0];
 
     // Título começa com o prefixo padronizado e é curto
-    expect(current.title).toMatch(/^(Novidade no AgendIlha:|Novo jeito de)/);
+    expect(current.title).toMatch(/^(Novidade no Coé a Boa\?:|Novo jeito de)/);
     expect(current.title.length).toBeLessThanOrEqual(60);
     expect(current.title.endsWith(".")).toBe(false);
 
