@@ -55,7 +55,7 @@ export function InstallBanner() {
       const t = setTimeout(() => {
         setIosHint(true);
         setVisible(true);
-      }, 4000);
+      }, 1500);
       return () => {
         window.removeEventListener("beforeinstallprompt", onBIP);
         clearTimeout(t);
@@ -86,7 +86,7 @@ export function InstallBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-3 inset-x-3 z-[60] mx-auto max-w-md rounded-2xl border border-border bg-card/95 backdrop-blur-md shadow-lg p-3 flex items-center gap-3 animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-4 inset-x-3 z-[60] mx-auto max-w-md rounded-2xl border border-border bg-card/95 backdrop-blur-md shadow-lg p-3 flex items-center gap-3 animate-in slide-in-from-bottom-4">
       <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
         <Download className="h-5 w-5" />
       </div>
