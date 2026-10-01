@@ -82,7 +82,7 @@ export function SidebarMenu({ onClose }: Props) {
             </div>
             <div className="flex flex-col leading-tight">
               <span className="font-display text-xl font-black text-primary tracking-tighter">Coé a Boa?</span>
-              <span className="text-[10px] text-secondary font-black uppercase tracking-widest opacity-90">Coé a Boa?</span>
+              <span className="text-[10px] text-secondary font-black uppercase tracking-widest opacity-90">Rio de Janeiro</span>
             </div>
           </div>
           <Separator className="bg-sidebar-border/50" />

@@ -82,7 +82,7 @@ describe("SidebarMenu", () => {
     } as any);
 
     renderSidebar();
-    expect(screen.getByText("AgendIlha")).toBeDefined();
+    expect(screen.getByText("Coé a Boa?")).toBeDefined();
     expect(screen.getByText("Test User")).toBeDefined();
     expect(screen.getByText("Usuário")).toBeDefined();
     
