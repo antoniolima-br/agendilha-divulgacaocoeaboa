@@ -57,7 +57,7 @@ export default function AdminRolandoAgora() {
     const { error } = await supabase.from("app_settings").update({ value: JSON.stringify(next) }).eq("key", "live_overrides");
     if (error) return toast.error("Não rolou salvar. Tenta de novo.");
     setOverrides(next);
-    toast.success("Salvo! O Guia do Koé já sabe.");
+    toast.success("Salvo! O Guia do Coé já sabe.");
   };
 
   if (loading) return <LoadingState />;
