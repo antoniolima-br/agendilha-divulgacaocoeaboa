@@ -57,14 +57,14 @@ export function CoezinhoChat() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Falar com o Guia do Koé"
+          aria-label="Falar com o Guia do Coé"
           className={cn(
             "fixed bottom-6 right-4 z-50 items-center gap-2 rounded-full bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-lg transition hover:scale-105",
             inTabBar ? "hidden md:flex" : "flex",
           )}
         >
           <MessageCircle className="h-5 w-5" />
-          <span className="text-sm">Guia do Koé</span>
+          <span className="text-sm">Guia do Coé</span>
         </button>
       )}
 
@@ -74,7 +74,7 @@ export function CoezinhoChat() {
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-lg">🌴</div>
               <div>
-                <p className="font-bold leading-tight">Guia do Koé</p>
+                <p className="font-bold leading-tight">Guia do Coé</p>
                 <p className="text-xs opacity-80">Teu parceiro de rolê</p>
               </div>
             </div>

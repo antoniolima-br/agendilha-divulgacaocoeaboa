@@ -61,11 +61,11 @@ export function MobileTabBar({ onMenuClick }: Props) {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event(OPEN_KOE_EVENT))}
-            aria-label="Falar com o Guia do Koé"
+            aria-label="Falar com o Guia do Coé"
             className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-primary-foreground shadow-md transition active:scale-95"
           >
             <MessageCircle className="h-4 w-4 shrink-0" />
-            <span className="whitespace-nowrap text-[11px] font-bold leading-none">Guia do Koé</span>
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none">Guia do Coé</span>
           </button>
         </li>
         <li className="min-w-0">
