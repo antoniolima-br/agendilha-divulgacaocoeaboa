@@ -654,9 +654,9 @@ export default function Landing() {
           <div className="bg-secondary/10 rounded-[2.5rem] p-8 sm:p-12 overflow-hidden relative">
             <div className="absolute -right-20 -top-20 h-64 w-64 bg-secondary/20 rounded-full blur-3xl" />
             <div className="relative z-10 max-w-2xl">
-               <h2 className="mb-4 font-display text-2xl font-black sm:text-3xl">Receba o rolê da Ilha no WhatsApp 🎸</h2>
+               <h2 className="mb-4 font-display text-2xl font-black sm:text-3xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
               <p className="text-muted-foreground mb-8 text-lg">
-                Toda semana, uma curadoria com o que está rolando do Galeão à Ribeira — direto no seu Zap.
+                Toda semana, uma curadoria imperdível com o que está rolando de norte a sul — direto no seu Zap.
               </p>
               <form onSubmit={handleNewsletterSubscribe} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
