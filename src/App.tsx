@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "rea
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { CoezinhoChat } from "@/components/coezinho/CoezinhoChat";
+import { InstallBanner } from "@/components/system/InstallBanner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SubmissionProvider } from "@/contexts/SubmissionContext";
@@ -303,6 +304,7 @@ const App = () => (
           <AuthProvider>
             <AppRoutes />
             <CoezinhoChat />
+            <InstallBanner />
           </AuthProvider>
         </BrowserRouter>
       </AppErrorBoundary>
