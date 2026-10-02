@@ -97,6 +97,20 @@
     line-height: 1.55;
   }
 
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground) / 0.5);
+    opacity: 1;
+  }
+
+  input[data-mask-empty="true"] {
+    color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  input[data-mask-empty="true"]::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 600;
