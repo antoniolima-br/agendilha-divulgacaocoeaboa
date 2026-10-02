@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Validar a agenda do atrativo e garantir intervalo mínimo de 2 horas entre apresentações no mesmo dia.
+- [x] Validar a agenda do atrativo e garantir intervalo mínimo de 2 horas entre apresentações no mesmo dia.
 
 - [x] Tornar telefone opcional nos cadastros de atrativos, artistas e estabelecimentos, mantendo validação quando preenchido.
 - [x] Confirmar que o banco aceita telefones vazios nesses cadastros.
