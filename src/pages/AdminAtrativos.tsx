@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -19,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Plus, Search, Loader2, Pencil, Trash2, Check, X, ShieldCheck, ChevronDown, ChevronUp, MessageSquare, Share2 } from "lucide-react";
+import { Sparkles, Plus, Search, Loader2, Pencil, Trash2, Check, X, ShieldCheck, ChevronDown, ChevronUp, MessageSquare, Share2, Clock3 } from "lucide-react";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -54,6 +55,7 @@ export default function AdminAtrativos() {
     name: "", 
     type: "", 
     description: "", 
+    opening_hours: "",
     contact_info: "", 
     category_other: "" 
   });
@@ -79,6 +81,7 @@ export default function AdminAtrativos() {
           name: newForm.name.trim(),
           type: newForm.type.trim(),
           description: newForm.description.trim() || null,
+          opening_hours: newForm.opening_hours.trim() || null,
           contact_info: newForm.contact_info?.trim() || null,
           category_other: newForm.category_other?.trim() || null,
           responsavel_id: user.id,
@@ -87,7 +90,7 @@ export default function AdminAtrativos() {
       });
       toast.success("Atrativo cadastrado");
       setShowNew(false);
-      setNewForm({ name: "", type: "", description: "", contact_info: "", category_other: "" });
+      setNewForm({ name: "", type: "", description: "", opening_hours: "", contact_info: "", category_other: "" });
     } catch (err) {
       handleError(err, "Erro ao cadastrar atrativo");
     }
@@ -99,6 +102,7 @@ export default function AdminAtrativos() {
       name: row.name, 
       type: row.type, 
       description: row.description,
+      opening_hours: row.opening_hours,
       contact_info: row.contact_info,
       category_other: row.category_other
     });
@@ -110,6 +114,7 @@ export default function AdminAtrativos() {
         name: (editForm.name ?? "").toString().trim(),
         type: editForm.type?.toString().trim() || null,
         description: editForm.description?.toString().trim() || null,
+        opening_hours: editForm.opening_hours?.toString().trim() || null,
         contact_info: editForm.contact_info?.toString().trim() || null,
         category_other: editForm.category_other?.toString().trim() || null,
       } });
@@ -151,7 +156,7 @@ export default function AdminAtrativos() {
     <PageContainer maxWidth="5xl">
       <SectionHeader
         title="Gerenciar Atrativos"
-        subtitle="Consulte, aprove e edite os atrativos cadastrados na agenda."
+        subtitle="Cadastre e mantenha os atrativos usados no formulário de eventos."
         rightElement={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full border border-border">
@@ -205,8 +210,14 @@ export default function AdminAtrativos() {
               {newForm.type === "Outros" && (
                 <Input placeholder="Especifique..." value={newForm.category_other || ""} onChange={(e) => setNewForm({ ...newForm, category_other: e.target.value })} className="h-10 mt-2" />
               )}
+              <Field
+                label="Horário de funcionamento"
+                value={newForm.opening_hours}
+                onChange={(v) => setNewForm({ ...newForm, opening_hours: v })}
+                placeholder="Ex.: Ter–Dom, 10h–22h"
+              />
               <div className="sm:col-span-2">
-                <Field label="Descrição" value={newForm.description} onChange={(v) => setNewForm({ ...newForm, description: v })} />
+                <TextAreaField label="Descrição" value={newForm.description} onChange={(v) => setNewForm({ ...newForm, description: v })} />
               </div>
             </div>
             <div className="flex gap-2">
@@ -255,6 +266,9 @@ export default function AdminAtrativos() {
                       <p className="text-xs text-muted-foreground">
                         {[a.type, a.tipo_atrativo].filter(Boolean).join(" · ") || "sem categoria"}
                       </p>
+                      {a.opening_hours && !isExpanded && (
+                        <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><Clock3 className="h-3.5 w-3.5 text-primary" />{a.opening_hours}</p>
+                      )}
                       {a.description && !isExpanded && (
                         <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{a.description}</p>
                       )}
@@ -282,6 +296,7 @@ export default function AdminAtrativos() {
                       {isEditing ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <Field label="Nome*" value={String(editForm.name ?? "")} onChange={(v) => setEditForm({ ...editForm, name: v })} />
+                          <Field label="Horário de funcionamento" value={String(editForm.opening_hours ?? "")} onChange={(v) => setEditForm({ ...editForm, opening_hours: v })} placeholder="Ex.: Ter–Dom, 10h–22h" />
                            <Field label="Contato (opcional)" value={String(editForm.contact_info ?? "")} onChange={(v) => setEditForm({ ...editForm, contact_info: v })} />
                           <div className="sm:col-span-2">
                             <Label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Categoria*</Label>
@@ -309,7 +324,7 @@ export default function AdminAtrativos() {
                             )}
                           </div>
                           <div className="sm:col-span-2">
-                            <Field label="Descrição" value={String(editForm.description ?? "")} onChange={(v) => setEditForm({ ...editForm, description: v })} />
+                            <TextAreaField label="Descrição" value={String(editForm.description ?? "")} onChange={(v) => setEditForm({ ...editForm, description: v })} />
                           </div>
                           <div className="grid grid-cols-2 gap-2 pt-2 sm:flex">
                             <Button size="sm" className="w-full sm:w-auto" onClick={() => saveEdit(a.id)} disabled={upsert.isPending}>
@@ -322,6 +337,9 @@ export default function AdminAtrativos() {
                         </div>
                       ) : (
                         <>
+                          {a.opening_hours && (
+                            <p className="flex items-start gap-2 text-sm text-muted-foreground"><Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span><strong className="text-foreground">Funcionamento:</strong> {a.opening_hours}</span></p>
+                          )}
                           {a.description && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{a.description}</p>}
                           
                           <div className="flex flex-col gap-4 w-full pt-3 border-t border-border">
@@ -444,6 +462,17 @@ function Field({
     <div className="space-y-1">
       <Label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">{label}</Label>
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-10" />
+    </div>
+  );
+}
+
+function TextAreaField({
+  label, value, onChange,
+}: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="space-y-1">
+      <Label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">{label}</Label>
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} />
     </div>
   );
 }
