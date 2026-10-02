@@ -246,7 +246,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full ring-2 ring-primary/5 shadow-sm" />
                 <div className="flex flex-col leading-[1]">
                   <span className="font-display text-lg sm:text-xl font-black text-primary tracking-tight">Coé a Boa?</span>
-                  <span className="text-[9px] sm:text-[10px] text-secondary font-black uppercase tracking-[0.15em]">Coé a Boa?</span>
                 </div>
               </Link>
             </div>
@@ -297,7 +296,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full shadow-sm" />
                 <div className="flex flex-col leading-none min-w-0">
                   <span className="font-display text-base sm:text-lg font-black text-primary tracking-tight truncate">Coé a Boa?</span>
-                  <span className="text-[8px] sm:text-[9px] text-secondary font-black uppercase tracking-widest opacity-80">Coé a Boa?</span>
                 </div>
               </Link>
 
