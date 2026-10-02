@@ -159,6 +159,44 @@ export function buildWhatsappUrl(phone: string, message: string): string | null 
   return `https://wa.me/${v.e164}?text=${encodeURIComponent(message)}`;
 }
 
+export interface EventSubmissionConfirmationInput {
+  responsibleName?: string | null;
+  eventTitle?: string | null;
+  date?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  location?: string | null;
+}
+
+export function buildEventSubmissionConfirmation({
+  responsibleName,
+  eventTitle,
+  date,
+  startTime,
+  endTime,
+  location,
+}: EventSubmissionConfirmationInput): string {
+  const firstName = responsibleName?.trim().split(/\s+/)[0];
+  const greeting = firstName ? `Coé, ${firstName}!` : "Coé!";
+  const dateLabel = date
+    ? new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" })
+      .format(new Date(`${date.slice(0, 10)}T12:00:00Z`))
+    : "Data a confirmar";
+  const timeLabel = startTime
+    ? `${startTime.slice(0, 5)}${endTime ? ` às ${endTime.slice(0, 5)}` : ""}`
+    : "Horário a confirmar";
+  return [
+    `${greeting} Seu evento foi enviado para a curadoria do Coé a Boa? ✅`,
+    "",
+    `🎫 *${eventTitle?.trim() || "Evento"}*`,
+    `🗓️ ${dateLabel}`,
+    `🕒 ${timeLabel}`,
+    `📍 ${location?.trim() || "Local a confirmar"}`,
+    "",
+    "Confirmo que essas informações estão corretas.",
+  ].join("\n");
+}
+
 /** Substitui {{var}} no template. Variáveis ausentes viram string vazia. */
 export function renderTemplate(body: string, vars: Record<string, string | null | undefined>): string {
   return body.replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {

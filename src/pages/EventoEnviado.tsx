@@ -29,6 +29,7 @@ import {
   formatDuration,
 } from "@/data/useHighlightPackages";
 import { DestaqueModal } from "@/components/destaque/DestaqueModal";
+import { buildEventSubmissionConfirmation, buildWhatsappUrl } from "@/lib/whatsapp";
 
 interface Submission {
   id: string;
@@ -36,10 +37,14 @@ interface Submission {
   event_title: string | null;
   date: string | null;
   start_time?: string | null;
+  end_time?: string | null;
   location?: string | null;
   atrativo_name?: string | null;
   image_url?: string | null;
   status: string;
+  responsible_name?: string | null;
+  responsavel_duvidas_whatsapp?: string | null;
+  phone?: string | null;
 }
 
 const ETAPAS = ["Enviado", "Em análise", "Publicado"];
@@ -60,7 +65,7 @@ export default function EventoEnviado() {
   const validId = !!id && /^[0-9a-f-]{10,}$/i.test(id);
   const { data: sub, isLoading: loading } = useSubmission<Submission>(
     validId ? id! : "",
-    "id, slug, event_title, date, start_time, location, atrativo_name, image_url, status"
+    "id, slug, event_title, date, start_time, end_time, location, atrativo_name, image_url, status, responsible_name, responsavel_duvidas_whatsapp, phone"
   );
   const { data: pacotes = [] } = useHighlightPackages();
   const [destaqueAberto, setDestaqueAberto] = useState(false);
@@ -84,6 +89,19 @@ export default function EventoEnviado() {
   const nomeEvento = sub?.event_title || "Seu evento";
   const dataFormatada = formatDateBR(sub?.date);
   const etapaAtual = sub?.status === "aprovado" ? 2 : 1;
+  const confirmationUrl = sub
+    ? buildWhatsappUrl(
+        sub.responsavel_duvidas_whatsapp || sub.phone || "",
+        buildEventSubmissionConfirmation({
+          responsibleName: sub.responsible_name,
+          eventTitle: sub.event_title,
+          date: sub.date,
+          startTime: sub.start_time,
+          endTime: sub.end_time,
+          location: sub.location,
+        }),
+      )
+    : null;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 flex flex-col font-[family-name:var(--font-body)]">
@@ -120,7 +138,7 @@ export default function EventoEnviado() {
             Evento enviado para curadoria
           </h1>
           <p className="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
-            Recebemos tudo certinho. Avisaremos você no WhatsApp assim que houver decisão.
+            Recebemos tudo certinho. Confirme os dados no seu WhatsApp e acompanhe a análise.
           </p>
         </div>
 
@@ -261,6 +279,18 @@ export default function EventoEnviado() {
             </ol>
           </div>
         </section>
+
+        {confirmationUrl && (
+          <section className="rounded-2xl border border-amber-400/40 bg-amber-400/10 p-5 sm:p-6">
+            <h2 className="text-lg font-bold text-slate-50">Confirme o envio no WhatsApp</h2>
+            <p className="mt-1 text-sm text-slate-300">A mensagem já vai pronta com nome, data, horário e local do evento.</p>
+            <Button asChild className="mt-4 min-h-12 w-full rounded-full bg-amber-400 font-bold text-slate-950 hover:bg-amber-300 sm:w-auto">
+              <a href={confirmationUrl} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="mr-2 h-4 w-4" /> Enviar confirmação
+              </a>
+            </Button>
+          </section>
+        )}
 
         {/* Destaque premium — valores e prazos definidos pelos administradores */}
         <section className="space-y-5">
