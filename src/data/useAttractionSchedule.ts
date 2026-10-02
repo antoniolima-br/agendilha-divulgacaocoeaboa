@@ -27,8 +27,8 @@ export async function checkAttractionSchedule(input: AttractionScheduleInput) {
   if (!attractionName || !date || !startTime) return [];
 
   const { data, error } = await supabase.rpc("check_attraction_schedule", {
-    p_atrativo_id: (input.attractionType === "atrativo" ? input.attractionId : null) as string,
-    p_artist_id: (input.attractionType === "artist" ? input.attractionId : null) as string,
+    p_atrativo_id: (input.attractionType === "atrativo" ? input.attractionId : null) as unknown as string,
+    p_artist_id: (input.attractionType === "artist" ? input.attractionId : null) as unknown as string,
     p_atrativo_name: attractionName,
     p_date: date,
     p_start_time: startTime,
