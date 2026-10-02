@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
+import { formatEventDateTimeBR, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 
 type PublicEvent = {
@@ -32,14 +32,14 @@ function eventContactUrl(event: PublicEvent) {
 
 export default function EventosPublicos() {
   const [search, setSearch] = useState("");
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading, isError } = useQuery({
     queryKey: ["public-events-contact-list"],
     queryFn: async (): Promise<PublicEvent[]> => {
       const { data, error } = await supabase
         .from("public_submissions")
         .select("id, slug, event_title, date, start_time, end_time, location, address_neighborhood, duvidas_phone")
         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .gte("date", saoPauloTodayISO())
+        .or("moderation_status.is.null,moderation_status.neq.blocked")
         .order("date", { ascending: true })
         .order("start_time", { ascending: true })
         .limit(500);
@@ -82,6 +82,14 @@ export default function EventosPublicos() {
 
       {isLoading ? (
         <LoadingState message="Buscando os eventos publicados…" />
+      ) : isError ? (
+        <EmptyState
+          icon={CalendarDays}
+          title="A agenda não carregou agora"
+          description="Tente novamente em instantes. Seus eventos continuam seguros."
+          actionLabel="Tentar novamente"
+          onAction={() => window.location.reload()}
+        />
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={CalendarDays}
