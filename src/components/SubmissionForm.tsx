@@ -1,4 +1,5 @@
 import { validateIntlPhone, toE164 } from "@/lib/intlPhone";
+import { FinalReviewStep, missingFinalFields } from "./submission-form/steps/FinalReviewStep";
 import { useState, useEffect, useRef } from "react";
 import { handleError } from "@/lib/error-handler";
 import { logger } from "@/lib/logger";
@@ -323,6 +324,7 @@ export default function SubmissionForm() {
   const steps = [
     { id: 1, title: "Informações do evento" },
     { id: 2, title: "Termos e contato" },
+    { id: 3, title: "Revisão" },
   ];
 
   useEffect(() => {
@@ -844,6 +846,13 @@ export default function SubmissionForm() {
                 <LegalStep form={form} />
               </div>
 
+
+            </div>
+          )}
+
+          {currentStep === 3 && (
+            <div className="space-y-6">
+              <FinalReviewStep form={form} goToStep={(st) => { setCurrentStep(st); window.scrollTo(0, 0); }} />
               <DestaquePremiumSection
                 submitting={submitting}
                 eventTitle={form.watch("eventTitle")}
@@ -869,7 +878,7 @@ export default function SubmissionForm() {
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={submitting} className="gap-2 h-12 px-6 gradient-sunset font-bold">
+              <Button type="submit" disabled={submitting || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 Publicar evento
               </Button>
