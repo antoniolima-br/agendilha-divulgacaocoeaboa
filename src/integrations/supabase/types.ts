@@ -2774,6 +2774,23 @@ export type Database = {
         }[]
       }
       can_create_events: { Args: { _user_id: string }; Returns: boolean }
+      check_attraction_schedule: {
+        Args: {
+          p_artist_id: string
+          p_atrativo_id: string
+          p_atrativo_name: string
+          p_date: string
+          p_end_time?: string
+          p_exclude_submission_id?: string
+          p_start_time: string
+        }
+        Returns: {
+          assessment: string
+          event_end: string
+          event_id: string
+          event_start: string
+        }[]
+      }
       cleanup_admin_pin_sessions: { Args: never; Returns: undefined }
       cleanup_expired_reset_codes: { Args: never; Returns: undefined }
       contains_bad_words: { Args: { text_to_check: string }; Returns: boolean }
@@ -2843,6 +2860,10 @@ export type Database = {
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }
+      normalize_schedule_attraction_name: {
+        Args: { input_name: string }
+        Returns: string
+      }
       owns_artist_media_path: { Args: { _name: string }; Returns: boolean }
       process_expired_highlights: {
         Args: never

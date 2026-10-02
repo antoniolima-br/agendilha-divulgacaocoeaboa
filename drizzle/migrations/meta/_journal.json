@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790954914423,
+      "tag": "0000_enforce_attraction_two_hour_schedule_gap",
+      "breakpoints": true
+    }
+  ]
+}

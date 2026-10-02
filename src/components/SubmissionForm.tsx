@@ -31,6 +31,8 @@ import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
 import { emitEntityCreated } from "@/lib/entityEvents";
 import { usePromotorProfile, useUpsertPromotorProfile } from "@/data/usePromotorProfile";
 import { measureFlowOperation, startFlowMeasure } from "@/lib/flow-performance";
+import { checkAttractionSchedule, useAttractionSchedule } from "@/data/useAttractionSchedule";
+import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNotice";
 
 const formSchema = z.object({
   imageSource: z.enum(["upload", "ai"]).optional(),
@@ -210,6 +212,21 @@ export default function SubmissionForm() {
     mode: "onChange",
   });
 
+  const watchedAttractionId = form.watch("atrativoSourceId");
+  const watchedAttractionType = form.watch("atrativoSourceType");
+  const watchedAttractionName = form.watch("atrativoName");
+  const watchedDate = form.watch("date");
+  const watchedStartTime = form.watch("startTime");
+  const watchedEndTime = form.watch("endTime");
+  const attractionSchedule = useAttractionSchedule({
+    attractionId: watchedAttractionId,
+    attractionType: watchedAttractionType,
+    attractionName: watchedAttractionName,
+    date: watchedDate,
+    startTime: watchedStartTime,
+    endTime: watchedEndTime,
+  });
+
   // Load profile data into form when ready + limpa rascunho stale de contato.
   useEffect(() => {
     if (loaded && profile) {
@@ -380,6 +397,18 @@ export default function SubmissionForm() {
       validationTimer.finish({ outcome: "failure", fieldCount: fields.length, error });
       throw error;
     }
+    if (isValid && currentStep === 1) {
+      if (attractionSchedule.loading) {
+        toast.info("Só um instante", { description: "Estamos conferindo a agenda do atrativo." });
+        return;
+      }
+      if (attractionSchedule.hasConflict) {
+        toast.error("Horário indisponível para este atrativo", {
+          description: "Ajuste os horários para manter pelo menos 2 horas entre as apresentações.",
+        });
+        return;
+      }
+    }
     if (isValid) {
       setCurrentStep((prev) => Math.min(prev + 1, steps.length));
       window.scrollTo(0, 0);
@@ -418,6 +447,24 @@ export default function SubmissionForm() {
     setSubmitting(true);
     const submissionTimer = startFlowMeasure("event-submission", "complete-submission", currentStep);
     try {
+      const latestSchedule = await checkAttractionSchedule({
+        attractionId: values.atrativoSourceId,
+        attractionType: values.atrativoSourceType,
+        attractionName: values.atrativoName,
+        date: values.date,
+        startTime: values.startTime,
+        endTime: values.endTime,
+      });
+      if (latestSchedule.some((entry) => entry.assessment === "conflict")) {
+        toast.error("Horário indisponível para este atrativo", {
+          description: "Outro evento foi cadastrado nesse intervalo. Ajuste os horários para manter pelo menos 2 horas livres.",
+        });
+        setCurrentStep(1);
+        window.scrollTo(0, 0);
+        submissionTimer.finish({ outcome: "blocked" });
+        return;
+      }
+
       const clean = (v?: string | null) => {
         if (v == null) return null;
         const s = String(v).trim();
@@ -556,6 +603,13 @@ export default function SubmissionForm() {
         fotos: values.fotos || [],
         status: 'pendente',
       };
+
+      if (values.atrativoSourceId && values.atrativoSourceType === "atrativo") {
+        payload.atrativo_id = values.atrativoSourceId;
+      }
+      if (values.atrativoSourceId && values.atrativoSourceType === "artist") {
+        payload.artist_id = values.atrativoSourceId;
+      }
 
       // Vincula Local/Estabelecimento existente (se o usuário selecionou pelo autocomplete).
       const selectedEstabId = values.estabelecimentoId || null;
@@ -775,6 +829,13 @@ export default function SubmissionForm() {
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
                 <AtrativoStep form={form} />
+                <div className="mt-4">
+                  <AttractionScheduleNotice
+                    entries={attractionSchedule.entries}
+                    loading={attractionSchedule.loading}
+                    failed={attractionSchedule.failed}
+                  />
+                </div>
               </div>
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
@@ -853,6 +914,11 @@ export default function SubmissionForm() {
           {currentStep === 3 && (
             <div className="space-y-6">
               <FinalReviewStep form={form} goToStep={(st) => { setCurrentStep(st); window.scrollTo(0, 0); }} />
+              <AttractionScheduleNotice
+                entries={attractionSchedule.entries}
+                loading={attractionSchedule.loading}
+                failed={attractionSchedule.failed}
+              />
               <DestaquePremiumSection
                 submitting={submitting}
                 eventTitle={form.watch("eventTitle")}
@@ -878,7 +944,7 @@ export default function SubmissionForm() {
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={submitting || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
+              <Button type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 Publicar evento
               </Button>
