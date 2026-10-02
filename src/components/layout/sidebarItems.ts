@@ -224,6 +224,13 @@ export const sidebarConfig: SidebarSection[] = [
             exact: true
           },
           {
+            id: "published_events",
+            label: "Eventos Publicados",
+            path: ROUTES.ADMIN_PUBLISHED_EVENTS,
+            icon: CalendarDays,
+            roles: ["admin", "master"]
+          },
+          {
             id: "flyer_moderator",
             label: "Moderador de Flyers",
             path: ROUTES.ADMIN_MEDIA,
