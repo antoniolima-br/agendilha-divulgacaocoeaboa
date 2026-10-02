@@ -94,6 +94,6 @@
 ## Concluído
 - [x] Invalidar o módulo antigo que causava erros `explode` e validar a página inicial atual no navegador.
 
-- [ ] Criar gestão administrativa de eventos publicados com início, término, edição e exclusão.
-- [ ] Ampliar a gestão de atrativos com cadastro, edição, exclusão, descrição e horário de funcionamento.
-- [ ] Disponibilizar os dados atualizados dos atrativos no formulário de eventos.
+- [x] Criar gestão administrativa de eventos publicados com início, término, edição e exclusão.
+- [x] Ampliar a gestão de atrativos com cadastro, edição, exclusão, descrição e horário de funcionamento.
+- [x] Disponibilizar os dados atualizados dos atrativos no formulário de eventos.

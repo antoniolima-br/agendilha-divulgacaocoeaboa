@@ -106,6 +106,7 @@ const formSchema = z.object({
   atrativoType: z.string().trim().optional(),
   atrativoStyle: z.string().trim().optional(),
   atrativoDescription: z.string().trim().max(500).optional(),
+  atrativoOpeningHours: z.string().trim().max(300).optional(),
   atrativoContact: z.string().trim().optional().superRefine((val, ctx) => {
     if (!val || !toE164(val)) return;
     const err = validateIntlPhone(val);
@@ -198,7 +199,7 @@ export default function SubmissionForm() {
       nickName: "", basicPhone: "", companyName: "", email: "",
       category: "", eventTitle: "", date: "", startTime: "",
       ageRating: "Livre", isSuitableForMinors: true,
-      atrativoName: "", atrativoType: "", atrativoContact: "", atrativoEmail: "", atrativoCategory: undefined as any,
+      atrativoName: "", atrativoType: "", atrativoContact: "", atrativoEmail: "", atrativoCategory: undefined as any, atrativoOpeningHours: "",
       locationName: "", estabelecimentoId: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
       fotos: [],
       duvidasSource: "promotor",

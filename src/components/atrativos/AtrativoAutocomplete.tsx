@@ -16,6 +16,7 @@ export interface AtrativoSuggestion {
   style?: string | null;
   estilos?: string[] | null;
   description?: string | null;
+  opening_hours?: string | null;
   contact_whatsapp?: string | null;
   cidade_regiao?: string | null;
   estado?: string | null;
@@ -56,7 +57,7 @@ export function AtrativoAutocomplete({
       // Todos os atrativos cadastrados (aprovados ou não) aparecem para quem
       // está logado, sem expor dados pessoais do responsável.
       const { data } = await supabase
-        .rpc("search_atrativos_autocomplete", {
+        .rpc("search_atrativos_autocomplete_v2", {
           _q: q || null,
           _limit: to - from + 1,
           _offset: from,

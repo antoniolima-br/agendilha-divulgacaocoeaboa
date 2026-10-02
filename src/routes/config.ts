@@ -13,6 +13,7 @@ export const ROUTES = {
   EVENTO_IMPRIMIR: "/evento/:slug/imprimir",
   ESTABELECIMENTO_DETAIL: "/lugar/:id",
   ADMIN_EVENTS: "/admin/events",
+  ADMIN_PUBLISHED_EVENTS: "/admin/eventos-publicados",
   ADMIN_USERS: "/admin/users",
   ADMIN_COLLABORATORS: "/admin/collaborators",
   ADMIN_ESTABELECIMENTOS: "/admin/estabelecimentos",

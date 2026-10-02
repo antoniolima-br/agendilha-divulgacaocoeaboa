@@ -10,6 +10,7 @@ export interface AtrativoRow {
   name: string;
   type: string | null;
   description: string | null;
+  opening_hours?: string | null;
   contact_info?: string | null;
   category_other?: string | null;
   estabelecimento_id: string | null;
@@ -30,7 +31,7 @@ export interface AtrativoRow {
 }
 
 const SELECT_MINE =
-  "id, name, type, description, estabelecimento_id, tipo_atrativo, estilos, pais, estado, cidade_regiao, membros_equipe, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, responsavel_id, contact_info, category_other";
+  "id, name, type, description, opening_hours, estabelecimento_id, tipo_atrativo, estilos, pais, estado, cidade_regiao, membros_equipe, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, responsavel_id, contact_info, category_other";
 
 export function useMyAtrativos(userId: string | null | undefined) {
   return useQuery({
@@ -71,7 +72,7 @@ export function useAllAtrativos(enabled: boolean) {
       const { data, error } = await supabase
         .from("atrativos")
         .select(
-          "id, name, type, description, estabelecimento_id, tipo_atrativo, estilos, pais, estado, cidade_regiao, membros_equipe, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, responsavel_id, created_by, contact_info, category_other"
+          "id, name, type, description, opening_hours, estabelecimento_id, tipo_atrativo, estilos, pais, estado, cidade_regiao, membros_equipe, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, responsavel_id, created_by, contact_info, category_other"
         )
         .order("name");
       if (error) throw error;

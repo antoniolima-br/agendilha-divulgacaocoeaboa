@@ -3,7 +3,7 @@ import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { Music, Link2, Unlink, Check, Plus } from "lucide-react";
+import { Music, Link2, Unlink, Check, Plus, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { onEntityCreated } from "@/lib/entityEvents";
 import { formatPhoneDisplay, validateBrazilianMobile } from "@/lib/whatsapp";
@@ -36,6 +36,7 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
     form.setValue("atrativoSourceType", isArtist ? "artist" : "atrativo", { shouldDirty: true });
     form.setValue("atrativoLinkedName", row.name ?? "", { shouldDirty: true });
     form.setValue("atrativoLinkedAt", new Date().toISOString(), { shouldDirty: true });
+    form.setValue("atrativoOpeningHours", row.opening_hours || "", { shouldDirty: true });
 
     // Preenchimento automático dos dados do atrativo (tipo, estilo, descrição, contato).
     const tipo = isArtist ? row.artist_type : (row.tipo_atrativo || row.type);
@@ -76,6 +77,7 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
     form.setValue("atrativoSourceType", undefined, { shouldDirty: true });
     form.setValue("atrativoLinkedName", undefined, { shouldDirty: true });
     form.setValue("atrativoLinkedAt", undefined, { shouldDirty: true });
+    form.setValue("atrativoOpeningHours", "", { shouldDirty: true });
   };
 
   return (
@@ -116,19 +118,20 @@ export function AtrativoStep({ form }: { form: UseFormReturn<any> }) {
       />
 
       {sourceId && (
-        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs">
-          <Link2 className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="font-semibold text-primary">Vinculado a: {linkedName}</span>
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            className="ml-auto h-7 px-2 text-xs"
-            onClick={unlink}
-          >
-            <Unlink className="h-3 w-3 mr-1" />
-            Trocar
-          </Button>
+        <div className="space-y-2 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <span className="font-semibold text-primary">Vinculado a: {linkedName}</span>
+            <Button type="button" size="sm" variant="ghost" className="ml-auto h-7 px-2 text-xs" onClick={unlink}>
+              <Unlink className="mr-1 h-3 w-3" />Trocar
+            </Button>
+          </div>
+          {form.watch("atrativoOpeningHours") && (
+            <p className="flex items-start gap-2 text-muted-foreground">
+              <Clock3 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+              <span><strong className="text-foreground">Funcionamento:</strong> {form.watch("atrativoOpeningHours")}</span>
+            </p>
+          )}
         </div>
       )}
 

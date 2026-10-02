@@ -29,6 +29,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
+const AdminPublishedEvents = lazy(() => import("./pages/AdminPublishedEvents"));
 const AgendaCultural = lazy(() => import("./pages/AgendaCultural"));
 const EventosPublicos = lazy(() => import("./pages/EventosPublicos"));
 const Explorar = lazy(() => import("./pages/Explorar"));
@@ -233,6 +234,7 @@ export const AppRoutes = () => (
         {/* Admin Pages - Full sidebar integration */}
         <Route element={<ProtectedRoute requiredPermission="events.read"><AppShell showSidebar={true} maxWidth="xl"><Outlet /></AppShell></ProtectedRoute>}>
           <Route path={ROUTES.ADMIN_EVENTS} element={<AdminEvents />} />
+          <Route path={ROUTES.ADMIN_PUBLISHED_EVENTS} element={<AdminPublishedEvents />} />
           <Route path={ROUTES.ADMIN_USERS} element={<AdminUsers />} />
           <Route path={ROUTES.ADMIN_COLLABORATORS} element={<AdminCollaborators />} />
           <Route path={ROUTES.ADMIN_NEWSLETTER} element={<AdminNewsletter />} />
