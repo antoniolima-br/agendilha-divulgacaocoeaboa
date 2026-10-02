@@ -634,6 +634,7 @@ export type Database = {
           logo_url: string | null
           membros_equipe: string | null
           name: string
+          opening_hours: string | null
           pais: string | null
           responsavel_email: string | null
           responsavel_id: string | null
@@ -664,6 +665,7 @@ export type Database = {
           logo_url?: string | null
           membros_equipe?: string | null
           name: string
+          opening_hours?: string | null
           pais?: string | null
           responsavel_email?: string | null
           responsavel_id?: string | null
@@ -694,6 +696,7 @@ export type Database = {
           logo_url?: string | null
           membros_equipe?: string | null
           name?: string
+          opening_hours?: string | null
           pais?: string | null
           responsavel_email?: string | null
           responsavel_id?: string | null
@@ -2907,6 +2910,27 @@ export type Database = {
           is_approved: boolean
           logo_url: string
           name: string
+          pais: string
+          style: string
+          tipo_atrativo: string
+          type: string
+        }[]
+      }
+      search_atrativos_autocomplete_v2: {
+        Args: { _limit?: number; _offset?: number; _q?: string }
+        Returns: {
+          cidade_regiao: string
+          contact_whatsapp: string
+          description: string
+          estabelecimento_id: string
+          estado: string
+          estilos: string[]
+          fotos: string[]
+          id: string
+          is_approved: boolean
+          logo_url: string
+          name: string
+          opening_hours: string
           pais: string
           style: string
           tipo_atrativo: string

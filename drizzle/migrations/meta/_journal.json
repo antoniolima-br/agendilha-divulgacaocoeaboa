@@ -8,6 +8,13 @@
       "when": 1790954914423,
       "tag": "0000_enforce_attraction_two_hour_schedule_gap",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790959265416,
+      "tag": "0001_add_attraction_opening_hours",
+      "breakpoints": true
     }
   ]
 }
