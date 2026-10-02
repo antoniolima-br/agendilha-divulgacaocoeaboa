@@ -24,7 +24,7 @@ type PublishedEvent = Tables<"submissions">;
 
 export default function AdminPublishedEvents() {
   const { user, loading: authLoading } = useAuth();
-  const { hasPermission, loading: permissionsLoading } = useAppPermissions();
+  const { hasPermission, isAdmin, loading: permissionsLoading } = useAppPermissions();
   const canRead = hasPermission("events.read");
   const canEdit = hasPermission("events.update");
   const canDelete = hasPermission("events.delete");
@@ -78,7 +78,7 @@ export default function AdminPublishedEvents() {
   }
 
   if (authLoading || permissionsLoading) return <LoadingState fullPage message="Verificando permissões..." />;
-  if (!user || !canRead) return <Navigate to="/" replace />;
+  if (!user || !isAdmin || !canRead) return <Navigate to="/" replace />;
 
   return (
     <PageContainer maxWidth="7xl">
