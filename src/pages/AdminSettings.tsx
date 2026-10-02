@@ -16,9 +16,12 @@ import {
   useAppSettings,
   useSaveAppSettings,
 } from "@/data/useAppSettings";
+import { useAdminUsers } from "@/data/useAdminUsers";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatPhoneDisplay, isValidBrazilianMobile, buildWhatsappUrl } from "@/lib/whatsapp";
 
-const KEYS = [SETTING_KEYS.teamWhatsapp] as const;
+const KEYS = [SETTING_KEYS.teamWhatsapp, SETTING_KEYS.teamContactName] as const;
+const digits = (v: string | null | undefined) => (v ?? "").replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
 
 type Form = Record<string, string>;
 
@@ -29,6 +32,8 @@ export default function AdminSettings() {
   const [form, setForm] = useState<Form>({ ...DEFAULT_SETTINGS });
 
   const canManage = hasPermission("events.read");
+  const { data: users } = useAdminUsers(canManage);
+  const atendentes = (users ?? []).filter((u) => (u.is_admin || u.is_master) && digits(u.phone).length >= 10);
 
   useEffect(() => {
     if (settings) {
@@ -41,6 +46,19 @@ export default function AdminSettings() {
   const dirty = KEYS.some((k) => (form[k] ?? "") !== (settings?.[k] ?? DEFAULT_SETTINGS[k]));
 
   const whatsapp = form[SETTING_KEYS.teamWhatsapp] ?? "";
+  const contactName = form[SETTING_KEYS.teamContactName] ?? "";
+  const matched = atendentes.find((u) => digits(u.phone) === digits(whatsapp) && digits(whatsapp));
+  const selectedId = matched?.id ?? "";
+  function pickAtendente(id: string) {
+    const u = atendentes.find((a) => a.id === id);
+    if (!u) return;
+    setForm((p) => ({ ...p, [SETTING_KEYS.teamWhatsapp]: formatPhoneDisplay(digits(u.phone)), [SETTING_KEYS.teamContactName]: u.responsible_name || u.email }));
+  }
+  function typeNumber(value: string) {
+    const formatted = formatPhoneDisplay(value);
+    const hit = atendentes.find((u) => digits(u.phone) === digits(formatted) && digits(formatted));
+    setForm((p) => ({ ...p, [SETTING_KEYS.teamWhatsapp]: formatted, ...(hit ? { [SETTING_KEYS.teamContactName]: hit.responsible_name || hit.email } : {}) }));
+  }
   const whatsappOk = whatsapp.trim() === "" || isValidBrazilianMobile(whatsapp);
   const previewUrl = whatsappOk && whatsapp.trim()
     ? buildWhatsappUrl(whatsapp, "Oi! Quero contratar um destaque.")
@@ -90,6 +108,22 @@ export default function AdminSettings() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase tracking-wide">Responsável pelo atendimento</Label>
+            <Select value={selectedId} onValueChange={pickAtendente}>
+              <SelectTrigger className="h-11"><SelectValue placeholder={atendentes.length ? "Escolha um administrador" : "Nenhum admin com WhatsApp no perfil"} /></SelectTrigger>
+              <SelectContent>
+                {atendentes.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>{u.responsible_name || u.email} · {formatPhoneDisplay(digits(u.phone))}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Escolha alguém e o WhatsApp é preenchido sozinho. Ou digite o número abaixo.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="team-contact-name" className="text-xs font-bold uppercase tracking-wide">Nome que aparece pro cliente</Label>
+            <Input id="team-contact-name" placeholder="Ex.: Ana, do comercial" value={contactName} onChange={(e) => set(SETTING_KEYS.teamContactName, e.target.value)} />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="team-whatsapp" className="text-xs font-bold uppercase tracking-wide">
               Número que recebe as contratações de destaque
             </Label>
@@ -98,7 +132,7 @@ export default function AdminSettings() {
               inputMode="numeric"
               placeholder="(21) 99999-9999"
               value={whatsapp}
-              onChange={(e) => set(SETTING_KEYS.teamWhatsapp, formatPhoneDisplay(e.target.value))}
+              onChange={(e) => typeNumber(e.target.value)}
               aria-invalid={!whatsappOk}
               className={!whatsappOk ? "border-destructive" : ""}
             />
@@ -111,6 +145,9 @@ export default function AdminSettings() {
                 Todo botão de destaque abre uma conversa com esse número. Deixe vazio para a pessoa
                 escolher o contato.
               </p>
+            )}
+            {matched && whatsappOk && (
+              <p className="text-xs font-semibold text-primary">Esse número é de {matched.responsible_name || matched.email}.</p>
             )}
             {previewUrl && (
               <a

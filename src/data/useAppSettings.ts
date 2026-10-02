@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 /** Chaves de configuração usadas pelo app. */
 export const SETTING_KEYS = {
   teamWhatsapp: "team_whatsapp",
+  teamContactName: "team_contact_name",
   destaqueEventoTitulo: "destaque_evento_titulo",
   destaqueEventoTexto: "destaque_evento_texto",
   destaqueAnuncioTitulo: "destaque_anuncio_titulo",
@@ -15,6 +16,7 @@ export type SettingKey = (typeof SETTING_KEYS)[keyof typeof SETTING_KEYS];
 
 export const DEFAULT_SETTINGS: Record<SettingKey, string> = {
   team_whatsapp: "",
+  team_contact_name: "",
   destaque_evento_titulo: "Destaque sua publicação para maior visibilidade",
   destaque_evento_texto:
     "Contrate o destaque e seu flyer ficará em evidência no carrossel de até 10 eventos, aumentando alcance e público.",
