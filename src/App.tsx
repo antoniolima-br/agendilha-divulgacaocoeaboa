@@ -30,7 +30,7 @@ const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AgendaCultural = lazy(() => import("./pages/AgendaCultural"));
-const Eventos = lazy(() => import("./pages/Eventos"));
+const EventosPublicos = lazy(() => import("./pages/EventosPublicos"));
 const Explorar = lazy(() => import("./pages/Explorar"));
 const CuradoriaHoje = lazy(() => import("./pages/CuradoriaHoje"));
 const AdminCollaborators = lazy(() => import("./pages/AdminCollaborators"));
@@ -211,7 +211,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.AUTH} element={<Auth />} />
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
           <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SubmitEvent /></PromotorRoute>} />
-          <Route path={ROUTES.EVENTOS} element={<ProtectedRoute><Eventos /></ProtectedRoute>} />
+          <Route path={ROUTES.EVENTOS} element={<EventosPublicos />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />

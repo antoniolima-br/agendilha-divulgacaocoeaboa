@@ -1,6 +1,9 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Preencher o atendimento comercial com responsável real já cadastrado e manter a seleção dinâmica da equipe.
+- [x] Criar uma página pública de eventos com nome, data, horário, local e WhatsApp autorizado.
+- [x] Oferecer confirmação do envio ao responsável por mensagem pronta no WhatsApp após o cadastro.
 - [x] Validar a agenda do atrativo e garantir intervalo mínimo de 2 horas entre apresentações no mesmo dia.
 
 - [x] Tornar telefone opcional nos cadastros de atrativos, artistas e estabelecimentos, mantendo validação quando preenchido.
