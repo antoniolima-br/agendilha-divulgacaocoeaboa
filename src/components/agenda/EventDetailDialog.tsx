@@ -4,29 +4,25 @@ import { Button } from "@/components/ui/button";
 import {
   CalendarDays,
   Clock,
-  Copy,
   Download,
   Info,
   MapPin,
-  MessageCircle,
-  Share2,
   X,
 } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { EventImage } from "./EventImage";
 import { ReportButton } from "./ReportButton";
-import { buildUberLink, buildWhatsAppShare } from "./agenda-utils";
+import { buildUberLink } from "./agenda-utils";
 import { categoryIcons, categoryLabels, type AgendaEvent } from "./types";
 import { formatBrazilianDate } from "@/lib/date-utils";
-import { buildFullAddress, getShareData, getShareUrl } from "@/lib/sharing";
+import { buildFullAddress, getShareData } from "@/lib/sharing";
+import { EventShareButton } from "@/components/EventShareButton";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface EventDetailDialogProps {
   event: AgendaEvent | null;
   onClose: () => void;
-  onShare: (title: string, text: string, url: string, eventId?: string) => void;
-  onCopyLink: (url: string) => void;
   trackShare: (id: string) => void;
 }
 
@@ -43,8 +39,6 @@ function downloadImage(url: string, filename: string, label: string) {
 export function EventDetailDialog({
   event,
   onClose,
-  onShare,
-  onCopyLink,
   trackShare,
 }: EventDetailDialogProps) {
   return (
@@ -179,37 +173,12 @@ export function EventDetailDialog({
             <div className="p-5 sm:p-10 lg:p-12 bg-card/80 backdrop-blur-xl border-t border-border/50 shrink-0">
               <div className="flex flex-col gap-5 sm:gap-8">
                 <div className="flex flex-col gap-3.5">
-                  <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    <Button
-                      className="flex-1 h-14 sm:h-16 rounded-full font-black uppercase tracking-wider gradient-sunset text-primary-foreground shadow-xl hover:scale-[1.03] active:scale-95 transition-all text-sm sm:text-base focus-visible:ring-4 focus-visible:ring-primary/40 outline-none"
-                      onClick={() => {
-                        window.open(buildWhatsAppShare(event), "_blank");
-                        trackShare(event.id);
-                      }}
-                      aria-label="Compartilhar evento no WhatsApp"
-                    >
-                      <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 mr-3" /> WhatsApp
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 h-14 sm:h-16 rounded-full font-black uppercase tracking-wider border-2 border-primary text-primary bg-background hover:bg-primary hover:text-white shadow-lg active:scale-95 transition-all text-sm sm:text-base focus-visible:ring-4 focus-visible:ring-primary/40 outline-none"
-                      onClick={() => {
-                        const data = getShareData(event as any);
-                        onShare(data.title, data.text, data.url, event.id);
-                      }}
-                    >
-                      <Share2 className="h-6 w-6 mr-3" /> Compartilhar
-                    </Button>
-                  </div>
+                   {(() => {
+                     const data = getShareData(event as any);
+                     return <EventShareButton title={data.title} text={data.text} url={data.url} onShared={() => trackShare(event.id)} className="w-full h-14 sm:h-16 font-black uppercase tracking-wider" />;
+                   })()}
 
-                  <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2.5 sm:gap-3">
-                    <Button
-                      variant="ghost"
-                      className="flex-1 h-12 sm:h-14 rounded-full font-bold text-[10px] sm:text-sm uppercase tracking-widest text-muted-foreground hover:text-primary hover:bg-primary/5 active:scale-95 transition-all"
-                      onClick={() => onCopyLink(getShareUrl(event.id))}
-                    >
-                      <Copy className="h-5 w-5 mr-2.5" /> Copiar link
-                    </Button>
+                  <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2.5 sm:gap-3">
                     <Button
                       variant="outline"
                       className="flex-1 h-12 sm:h-14 rounded-full font-black uppercase tracking-wider border-2 border-primary/20 text-primary bg-background hover:bg-primary hover:text-white active:scale-95 transition-all text-[10px] sm:text-xs shadow-sm"

@@ -8,10 +8,10 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { 
-  CalendarDays, MapPin, Clock, Share2, ArrowLeft, 
+  CalendarDays, MapPin, Clock, ArrowLeft, 
   Tag, Info, ExternalLink, MessageCircle, Heart,
   Building2, ChevronRight, LayoutDashboard, Globe,
-  Navigation, Send, Ticket, Baby, Users, FileDown,
+  Navigation, Ticket, Baby, Users, FileDown,
   Calendar, CheckCircle, Accessibility
 } from "lucide-react";
 import { exportEventToPdf } from "@/lib/exportEventPdf";
@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { EventWhatsAppCardExport } from "@/components/EventWhatsAppCard";
 import { getEventOgShareUrl } from "@/lib/sharing";
+import { EventShareButton } from "@/components/EventShareButton";
 
 interface Event {
   id: string;
@@ -129,21 +130,6 @@ export default function EventDetail() {
     fetchEvent();
   }, [slug]);
 
-  const handleShare = () => {
-    if (!event) return;
-    const url = getEventOgShareUrl(event.slug);
-    if (navigator.share) {
-      navigator.share({
-        title: event.event_title,
-        text: `Confira este evento no Coé a Boa?: ${event.event_title}`,
-        url: url
-      });
-    } else {
-      navigator.clipboard.writeText(url);
-      toast.success("Link copiado para a área de transferência!");
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -185,15 +171,8 @@ export default function EventDetail() {
     ? `https://www.google.com/maps/search/?api=1&query=${event.latitude},${event.longitude}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([event.location, fullAddress].filter(Boolean).join(", "))}`;
 
-  const shareToFriend = () => {
-    const shareUrl = getEventOgShareUrl(event.slug);
-    const msg = `Olha esse rolê na Ilha 🌴\n\n*${event.event_title}*` +
-      (event.date ? `\n🗓️ ${formatBrazilianDate(event.date)}` : "") +
-      (event.start_time ? ` · ${event.start_time}` : "") +
-      (event.location ? `\n📍 ${event.location}${event.address_neighborhood ? ` – ${event.address_neighborhood}` : ""}` : "") +
-      `\n\nDetalhes: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-  };
+  const shareUrl = getEventOgShareUrl(event.slug);
+  const shareText = `Confira este rolê no Coé a Boa?: ${event.event_title}`;
 
   const duvidasPhone = event.duvidas_phone ? event.duvidas_phone.replace(/\D/g, "") : "";
   const duvidasSource = event.duvidas_source || "promotor";
@@ -477,28 +456,13 @@ export default function EventDetail() {
                 <Navigation className="h-4 w-4 mr-2" strokeWidth={2} /> Como chegar
               </Button>
 
-              <Button
-                variant="outline"
-                className="w-full h-11 rounded-full border-foreground/15 font-medium"
-                onClick={shareToFriend}
-              >
-                <Send className="h-4 w-4 mr-2" strokeWidth={2} /> Enviar para um amigo
-              </Button>
+              <EventShareButton title={event.event_title} text={shareText} url={shareUrl} className="w-full" />
 
               <div className="flex gap-2">
                 <FavoriteButton
                   eventId={event.id}
                   className="flex-1 h-11 rounded-full bg-transparent border border-foreground/15 text-foreground hover:bg-foreground/5 font-medium"
                 />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-11 w-11 rounded-full border border-foreground/15 bg-transparent hover:bg-foreground/5"
-                  onClick={handleShare}
-                  aria-label="Compartilhar"
-                >
-                  <Share2 className="h-4 w-4" strokeWidth={2} />
-                </Button>
               </div>
 
               <Button
@@ -566,15 +530,7 @@ export default function EventDetail() {
             eventId={event.id}
             className="h-11 w-11 shrink-0 rounded-full bg-transparent border border-foreground/15 text-foreground hover:bg-foreground/5"
           />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-11 w-11 shrink-0 rounded-full border-foreground/15"
-            onClick={shareToFriend}
-            aria-label="Enviar para amigo"
-          >
-            <Send className="h-4 w-4" strokeWidth={2} />
-          </Button>
+          <EventShareButton title={event.event_title} text={shareText} url={shareUrl} compact className="h-11 w-11 shrink-0" />
           <Button
             className="flex-1 h-11 rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold tracking-tight"
             onClick={() => window.open(mapsUrl, "_blank")}
