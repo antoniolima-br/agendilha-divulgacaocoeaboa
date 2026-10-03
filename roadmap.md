@@ -101,3 +101,10 @@
 - [x] Garantir contraste WCAG AA em todos os textos do cadastro público de estabelecimento.
 - [x] Aplicar ViaCEP e seletor de categoria também aos cadastros administrativo e do divulgador.
 - [x] Corrigir contraste WCAG AA em todas as páginas, painéis, tabelas, botões e textos secundários.
+
+## Refatoração estrutural
+- [ ] Extrair infraestrutura global e centralizar rotas, cache e erros.
+- [ ] Consolidar acesso a dados, permissões e tipagem compartilhada.
+- [ ] Separar responsabilidades da Gestão de Eventos e do formulário de envio.
+- [ ] Padronizar componentes reutilizáveis e remover duplicações comprovadas.
+- [ ] Validar testes, tipos, build e fluxos principais sem mudança visual.
