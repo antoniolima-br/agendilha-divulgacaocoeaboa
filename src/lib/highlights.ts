@@ -59,6 +59,17 @@ export function pickCarouselEvents<T extends HighlightFields & { date?: string |
     .slice(0, limit);
 }
 
+/** Mantém os destaques ativos no topo do banner principal, preservando variedade dentro de cada grupo. */
+export function prioritizeHomeHeroEvents<T extends HighlightFields & { id: string }>(
+  events: T[],
+  rank: (id: string) => number,
+): T[] {
+  return [...events].sort((a, b) => {
+    const highlightDifference = Number(isHighlightActive(b)) - Number(isHighlightActive(a));
+    return highlightDifference || rank(a.id) - rank(b.id);
+  });
+}
+
 export const HIGHLIGHT_STATUS_LABEL: Record<HighlightStatus, string> = {
   ativo: "Ativo",
   expirado: "Expirado",

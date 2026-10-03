@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { activeRegions, regionOf } from "@/lib/regions";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,6 +46,7 @@ import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarous
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
+import { prioritizeHomeHeroEvents } from "@/lib/highlights";
 
 const HOME_CATEGORIES = [
   { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
@@ -137,6 +138,7 @@ export default function Landing() {
   const { user } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const todayRowRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -156,7 +158,7 @@ export default function Landing() {
      isFetchingNextPage,
      isLoading: eventsLoading 
    } = useInfiniteQuery({
-    queryKey: ["landing-events"],
+    queryKey: qk.home.events(),
     queryFn: async ({ pageParam = 0 }) => {
       const today = saoPauloTodayISO();
       const { data, error } = await supabase
@@ -180,7 +182,7 @@ export default function Landing() {
    });
 
     const { data: freeEventsData, isLoading: freeEventsLoading } = useQuery({
-      queryKey: ["landing-free-events"],
+      queryKey: qk.home.freeEvents(),
       queryFn: async () => {
         const today = saoPauloTodayISO();
         const { data, error } = await supabase
@@ -255,18 +257,37 @@ export default function Landing() {
           };
         });
       const today = saoPauloTodayISO();
-      const pool = [...flyers, ...allEvents];
+       const pool = [...flyers, ...allEvents];
       const todays = pool.filter((ev) => eventDateISO(ev.date) === today);
-      // Só eventos de hoje; se não houver nenhum, mostra os próximos dias.
-      const base = todays.length > 0 ? todays : pool.filter((ev) => eventDateISO(ev.date) >= today);
+       const activeHighlights = pool.filter((event) =>
+         eventDateISO(event.date) >= today && Boolean(event.is_highlight || event.highlight_active),
+       );
+       // Destaques ativos sempre entram no banner; as vagas restantes priorizam o que acontece hoje.
+       const base = Array.from(new Map([
+         ...activeHighlights,
+         ...(todays.length > 0 ? todays : pool.filter((ev) => eventDateISO(ev.date) >= today)),
+       ].map((event) => [event.id, event])).values());
       // Ordem aleatória a cada abertura da página (semente fixa durante a visita).
       const rand = (id: string) => {
         let h = heroSeed;
         for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 2654435761);
         return h >>> 0;
       };
-      return [...base].sort((a, b) => rand(a.id) - rand(b.id)).slice(0, 8);
+       return prioritizeHomeHeroEvents(base, rand).slice(0, 8);
     }, [allEvents, flyerAds, flyerUrls, heroSeed]);
+
+    useEffect(() => {
+      const channel = supabase
+        .channel("home-highlight-updates")
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "submissions" },
+          () => void queryClient.invalidateQueries({ queryKey: qk.home.all }),
+        )
+        .subscribe();
+
+      return () => { void supabase.removeChannel(channel); };
+    }, [queryClient]);
     const todayStart = useMemo(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); }, []);
     const [weekStart, setWeekStart] = useState(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); });
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
