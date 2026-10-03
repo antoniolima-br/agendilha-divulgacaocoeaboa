@@ -29,6 +29,13 @@
       "when": 1791038034827,
       "tag": "0003_enforce_distinct_event_start_for_named_establishments",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791045810679,
+      "tag": "0004_separate_event_venues_and_promotion_intent",
+      "breakpoints": true
     }
   ]
 }
