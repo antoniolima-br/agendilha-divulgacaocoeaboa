@@ -41,7 +41,7 @@ describe("agenda do Guia do Coé", () => {
     const agenda = buildGuideAgenda([event], [establishment]);
     expect(agenda).toContain("ver rolê: /evento/samba-de-hoje");
     expect(agenda).toContain("Vá de Uber: https://m.uber.com/ul/");
-    expect(agenda).toContain("Bar do Porto");
+    expect(agenda).toContain("Bár do Pôrto");
   });
 
   it("usa coordenadas reais quando elas estão disponíveis", () => {
