@@ -108,3 +108,6 @@
 - [x] Separar responsabilidades da Gestão de Eventos e do formulário de envio.
 - [x] Padronizar componentes reutilizáveis e remover duplicações comprovadas.
 - [x] Validar testes, tipos, build e fluxos principais sem mudança visual.
+
+## Cadastro de estabelecimento
+- [x] Permitir buscar o CEP por Estado, Cidade, Bairro e Nome da Rua no cadastro público.
