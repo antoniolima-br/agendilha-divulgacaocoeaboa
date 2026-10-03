@@ -18,6 +18,14 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageContainer } from "@/components/ui/PageContainer";
+import { formatCep } from "@/lib/autofillValidation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   EstabelecimentoCard,
   type EstabelecimentoRow,
@@ -33,9 +41,41 @@ export default function AdminEstabelecimentos() {
   const [search, setSearch] = useState("");
   const creating = upsert.isPending;
   const [showNew, setShowNew] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
+  const [cepMessage, setCepMessage] = useState("");
   const [newForm, setNewForm] = useState({
     nome: "", endereco: "", bairro: "", cep: "", numero: "", complemento: "", tipo: "", contato: "",
   });
+
+  async function handleCepChange(rawCep: string) {
+    const cep = formatCep(rawCep);
+    const digits = cep.replace(/\D/g, "");
+    setNewForm((current) => ({ ...current, cep }));
+    setCepMessage("");
+    if (digits.length !== 8) return;
+
+    setCepLoading(true);
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      if (!response.ok) throw new Error("Falha ao consultar CEP");
+      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      if (data.erro) {
+        setCepMessage("CEP não encontrado. Preencha o endereço manualmente.");
+        return;
+      }
+      setNewForm((current) => ({
+        ...current,
+        cep,
+        endereco: data.logradouro?.trim() || current.endereco,
+        bairro: data.bairro?.trim() || current.bairro,
+      }));
+      setCepMessage("Endereço encontrado. Confira e complete os dados.");
+    } catch {
+      setCepMessage("Não rolou buscar agora. Preencha o endereço manualmente.");
+    } finally {
+      setCepLoading(false);
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -143,11 +183,40 @@ export default function AdminEstabelecimentos() {
             <h3 className="font-bold">Novo estabelecimento</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <NewField label="Nome*" value={newForm.nome} onChange={(v) => setNewForm({ ...newForm, nome: v })} />
-              <NewField label="Tipo" value={newForm.tipo} onChange={(v) => setNewForm({ ...newForm, tipo: v })} placeholder="bar, restaurante..." />
+              <div className="space-y-1">
+                <Label htmlFor="admin-estabelecimento-cep" className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">CEP</Label>
+                <Input
+                  id="admin-estabelecimento-cep"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  maxLength={9}
+                  value={newForm.cep}
+                  onChange={(event) => void handleCepChange(event.target.value)}
+                  placeholder="00000-000"
+                  className="h-10"
+                />
+                {(cepLoading || cepMessage) && (
+                  <p className="text-xs text-muted-foreground" aria-live="polite">
+                    {cepLoading ? "Buscando endereço..." : cepMessage}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="admin-estabelecimento-tipo" className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Tipo</Label>
+                <Select value={newForm.tipo} onValueChange={(tipo) => setNewForm({ ...newForm, tipo })}>
+                  <SelectTrigger id="admin-estabelecimento-tipo" className="h-10">
+                    <SelectValue placeholder="Selecione uma categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["Bar", "Restaurante", "Casa de show", "Quiosque", "Centro cultural", "Igreja", "Praça", "Clube", "Outro"].map((tipo) => (
+                      <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <NewField label="Endereço" value={newForm.endereco} onChange={(v) => setNewForm({ ...newForm, endereco: v })} />
               <NewField label="Número" value={newForm.numero} onChange={(v) => setNewForm({ ...newForm, numero: v })} />
               <NewField label="Bairro" value={newForm.bairro} onChange={(v) => setNewForm({ ...newForm, bairro: v })} />
-              <NewField label="CEP" value={newForm.cep} onChange={(v) => setNewForm({ ...newForm, cep: v })} />
               <NewField label="Complemento" value={newForm.complemento} onChange={(v) => setNewForm({ ...newForm, complemento: v })} />
               <NewField label="Contato (opcional)" value={newForm.contato} onChange={(v) => setNewForm({ ...newForm, contato: v })} />
             </div>
