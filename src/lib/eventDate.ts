@@ -44,6 +44,15 @@ export function isValidEventDate(value?: string | null): boolean {
   return eventDateISO(value) !== "";
 }
 
+/** Mantém o evento durante todo o seu dia em São Paulo e o remove no dia seguinte. */
+export function isCurrentOrFutureEventDate(
+  value?: string | null,
+  now = new Date(),
+): boolean {
+  const date = eventDateISO(value);
+  return date !== "" && date >= saoPauloTodayISO(now);
+}
+
 export function addDaysToISO(iso: string, days: number): string {
   const [year, month, day] = iso.split("-").map(Number);
   const utcDate = new Date(Date.UTC(year, month - 1, day + days, 12));

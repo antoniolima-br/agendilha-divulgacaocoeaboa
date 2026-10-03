@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { formatEventDateTimeBR, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
+import { addDaysToISO, formatEventDateTimeBR, isCurrentOrFutureEventDate, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 
 type PublicEvent = {
@@ -40,11 +40,14 @@ export default function EventosPublicos() {
         .select("id, slug, event_title, date, start_time, end_time, location, address_neighborhood, duvidas_phone")
         .in("status", [...PUBLIC_EVENT_STATUSES])
         .or("moderation_status.is.null,moderation_status.neq.blocked")
+        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
         .order("date", { ascending: true })
         .order("start_time", { ascending: true })
         .limit(500);
       if (error) throw error;
-      return (data ?? []).filter((event): event is PublicEvent => Boolean(event.id));
+      return (data ?? []).filter(
+        (event): event is PublicEvent => Boolean(event.id) && isCurrentOrFutureEventDate(event.date),
+      );
     },
     staleTime: 60_000,
   });

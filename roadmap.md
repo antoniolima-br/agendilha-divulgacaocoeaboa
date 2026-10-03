@@ -8,6 +8,7 @@
 - [x] Permitir eventos na mesma data no mesmo estabelecimento, exigindo horários de início diferentes.
 - [x] Proteger a página inicial e suas seções contra dados ausentes e cobrir o estado vazio com teste.
 - [x] Aplicar “Não sei o CEP” e remover o campo separado “Complemento” em todos os cadastros de estabelecimento.
+- [x] Manter eventos do dia em todas as listas públicas e ocultá-los somente a partir do dia seguinte em São Paulo.
 
 - [x] Preencher o atendimento comercial com responsável real já cadastrado e manter a seleção dinâmica da equipe.
 - [x] Criar uma página pública de eventos com nome, data, horário, local e WhatsApp autorizado.

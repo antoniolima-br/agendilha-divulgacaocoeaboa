@@ -5,7 +5,14 @@ import type { AgendaEvent } from "@/components/agenda/types";
 
 vi.mock("@/lib/eventDate", async () => {
   const actual = await vi.importActual<typeof import("@/lib/eventDate")>("@/lib/eventDate");
-  return { ...actual, saoPauloTodayISO: () => "2026-09-22" };
+  return {
+    ...actual,
+    saoPauloTodayISO: () => "2026-09-22",
+    isCurrentOrFutureEventDate: (value?: string | null) => {
+      const date = actual.eventDateISO(value);
+      return date !== "" && date >= "2026-09-22";
+    },
+  };
 });
 
 function event(id: string, date: string | null): AgendaEvent {

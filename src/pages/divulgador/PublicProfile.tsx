@@ -10,6 +10,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { cn } from "@/lib/utils";
 import { InlineError } from "@/components/errors/InlineError";
+import { isCurrentOrFutureEventDate } from "@/lib/eventDate";
 
 
 export default function PublicProfile() {
@@ -40,7 +41,7 @@ export default function PublicProfile() {
         .eq("status", "aprovado")
         .order("date", { ascending: true });
       if (error) throw error;
-      return data;
+      return (data ?? []).filter((event) => isCurrentOrFutureEventDate(event.date));
     },
     enabled: !!userId,
   });

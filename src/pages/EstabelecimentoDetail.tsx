@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { addDaysToISO, isCurrentOrFutureEventDate, saoPauloTodayISO } from "@/lib/eventDate";
 
 interface Estabelecimento {
   id: string;
@@ -66,15 +67,17 @@ export default function EstabelecimentoDetail() {
       // Contato do responsável não é público: fica fora da consulta pública.
       setEstab({ ...data, contato: null } as Estabelecimento);
 
-      const today = new Date().toISOString().slice(0, 10);
+      const today = saoPauloTodayISO();
       const { data: evs } = await supabase
         .from("public_submissions")
         .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, slug, age_rating, is_suitable_for_minors")
         .ilike("location", `%${data.nome}%`)
-        .gte("date", today)
+        .gte("date", addDaysToISO(today, -1))
         .order("date", { ascending: true })
         .limit(24);
-      if (!cancelled) setEvents((evs || []) as EventRow[]);
+      if (!cancelled) {
+        setEvents((evs || []).filter((event) => isCurrentOrFutureEventDate(event.date)) as EventRow[]);
+      }
       setLoading(false);
     })();
     return () => { cancelled = true; };

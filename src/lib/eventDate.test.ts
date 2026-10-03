@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   eventDateISO,
+  isCurrentOrFutureEventDate,
   isPublicEventStatus,
   isValidEventDate,
   saoPauloTodayISO,
@@ -23,6 +24,15 @@ describe("eventDate", () => {
     expect(eventDateISO("sem-data")).toBe("");
     expect(eventDateISO("2026-02-30")).toBe("");
     expect(isValidEventDate("31/02/2026")).toBe(false);
+  });
+
+  it("mantém hoje e o futuro, removendo somente dias anteriores", () => {
+    const now = new Date("2026-10-03T16:00:00.000Z");
+
+    expect(isCurrentOrFutureEventDate("2026-10-02", now)).toBe(false);
+    expect(isCurrentOrFutureEventDate("2026-10-03", now)).toBe(true);
+    expect(isCurrentOrFutureEventDate("2026-10-04", now)).toBe(true);
+    expect(isCurrentOrFutureEventDate(null, now)).toBe(false);
   });
 
   it.each(["aprovado", "publicado", "divulgado"])("aceita o status público %s", (status) => {
