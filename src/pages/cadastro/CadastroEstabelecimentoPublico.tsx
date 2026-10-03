@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,11 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
 import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { submitPublicCadastro } from "@/lib/publicCadastro";
 import { handleError } from "@/lib/error-handler";
+import { formatCep } from "@/lib/autofillValidation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const TIPOS = [
   { value: "Bar", label: "Bar" },
@@ -28,6 +35,9 @@ const TIPOS = [
 export default function CadastroEstabelecimentoPublico() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
+  const [cepMessage, setCepMessage] = useState("");
+  const cepRequest = useRef(0);
   const [form, setForm] = useState({
     nome: "",
     tipo: "",
@@ -45,6 +55,46 @@ export default function CadastroEstabelecimentoPublico() {
   });
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handleCepChange = async (rawCep: string) => {
+    const formatted = formatCep(rawCep);
+    const digits = formatted.replace(/\D/g, "");
+    set("cep", formatted);
+    setCepMessage("");
+
+    const requestId = ++cepRequest.current;
+    if (digits.length !== 8) {
+      setCepLoading(false);
+      return;
+    }
+
+    setCepLoading(true);
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      if (!response.ok) throw new Error("Não foi possível consultar o CEP");
+      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      if (requestId !== cepRequest.current) return;
+
+      if (data.erro) {
+        setCepMessage("CEP não encontrado. Você pode preencher o endereço manualmente.");
+        return;
+      }
+
+      setForm((current) => ({
+        ...current,
+        cep: formatted,
+        endereco: data.logradouro?.trim() || current.endereco,
+        bairro: data.bairro?.trim() || current.bairro,
+      }));
+      setCepMessage("Endereço encontrado. Confira e complete os demais dados.");
+    } catch {
+      if (requestId === cepRequest.current) {
+        setCepMessage("Não rolou buscar agora. Você pode preencher o endereço manualmente.");
+      }
+    } finally {
+      if (requestId === cepRequest.current) setCepLoading(false);
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,26 +166,38 @@ export default function CadastroEstabelecimentoPublico() {
         </div>
 
         <div className="space-y-2">
-          <Label>Tipo *</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {TIPOS.map((t) => {
-              const active = form.tipo === t.value;
-              return (
-                <button
-                  key={t.value}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => set("tipo", t.value)}
-                  className={cn(
-                    "min-h-14 rounded-xl border px-3 py-3 text-sm font-semibold text-left transition-colors",
-                    active ? "border-primary bg-primary/10 text-primary" : "border-input bg-background hover:bg-muted",
-                  )}
-                >
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
+          <Label htmlFor="cep">CEP</Label>
+          <Input
+            id="cep"
+            inputMode="numeric"
+            autoComplete="postal-code"
+            maxLength={9}
+            className="h-12 text-base"
+            value={form.cep}
+            onChange={(e) => void handleCepChange(e.target.value)}
+            placeholder="00000-000"
+          />
+          {(cepLoading || cepMessage) && (
+            <p className="text-xs text-muted-foreground" aria-live="polite">
+              {cepLoading ? "Buscando endereço..." : cepMessage}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="tipo">Tipo de estabelecimento *</Label>
+          <Select value={form.tipo} onValueChange={(value) => set("tipo", value)}>
+            <SelectTrigger id="tipo" className="h-12 text-base">
+              <SelectValue placeholder="Selecione uma categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {TIPOS.map((tipo) => (
+                <SelectItem key={tipo.value} value={tipo.value} className="text-base">
+                  {tipo.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {form.tipo === "Outro" && (
@@ -161,15 +223,9 @@ export default function CadastroEstabelecimentoPublico() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label htmlFor="bairro">Bairro / região</Label>
-            <Input id="bairro" className="h-12 text-base" value={form.bairro} onChange={(e) => set("bairro", e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="cep">CEP</Label>
-            <Input id="cep" inputMode="numeric" maxLength={9} className="h-12 text-base" value={form.cep} onChange={(e) => set("cep", e.target.value)} />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="bairro">Bairro / região</Label>
+          <Input id="bairro" className="h-12 text-base" value={form.bairro} onChange={(e) => set("bairro", e.target.value)} />
         </div>
 
         <div className="space-y-2">
