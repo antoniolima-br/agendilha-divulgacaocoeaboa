@@ -16,7 +16,7 @@ import {
   FileDown, MapPin, Clock,
   CheckCircle, XCircle, ChevronDown, ShieldAlert,
   Phone, Mail, Globe, Star,
-  RotateCcw, Edit, ExternalLink, History, Megaphone,
+  RotateCcw, Edit, ExternalLink, Eye, History, Megaphone,
   AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";

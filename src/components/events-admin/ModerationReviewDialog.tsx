@@ -34,6 +34,7 @@ export function ModerationReviewDialog({
   if (!review) return null;
 
   const phoneCheck = validateBrazilianMobile(review.sub.phone || "");
+  const invalidPhoneReason = phoneCheck.valid ? "" : phoneCheck.reason;
   const isApprove = review.kind === "approved";
   const isAjuste = review.kind === "ajuste";
 
@@ -61,7 +62,7 @@ export function ModerationReviewDialog({
             {phoneCheck.valid ? (
               <>📱 WhatsApp do divulgador validado: <strong>{phoneCheck.display}</strong> — a mensagem abrirá em uma nova aba para você revisar e enviar.</>
             ) : (
-              <>⚠️ Telefone inválido: {phoneCheck.reason} A ação ocorre normalmente, mas o WhatsApp não será aberto.</>
+              <>⚠️ Telefone inválido: {invalidPhoneReason} A ação ocorre normalmente, mas o WhatsApp não será aberto.</>
             )}
           </div>
 
