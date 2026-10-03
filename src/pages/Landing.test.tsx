@@ -7,6 +7,7 @@ import Landing from "./Landing";
 class IntersectionObserverMock implements IntersectionObserver {
   root = null;
   rootMargin = "";
+  scrollMargin = "";
   thresholds = [];
   observe = vi.fn();
   unobserve = vi.fn();
