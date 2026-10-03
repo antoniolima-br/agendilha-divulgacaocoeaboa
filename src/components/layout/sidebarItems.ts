@@ -21,8 +21,8 @@ import {
   Building2,
   FolderKanban,
   ShoppingBag,
-  Settings2
-  ,CreditCard
+  Settings2,
+  CreditCard
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
