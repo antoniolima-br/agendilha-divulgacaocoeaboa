@@ -2,6 +2,17 @@ import { z } from "zod";
 import { validateIntlPhone, toE164 } from "@/lib/intlPhone";
 import { validateBrazilianMobile } from "@/lib/whatsapp";
 
+export const additionalEventSchema = z.object({
+  eventTitle: z.string().trim().max(120).optional().or(z.literal("")),
+  date: z.string().trim().min(1, "Selecione a data"),
+  startTime: z.string().trim().min(1, "Informe o horário de início"),
+  endTime: z.string().trim().optional(),
+  atrativoName: z.string().trim().min(1, "Informe a atração"),
+  category: z.string().trim().max(80).optional(),
+  ageRating: z.enum(["Livre", "10+", "12+", "14+", "16+", "18+"]).default("Livre"),
+  description: z.string().trim().max(500).optional(),
+});
+
 export const submissionFormSchema = z.object({
   imageSource: z.enum(["upload", "ai"]).optional(),
   selectedTemplate: z.string().optional(),
@@ -22,6 +33,7 @@ export const submissionFormSchema = z.object({
       }),
     )
     .default([]),
+  additionalEvents: z.array(additionalEventSchema).max(10, "Você pode enviar até 10 eventos por vez").default([]),
   
   nickName: z.string().trim().max(50).optional().or(z.literal("")),
   basicPhone: z.string().trim().optional().superRefine((val, ctx) => {

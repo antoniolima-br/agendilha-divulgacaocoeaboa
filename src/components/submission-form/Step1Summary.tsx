@@ -19,6 +19,7 @@ export function Step1Summary({ form, onEdit }: { form: UseFormReturn<any>; onEdi
     { icon: Music, text: v.atrativoName || "Sem atrativo" },
     { icon: MapPin, text: [v.locationName, v.eventAddress].filter(Boolean).join(" · ") || "Sem local" },
   ];
+  const additionalEvents = v.additionalEvents ?? [];
 
   return (
     <div className="rounded-2xl border bg-card/40 p-4 space-y-3">
@@ -40,6 +41,18 @@ export function Step1Summary({ form, onEdit }: { form: UseFormReturn<any>; onEdi
           </li>
         ))}
       </ul>
+      {additionalEvents.length > 0 && (
+        <div className="border-t border-border pt-3">
+          <p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Outros eventos</p>
+          <ul className="space-y-2">
+            {additionalEvents.map((event: Record<string, string>, index: number) => (
+              <li key={`event-${index}`} className="text-sm">
+                <strong>Evento {index + 2}:</strong> {event.eventTitle || event.atrativoName || "Sem título"} · {event.date ? format(new Date(event.date), "dd/MM/yyyy", { locale: ptBR }) : "Sem data"} · {event.startTime || "Sem horário"}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

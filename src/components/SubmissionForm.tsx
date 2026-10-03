@@ -33,6 +33,7 @@ import { measureFlowOperation, startFlowMeasure } from "@/lib/flow-performance";
 import { checkAttractionSchedule, useAttractionSchedule } from "@/data/useAttractionSchedule";
 import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNotice";
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
+import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
@@ -66,6 +67,7 @@ export default function SubmissionForm() {
       atrativoName: "", atrativoType: "", atrativoContact: "", atrativoEmail: "", atrativoCategory: undefined as any, atrativoOpeningHours: "",
       locationName: "", estabelecimentoId: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
       fotos: [],
+      additionalEvents: [],
       duvidasSource: "promotor",
       duvidasWhatsapp: "",
       responsavelNome: "",
@@ -298,6 +300,7 @@ export default function SubmissionForm() {
       case 1: return [
         "date", "startTime",
         "atrativoName",
+        "additionalEvents",
       ];
       // Etapa 2 — apenas o aceite legal continua obrigatório no envio final.
       case 2: return [
@@ -328,6 +331,25 @@ export default function SubmissionForm() {
         window.scrollTo(0, 0);
         submissionTimer.finish({ outcome: "blocked" });
         return;
+      }
+
+      for (let index = 0; index < values.additionalEvents.length; index += 1) {
+        const event = values.additionalEvents[index];
+        const schedule = await checkAttractionSchedule({
+          attractionName: event.atrativoName,
+          date: event.date,
+          startTime: event.startTime,
+          endTime: event.endTime,
+        });
+        if (schedule.some((entry) => entry.assessment === "conflict")) {
+          toast.error(`Horário indisponível no evento ${index + 2}`, {
+            description: "Ajuste os horários para manter pelo menos 2 horas livres.",
+          });
+          setCurrentStep(1);
+          window.scrollTo(0, 0);
+          submissionTimer.finish({ outcome: "blocked" });
+          return;
+        }
       }
 
       const clean = (v?: string | null) => {
@@ -489,6 +511,37 @@ export default function SubmissionForm() {
         return; // toast already shown by ctx
       }
 
+      const insertedSubmissionIds = [result.id];
+      for (let index = 0; index < values.additionalEvents.length; index += 1) {
+        const event = values.additionalEvents[index];
+        const additionalPayload = {
+          ...payload,
+          event_title: clean(event.eventTitle),
+          date: clean(event.date),
+          start_time: clean(event.startTime),
+          end_time: clean(event.endTime),
+          atrativo_name: clean(event.atrativoName),
+          atrativo_id: null,
+          artist_id: null,
+          category: clean(event.category) || payload.category,
+          age_rating: event.ageRating,
+          is_suitable_for_minors: event.ageRating === "Livre",
+          description: clean(event.description),
+          image_url: null,
+          image_url_story: null,
+          image_url_whatsapp: null,
+        };
+        const additionalResult = await addSubmission(additionalPayload as any);
+        if (!additionalResult) {
+          toast.error(`O evento ${index + 2} não foi enviado`, {
+            description: `${insertedSubmissionIds.length} evento(s) foram enviados. Remova os já enviados antes de tentar novamente.`,
+          });
+          submissionTimer.finish({ outcome: "failure" });
+          return;
+        }
+        insertedSubmissionIds.push(additionalResult.id);
+      }
+
       // Atrativos do evento: o principal + os incluídos pelo botão "Incluir atrativo".
       try {
         const extras = (values.extraAtrativos || []).filter((a) => clean(a?.name));
@@ -547,7 +600,7 @@ export default function SubmissionForm() {
             await supabaseClient
               .from("submissions")
               .update({ estabelecimento_id: novoLocal.id })
-              .eq("id", result.id);
+              .in("id", insertedSubmissionIds);
             emitEntityCreated("estabelecimento");
           }
         }
@@ -618,6 +671,7 @@ export default function SubmissionForm() {
       addressZip: 2, addressStreet: 2, addressNumber: 2,
       legalAcceptance: 2, responsavelNome: 2,
       duvidasAuthorized: 2,
+      additionalEvents: 1,
     };
 
     const target = stepMap[firstKey];
@@ -705,6 +759,10 @@ export default function SubmissionForm() {
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
                 <LocationStep form={form} />
+              </div>
+
+              <div className="border rounded-2xl px-4 py-5 bg-card/30">
+                <AdditionalEventsSection form={form} />
               </div>
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
@@ -811,7 +869,7 @@ export default function SubmissionForm() {
             ) : (
               <Button type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                Publicar evento
+                {form.watch("additionalEvents").length > 0 ? "Publicar eventos" : "Publicar evento"}
               </Button>
             )}
           </div>

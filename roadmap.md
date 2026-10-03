@@ -1,6 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Permitir vários eventos no mesmo estabelecimento, com data, início e detalhes individuais.
 - [x] Aplicar “Não sei o CEP” e remover o campo separado “Complemento” em todos os cadastros de estabelecimento.
 
 - [x] Preencher o atendimento comercial com responsável real já cadastrado e manter a seleção dinâmica da equipe.

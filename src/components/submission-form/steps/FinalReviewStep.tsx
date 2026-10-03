@@ -8,11 +8,17 @@ import { cn } from "@/lib/utils";
 export const FINAL_REQUIRED_FIELDS = ["date", "startTime", "atrativoName", "legalAcceptance"] as const;
 
 export function missingFinalFields(values: Record<string, any>): string[] {
-  return FINAL_REQUIRED_FIELDS.filter((f) => {
+  const primaryMissing = FINAL_REQUIRED_FIELDS.filter((f) => {
     const v = values?.[f];
     if (typeof v === "boolean") return !v;
     return !(typeof v === "string" ? v.trim() : v);
   });
+  const additionalMissing = (values?.additionalEvents ?? []).flatMap((event: Record<string, unknown>, index: number) =>
+    ["date", "startTime", "atrativoName"]
+      .filter((field) => !(typeof event?.[field] === "string" && String(event[field]).trim()))
+      .map((field) => `additionalEvents.${index}.${field}`),
+  );
+  return [...primaryMissing, ...additionalMissing];
 }
 
 type Row = { field: string; label: string; value: string | null; required?: boolean; step: number };
@@ -34,6 +40,7 @@ export function FinalReviewStep({ form, goToStep }: { form: UseFormReturn<any>; 
   ];
 
   const missing = rows.filter((r) => r.required && !(r.value && String(r.value).trim()));
+  const additionalEvents = v.additionalEvents ?? [];
 
   return (
     <div className="space-y-6">
@@ -84,6 +91,33 @@ export function FinalReviewStep({ form, goToStep }: { form: UseFormReturn<any>; 
           );
         })}
       </dl>
+
+      {additionalEvents.map((event: Record<string, string>, index: number) => {
+        const eventMissing = [
+          { field: "date", label: "Data" },
+          { field: "startTime", label: "Horário de início" },
+          { field: "atrativoName", label: "Atração" },
+        ].filter(({ field }) => !event[field]?.trim());
+        return (
+          <div key={`additional-${index}`} className={cn("rounded-md border p-4", eventMissing.length > 0 && "border-destructive bg-destructive/10")}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold uppercase text-muted-foreground">Evento {index + 2}</p>
+                <h3 className="font-bold">{event.eventTitle || event.atrativoName || "Sem título"}</h3>
+              </div>
+              <Button type="button" variant="ghost" size="icon" aria-label={`Editar evento ${index + 2}`} onClick={() => goToStep(1)}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {event.date ? formatEventDateTimeBR(event.date) : "Data não preenchida"} · {event.startTime || "Horário não preenchido"}
+              {event.endTime ? ` às ${event.endTime}` : ""}
+            </p>
+            <p className="text-sm text-muted-foreground">{event.atrativoName || "Atração não preenchida"}</p>
+            {eventMissing.length > 0 && <p className="mt-2 text-sm font-bold text-destructive">Falta: {eventMissing.map((item) => item.label).join(", ")}.</p>}
+          </div>
+        );
+      })}
     </div>
   );
 }
