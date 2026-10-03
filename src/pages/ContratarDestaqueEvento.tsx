@@ -1,10 +1,13 @@
 import { Navigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import { Crown, Loader2, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSubmission } from "@/data";
 import { formatDuration, formatPriceBRL, useHighlightPackages } from "@/data/useHighlightPackages";
 import { SETTING_KEYS, settingOr, useAppSettings } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
+import { handleError } from "@/lib/error-handler";
 
 type HighlightSubmission = {
   id: string;
@@ -21,6 +24,7 @@ export default function ContratarDestaqueEvento() {
   const { data: event, isLoading } = useSubmission<HighlightSubmission>(validId ? id : "", "id, slug, event_title, atrativo_name, promotion_choice, image_url");
   const { data: packages = [], isLoading: loadingPackages } = useHighlightPackages();
   const { data: settings } = useAppSettings();
+  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
 
   if (!validId) return <Navigate to="/meus-eventos" replace />;
   if (isLoading || loadingPackages) return <div className="flex min-h-[60vh] items-center justify-center"><Loader2 className="h-7 w-7 animate-spin text-primary" /></div>;
@@ -29,6 +33,22 @@ export default function ContratarDestaqueEvento() {
   const title = event.event_title || event.atrativo_name || "meu rolê";
   const teamWhatsapp = settingOr(settings, SETTING_KEYS.teamWhatsapp);
   const eventUrl = event.slug ? `${window.location.origin}/evento/${event.slug}` : `${window.location.origin}/evento-enviado/${event.id}`;
+
+  async function requestPackage(packageId: string, whatsappUrl: string) {
+    setSelectedPackage(packageId);
+    try {
+      const { error } = await supabase
+        .from("submissions")
+        .update({ highlight_package_id: packageId })
+        .eq("id", event.id);
+      if (error) throw error;
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      handleError(error, { context: "ContratarDestaqueEvento", fallback: "Não deu pra registrar o plano. Tenta de novo." });
+    } finally {
+      setSelectedPackage(null);
+    }
+  }
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:py-12">
@@ -50,8 +70,9 @@ export default function ContratarDestaqueEvento() {
               <h2 className="mt-3 text-xl font-bold">{pkg.name}</h2>
               {pkg.description && <p className="mt-2 flex-1 text-sm text-muted-foreground">{pkg.description}</p>}
               <p className="mt-4 text-lg font-black">{formatPriceBRL(pkg.price_cents)} <span className="text-sm font-medium text-muted-foreground">· {formatDuration(pkg.duration_days)}</span></p>
-              <Button asChild className="mt-4 w-full">
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">Contratar este plano</a>
+              <Button className="mt-4 w-full" disabled={selectedPackage !== null} onClick={() => void requestPackage(pkg.id, whatsappUrl)}>
+                {selectedPackage === pkg.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Contratar este plano
               </Button>
             </article>
           );

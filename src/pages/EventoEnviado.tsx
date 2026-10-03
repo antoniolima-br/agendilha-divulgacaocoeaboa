@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useSubmission } from "@/data";
 import logoCoeABoa from "@/assets/coeaboa-logo.webp";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   useHighlightPackages,
   formatPriceBRL,
@@ -70,18 +70,6 @@ export default function EventoEnviado() {
   );
   const { data: pacotes = [] } = useHighlightPackages();
   const [destaqueAberto, setDestaqueAberto] = useState(false);
-  const jaAbriu = useRef(false);
-
-  // Convite ao destaque logo após o envio — uma única vez por evento.
-  useEffect(() => {
-    if (jaAbriu.current || !sub?.id) return;
-    const chave = `destaque-visto:${sub.id}`;
-    if (sessionStorage.getItem(chave)) return;
-    jaAbriu.current = true;
-    sessionStorage.setItem(chave, "1");
-    const t = setTimeout(() => setDestaqueAberto(true), 900);
-    return () => clearTimeout(t);
-  }, [sub?.id]);
 
   if (!validId) {
     return <Navigate to="/meus-eventos" replace />;
