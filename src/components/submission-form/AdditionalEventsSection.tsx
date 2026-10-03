@@ -18,7 +18,7 @@ export function AdditionalEventsSection({ form }: { form: UseFormReturn<Submissi
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 id="additional-events-title" className="font-bold">Mais eventos neste estabelecimento</h2>
-          <p className="text-sm text-muted-foreground">O local, endereço e contato serão os mesmos.</p>
+          <p className="text-sm text-muted-foreground">O local, endereço e contato serão os mesmos. Pode repetir a data usando horários de início diferentes.</p>
         </div>
         <Button
           type="button"

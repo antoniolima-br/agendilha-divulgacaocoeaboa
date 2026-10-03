@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { validateIntlPhone, toE164 } from "@/lib/intlPhone";
 import { validateBrazilianMobile } from "@/lib/whatsapp";
+import { findDuplicateEventStart } from "./eventBatchValidation";
 
 export const additionalEventSchema = z.object({
   eventTitle: z.string().trim().max(120).optional().or(z.literal("")),
@@ -149,6 +150,26 @@ export const submissionFormSchema = z.object({
       }
     }
   }
+
+  const duplicateStarts = findDuplicateEventStart([
+    { date: data.date, startTime: data.startTime },
+    ...data.additionalEvents.map((event) => ({ date: event.date, startTime: event.startTime })),
+  ]);
+  duplicateStarts.forEach((eventIndex) => {
+    if (eventIndex === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["startTime"],
+        message: "Use um horário de início diferente para cada evento nesta data",
+      });
+      return;
+    }
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["additionalEvents", eventIndex - 1, "startTime"],
+      message: "Use um horário de início diferente para cada evento nesta data",
+    });
+  });
 });
 
 export type SubmissionFormData = z.infer<typeof submissionFormSchema>;
