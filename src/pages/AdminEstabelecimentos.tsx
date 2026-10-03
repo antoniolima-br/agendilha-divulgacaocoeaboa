@@ -30,6 +30,7 @@ import {
   EstabelecimentoCard,
   type EstabelecimentoRow,
 } from "@/components/estabelecimentos/EstabelecimentoCard";
+import { CepAddressSearch } from "@/components/estabelecimentos/CepAddressSearch";
 
 export default function AdminEstabelecimentos() {
   const { user, loading: authLoading } = useAuth();
@@ -195,6 +196,12 @@ export default function AdminEstabelecimentos() {
                   placeholder="00000-000"
                   className="h-10"
                 />
+                <CepAddressSearch
+                  onCepFound={(cep) => {
+                    setNewForm((current) => ({ ...current, cep }));
+                    setCepMessage("CEP encontrado. Confira antes de cadastrar.");
+                  }}
+                />
                 {(cepLoading || cepMessage) && (
                   <p className="text-xs text-muted-foreground" aria-live="polite">
                     {cepLoading ? "Buscando endereço..." : cepMessage}
@@ -215,9 +222,8 @@ export default function AdminEstabelecimentos() {
                 </Select>
               </div>
               <NewField label="Endereço" value={newForm.endereco} onChange={(v) => setNewForm({ ...newForm, endereco: v })} />
-              <NewField label="Número" value={newForm.numero} onChange={(v) => setNewForm({ ...newForm, numero: v })} />
+              <NewField label="Número" value={newForm.numero} onChange={(v) => setNewForm({ ...newForm, numero: v })} placeholder="Ex.: 120, sala 2" />
               <NewField label="Bairro" value={newForm.bairro} onChange={(v) => setNewForm({ ...newForm, bairro: v })} />
-              <NewField label="Complemento" value={newForm.complemento} onChange={(v) => setNewForm({ ...newForm, complemento: v })} />
               <NewField label="Contato (opcional)" value={newForm.contato} onChange={(v) => setNewForm({ ...newForm, contato: v })} />
             </div>
             <div className="flex gap-2">

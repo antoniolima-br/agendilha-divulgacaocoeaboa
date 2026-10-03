@@ -25,6 +25,7 @@ import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { PromotorBadge } from "@/components/promotor/PromotorBadge";
 import { useProfile } from "@/hooks/useProfile";
 import { PhotoGallery } from "@/components/media/PhotoGallery";
+import { CepAddressSearch } from "@/components/estabelecimentos/CepAddressSearch";
 import { ROUTES } from "@/routes/config";
 import {
   useMyEstabelecimentos,
@@ -262,6 +263,14 @@ function PromotorEstabelecimentosInner() {
                 onChange={(event) => void handleCepChange(event.target.value)}
                 placeholder="00000-000"
               />
+              {!editing && (
+                <CepAddressSearch
+                  onCepFound={(cep) => {
+                    setForm((current) => ({ ...current, cep }));
+                    setCepMessage("CEP encontrado. Confira antes de salvar.");
+                  }}
+                />
+              )}
               {(cepLoading || cepMessage) && (
                 <p className="text-xs text-muted-foreground" aria-live="polite">
                   {cepLoading ? "Buscando endereço..." : cepMessage}
@@ -276,8 +285,10 @@ function PromotorEstabelecimentosInner() {
               suggestColumn="endereco"
               autoComplete="street-address"
             />
-            <Field label="Número" value={form.numero} onChange={(v) => setForm({ ...form, numero: v })} autoComplete="address-line2" />
-            <Field label="Complemento" value={form.complemento} onChange={(v) => setForm({ ...form, complemento: v })} autoComplete="address-line2" />
+            <Field label="Número" value={form.numero} onChange={(v) => setForm({ ...form, numero: v })} placeholder="Ex.: 120, sala 2" autoComplete="address-line2" />
+            {editing && (
+              <Field label="Complemento" value={form.complemento} onChange={(v) => setForm({ ...form, complemento: v })} autoComplete="address-line2" />
+            )}
             <Field label="Bairro" value={form.bairro} onChange={(v) => setForm({ ...form, bairro: v })} autoComplete="address-level3" />
             <Field label="Contato do local (opcional)" value={form.contato} onChange={(v) => setForm({ ...form, contato: v })} placeholder="WhatsApp ou e-mail" autoComplete="off" />
           </div>
