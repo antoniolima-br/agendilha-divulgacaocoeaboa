@@ -1,0 +1,61 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
+import Landing from "./Landing";
+
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { id: "user-without-profile" } }),
+}));
+
+vi.mock("@/hooks/useProfile", () => ({
+  useProfile: () => ({ profile: undefined, loaded: true }),
+}));
+
+vi.mock("@/data/useAds", () => ({
+  usePublishedFlyerAds: () => ({ data: undefined }),
+  usePublishedAds: () => ({ data: undefined, isLoading: false }),
+  normalizeAds: (data: unknown) => Array.isArray(data) ? data : [],
+}));
+
+vi.mock("@/data/useAdPhotoUrls", () => ({
+  useAdPhotoUrls: () => ({ data: undefined }),
+  useAdCoverUrl: () => undefined,
+}));
+
+vi.mock("@/integrations/supabase/client", () => {
+  const result = Promise.resolve({ data: undefined, error: null });
+  const chain = new Proxy({}, {
+    get: (_target, property) => property === "then"
+      ? result.then.bind(result)
+      : () => chain,
+  });
+  return { supabase: { from: () => chain, rpc: vi.fn() } };
+});
+
+vi.mock("@/components/Header", () => ({ default: () => <header>Coé a Boa?</header> }));
+vi.mock("@/components/PersonalizationDialog", () => ({ PersonalizationDialog: () => null }));
+vi.mock("@/components/ShareDialog", () => ({ ShareDialog: () => null }));
+
+describe("Landing sem dados", () => {
+  it("renderiza a página inicial e suas seções sem eventos, anúncios ou perfil", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <Landing />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText("Coé a Boa?")).toBeInTheDocument();
+    expect(screen.getByLabelText("Categorias")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Nenhuma outra programação disponível agora. Confira novamente em breve.")).toBeInTheDocument();
+    });
+    expect(screen.getByText("Ainda não temos sugestões personalizadas")).toBeInTheDocument();
+  });
+});
