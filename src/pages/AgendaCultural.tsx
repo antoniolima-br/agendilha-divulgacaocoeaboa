@@ -300,8 +300,6 @@ function AgendaCulturalInner() {
       <EventDetailDialog
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
-        onShare={handleShare}
-        onCopyLink={handleCopyLink}
         trackShare={trackShare}
       />
     </div>

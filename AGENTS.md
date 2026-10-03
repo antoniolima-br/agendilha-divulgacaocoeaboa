@@ -15,3 +15,4 @@
 - Public event lists use the São Paulo calendar day as their cutoff: today's events remain visible all day and become past events only on the following day.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - During the launch promotion, Home automatically highlights today's flyers; future flyers are automatic only when today has no events, unless an admin explicitly activates them. Agenda keeps its existing promotional behavior.
+- Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.

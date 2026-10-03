@@ -5,7 +5,6 @@ import {
   CalendarDays,
   Clock,
   MapPin,
-  MessageCircle,
   Music as MusicIcon,
   Share2,
   Tag,
@@ -14,9 +13,9 @@ import {
 } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { EventImage } from "./EventImage";
-import { buildWhatsAppShare } from "./agenda-utils";
 import { categoryIcons, categoryLabels, type AgendaEvent } from "./types";
 import { buildFullAddress, getShareData } from "@/lib/sharing";
+import { EventShareButton } from "@/components/EventShareButton";
 
 interface DayEventCardProps {
   event: AgendaEvent;
@@ -70,15 +69,10 @@ export function DayEventCard({
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{ev.location || addr}</span></p>
           </div>
           <div className="flex flex-wrap gap-1.5">
-            <Button size="sm" variant="outline" className="h-9 rounded-full px-3 text-xs" onClick={stop(() => { trackShare(ev.id); window.open(buildWhatsAppShare(ev), "_blank"); })}>
-              <MessageCircle className="mr-1 h-3.5 w-3.5" /> WhatsApp
-            </Button>
             <Button size="sm" variant="outline" className="h-9 rounded-full px-3 text-xs" onClick={stop(() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`, "_blank"))}>
               <MapPin className="mr-1 h-3.5 w-3.5" /> Mapa
             </Button>
-            <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full" aria-label="Compartilhar" onClick={stop(() => { const d = getShareData(ev as any); onShare(d.title, d.text, d.url, ev.id); })}>
-              <Share2 className="h-4 w-4" />
-            </Button>
+             {(() => { const d = getShareData(ev as any); return <EventShareButton title={d.title} text={d.text} url={d.url} onShared={() => trackShare(ev.id)} compact />; })()}
           </div>
         </div>
       </CardContent>
