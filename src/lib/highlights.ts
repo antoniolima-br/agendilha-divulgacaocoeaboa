@@ -43,6 +43,36 @@ export function isHighlightActive(event: HighlightFields, now: Date = new Date()
   return highlightStatus(event, now) === "ativo";
 }
 
+/** Destaque concedido diretamente pela administração, sem considerar a cortesia automática por flyer. */
+export function isManualHighlightActive(event: HighlightFields, now: Date = new Date()): boolean {
+  if (!event.is_highlight || event.highlight_hidden) return false;
+  if (event.highlight_until && new Date(event.highlight_until).getTime() <= now.getTime()) return false;
+  return event.highlight_active !== false;
+}
+
+/**
+ * Regra promocional exclusiva do banner da Home:
+ * - flyers de hoje entram automaticamente;
+ * - flyers futuros entram automaticamente apenas quando não há evento hoje;
+ * - uma liberação administrativa válida sempre permite o flyer futuro.
+ */
+export function selectHomeLaunchFlyerEvents<
+  T extends HighlightFields & { date?: string | null },
+>(
+  events: T[],
+  todayISO: string,
+  hasEventsToday: boolean,
+  now: Date = new Date(),
+): T[] {
+  return events.filter((event) => {
+    if (!hasEventFlyer(event)) return false;
+    const date = event.date?.trim() ?? "";
+    if (date === todayISO) return true;
+    if (date <= todayISO) return false;
+    return !hasEventsToday || isManualHighlightActive(event, now);
+  });
+}
+
 /** Dias restantes do destaque (0 quando expirado, null quando sem prazo). */
 export function highlightDaysLeft(
   event: HighlightFields,
