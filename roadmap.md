@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Executar otimização profunda de performance, navegação, consultas, assets e experiência visual sem alterar funcionalidades.
+
 - [ ] Concluir auditoria técnica integral e corrigir falhas confirmadas em segurança, acesso, dados, interface, desempenho e testes.
 - [x] Adicionar escolha entre anúncio gratuito e destaque, com flyer e contratação vinculados ao evento.
 - [x] Separar locais de rolê de negócios gerais nos cadastros e listagens dos painéis.
