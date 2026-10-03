@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Concluir auditoria técnica integral e corrigir falhas confirmadas em segurança, acesso, dados, interface, desempenho e testes.
+
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
 - [x] Manter apenas “ver rolê” nas sugestões do Guia e deixar a opção de Uber nos detalhes do evento.
 - [x] Atualizar a saudação e refinar a janela do Guia do Coé com cabeçalho em gradiente e atalhos rápidos.
