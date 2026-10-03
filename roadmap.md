@@ -107,4 +107,4 @@
 - [x] Consolidar acesso a dados, permissões e tipagem compartilhada.
 - [x] Separar responsabilidades da Gestão de Eventos e do formulário de envio.
 - [x] Padronizar componentes reutilizáveis e remover duplicações comprovadas.
-- [ ] Validar testes, tipos, build e fluxos principais sem mudança visual.
+- [x] Validar testes, tipos, build e fluxos principais sem mudança visual.
