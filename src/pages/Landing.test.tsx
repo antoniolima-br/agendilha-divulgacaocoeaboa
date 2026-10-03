@@ -4,6 +4,18 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import Landing from "./Landing";
 
+class IntersectionObserverMock implements IntersectionObserver {
+  root = null;
+  rootMargin = "";
+  thresholds = [];
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn(() => []);
+}
+
+vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
+
 vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({ user: { id: "user-without-profile" } }),
 }));
