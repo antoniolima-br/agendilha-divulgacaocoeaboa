@@ -1,3 +1,5 @@
+import { eventDateISO } from "@/lib/eventDate";
+
 export type HighlightStatus = "ativo" | "expirado" | "escondido" | "sem_destaque";
 
 export interface HighlightFields {
@@ -64,9 +66,22 @@ export function selectHomeLaunchFlyerEvents<
 ): T[] {
   return events.filter((event) => {
     if (!hasEventFlyer(event)) return false;
-    const date = event.date?.trim() ?? "";
-    return date >= todayISO;
+    const date = eventDateISO(event.date);
+    return date !== "" && date >= todayISO;
   });
+}
+
+/** Mantém todos os eventos de hoje e completa a vitrine com próximos eventos até o limite padrão. */
+export function limitHomeCarouselEvents<T extends { date?: string | null }>(
+  events: T[],
+  todayISO: string,
+  defaultLimit = 8,
+): T[] {
+  const todayCount = events.reduce(
+    (count, event) => count + Number(eventDateISO(event.date) === todayISO),
+    0,
+  );
+  return events.slice(0, Math.max(defaultLimit, todayCount));
 }
 
 /** Dias restantes do destaque (0 quando expirado, null quando sem prazo). */

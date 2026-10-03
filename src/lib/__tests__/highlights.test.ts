@@ -5,6 +5,7 @@ import {
   isLaunchPromotionalHighlight,
   isHighlightActive,
   isManualHighlightActive,
+  limitHomeCarouselEvents,
   pickCarouselEvents,
   prioritizeHomeHeroEvents,
   selectHomeLaunchFlyerEvents,
@@ -87,6 +88,34 @@ describe("regra promocional do banner da Home", () => {
       { id: "ontem", date: "2026-09-04", image_url: "ontem.webp", is_highlight: true },
     ];
     expect(selectHomeLaunchFlyerEvents(mixedEvents, today).map((event) => event.id)).toEqual(["hoje", "amanha", "manual"]);
+  });
+
+  it("normaliza formatos de data antes de selecionar flyers atuais e futuros", () => {
+    const formattedEvents = [
+      { id: "iso", date: "2026-09-05", image_url: "iso.webp" },
+      { id: "br", date: "05/09/2026", image_url: "br.webp" },
+      { id: "virada-sp", date: "2026-09-05T02:30:00.000Z", image_url: "anterior.webp" },
+      { id: "hoje-sp", date: "2026-09-05T03:30:00.000Z", image_url: "hoje-sp.webp" },
+    ];
+
+    expect(selectHomeLaunchFlyerEvents(formattedEvents, today).map((event) => event.id)).toEqual([
+      "iso",
+      "br",
+      "hoje-sp",
+    ]);
+  });
+
+  it("não corta flyers de hoje quando há mais eventos que o limite padrão", () => {
+    const manyToday = Array.from({ length: 10 }, (_, index) => ({
+      id: `hoje-${index}`,
+      date: today,
+    }));
+    const ordered = [...manyToday, { id: "futuro", date: "2026-09-06" }];
+
+    expect(limitHomeCarouselEvents(ordered, today)).toHaveLength(10);
+    expect(limitHomeCarouselEvents(ordered, today).map((event) => event.id)).toEqual(
+      manyToday.map((event) => event.id),
+    );
   });
 
   it("diferencia liberação administrativa da cortesia automática por flyer", () => {

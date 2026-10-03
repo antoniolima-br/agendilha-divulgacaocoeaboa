@@ -39,7 +39,7 @@ export function HomeMixedHeroCarousel({
   const [ratios, setRatios] = useState<Record<string, number>>({});
   const [trims, setTrims] = useState<Record<string, { t: number; b: number }>>({});
 
-  const items = useMemo(() => events.slice(0, 6), [events]);
+  const items = useMemo(() => events, [events]);
   useEffect(() => {
     let cancelled = false;
     let idleId: number | undefined;
