@@ -62,12 +62,12 @@ export default function ArtistProfile() {
     },
   });
 
-  // Shows futuros do artista (aprovados/publicados) — via view pública sem PII.
+  // Shows de hoje e futuros do artista — via view pública sem PII.
   const { data: shows = [] } = useQuery({
     queryKey: ["artist-shows", id],
     enabled: !!id,
     queryFn: async () => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = saoPauloTodayISO();
       const { data, error } = await supabase
         .from("public_submissions")
         .select(
@@ -75,11 +75,11 @@ export default function ArtistProfile() {
         )
         .eq("artist_id", id!)
         .in("status", ["aprovado", "publicado"])
-        .gte("date", today)
+        .gte("date", addDaysToISO(today, -1))
         .order("date", { ascending: true })
         .limit(50);
       if (error) throw error;
-      return data || [];
+      return (data || []).filter((show) => isCurrentOrFutureEventDate(show.date));
     },
   });
 

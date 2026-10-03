@@ -25,7 +25,7 @@ export default function PublicProfile() {
         .eq("id", userId)
         .single();
       if (error) throw error;
-      return data;
+      return (data ?? []).filter((event) => isCurrentOrFutureEventDate(event.date));
     },
     enabled: !!userId,
   });

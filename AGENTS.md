@@ -11,3 +11,4 @@
 - Multi-event submissions keep establishment and contact data shared while each event is stored as its own submission row; this preserves moderation and publication behavior.
 - Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
+- Public event lists use the São Paulo calendar day as their cutoff: today's events remain visible all day and become past events only on the following day.
