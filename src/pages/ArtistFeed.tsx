@@ -81,7 +81,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
              </Avatar>
              <div>
                <h3 className="font-display font-black text-xl leading-none">{item.artist.name}</h3>
-               <p className="text-sm text-white/70 font-medium">#{item.artist.genre}</p>
+               <p className="text-sm text-white/90 font-medium">#{item.artist.genre}</p>
              </div>
            </Link>
          ) : (
@@ -91,7 +91,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
              </Avatar>
              <div>
                <h3 className="font-display font-black text-xl leading-none italic">Artista Removido</h3>
-               <p className="text-sm text-white/70 font-medium">Desconhecido</p>
+               <p className="text-sm text-white/90 font-medium">Desconhecido</p>
              </div>
            </div>
          )}
@@ -236,7 +236,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
        
        {/* Help Overlay (visible on first load) */}
        {activeIndex === 0 && (
-         <div className="fixed bottom-32 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-white/50 pointer-events-none z-20">
+         <div className="fixed bottom-32 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce text-white/80 pointer-events-none z-20">
            <ChevronDown className="h-6 w-6" />
            <span className="text-[10px] font-bold uppercase tracking-widest mt-1">Role para descobrir</span>
          </div>

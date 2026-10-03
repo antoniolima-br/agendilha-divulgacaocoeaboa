@@ -201,7 +201,7 @@ export function UserCard(props: UserCardProps) {
                   </div>
                 </div>
               )}
-              <p className="sm:col-span-2 text-[10px] text-muted-foreground/60 uppercase tracking-widest font-mono">
+              <p className="sm:col-span-2 text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
                 UID: {u.id}
               </p>
             </div>

@@ -64,10 +64,10 @@ export const statusConfig: Record<
   string,
   { label: string; color: string; icon: LucideIcon; bg: string; border: string }
 > = {
-  pendente:  { label: "Pendente",  color: "text-amber-700",   bg: "bg-amber-100",   border: "border-amber-200",   icon: Clock3 },
-  aprovado:  { label: "Aprovado",  color: "text-emerald-700", bg: "bg-emerald-100", border: "border-emerald-200", icon: CheckCircle },
-  rejeitado: { label: "Rejeitado", color: "text-rose-700",    bg: "bg-rose-100",    border: "border-rose-200",    icon: XCircle },
-  ajuste:    { label: "Ajuste",     color: "text-orange-700", bg: "bg-orange-100", border: "border-orange-200", icon: AlertCircle },
+  pendente:  { label: "Pendente",  color: "text-amber-700 dark:text-amber-400",   bg: "bg-amber-100 dark:bg-amber-900/30",   border: "border-amber-200 dark:border-amber-800/50",   icon: Clock3 },
+  aprovado:  { label: "Aprovado",  color: "text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-900/30", border: "border-emerald-200 dark:border-emerald-800/50", icon: CheckCircle },
+  rejeitado: { label: "Rejeitado", color: "text-rose-700 dark:text-rose-400",    bg: "bg-rose-100 dark:bg-rose-900/30",    border: "border-rose-200 dark:border-rose-800/50",    icon: XCircle },
+  ajuste:    { label: "Ajuste",     color: "text-orange-700 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-900/30", border: "border-orange-200 dark:border-orange-800/50", icon: AlertCircle },
 };
 
 export function formatSubmissionDate(iso: string) {

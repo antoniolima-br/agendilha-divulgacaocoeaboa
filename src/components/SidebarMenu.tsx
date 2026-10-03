@@ -112,7 +112,7 @@ export function SidebarMenu({ onClose }: Props) {
         {filteredSections.map((section, idx) => (
           <div key={section.id} className="space-y-2 animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
             <div className="flex items-center gap-2 px-3 mb-3 opacity-80">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">
                 {section.title}
               </h3>
             </div>
@@ -165,7 +165,7 @@ export function SidebarMenu({ onClose }: Props) {
           </div>
         )}
         <div className="mt-4 text-center">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground/30">
+          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60">
             © {new Date().getFullYear()} Coé a Boa?
           </p>
         </div>

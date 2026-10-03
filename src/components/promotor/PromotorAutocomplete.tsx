@@ -98,7 +98,7 @@ export function PromotorAutocomplete({
           className="pr-10"
           autoComplete="off"
         />
-        <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/50" />
+        <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/80" />
       </div>
 
       {open && suggestions.length > 0 && (

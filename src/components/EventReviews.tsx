@@ -81,7 +81,7 @@ export default function EventReviews({ eventId, eventTitle }: EventReviewsProps)
                     />
                   ))}
                 </div>
-                <span className="text-[10px] text-muted-foreground/60 font-mono">
+                <span className="text-[10px] text-muted-foreground font-mono">
                   {new Date(review.created_at).toLocaleDateString("pt-BR")}
                 </span>
               </div>

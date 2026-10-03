@@ -14,27 +14,27 @@ const config: Record<RoleType, { label: string; icon: LucideIcon; styles: string
   master: {
     label: "Admin Master",
     icon: Crown,
-    styles: "border-secondary text-secondary bg-secondary/5",
+    styles: "border-secondary/50 text-secondary bg-secondary/10",
   },
   admin: {
     label: "Admin",
     icon: Shield,
-    styles: "border-primary text-primary bg-primary/5",
+    styles: "border-primary/50 text-primary bg-primary/10",
   },
   collaborator: {
     label: "Divulgador",
     icon: ShieldCheck,
-    styles: "border-emerald-500 text-emerald-600 bg-emerald-50",
+    styles: "border-emerald-500/30 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400",
   },
   artist: {
     label: "Músico / Banda",
     icon: User,
-    styles: "border-blue-500 text-blue-600 bg-blue-50",
+    styles: "border-blue-500/30 text-blue-600 bg-blue-50 dark:bg-blue-950/30 dark:text-blue-400",
   },
   user: {
     label: "Público",
     icon: User,
-    styles: "border-slate-200 text-slate-500 bg-slate-50",
+    styles: "border-slate-300 text-slate-600 bg-slate-50 dark:bg-slate-800/40 dark:text-slate-400",
   },
 };
 

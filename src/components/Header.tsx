@@ -345,7 +345,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                         size="sm"
                        variant="ghost"
                        aria-label="Ver meus envios"
-                       className="hidden sm:inline-flex text-foreground/70 hover:text-foreground hover:bg-foreground/5 font-medium text-xs sm:text-sm px-2 sm:px-3"
+                       className="hidden sm:inline-flex text-foreground hover:text-foreground hover:bg-foreground/5 font-medium text-xs sm:text-sm px-2 sm:px-3"
                      >
                        <ClipboardList className="h-4 w-4 mr-1.5" />
                        <span className="hidden sm:inline">Envios</span>
@@ -497,7 +497,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                     size="sm"
                     variant="ghost"
                     aria-label="Ver meus envios"
-                    className="h-9 px-2.5 text-foreground/70 hover:text-foreground hover:bg-foreground/5 font-medium text-xs"
+                    className="h-9 px-2.5 text-foreground hover:text-foreground hover:bg-foreground/5 font-medium text-xs"
                   >
                     <ClipboardList className="h-4 w-4" />
                     {savedCount > 0 && (

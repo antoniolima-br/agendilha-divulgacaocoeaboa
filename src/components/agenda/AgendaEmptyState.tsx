@@ -16,7 +16,7 @@ export function AgendaEmptyState({
   return (
     <div className="text-center py-16 px-6 bg-muted/10 rounded-[2rem] border-2 border-dashed border-border/60 animate-in fade-in zoom-in duration-500">
       <div className="bg-background w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm ring-8 ring-muted/5">
-        <CalendarDays className="h-10 w-10 text-muted-foreground/40" />
+        <CalendarDays className="h-10 w-10 text-muted-foreground/70" />
       </div>
       <h3 className="text-2xl font-black text-foreground mb-3 tracking-tight">
         A Ilha está descansando...

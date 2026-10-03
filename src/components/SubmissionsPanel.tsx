@@ -79,7 +79,7 @@ function StatusHistory({ eventId }: { eventId: string }) {
                 </span>
               </div>
               {l.notes && <p className="text-muted-foreground mt-0.5 break-words">{l.notes}</p>}
-              <p className="text-[10px] text-muted-foreground/70 mt-0.5">por {names[l.user_id] || `${l.user_id.slice(0, 8)}…`}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">por {names[l.user_id] || `${l.user_id.slice(0, 8)}…`}</p>
             </div>
           ))}
         </div>
@@ -230,7 +230,7 @@ export default function SubmissionsPanel({ children }: { children: React.ReactNo
           </div>
         ) : submissions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <ClipboardList className="h-12 w-12 text-muted-foreground/40 mb-3" />
+            <ClipboardList className="h-12 w-12 text-muted-foreground/70 mb-3" />
             <p className="text-muted-foreground text-sm">Nenhum envio encontrado.</p>
           </div>
         ) : (
@@ -315,7 +315,7 @@ export default function SubmissionsPanel({ children }: { children: React.ReactNo
                               Publicado na Agenda
                             </Badge>
                           )}
-                          <Badge variant="outline" className="text-[10px] font-bold text-muted-foreground/70 uppercase">
+                          <Badge variant="outline" className="text-[10px] font-bold text-muted-foreground uppercase">
                             {categoryLabels[sub.category || ""] || "—"}
                           </Badge>
                         </div>

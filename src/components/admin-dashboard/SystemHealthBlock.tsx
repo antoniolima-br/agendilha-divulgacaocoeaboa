@@ -26,7 +26,7 @@ export function SystemHealthBlock({ health }: SystemHealthProps) {
   return (
     <Card className="bg-white/60 backdrop-blur-md border-white/40 shadow-sm overflow-hidden">
       <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-3">
-        <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+        <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
           <RefreshCcw className="h-4 w-4" />
           Saúde do Sistema
         </CardTitle>

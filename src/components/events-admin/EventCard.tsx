@@ -208,7 +208,7 @@ export function EventCard({
               </div>
             )}
 
-            <p className="text-xs text-muted-foreground/60">Enviado em {formatDate(sub.created_at)}</p>
+            <p className="text-xs text-muted-foreground">Enviado em {formatDate(sub.created_at)}</p>
 
             {auditLog && <EventAuditLog logs={auditLog} />}
 

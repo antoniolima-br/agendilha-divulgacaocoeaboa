@@ -28,7 +28,7 @@
     --secondary-foreground: 40 33% 97%;
 
     --muted: 36 27% 92%;               /* #f0ebe3 surface alt */
-    --muted-foreground: 30 24% 44%;
+    --muted-foreground: 30 18% 35%;
 
     --accent: 36 31% 70%;              /* #c9b99a sand accent */
     --accent-foreground: 24 12% 15%;
@@ -99,12 +99,12 @@
 
   input::placeholder,
   textarea::placeholder {
-    color: hsl(var(--muted-foreground) / 0.5);
+    color: hsl(var(--muted-foreground) / 0.75);
     opacity: 1;
   }
 
   input[data-mask-empty="true"] {
-    color: hsl(var(--muted-foreground) / 0.5);
+    color: hsl(var(--muted-foreground) / 0.75);
   }
 
   input[data-mask-empty="true"]::-webkit-calendar-picker-indicator {

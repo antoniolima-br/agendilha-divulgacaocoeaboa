@@ -409,7 +409,7 @@ function AdminEventsInner() {
           ) : (
             <div className="divide-y divide-border">
               {filtered.map((sub) => (
-             <div key={sub.id} className="p-3 transition-colors hover:bg-muted/5 sm:p-5">
+             <div key={sub.id} className="p-3 transition-colors hover:bg-muted/20 dark:hover:bg-muted/40 sm:p-5">
                    <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-6">
                     {/* Informações Principais */}
                      <div className="col-span-3 space-y-2">
@@ -435,7 +435,7 @@ function AdminEventsInner() {
                             </div>
                           ) : (
                             <div className="h-14 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                              <CalendarDays className="h-5 w-5 text-muted-foreground/40" />
+                              <CalendarDays className="h-5 w-5 text-muted-foreground/70" />
                             </div>
                           )}
                          <div className="min-w-0 flex-1">
@@ -452,7 +452,7 @@ function AdminEventsInner() {
                          <Badge variant="secondary" className="text-[10px] font-bold bg-primary/10 text-primary border-none uppercase tracking-wider">
                            {categoryLabels[sub.category || ''] || 'Outros'}
                          </Badge>
-                         <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">ID: {sub.id.slice(0, 8)}</span>
+                         <span className="text-[10px] text-muted-foreground/90 font-mono bg-muted dark:bg-muted/50 px-1.5 py-0.5 rounded">ID: {sub.id.slice(0, 8)}</span>
                        </div>
                          <div className="flex flex-col gap-1 mt-3 p-2 bg-muted/20 rounded-lg border border-border/30">
                           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest px-0.5">Data de Cadastro</span>
@@ -519,7 +519,7 @@ function AdminEventsInner() {
                               {cfg.label.toUpperCase()}
                             </Badge>
                             {sub.status === 'aprovado' && (
-                              <span className="text-[10px] font-bold text-indigo-600 flex items-center gap-1.5 ml-1">
+                              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 ml-1">
                                 <Globe className="h-3 w-3" />
                                 NA AGENDA
                               </span>
@@ -534,7 +534,7 @@ function AdminEventsInner() {
                         {/* Ver Detalhes */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
+                             <Button size="icon" variant="outline" className="bg-transparent border-border hover:bg-muted hover:text-primary hover:border-primary/20 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -544,7 +544,7 @@ function AdminEventsInner() {
                         {/* Editar (Abre expansão ou poderia ser rota dedicada) */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setQuickEdit(sub)}>
+                             <Button size="icon" variant="outline" className="bg-transparent border-border hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setQuickEdit(sub)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -651,7 +651,7 @@ function AdminEventsInner() {
                                 "transition-all shadow-sm md:h-9 md:w-9",
                                 sub.is_highlight
                                   ? "bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100"
-                                  : "bg-white border-border hover:bg-amber-50 hover:text-amber-600"
+                                  : "bg-transparent border-border hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600"
                               )}
                               onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}
                             >

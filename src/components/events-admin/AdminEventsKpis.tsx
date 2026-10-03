@@ -27,7 +27,7 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
       label: "Aprovados",
       value: kpis.approved,
       valueClass: "text-emerald-600",
-      labelClass: "text-muted-foreground/70",
+      labelClass: "text-muted-foreground",
       activeClass: "border-emerald-400 ring-2 ring-emerald-200",
     },
     {
@@ -35,15 +35,15 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
       label: "Rejeitados",
       value: kpis.rejected,
       valueClass: "text-rose-600",
-      labelClass: "text-muted-foreground/70",
+      labelClass: "text-muted-foreground",
       activeClass: "border-rose-400 ring-2 ring-rose-200",
     },
     {
       status: "all",
       label: "Total",
       value: kpis.total,
-      valueClass: "text-foreground/70",
-      labelClass: "text-muted-foreground/70",
+      valueClass: "text-foreground/80",
+      labelClass: "text-muted-foreground",
       activeClass: "border-primary ring-2 ring-primary/20",
     },
   ];

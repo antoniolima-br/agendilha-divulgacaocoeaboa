@@ -137,7 +137,7 @@ export default function EventoEnviado() {
             <CheckCircle2 className="h-7 w-7 sm:h-10 sm:w-10 text-emerald-400" />
             Evento enviado para curadoria
           </h1>
-          <p className="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
+          <p className="text-slate-300 text-sm sm:text-base max-w-md mx-auto">
             Recebemos tudo certinho. Confirme os dados no seu WhatsApp e acompanhe a análise.
           </p>
         </div>
@@ -145,13 +145,13 @@ export default function EventoEnviado() {
         {/* Bloco de status */}
         <section className="rounded-3xl border border-slate-800 bg-slate-900/80 p-5 sm:p-8 space-y-6 shadow-2xl shadow-black/30 backdrop-blur-sm">
           {loading ? (
-            <p className="text-slate-400 inline-flex items-center gap-2 text-sm">
+            <p className="text-slate-300 inline-flex items-center gap-2 text-sm">
               <Loader2 className="h-4 w-4 animate-spin" /> Carregando detalhes…
             </p>
           ) : (
             <dl className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-1">
-                <dt className="text-[11px] uppercase tracking-widest text-slate-500 font-semibold">
+                <dt className="text-[11px] uppercase tracking-widest text-slate-300 font-semibold">
                   Evento
                 </dt>
                 <dd className="font-bold text-base sm:text-lg leading-snug text-slate-50">
@@ -159,7 +159,7 @@ export default function EventoEnviado() {
                 </dd>
               </div>
               <div className="space-y-1">
-                <dt className="text-[11px] uppercase tracking-widest text-slate-500 font-semibold">
+                <dt className="text-[11px] uppercase tracking-widest text-slate-300 font-semibold">
                   Data e horário
                 </dt>
                 <dd className="inline-flex items-center gap-2 font-medium text-slate-200">
@@ -169,7 +169,7 @@ export default function EventoEnviado() {
                 </dd>
               </div>
               <div className="space-y-1">
-                <dt className="text-[11px] uppercase tracking-widest text-slate-500 font-semibold">
+                <dt className="text-[11px] uppercase tracking-widest text-slate-300 font-semibold">
                   Local
                 </dt>
                 <dd className="inline-flex items-center gap-2 font-medium text-slate-200">
@@ -178,7 +178,7 @@ export default function EventoEnviado() {
                 </dd>
               </div>
               <div className="space-y-1">
-                <dt className="text-[11px] uppercase tracking-widest text-slate-500 font-semibold">
+                <dt className="text-[11px] uppercase tracking-widest text-slate-300 font-semibold">
                   Atrativo principal
                 </dt>
                 <dd className="inline-flex items-center gap-2 font-medium text-slate-200">
@@ -209,11 +209,11 @@ export default function EventoEnviado() {
                 </a>
               ) : (
                 <div className="h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-xl bg-slate-800/80 flex items-center justify-center ring-1 ring-slate-700">
-                  <ImageIcon className="h-7 w-7 text-slate-500" />
+                  <ImageIcon className="h-7 w-7 text-slate-300" />
                 </div>
               )}
               <div className="min-w-0 space-y-1.5">
-                <p className="text-[11px] uppercase tracking-widest text-slate-500 font-semibold">
+                <p className="text-[11px] uppercase tracking-widest text-slate-300 font-semibold">
                   Flyer do evento
                 </p>
                 <p className="text-sm text-slate-300 leading-snug">
@@ -257,7 +257,7 @@ export default function EventoEnviado() {
                       className={`h-8 w-8 sm:h-9 sm:w-9 rounded-full flex items-center justify-center border-2 transition-colors shadow-md ${
                         ativa
                           ? "bg-amber-400 border-amber-400 text-slate-950 shadow-amber-400/30"
-                          : "bg-slate-900 border-slate-700 text-slate-500"
+                          : "bg-slate-900 border-slate-700 text-slate-300"
                       }`}
                     >
                       {atual && i === 1 ? (
@@ -268,7 +268,7 @@ export default function EventoEnviado() {
                     </span>
                     <span
                       className={`text-[11px] sm:text-xs font-semibold text-center ${
-                        ativa ? "text-slate-100" : "text-slate-500"
+                        ativa ? "text-slate-100" : "text-slate-300"
                       }`}
                     >
                       {etapa}
@@ -300,7 +300,7 @@ export default function EventoEnviado() {
               Destaque sua publicação para maior visibilidade
             </h2>
           </div>
-          <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
+          <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
             Contrate o destaque e seu flyer ficará em evidência no carrossel de até 10 eventos,
             aumentando alcance e público.
           </p>
@@ -421,7 +421,7 @@ export default function EventoEnviado() {
               href="https://wa.me/5521999999999"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-slate-400 hover:text-amber-400 transition-colors"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-amber-400 transition-colors"
             >
               <span className="h-5 w-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/30">
                 <MessageCircle className="h-3 w-3 text-white" />
@@ -430,7 +430,7 @@ export default function EventoEnviado() {
             </a>
             <Link
               to="/divulgar"
-              className="text-slate-400 hover:text-amber-400 transition-colors"
+              className="text-slate-300 hover:text-amber-400 transition-colors"
             >
               Divulgação Geral
             </Link>
