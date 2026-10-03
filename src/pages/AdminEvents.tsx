@@ -18,7 +18,7 @@ import {
   CheckCircle, XCircle, ChevronDown, ShieldAlert,
   Phone, Mail, Globe, Star,
   RotateCcw, Edit, ExternalLink, Eye, History, Megaphone,
-  AlertCircle
+   AlertCircle, Wallet
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
