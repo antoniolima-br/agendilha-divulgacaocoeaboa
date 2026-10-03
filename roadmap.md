@@ -111,3 +111,4 @@
 
 ## Cadastro de estabelecimento
 - [x] Permitir buscar o CEP por Estado, Cidade, Bairro e Nome da Rua no cadastro público.
+- [x] Remover o campo separado de complemento e permitir informá-lo junto ao número.
