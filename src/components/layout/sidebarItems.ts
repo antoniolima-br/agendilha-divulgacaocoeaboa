@@ -135,8 +135,15 @@ export const sidebarConfig: SidebarSection[] = [
           },
           {
             id: "estabelecimentos_explorar",
-            label: "Locais/Estabelecimentos",
+            label: "Locais de rolê",
             path: ROUTES.PROMOTOR_ESTABELECIMENTOS,
+            icon: Building2,
+            roles: ["promoter", "admin", "master"]
+          },
+          {
+            id: "negocios_explorar",
+            label: "Negócios gerais",
+            path: ROUTES.PROMOTOR_NEGOCIOS,
             icon: Building2,
             roles: ["promoter", "admin", "master"]
           }
@@ -263,8 +270,15 @@ export const sidebarConfig: SidebarSection[] = [
           },
           {
             id: "estabelecimentos_admin",
-            label: "Gerenciar Estabelecimentos",
+            label: "Gerenciar Locais de Rolê",
             path: ROUTES.ADMIN_ESTABELECIMENTOS,
+            icon: Building2,
+            roles: ["admin", "master"]
+          },
+          {
+            id: "negocios_admin",
+            label: "Gerenciar Negócios Gerais",
+            path: ROUTES.ADMIN_NEGOCIOS,
             icon: Building2,
             roles: ["admin", "master"]
           }

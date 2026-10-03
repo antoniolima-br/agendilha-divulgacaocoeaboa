@@ -1,10 +1,11 @@
 
 - Níveis admin: papéis `senior` e `financeiro` em user_roles somados ao `admin`; baixa de pagamento só via `payment_records` (financeiro/master) — separa quem modera de quem mexe em dinheiro.
-- Eventos novos entram com `is_free=true` e sem flyer automático; gratuitos sem destaque aparecem só como texto no fim da agenda.
+- A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; só a confirmação financeira ativa a prioridade, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
 - O horário de funcionamento do atrativo fica em `atrativos.opening_hours` como texto livre e é exibido ao selecioná-lo no formulário; a agenda de apresentações continua sendo validada separadamente.
 - Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
+- Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
 - Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.

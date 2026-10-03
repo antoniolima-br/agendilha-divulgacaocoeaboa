@@ -33,9 +33,18 @@ import {
 import { CepAddressSearch } from "@/components/estabelecimentos/CepAddressSearch";
 
 export default function AdminEstabelecimentos() {
+  return <AdminEstabelecimentosPage listingKind="event_venue" />;
+}
+
+export function AdminNegocios() {
+  return <AdminEstabelecimentosPage listingKind="general_business" />;
+}
+
+function AdminEstabelecimentosPage({ listingKind }: { listingKind: "event_venue" | "general_business" }) {
+  const isBusiness = listingKind === "general_business";
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isMaster, loading: permsLoading } = useAppPermissions();
-  const { data: rowsRaw = [], isLoading: loading } = useAllEstabelecimentos(isAdmin);
+  const { data: rowsRaw = [], isLoading: loading } = useAllEstabelecimentos(isAdmin, listingKind);
   const rows = rowsRaw as EstabelecimentoRow[];
   const upsert = useUpsertEstabelecimento();
   const remove_ = useDeleteEstabelecimento();
@@ -134,6 +143,7 @@ export default function AdminEstabelecimentos() {
       contato: newForm.contato.trim() || null,
       responsavel_id: user.id,
       created_by: user.id,
+      listing_kind: listingKind,
     };
     try {
       await upsert.mutateAsync({ payload });
@@ -152,8 +162,8 @@ export default function AdminEstabelecimentos() {
   return (
     <PageContainer maxWidth="5xl">
       <SectionHeader
-        title="Gerenciar Estabelecimentos"
-        subtitle="Consulte e edite os locais cadastrados na agenda."
+        title={isBusiness ? "Gerenciar Negócios Gerais" : "Gerenciar Locais de Rolê"}
+        subtitle={isBusiness ? "Cadastros comerciais que não participam da agenda de eventos." : "Consulte e edite somente os locais cadastrados para eventos e rolês."}
         rightElement={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full border border-border">
@@ -181,7 +191,7 @@ export default function AdminEstabelecimentos() {
       {showNew && (
         <Card className="border-primary/30">
           <CardContent className="p-4 sm:p-5 space-y-3">
-            <h3 className="font-bold">Novo estabelecimento</h3>
+            <h3 className="font-bold">{isBusiness ? "Novo negócio geral" : "Novo local de rolê"}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <NewField label="Nome*" value={newForm.nome} onChange={(v) => setNewForm({ ...newForm, nome: v })} />
               <div className="space-y-1">
@@ -215,7 +225,7 @@ export default function AdminEstabelecimentos() {
                     <SelectValue placeholder="Selecione uma categoria" />
                   </SelectTrigger>
                   <SelectContent>
-                    {["Bar", "Restaurante", "Casa de show", "Quiosque", "Centro cultural", "Igreja", "Praça", "Clube", "Outro"].map((tipo) => (
+                    {(isBusiness ? ["Farmácia", "Padaria", "Mercado", "Loja", "Serviços", "Saúde", "Beleza", "Outro"] : ["Bar", "Restaurante", "Casa de show", "Quiosque", "Centro cultural", "Igreja", "Praça", "Clube", "Outro"]).map((tipo) => (
                       <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
                     ))}
                   </SelectContent>
@@ -244,8 +254,8 @@ export default function AdminEstabelecimentos() {
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={Building2}
-          title="Nenhum estabelecimento"
-          description={search ? "Tente outra busca." : "Comece cadastrando o primeiro local."}
+          title={isBusiness ? "Nenhum negócio geral" : "Nenhum local de rolê"}
+          description={search ? "Tente outra busca." : isBusiness ? "Comece cadastrando o primeiro negócio." : "Comece cadastrando o primeiro local."}
         />
       ) : (
         <div className="grid max-h-[65dvh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain pr-1 [scrollbar-gutter:stable] md:max-h-[calc(100dvh-18rem)]">

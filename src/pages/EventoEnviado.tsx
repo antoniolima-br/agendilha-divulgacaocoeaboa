@@ -45,6 +45,7 @@ interface Submission {
   responsible_name?: string | null;
   responsavel_duvidas_whatsapp?: string | null;
   phone?: string | null;
+  promotion_choice?: string;
 }
 
 const ETAPAS = ["Enviado", "Em análise", "Publicado"];
@@ -65,7 +66,7 @@ export default function EventoEnviado() {
   const validId = !!id && /^[0-9a-f-]{10,}$/i.test(id);
   const { data: sub, isLoading: loading } = useSubmission<Submission>(
     validId ? id! : "",
-    "id, slug, event_title, date, start_time, end_time, location, atrativo_name, image_url, status, responsible_name, responsavel_duvidas_whatsapp, phone"
+    "id, slug, event_title, date, start_time, end_time, location, atrativo_name, image_url, status, responsible_name, responsavel_duvidas_whatsapp, phone, promotion_choice"
   );
   const { data: pacotes = [] } = useHighlightPackages();
   const [destaqueAberto, setDestaqueAberto] = useState(false);
@@ -219,7 +220,9 @@ export default function EventoEnviado() {
                 <p className="text-sm text-slate-300 leading-snug">
                   {sub?.image_url
                     ? "Prévia do flyer que vai junto com a publicação."
-                    : "Um flyer padrão será gerado automaticamente na publicação."}
+                    : sub?.promotion_choice === "highlight"
+                      ? "Seu flyer oficial está sendo preparado."
+                      : "Anúncios gratuitos aparecem na agenda sem flyer automático."}
                 </p>
                 <Button
                   asChild
@@ -293,6 +296,11 @@ export default function EventoEnviado() {
         )}
 
         {/* Destaque premium — valores e prazos definidos pelos administradores */}
+        {sub?.promotion_choice === "highlight" && (
+          <Button asChild className="h-12 w-full font-bold">
+            <Link to={`/evento-enviado/${sub.id}/contratar-destaque`}><Crown className="mr-2 h-4 w-4" />Continuar contratação</Link>
+          </Button>
+        )}
         <section className="space-y-5">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-amber-400" />

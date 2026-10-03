@@ -632,6 +632,7 @@ export default function SubmissionForm() {
               endereco: clean(values.eventAddress),
               cep: clean((values as any).locationCep),
               contato: clean(values.locationContact),
+              listing_kind: "event_venue",
               responsavel_id: user.id,
               created_by: user.id,
             })

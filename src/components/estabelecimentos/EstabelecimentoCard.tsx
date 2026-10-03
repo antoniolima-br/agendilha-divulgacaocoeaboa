@@ -28,6 +28,7 @@ export interface EstabelecimentoRow {
   responsavel_nome?: string | null;
   responsavel_telefone?: string | null;
   responsavel_email?: string | null;
+  listing_kind?: "event_venue" | "general_business";
 }
 
 interface Props {

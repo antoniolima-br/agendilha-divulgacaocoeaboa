@@ -24,14 +24,15 @@ export interface EstabelecimentoRow {
   responsavel_redes?: string | null;
   fotos?: string[] | null;
   is_approved?: boolean;
+  listing_kind?: "event_venue" | "general_business";
 }
 
 const SELECT_MINE =
-  "id, nome, endereco, bairro, cep, numero, complemento, tipo, contato, tipos, anotacoes, cnpj, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved";
+  "id, nome, endereco, bairro, cep, numero, complemento, tipo, contato, tipos, anotacoes, cnpj, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, listing_kind";
 
-export function useMyEstabelecimentos(userId: string | null | undefined) {
+export function useMyEstabelecimentos(userId: string | null | undefined, listingKind: "event_venue" | "general_business" = "event_venue") {
   return useQuery({
-    queryKey: qk.estabelecimentos.mine(userId),
+    queryKey: qk.estabelecimentos.mine(userId, listingKind),
     enabled: !!userId,
     meta: {
       onError: (error: unknown) => handleError(error, { 
@@ -43,7 +44,8 @@ export function useMyEstabelecimentos(userId: string | null | undefined) {
       const { data, error } = await supabase
         .from("estabelecimentos")
         .select(SELECT_MINE)
-        .eq("responsavel_id", userId!)
+        .eq("responsavel_id", userId ?? "")
+        .eq("listing_kind", listingKind)
         .order("nome");
       if (error) throw error;
       return (data ?? []) as EstabelecimentoRow[];
@@ -52,11 +54,11 @@ export function useMyEstabelecimentos(userId: string | null | undefined) {
 }
 
 const SELECT_ADMIN =
-  "id, nome, endereco, bairro, cep, numero, complemento, tipo, contato, responsavel_id, created_by, created_at, updated_at, is_approved, responsavel_nome, responsavel_telefone, responsavel_email";
+  "id, nome, endereco, bairro, cep, numero, complemento, tipo, contato, responsavel_id, created_by, created_at, updated_at, is_approved, responsavel_nome, responsavel_telefone, responsavel_email, listing_kind";
 
-export function useAllEstabelecimentos(enabled = true) {
+export function useAllEstabelecimentos(enabled = true, listingKind: "event_venue" | "general_business" = "event_venue") {
   return useQuery({
-    queryKey: [...qk.estabelecimentos.all, "admin-all"],
+    queryKey: qk.estabelecimentos.admin(listingKind),
     enabled,
     meta: {
       onError: (error: unknown) => handleError(error, { 
@@ -68,6 +70,7 @@ export function useAllEstabelecimentos(enabled = true) {
       const { data, error } = await supabase
         .from("estabelecimentos")
         .select(SELECT_ADMIN)
+        .eq("listing_kind", listingKind)
         .order("nome", { ascending: true });
       if (error) throw error;
       return data ?? [];
