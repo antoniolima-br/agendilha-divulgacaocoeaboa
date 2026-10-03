@@ -1,5 +1,6 @@
 import { PaymentStatus } from "@/components/admin/PaymentStatus";
 import { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
@@ -32,6 +33,7 @@ import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { missingPublishFields, shouldOfferGenericFlyer } from "@/lib/publishValidation";
 import { PublishBlockDialog, type PublishBlockInfo } from "@/components/events-admin/PublishBlockDialog";
+import { qk } from "@/data/queryKeys";
 
 
 import {
@@ -68,6 +70,7 @@ export default function AdminEvents() {
 function AdminEventsInner() {
   const { user, loading: authLoading } = useAuth();
   const { hasPermission, loading: permsLoading } = useAppPermissions();
+  const queryClient = useQueryClient();
   const canRead = hasPermission('events.read');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +89,7 @@ function AdminEventsInner() {
   const [flyerOffer, setFlyerOffer] = useState<Submission | null>(null);
   const [generatingFlyer, setGeneratingFlyer] = useState(false);
   const [publishBlock, setPublishBlock] = useState<PublishBlockInfo | null>(null);
+  const [highlightingId, setHighlightingId] = useState<string | null>(null);
 
   async function fetchAll() {
     setLoading(true);
@@ -326,14 +330,64 @@ function AdminEventsInner() {
   }
 
   async function toggleHighlight(id: string, current: boolean) {
-    const { error } = await supabase.from("submissions").update({ is_highlight: !current }).eq("id", id);
-    if (error) {
-      handleError(error, "Erro ao atualizar destaque");
-    } else {
-      toast.success(!current ? "Evento em destaque! 🔥" : "Destaque removido");
-      setSubmissions(prev => prev.map(s => s.id === id ? { ...s, is_highlight: !current } : s));
-    }
+    const target = submissions.find((submission) => submission.id === id);
+    if (!target) return;
+    setHighlightingId(id);
+    try {
+      if (!current) {
+        const { data: payment, error: paymentError } = await supabase
+          .from("payment_records")
+          .select("id")
+          .eq("item_type", "evento")
+          .eq("item_id", id)
+          .limit(1)
+          .maybeSingle();
+        if (paymentError) throw paymentError;
+        if (!payment) {
+          toast.info("O destaque será liberado depois da baixa do pagamento.");
+          return;
+        }
+      }
 
+      let imageUrl = target.image_url;
+      if (!current && !imageUrl) {
+        const dataUrl = await generateFallbackFlyer({
+          title: target.event_title || "Evento",
+          date: formatEventDate(target.date),
+          startTime: target.start_time,
+          location: target.location,
+          category: target.category,
+        });
+        const blob = await (await fetch(dataUrl)).blob();
+        const filePath = `${user?.id ?? "admin"}/fallback-${target.id}-${Date.now()}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("event-flyers")
+          .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
+        if (uploadError) throw uploadError;
+        imageUrl = supabase.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+      }
+
+      const nextHighlight = !current;
+      const { error } = await supabase
+        .from("submissions")
+        .update({ is_highlight: nextHighlight, highlight_hidden: false, image_url: imageUrl })
+        .eq("id", id);
+      if (error) throw error;
+
+      setSubmissions((previous) => previous.map((submission) =>
+        submission.id === id ? { ...submission, is_highlight: nextHighlight, image_url: imageUrl } : submission,
+      ));
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.home.all }),
+        queryClient.invalidateQueries({ queryKey: qk.agenda.all }),
+        queryClient.invalidateQueries({ queryKey: qk.submissions.all }),
+      ]);
+      toast.success(nextHighlight ? "Evento em Destaque máximo na Home!" : "Destaque removido");
+    } catch (error) {
+      handleError(error, "Erro ao atualizar destaque");
+    } finally {
+      setHighlightingId(null);
+    }
   }
 
   const activeSubmissions = useMemo(
@@ -643,6 +697,7 @@ function AdminEventsInner() {
                             <Button
                               size="icon"
                               variant="outline"
+                              disabled={highlightingId === sub.id}
                               className={cn(
                                 "transition-all shadow-sm md:h-9 md:w-9",
                                 sub.is_highlight
@@ -654,7 +709,7 @@ function AdminEventsInner() {
                               <Star className={cn("h-4 w-4", sub.is_highlight && "fill-amber-600")} />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>{sub.is_highlight ? 'Remover Destaque' : 'Destacar'}</TooltipContent>
+                          <TooltipContent>{sub.is_highlight ? 'Remover Destaque' : 'Tornar Destaque'}</TooltipContent>
                         </Tooltip>
 
                         {/* Menu Adicional (PDF, WhatsApp, Excluir) */}
@@ -775,7 +830,10 @@ function AdminEventsInner() {
                             {sub.status === 'pendente' && (
                              <Button size="sm" variant="outline" onClick={() => openReview(sub, 'ajuste')} className="text-orange-600 border-orange-200 hover:bg-orange-50"><AlertCircle className="h-4 w-4 mr-2" /> Solicitar Ajuste</Button>
                             )}
-                            <Button size="sm" variant={sub.is_highlight ? 'secondary' : 'outline'} className={sub.is_highlight ? 'bg-amber-100 text-amber-700' : ''} onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}><Star className={`h-4 w-4 mr-2 ${sub.is_highlight ? 'fill-amber-500' : ''}`} /> {sub.is_highlight ? 'Remover Destaque' : 'Marcar Destaque'}</Button>
+                             <Button size="sm" disabled={highlightingId === sub.id} variant={sub.is_highlight ? 'secondary' : 'outline'} className={sub.is_highlight ? 'bg-amber-100 text-amber-700' : ''} onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}>
+                               {highlightingId === sub.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Star className={`mr-2 h-4 w-4 ${sub.is_highlight ? 'fill-amber-500' : ''}`} />}
+                               {sub.is_highlight ? 'Remover Destaque' : 'Tornar Destaque'}
+                             </Button>
                             {sub.is_highlight && <PaymentStatus itemType="evento" itemId={sub.id} />}
                             <Button size="sm" variant="ghost" className="text-muted-foreground ml-auto"><History className="h-4 w-4 mr-2" /> Histórico</Button>
                           </div>

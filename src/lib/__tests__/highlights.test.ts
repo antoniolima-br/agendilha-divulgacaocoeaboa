@@ -4,6 +4,7 @@ import {
   highlightStatus,
   isHighlightActive,
   pickCarouselEvents,
+  prioritizeHomeHeroEvents,
 } from "@/lib/highlights";
 
 const now = new Date("2026-09-05T12:00:00Z");
@@ -84,5 +85,21 @@ describe("pickCarouselEvents", () => {
       date: `2026-09-${String((i % 28) + 1).padStart(2, "0")}`,
     }));
     expect(pickCarouselEvents(events, 10, now)).toHaveLength(10);
+  });
+});
+
+describe("prioritizeHomeHeroEvents", () => {
+  it("mantém o destaque ativo antes dos demais itens do banner", () => {
+    const events = [
+      { id: "comum", is_highlight: false },
+      { id: "destaque", is_highlight: true },
+      { id: "outro", is_highlight: false },
+    ];
+
+    expect(prioritizeHomeHeroEvents(events, (id) => id.length).map((event) => event.id)).toEqual([
+      "destaque",
+      "comum",
+      "outro",
+    ]);
   });
 });

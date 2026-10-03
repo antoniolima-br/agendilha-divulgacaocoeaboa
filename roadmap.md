@@ -4,6 +4,7 @@
 - [ ] Concluir auditoria técnica integral e corrigir falhas confirmadas em segurança, acesso, dados, interface, desempenho e testes.
 - [x] Adicionar escolha entre anúncio gratuito e destaque, com flyer e contratação vinculados ao evento.
 - [x] Separar locais de rolê de negócios gerais nos cadastros e listagens dos painéis.
+- [x] Permitir tornar um evento pago em Destaque no painel e priorizá-lo imediatamente no banner principal da Home com flyer.
 
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
 - [x] Manter apenas “ver rolê” nas sugestões do Guia e deixar a opção de Uber nos detalhes do evento.
