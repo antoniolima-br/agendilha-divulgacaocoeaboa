@@ -15,6 +15,9 @@ export const additionalEventSchema = z.object({
 });
 
 export const submissionFormSchema = z.object({
+  promotionChoice: z.enum(["free", "highlight"], {
+    required_error: "Escolha como você quer divulgar o evento",
+  }),
   imageSource: z.enum(["upload", "ai"]).optional(),
   selectedTemplate: z.string().optional(),
   aiTitle: z.string().optional(),
