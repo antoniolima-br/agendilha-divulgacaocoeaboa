@@ -2,6 +2,7 @@
 # Roadmap
 
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
+- [x] Manter apenas “ver rolê” nas sugestões do Guia e deixar a opção de Uber nos detalhes do evento.
 - [x] Atualizar a saudação e refinar a janela do Guia do Coé com cabeçalho em gradiente e atalhos rápidos.
 - [x] Permitir vários eventos no mesmo estabelecimento, com data, início e detalhes individuais.
 - [x] Permitir eventos na mesma data no mesmo estabelecimento, exigindo horários de início diferentes.
