@@ -5,3 +5,5 @@
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
 - O horário de funcionamento do atrativo fica em `atrativos.opening_hours` como texto livre e é exibido ao selecioná-lo no formulário; a agenda de apresentações continua sendo validada separadamente.
 - Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
+- Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
+- Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.

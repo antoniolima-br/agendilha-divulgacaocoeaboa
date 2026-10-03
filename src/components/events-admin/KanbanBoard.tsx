@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { EDITORIAL_STAGES, type EditorialStatus, type Submission } from "./types";
-import { StatusBadge, NextStepLabel, PendingPublishBadge } from "./StatusBadge";
+import { EditorialStatusBadge, NextStepLabel, PendingPublishBadge } from "./EditorialStatusBadge";
 import { CalendarDays, MapPin } from "lucide-react";
 
 interface Props {
@@ -65,7 +65,7 @@ export function KanbanBoard({ submissions, onSelect, selectedId }: Props) {
                         )}
                       </div>
                       <div className="flex items-center justify-between gap-1 mt-2">
-                        <StatusBadge status={sub.editorial_status} />
+                        <EditorialStatusBadge status={sub.editorial_status} />
                       </div>
                       <div className="mt-1"><NextStepLabel status={sub.editorial_status} /></div>
                     </Card>

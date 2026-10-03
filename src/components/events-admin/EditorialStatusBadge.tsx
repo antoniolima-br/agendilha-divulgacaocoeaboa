@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { editorialMeta, type EditorialStatus } from "./types";
 
-export function StatusBadge({ status }: { status?: EditorialStatus | null }) {
+export function EditorialStatusBadge({ status }: { status?: EditorialStatus | null }) {
   const key = (status || "recebido") as EditorialStatus;
   const meta = editorialMeta[key] ?? editorialMeta.recebido;
   return (

@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, CalendarClock, CheckCircle2, Megaphone, XCircle } from "lucide-react";
-import { StatusBadge, NextStepLabel } from "./StatusBadge";
+import { EditorialStatusBadge, NextStepLabel } from "./EditorialStatusBadge";
 import type { EditorialStatus, Submission } from "./types";
 import { toast } from "sonner";
 import { missingPublishFields } from "@/lib/publishValidation";
@@ -30,7 +30,7 @@ export function EditorialTransitionPanel({ sub, onChange, onLogPublication }: Pr
   return (
     <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-3">
       <div className="flex flex-wrap items-center gap-2">
-        <StatusBadge status={status} />
+        <EditorialStatusBadge status={status} />
         <NextStepLabel status={status} />
       </div>
       {incomplete && (
