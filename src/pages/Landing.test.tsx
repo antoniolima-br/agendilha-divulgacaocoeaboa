@@ -50,7 +50,17 @@ vi.mock("@/integrations/supabase/client", () => {
       ? result.then.bind(result)
       : () => chain,
   });
-  return { supabase: { from: () => chain, rpc: vi.fn() } };
+  return {
+    supabase: {
+      from: () => chain,
+      rpc: vi.fn(),
+      channel: vi.fn(() => ({
+        on: vi.fn().mockReturnThis(),
+        subscribe: vi.fn().mockReturnThis(),
+      })),
+      removeChannel: vi.fn(),
+    },
+  };
 });
 
 vi.mock("@/components/Header", () => ({ default: () => <header>Coé a Boa?</header> }));

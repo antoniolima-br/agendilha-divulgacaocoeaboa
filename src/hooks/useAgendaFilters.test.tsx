@@ -68,4 +68,19 @@ describe("useAgendaFilters", () => {
 
     expect(result.current.filteredEvents.map((item) => item.id)).toEqual(["show-futuro"]);
   });
+
+  it("separa eventos com flyer como destaques promocionais mesmo sem ativação manual", () => {
+    const flyer = { ...event("com-flyer", "2026-09-23"), is_free: true, image_url: "https://cdn/flyer.webp" };
+    const semFlyer = { ...event("sem-flyer", "2026-09-23"), is_free: true };
+    const { result } = renderHook(() => useAgendaFilters({
+      events: [flyer, semFlyer],
+      profile: null,
+      isFavorite: () => false,
+      favorites: [],
+    }));
+
+    expect(result.current.filteredEvents.filter((item) => Boolean(item.image_url)).map((item) => item.id)).toEqual(["com-flyer"]);
+    expect(result.current.freeEvents.map((item) => item.id)).toEqual(["sem-flyer"]);
+    expect(Object.values(result.current.grouped).flatMap((group) => group.items.map((item) => item.id))).toEqual([]);
+  });
 });
