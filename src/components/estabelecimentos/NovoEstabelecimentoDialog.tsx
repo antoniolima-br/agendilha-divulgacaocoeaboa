@@ -24,6 +24,7 @@ import {
 import { BAIRROS, PLACEHOLDER_BAIRRO } from "@/lib/neighborhoods";
 import { cepDigits, formatCep, validateCep } from "@/lib/autofillValidation";
 import type { EstabelecimentoSuggestion } from "./EstabelecimentoAutocomplete";
+import { CepAddressSearch } from "./CepAddressSearch";
 
 const TIPOS = [
   { v: "bar", l: "Bar" },
@@ -229,7 +230,7 @@ export function NovoEstabelecimentoDialog({
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-semibold">Número</Label>
-              <Input value={numero} onChange={(e) => setNumero(e.target.value)} />
+              <Input value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="Ex.: 120, sala 2" />
             </div>
           </div>
 
@@ -258,6 +259,7 @@ export function NovoEstabelecimentoDialog({
                 inputMode="numeric"
                 autoComplete="postal-code"
               />
+              <CepAddressSearch onCepFound={setCep} />
             </div>
           </div>
 

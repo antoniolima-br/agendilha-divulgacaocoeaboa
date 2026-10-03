@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Aplicar “Não sei o CEP” e remover o campo separado “Complemento” em todos os cadastros de estabelecimento.
+
 - [x] Preencher o atendimento comercial com responsável real já cadastrado e manter a seleção dinâmica da equipe.
 - [x] Criar uma página pública de eventos com nome, data, horário, local e WhatsApp autorizado.
 - [x] Oferecer confirmação do envio ao responsável por mensagem pronta no WhatsApp após o cadastro.
