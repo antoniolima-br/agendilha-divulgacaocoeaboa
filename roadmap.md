@@ -13,6 +13,7 @@
 - [x] Promover automaticamente na Home e na agenda todos os eventos atuais ou futuros com flyer durante o lançamento.
 - [x] Priorizar flyers de hoje na Home e manter múltiplos flyers futuros na mesma rotação.
 - [x] Normalizar as datas da vitrine pelo calendário de São Paulo e exibir todos os eventos de hoje sem corte.
+- [x] Manter cada flyer dos carrosséis da Home visível por 5 segundos.
 - [x] Unificar o compartilhamento dos detalhes de eventos em uma única ação com menu nativo e fallback essencial.
 
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
