@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
 import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
-import { formatEventDate } from "@/lib/event-utils";
+import { formatBrazilianDate } from "@/lib/date-utils";
 import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,15 +36,15 @@ type Field = (typeof FIELDS)[number];
 type FormState = Record<Field, string>;
 
 const STATUS_OPTIONS = [
-  { value: "pendente", label: "Aguardando análise" },
-  { value: "aprovado", label: "Publicado" },
-  { value: "rejeitado", label: "Recusado" },
+  { value: "pending", label: "Aguardando análise" },
+  { value: "approved", label: "Publicado" },
+  { value: "rejected", label: "Recusado" },
 ];
 
 function toForm(ev: QuickEditableEvent | null): FormState {
   const out = {} as FormState;
   FIELDS.forEach((f) => { out[f] = (ev?.[f] as string | null | undefined) ?? ""; });
-  if (!out.status) out.status = "pendente";
+  if (!out.status) out.status = "pending";
   return out;
 }
 
@@ -97,7 +97,7 @@ export function QuickEditEventDialog({
       if (isHighlight && !imageUrl) {
         const dataUrl = await generateFallbackFlyer({
           title: form.event_title || "Evento",
-          date: formatEventDate(form.date),
+          date: formatBrazilianDate(form.date),
           startTime: form.start_time,
           location: form.location,
           category: form.category,
