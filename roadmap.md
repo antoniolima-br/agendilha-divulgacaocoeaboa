@@ -7,6 +7,7 @@
 - [x] Permitir tornar um evento pago em Destaque no painel e priorizá-lo imediatamente no banner principal da Home com flyer.
 - [x] Abrir a edição administrativa pelo botão “Ver evento” da agenda pública e salvar “Destaque na Home” com atualização imediata.
 - [x] Liberar Destaque na Home como cortesia promocional imediata, mantendo a opção paga e o registro financeiro futuro.
+- [x] Criar vitrine pública de destaques com rota real, gestão administrativa de pagamento e validação na Home e no Guia.
 
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
 - [x] Manter apenas “ver rolê” nas sugestões do Guia e deixar a opção de Uber nos detalhes do evento.
