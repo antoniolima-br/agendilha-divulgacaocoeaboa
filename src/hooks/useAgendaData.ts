@@ -42,19 +42,9 @@ export function useAgendaData() {
       )
       .subscribe();
 
-    const ratingsChannel = supabase
-      .channel("ratings-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "event_reviews" },
-        () => invalidate(qk.agenda.ratings()),
-      )
-      .subscribe();
-
     return () => {
       window.clearTimeout(invalidateTimer);
       supabase.removeChannel(submissionsChannel);
-      supabase.removeChannel(ratingsChannel);
     };
   }, [qc]);
 

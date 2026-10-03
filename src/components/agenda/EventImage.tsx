@@ -11,6 +11,14 @@ interface EventImageProps {
   icon?: any;
 }
 
+const EVENT_IMAGE_FALLBACKS: Record<string, string> = {
+  musica: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=72&w=480",
+  gastronomia: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=72&w=480",
+  teatro: "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&q=72&w=480",
+  esporte: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=72&w=480",
+  outros: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=72&w=480",
+};
+
 export function EventImage({ src, alt, category, className, icon: Icon }: EventImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -48,31 +56,19 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
         onError={(e) => {
           const currentTarget = e.currentTarget;
           if (!error) {
-            const unsplashFallbacks: Record<string, string> = {
-              musica:
-                "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=800",
-              gastronomia:
-                "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800",
-              teatro:
-                "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&q=80&w=800",
-              esporte:
-                "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800",
-              outros:
-                "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800",
-            };
             const normalized = normalizeText(category || "");
-            let finalFallback = unsplashFallbacks["outros"];
+            let finalFallback = EVENT_IMAGE_FALLBACKS.outros;
             if (normalized.includes("musica") || normalized.includes("show"))
-              finalFallback = unsplashFallbacks["musica"];
+              finalFallback = EVENT_IMAGE_FALLBACKS.musica;
             else if (normalized.includes("gastronomia") || normalized.includes("comida"))
-              finalFallback = unsplashFallbacks["gastronomia"];
+              finalFallback = EVENT_IMAGE_FALLBACKS.gastronomia;
             else if (
               normalized.includes("teatro") ||
               normalized.includes("arte") ||
               normalized.includes("cultura")
             )
-              finalFallback = unsplashFallbacks["teatro"];
-            else if (normalized.includes("esporte")) finalFallback = unsplashFallbacks["esporte"];
+              finalFallback = EVENT_IMAGE_FALLBACKS.teatro;
+            else if (normalized.includes("esporte")) finalFallback = EVENT_IMAGE_FALLBACKS.esporte;
 
             currentTarget.src = finalFallback;
           }

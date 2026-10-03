@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         // Don't precache HTML — always fetch fresh navigations so mobile clients
         // see new builds immediately instead of being stuck on an old shell.
-        globPatterns: ['**/*.{js,css,ico,png,svg,jpg,jpeg,webp}'],
+        globPatterns: ['**/*.{js,css,ico,svg}'],
         globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js'],
         cleanupOutdatedCaches: true,
         // Prompt mode: don't auto-skip — wait for the user to click "Atualizar".
@@ -37,6 +37,15 @@ export default defineConfig(({ mode }) => ({
         navigateFallback: null,
         navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
         runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'app-images',
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
           {
             // HTML navigations: always try network first, fall back to cache only when offline.
             urlPattern: ({ request, url }) =>
@@ -122,6 +131,9 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('/jspdf/') || id.includes('/jspdf-autotable/')) return 'pdf-gen';
           if (id.includes('/recharts/')) return 'charts';
           if (id.includes('/framer-motion/')) return 'animation';
+          if (id.includes('/date-fns/')) return 'dates';
+          if (id.includes('/react-markdown/') || id.includes('/@ai-sdk/') || id.includes('/node_modules/ai/')) return 'guide';
+          if (id.includes('/@radix-ui/')) return 'ui-primitives';
           if (id.includes('/@supabase/') || id.includes('/@tanstack/react-query/')) return 'db-client';
           if (id.includes('/react-router-dom/')) return 'router';
           return undefined;

@@ -90,27 +90,6 @@ export function useEvents(options: {
 
   const events = normalizeEvents(eventsQuery.data);
 
-  const ratingsQuery = useQuery({
-    queryKey: [...qk.agenda.ratings(), events.map((event) => event.id)],
-    enabled: (options.enabled ?? true) && events.length > 0,
-    queryFn: async (): Promise<Record<string, Rating>> => {
-      const eventIds = events.map((event) => event.id);
-      if (eventIds.length === 0) return {};
-      const { data, error } = await supabase
-        .from("event_ratings_summary")
-        .select("event_id, average_rating, total_reviews")
-        .in("event_id", eventIds);
-      if (error) throw error;
-      
-      const map: Record<string, Rating> = {};
-      (data ?? []).forEach((r: any) => {
-        map[r.event_id] = { average: r.average_rating, total: r.total_reviews };
-      });
-      return map;
-    },
-    staleTime: options.staleTime ?? 60_000,
-  });
-
   const trackView = useCallback(async (id: string) => {
     try {
       const { error } = await supabase.rpc("increment_views", { event_id: id });
@@ -131,9 +110,9 @@ export function useEvents(options: {
 
   return {
     events,
-    ratings: ratingsQuery.data ?? {},
-    isLoading: eventsQuery.isLoading || ratingsQuery.isLoading,
-    isError: eventsQuery.isError || ratingsQuery.isError,
+    ratings: {},
+    isLoading: eventsQuery.isLoading,
+    isError: eventsQuery.isError,
     trackView,
     trackShare,
     refetch: eventsQuery.refetch

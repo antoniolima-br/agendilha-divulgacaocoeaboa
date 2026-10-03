@@ -26,7 +26,6 @@ import { EventDetailDialog } from "@/components/agenda/EventDetailDialog";
 import { buildWhatsAppShare } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 
-import { exportEditorialAgendaPdf } from "@/lib/pdfExport";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
 import { isHighlightActive } from "@/lib/highlights";
@@ -122,8 +121,9 @@ function AgendaCulturalInner() {
           onWhatsApp={() => window.open(buildWhatsAppShare(), "_blank")}
           onPersonalize={() => setPersonalizationOpen(true)}
           onCopyLink={() => handleCopyLink(getShareUrl())}
-          onExportPdf={() => {
-            exportEditorialAgendaPdf(filters.upcomingEvents, "Agenda Cultural da Ilha");
+          onExportPdf={async () => {
+            const { exportEditorialAgendaPdf } = await import("@/lib/pdfExport");
+            await exportEditorialAgendaPdf(filters.upcomingEvents, "Agenda Cultural da Ilha");
             toast.success("PDF da agenda gerado!");
           }}
         />
