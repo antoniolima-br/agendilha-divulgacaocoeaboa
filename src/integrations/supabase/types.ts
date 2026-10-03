@@ -1264,6 +1264,48 @@ export type Database = {
         }
         Relationships: []
       }
+      highlight_payment_status: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "highlight_payment_status_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "highlight_payment_status_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       location_requests: {
         Row: {
           created_at: string | null
