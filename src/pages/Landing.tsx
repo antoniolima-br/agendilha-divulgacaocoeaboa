@@ -165,9 +165,10 @@ export default function Landing() {
         .range(pageParam, pageParam + 9);
        
        if (error) throw error;
+       const rows = Array.isArray(data) ? data : [];
        return {
-         items: (data ?? []).filter((event) => eventDateISO(event.date) >= today),
-         nextPage: data.length === 10 ? pageParam + 10 : undefined
+         items: rows.filter((event) => eventDateISO(event.date) >= today),
+         nextPage: rows.length === 10 ? pageParam + 10 : undefined
        };
      },
      initialPageParam: 0,
@@ -188,20 +189,31 @@ export default function Landing() {
           .limit(100);
 
         if (error) throw error;
-        return (data ?? [])
+        const rows = Array.isArray(data) ? data : [];
+        return rows
           .filter((event) => eventDateISO(event.date) >= today && !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
           .slice(0, 8);
       },
     });
  
-    const allEvents = useMemo(() => eventsData?.pages.flatMap(page => page.items) || [], [eventsData]);
+    const allEvents = useMemo(
+      () => (Array.isArray(eventsData?.pages) ? eventsData.pages : [])
+        .flatMap((page) => Array.isArray(page?.items) ? page.items : []),
+      [eventsData],
+    );
     const visualEvents = useMemo(
       () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
       [allEvents],
     );
     const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
-    const { data: flyerAds = [] } = usePublishedFlyerAds();
-    const { data: flyerUrls = {} } = useAdPhotoUrls(flyerAds.map((ad) => ad.photos[0]));
+    const { data: flyerAdsData } = usePublishedFlyerAds();
+    const flyerAds = Array.isArray(flyerAdsData) ? flyerAdsData : [];
+    const flyerPhotoPaths = flyerAds.flatMap((ad) => {
+      const firstPhoto = Array.isArray(ad?.photos) ? ad.photos[0] : undefined;
+      return typeof firstPhoto === "string" && firstPhoto.trim() ? [firstPhoto] : [];
+    });
+    const { data: flyerUrlsData } = useAdPhotoUrls(flyerPhotoPaths);
+    const flyerUrls = flyerUrlsData && typeof flyerUrlsData === "object" ? flyerUrlsData : {};
     const homeFlyerEvents = useMemo(() => {
       const spParts = (iso: string) => {
         const parts = new Intl.DateTimeFormat("en-CA", {
@@ -212,9 +224,13 @@ export default function Landing() {
         return { date: `${get("year")}-${get("month")}-${get("day")}`, time: `${get("hour")}:${get("minute")}` };
       };
       const flyers = flyerAds
-        .filter((ad) => ad.event_date && flyerUrls[ad.photos[0]])
+        .filter((ad) => {
+          const firstPhoto = Array.isArray(ad.photos) ? ad.photos[0] : undefined;
+          return Boolean(ad.event_date && firstPhoto && flyerUrls[firstPhoto]);
+        })
         .map((ad) => {
           const { date, time } = spParts(ad.event_date as string);
+          const firstPhoto = Array.isArray(ad.photos) ? ad.photos[0] : undefined;
           return {
             id: `ad:${ad.id}`,
             event_title: ad.title,
@@ -224,7 +240,7 @@ export default function Landing() {
             address_neighborhood: ad.neighborhood,
             category: ad.category,
             description: ad.description,
-            image_url: flyerUrls[ad.photos[0]],
+            image_url: firstPhoto ? flyerUrls[firstPhoto] : undefined,
           };
         });
       const today = saoPauloTodayISO();
@@ -355,7 +371,7 @@ export default function Landing() {
 
    const recommendedEvents = useMemo(() => {
      const preferences = profileLoaded && user
-       ? [...(profile.musical_preferences ?? []), ...(profile.event_type_preferences ?? []), ...(profile.followed_styles ?? [])]
+       ? [...(profile?.musical_preferences ?? []), ...(profile?.event_type_preferences ?? []), ...(profile?.followed_styles ?? [])]
            .map(normalizePreferenceText)
            .filter(Boolean)
        : [];
@@ -379,7 +395,7 @@ export default function Landing() {
 
      const matchingUpcoming = allEvents.filter(matchesPreferences);
      return (matchingUpcoming.length > 0 ? matchingUpcoming : allEvents).slice(0, 5);
-   }, [allEvents, profile.event_type_preferences, profile.followed_styles, profile.musical_preferences, profileLoaded, todayEvents, user]);
+   }, [allEvents, profile?.event_type_preferences, profile?.followed_styles, profile?.musical_preferences, profileLoaded, todayEvents, user]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
