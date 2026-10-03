@@ -16,7 +16,7 @@ interface AdminEventsToolbarProps {
 const outlineBtn =
   "min-h-11 flex-1 sm:flex-none md:min-h-0 md:h-10 font-bold border-border bg-background hover:bg-muted text-[10px] sm:text-xs px-3 sm:px-4";
 const summaryBtn =
-  "min-h-11 flex-1 sm:flex-none md:min-h-0 md:h-10 font-bold border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[10px] sm:text-xs px-3 sm:px-4";
+  "min-h-11 flex-1 sm:flex-none md:min-h-0 md:h-10 font-bold border-success/50 bg-success/15 text-foreground hover:bg-success/25 text-[10px] sm:text-xs px-3 sm:px-4";
 
 /** Cabeçalho da Gestão de Eventos + ações rápidas (atualizar, PDF, resumos e divulgação). */
 export function AdminEventsToolbar({
@@ -96,7 +96,7 @@ export function AdminEventsToolbar({
         </Button>
         <Button
           size="sm"
-          className="min-h-11 flex-1 bg-emerald-600 px-3 text-[10px] font-bold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 sm:flex-none sm:px-4 sm:text-xs md:min-h-0 md:h-10"
+          className="min-h-11 flex-1 bg-success px-3 text-[10px] font-bold text-success-foreground shadow-sm hover:bg-success/90 sm:flex-none sm:px-4 sm:text-xs md:min-h-0 md:h-10"
           onClick={shareFirstApproved}
         >
           <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />

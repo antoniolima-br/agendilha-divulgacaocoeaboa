@@ -752,7 +752,7 @@ export default function Landing() {
                 <div className="font-display text-sm font-black text-foreground tracking-tight">
                   Coé a Boa?
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.25em] text-foreground">
                   Transparência e Cultura
                 </div>
               </div>

@@ -16,8 +16,8 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
       status: "pendente",
       label: "Pendentes",
       value: kpis.pending,
-      valueClass: "text-amber-600",
-      labelClass: "text-amber-700",
+      valueClass: "text-primary",
+      labelClass: "text-primary",
       activeClass: "border-amber-400 ring-2 ring-amber-200",
       icon: kpis.pending > 0 ? <AlertCircle className="h-3.5 w-3.5" /> : null,
       detail: kpis.pending > 0 ? "Aguardando curadoria" : null,
@@ -42,7 +42,7 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
       status: "all",
       label: "Total",
       value: kpis.total,
-      valueClass: "text-foreground/80",
+      valueClass: "text-foreground",
       labelClass: "text-muted-foreground",
       activeClass: "border-primary ring-2 ring-primary/20",
     },
@@ -70,7 +70,7 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
                   {metric.icon}{metric.label}
                 </p>
                  <p className={cn("mt-0.5 text-2xl font-black", metric.valueClass)}>{metric.value}</p>
-                 {metric.detail && <p className="mt-0.5 hidden text-[10px] font-bold text-amber-700/80 sm:block">{metric.detail}</p>}
+                 {metric.detail && <p className="mt-0.5 hidden text-[10px] font-bold text-primary sm:block">{metric.detail}</p>}
               </div>
               {metric.status === "pendente" && <Clock3 className="mt-1 h-5 w-5 text-amber-500" />}
             </div>

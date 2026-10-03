@@ -17,8 +17,8 @@ interface MetricProps {
 }
 
 const Metric = ({ label, value, icon: Icon, description }: MetricProps) => (
-  <div className="flex items-start gap-3 p-4 rounded-xl bg-white/40 border border-white/50">
-    <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center border border-white/60 shadow-sm text-primary">
+  <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-4">
+    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-background text-primary shadow-sm">
       <Icon className="h-5 w-5" />
     </div>
     <div>
@@ -43,7 +43,7 @@ interface OperationalMetricsProps {
 
 export function OperationalMetrics({ metrics }: OperationalMetricsProps) {
   return (
-    <Card className="bg-white/60 backdrop-blur-md border-white/40 shadow-sm">
+    <Card className="border-border bg-card shadow-sm">
       <CardHeader>
         <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
           <Zap className="h-4 w-4 text-amber-500" />

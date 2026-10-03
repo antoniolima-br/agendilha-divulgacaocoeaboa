@@ -48,7 +48,7 @@ const KPICard = ({ label, value, icon: Icon, tone, variation, description, onCli
   return (
     <Card 
       className={cn(
-        "bg-white/60 backdrop-blur-md border-white/40 shadow-sm transition-all duration-300 overflow-hidden cursor-pointer group",
+        "border-border bg-card shadow-sm transition-all duration-300 overflow-hidden cursor-pointer group",
         expanded ? "ring-2 ring-primary/20 scale-[1.02] shadow-md" : "hover:scale-[1.01]"
       )}
       onClick={handleInteraction}

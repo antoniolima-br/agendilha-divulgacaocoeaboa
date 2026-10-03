@@ -35,7 +35,7 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
             <div className="font-display text-sm font-black text-foreground tracking-tight">
               Coé a Boa?
             </div>
-            <div className="text-[10px] uppercase tracking-[0.25em] text-foreground/70 font-semibold">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-semibold">
               Transparência e Cultura
             </div>
           </div>
