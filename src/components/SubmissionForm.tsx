@@ -34,6 +34,7 @@ import { checkAttractionSchedule, useAttractionSchedule } from "@/data/useAttrac
 import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNotice";
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
 import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
+import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
@@ -315,6 +316,27 @@ export default function SubmissionForm() {
     setSubmitting(true);
     const submissionTimer = startFlowMeasure("event-submission", "complete-submission", currentStep);
     try {
+      const duplicateStarts = findDuplicateEventStart([
+        { date: values.date, startTime: values.startTime },
+        ...values.additionalEvents.map((event) => ({ date: event.date, startTime: event.startTime })),
+      ]);
+      if (duplicateStarts.length > 0) {
+        duplicateStarts.forEach((eventIndex) => {
+          const path = eventIndex === 0 ? "startTime" : `additionalEvents.${eventIndex - 1}.startTime`;
+          form.setError(path as any, {
+            type: "manual",
+            message: "Use um horário de início diferente para cada evento nesta data",
+          });
+        });
+        toast.error("Tem eventos com o mesmo horário", {
+          description: "Na mesma data, informe um horário de início diferente para cada evento.",
+        });
+        setCurrentStep(1);
+        window.scrollTo(0, 0);
+        submissionTimer.finish({ outcome: "blocked" });
+        return;
+      }
+
       const latestSchedule = await checkAttractionSchedule({
         attractionId: values.atrativoSourceId,
         attractionType: values.atrativoSourceType,

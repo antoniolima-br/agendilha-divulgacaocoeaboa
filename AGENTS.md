@@ -9,3 +9,4 @@
 - Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.
 - Multi-event submissions keep establishment and contact data shared while each event is stored as its own submission row; this preserves moderation and publication behavior.
+- Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
