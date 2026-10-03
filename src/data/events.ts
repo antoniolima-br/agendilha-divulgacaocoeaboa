@@ -90,6 +90,25 @@ export function useEvents(options: {
 
   const events = normalizeEvents(eventsQuery.data);
 
+  const ratingIds = events.map((event) => event.id).sort();
+  const ratingsQuery = useQuery({
+    queryKey: [...qk.agenda.ratings(), ratingIds.join(",")],
+    enabled: (options.enabled ?? true) && ratingIds.length > 0,
+    queryFn: async (): Promise<Record<string, Rating>> => {
+      const { data, error } = await supabase
+        .from("event_ratings_summary")
+        .select("event_id, average_rating, total_reviews")
+        .in("event_id", ratingIds);
+      if (error) throw error;
+
+      return (data ?? []).reduce<Record<string, Rating>>((ratings, row) => {
+        ratings[row.event_id] = { average: row.average_rating, total: row.total_reviews };
+        return ratings;
+      }, {});
+    },
+    staleTime: 5 * 60_000,
+  });
+
   const trackView = useCallback(async (id: string) => {
     try {
       const { error } = await supabase.rpc("increment_views", { event_id: id });
@@ -110,9 +129,9 @@ export function useEvents(options: {
 
   return {
     events,
-    ratings: {},
-    isLoading: eventsQuery.isLoading,
-    isError: eventsQuery.isError,
+    ratings: ratingsQuery.data ?? {},
+    isLoading: eventsQuery.isLoading || ratingsQuery.isLoading,
+    isError: eventsQuery.isError || ratingsQuery.isError,
     trackView,
     trackShare,
     refetch: eventsQuery.refetch
