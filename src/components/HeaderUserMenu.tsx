@@ -17,6 +17,7 @@ const statusIcon = {
   master: Crown,
   admin: Shield,
   collaborator: UserIcon,
+  artist: UserIcon,
   user: UserIcon,
 } as const;
 
@@ -26,6 +27,8 @@ const statusStyles = {
   admin:
     "bg-primary/10 text-primary border-primary/25",
   collaborator:
+    "bg-foreground/[0.06] text-foreground/75 border-foreground/15",
+  artist:
     "bg-foreground/[0.06] text-foreground/75 border-foreground/15",
   user: "bg-muted text-muted-foreground border-border",
 } as const;

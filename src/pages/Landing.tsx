@@ -200,8 +200,14 @@ export default function Landing() {
       },
     });
  
-    const freeEvents = Array.isArray(freeEventsData) ? freeEventsData : [];
-    const eventPages = eventsData && Array.isArray(eventsData.pages) ? eventsData.pages : [];
+    const freeEvents = useMemo(
+      () => Array.isArray(freeEventsData) ? freeEventsData : [],
+      [freeEventsData],
+    );
+    const eventPages = useMemo(
+      () => eventsData && Array.isArray(eventsData.pages) ? eventsData.pages : [],
+      [eventsData],
+    );
     const allEvents = useMemo(
       () => eventPages.flatMap((page) => Array.isArray(page?.items) ? page.items : []),
       [eventPages],

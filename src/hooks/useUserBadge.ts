@@ -32,13 +32,14 @@ export function useUserBadge(): UserBadge {
   const { user, isAdmin } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
   const { isMaster, isAdmin: hasAdminRole, isCollaborator, collaboratorName, loading } = useAppPermissions();
+  const safeProfile = profile && typeof profile === "object" ? profile : null;
   const status: UserStatus = !user
     ? null
     : isMaster
       ? "master"
       : hasAdminRole || isAdmin
         ? "admin"
-        : profile.role === "artist"
+        : safeProfile?.role === "artist"
           ? "artist"
           : isCollaborator
             ? "collaborator"
@@ -48,12 +49,16 @@ export function useUserBadge(): UserBadge {
   const emailLocal = user?.email?.split("@")[0] || "";
   const isPhonePlaceholder = user?.email?.endsWith("@phone.agendilha.app");
   const meta = user?.user_metadata as UserMetadata | undefined;
-  const metaName = meta?.full_name || meta?.name || "";
+  const metaName = typeof meta?.full_name === "string"
+    ? meta.full_name
+    : typeof meta?.name === "string"
+      ? meta.name
+      : "";
   const fallback = isPhonePlaceholder ? meta?.phone || emailLocal : emailLocal;
   const name =
-    profile.responsible_name ||
-    profile.company_name ||
-    collaboratorName ||
+    (typeof safeProfile?.responsible_name === "string" ? safeProfile.responsible_name : "") ||
+    (typeof safeProfile?.company_name === "string" ? safeProfile.company_name : "") ||
+    (typeof collaboratorName === "string" ? collaboratorName : "") ||
     metaName ||
     fallback ||
     "Usuário";
