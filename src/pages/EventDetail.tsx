@@ -61,6 +61,12 @@ interface Event {
   has_accessible_bathroom?: boolean;
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function eventLookupField(identifier: string): "id" | "slug" {
+  return UUID_PATTERN.test(identifier) ? "id" : "slug";
+}
+
 export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -72,25 +78,36 @@ export default function EventDetail() {
 
   useEffect(() => {
     async function fetchEvent() {
-      if (!slug) return;
-      setLoading(true);
-      
-      const { data, error } = await supabase
-        .from("public_submissions")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-
-      if (error || !data) {
-        if (error) handleError(error, { context: "EventDetail.fetch", silent: true });
+      if (!slug) {
+        setEvent(null);
         setError(true);
-      } else {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(false);
+      setEvent(null);
+
+      try {
+        const field = eventLookupField(slug);
+        const { data, error: queryError } = await supabase
+          .from("public_submissions")
+          .select("*")
+          .eq(field, slug)
+          .maybeSingle();
+
+        if (queryError || !data) {
+          if (queryError) handleError(queryError, { context: "EventDetail.fetch", silent: true });
+          setError(true);
+          return;
+        }
+
         setEvent(data as unknown as Event);
-        // Increment views
-        supabase.rpc('increment_views', { event_id: data.id }).then(({ error }) => {
-          if (error) logger.warn("[EventDetail] não deu pra contar a visualização", error);
+        supabase.rpc('increment_views', { event_id: data.id }).then(({ error: viewError }) => {
+          if (viewError) logger.warn("[EventDetail] não deu pra contar a visualização", viewError);
         });
-        // Try to resolve linked estabelecimento by name (location text)
+
         if (data.location) {
           supabase
             .from("estabelecimentos_public")
@@ -101,8 +118,12 @@ export default function EventDetail() {
               if (est?.id) setEstabId(est.id);
             });
         }
+      } catch (queryError) {
+        handleError(queryError, { context: "EventDetail.fetch", silent: true });
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchEvent();
@@ -142,8 +163,8 @@ export default function EventDetail() {
       <div className="min-h-screen bg-background flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center p-4 text-center space-y-4">
           <Info className="h-16 w-16 text-muted-foreground opacity-20" />
-          <h1 className="text-2xl font-black">Esse rolê sumiu do mapa</h1>
-          <p className="text-muted-foreground">Pode ter sido removido ou o link tá errado. Bora ver o que mais tem rolando?</p>
+          <h1 className="text-2xl font-black">Não encontramos esse rolê</h1>
+          <p className="text-muted-foreground">O link pode estar incorreto ou o evento não está mais disponível. Confira a agenda completa.</p>
           <Button asChild className="rounded-full font-bold">
             <Link to="/explorar">Ver agenda completa</Link>
           </Button>
