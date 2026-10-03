@@ -197,7 +197,7 @@ export default function Landing() {
         if (error) throw error;
         const rows = Array.isArray(data) ? data : [];
         return rows
-          .filter((event) => eventDateISO(event.date) >= today && !event.is_highlight && !event.highlight_active && isFreeEventPrice(event.sale_price))
+          .filter((event) => eventDateISO(event.date) >= today && !isHighlightActive(event) && isFreeEventPrice(event.sale_price))
           .slice(0, 8);
       },
     });
