@@ -73,12 +73,12 @@ export function CoezinhoChat() {
 
       {open && (
         <div className="fixed inset-x-2 bottom-2 z-50 flex h-[75vh] flex-col overflow-hidden rounded-2xl border border-primary/30 bg-card text-card-foreground shadow-elevated sm:inset-x-auto sm:bottom-4 sm:right-4 sm:h-[560px] sm:w-[390px]">
-          <div className="gradient-guide-header flex items-center justify-between border-b border-primary/30 px-4 py-4 text-primary-foreground">
+          <div className="gradient-guide-header flex items-center justify-between border-b border-primary/40 px-4 py-4 text-foreground">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 text-lg shadow-sm">🌴</div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-foreground/30 bg-foreground/10 text-lg shadow-sm">🌴</div>
               <div>
                 <p className="font-display text-base font-bold leading-tight">Guia do Coé</p>
-                <p className="text-xs font-medium text-primary-foreground/80">Teu parceiro de rolê</p>
+                <p className="text-xs font-medium text-foreground/80">Teu parceiro de rolê</p>
               </div>
             </div>
             <Button
@@ -87,7 +87,7 @@ export function CoezinhoChat() {
               size="icon"
               onClick={() => setOpen(false)}
               aria-label="Fechar"
-              className="rounded-full text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+              className="rounded-full text-foreground hover:bg-foreground/15 hover:text-foreground"
             >
               <X className="h-5 w-5" />
             </Button>
