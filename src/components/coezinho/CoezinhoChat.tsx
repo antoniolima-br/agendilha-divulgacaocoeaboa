@@ -4,9 +4,12 @@ import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
 import { Link, useLocation } from "react-router-dom";
 import { isTabBarHidden, OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
-import { MessageCircle, X, Send, Square } from "lucide-react";
+import { MessageCircle, X, Send, Square, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const QUICK_PROMPTS = ["Rolês de hoje", "Música ao vivo", "Um barzinho"];
 
 
 export function CoezinhoChat() {
@@ -55,7 +58,7 @@ export function CoezinhoChat() {
   return (
     <>
       {!open && (
-        <button
+        <Button
           onClick={() => setOpen(true)}
           aria-label="Falar com o Guia do Coé"
           className={cn(
@@ -65,29 +68,36 @@ export function CoezinhoChat() {
         >
           <MessageCircle className="h-5 w-5" />
           <span className="text-sm">Guia do Coé</span>
-        </button>
+        </Button>
       )}
 
       {open && (
-        <div className="fixed inset-x-2 bottom-2 z-50 flex h-[75vh] flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-2xl sm:inset-x-auto sm:right-4 sm:bottom-4 sm:h-[560px] sm:w-[380px]">
-          <div className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
+        <div className="fixed inset-x-2 bottom-2 z-50 flex h-[75vh] flex-col overflow-hidden rounded-2xl border border-primary/30 bg-card text-card-foreground shadow-elevated sm:inset-x-auto sm:bottom-4 sm:right-4 sm:h-[560px] sm:w-[390px]">
+          <div className="gradient-guide-header flex items-center justify-between border-b border-primary/30 px-4 py-4 text-primary-foreground">
             <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-lg">🌴</div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 text-lg shadow-sm">🌴</div>
               <div>
-                <p className="font-bold leading-tight">Guia do Coé</p>
-                <p className="text-xs opacity-80">Teu parceiro de rolê</p>
+                <p className="font-display text-base font-bold leading-tight">Guia do Coé</p>
+                <p className="text-xs font-medium text-primary-foreground/80">Teu parceiro de rolê</p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Fechar" className="rounded-full p-2 hover:bg-primary-foreground/15">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpen(false)}
+              aria-label="Fechar"
+              className="rounded-full text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+            >
               <X className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-4">
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 && (
-              <div className="space-y-3">
-                <p className="text-sm">
-                  Coé! Seja bem-vindo! 🌴 Qual é a boa de hoje? Tá afim de um som, um barzinho ou de um rolezinho pra agitar? Me conta o que você procura!
+              <div className="rounded-lg border border-border bg-muted/50 p-4 shadow-sm">
+                <p className="text-sm font-medium leading-relaxed text-foreground">
+                  🌴 Coé! Seja bem-vindo! Coé a boa de hoje? Tá afim de fazer o que, um rolêzinho pra agitar? Me conta o que você procura.
                 </p>
               </div>
             )}
@@ -130,38 +140,57 @@ export function CoezinhoChat() {
             )}
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              send(input);
-            }}
-            className="flex items-end gap-2 border-t border-border p-2"
-          >
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  send(input);
-                }
+          <div className="border-t border-border bg-background/80 px-3 pb-3 pt-2 backdrop-blur-sm">
+            {messages.length === 0 && (
+              <div className="mb-2 flex gap-2 overflow-x-auto pb-1" aria-label="Sugestões rápidas">
+                {QUICK_PROMPTS.map((prompt) => (
+                  <Button
+                    key={prompt}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => send(prompt)}
+                    disabled={busy}
+                    className="h-9 shrink-0 rounded-full bg-card px-3 text-xs shadow-none"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    {prompt}
+                  </Button>
+                ))}
+              </div>
+            )}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                send(input);
               }}
-              rows={1}
-              placeholder="Fala comigo…"
-              className="max-h-28 min-h-[44px] flex-1 resize-none rounded-xl border border-input bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type={busy ? "button" : "submit"}
-              onClick={busy ? () => stop() : undefined}
-              aria-label={busy ? "Parar" : "Enviar"}
-              disabled={!busy && !input.trim()}
-              className={cn(
-                "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground disabled:opacity-40",
-              )}
+              className="flex items-end gap-2"
             >
-              {busy ? <Square className="h-4 w-4" /> : <Send className="h-4 w-4" />}
-            </button>
-          </form>
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    send(input);
+                  }
+                }}
+                rows={1}
+                placeholder="Fala comigo…"
+                className="max-h-28 min-h-[44px] flex-1 resize-none rounded-lg border border-input bg-card px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <Button
+                type={busy ? "button" : "submit"}
+                onClick={busy ? () => stop() : undefined}
+                aria-label={busy ? "Parar" : "Enviar"}
+                disabled={!busy && !input.trim()}
+                size="icon"
+                className="h-11 w-11 shrink-0 rounded-lg"
+              >
+                {busy ? <Square className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+              </Button>
+            </form>
+          </div>
         </div>
       )}
     </>
