@@ -16,7 +16,7 @@ import {
   FileDown, MapPin, Clock,
   CheckCircle, XCircle, ChevronDown, ShieldAlert,
   Phone, Mail, Globe, Star,
-  RotateCcw, Edit, ExternalLink, Eye, History, Megaphone,
+  RotateCcw, Edit, ExternalLink, History, Megaphone,
   AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
@@ -28,9 +28,6 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { buildWhatsappUrl, validateBrazilianMobile, renderTemplate } from "@/lib/whatsapp";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { missingPublishFields, shouldOfferGenericFlyer } from "@/lib/publishValidation";
@@ -53,6 +50,11 @@ import { AdminEventsToolbar } from "@/components/events-admin/AdminEventsToolbar
 import { QuickEditEventDialog } from "@/components/events-admin/QuickEditEventDialog";
 import { AdminEventsKpis } from "@/components/events-admin/AdminEventsKpis";
 import { AdminEventsFilters } from "@/components/events-admin/AdminEventsFilters";
+import {
+  ModerationReviewDialog,
+  type ModerationReviewKind,
+  type ModerationReviewState,
+} from "@/components/events-admin/ModerationReviewDialog";
 
 
 export default function AdminEvents() {
@@ -79,13 +81,7 @@ function AdminEventsInner() {
     approved: "",
     rejected: "",
   });
-  const [review, setReview] = useState<{
-    sub: Submission;
-    kind: "approved" | "rejected" | "ajuste";
-    reason: string;
-    message: string;
-    submitting: boolean;
-  } | null>(null);
+  const [review, setReview] = useState<ModerationReviewState | null>(null);
 
   const [flyerOffer, setFlyerOffer] = useState<Submission | null>(null);
   const [generatingFlyer, setGeneratingFlyer] = useState(false);
@@ -135,7 +131,7 @@ function AdminEventsInner() {
     setDeleteConfirmId(null);
   }
 
-  function openReview(sub: Submission, kind: "approved" | "rejected" | "ajuste") {
+  function openReview(sub: Submission, kind: ModerationReviewKind) {
     const template = templates[kind === "ajuste" ? "rejected" : kind];
     if (!template && kind !== "ajuste") {
       toast.error("Template do WhatsApp ainda não carregado. Tente novamente em alguns segundos.");
@@ -803,89 +799,13 @@ function AdminEventsInner() {
         variant="destructive"
       />
 
-      <Dialog open={!!review} onOpenChange={(o) => !o && !review?.submitting && setReview(null)}>
-        <DialogContent className="max-w-2xl">
-          {review && (() => {
-            const phoneCheck = validateBrazilianMobile(review.sub.phone || "");
-            const isApprove = review.kind === "approved";
-            const isAjuste = review.kind === "ajuste";
-            return (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    {isApprove ? (
-                      <><CheckCircle className="h-5 w-5 text-emerald-600" /> Aprovar evento</>
-                    ) : isAjuste ? (
-                      <><History className="h-5 w-5 text-amber-600" /> Solicitar ajuste</>
-                    ) : (
-                      <><XCircle className="h-5 w-5 text-rose-600" /> Rejeitar evento</>
-                    )}
-                  </DialogTitle>
-                  <DialogDescription className="text-sm">
-                    <span className="font-bold text-foreground">{review.sub.event_title}</span>
-                    {review.sub.responsible_name && <> — {review.sub.responsible_name}</>}
-                  </DialogDescription>
-                </DialogHeader>
-
-                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
-                  <div className={`rounded-lg border p-3 text-xs text-foreground ${phoneCheck.valid ? "bg-success/15 border-success/50" : "bg-warning/15 border-warning/50"}`}>
-                    {phoneCheck.valid ? (
-                      <>📱 WhatsApp do divulgador validado: <strong>{phoneCheck.display}</strong> — a mensagem abrirá em uma nova aba para você revisar e enviar.</>
-                    ) : (
-                      <>⚠️ Telefone inválido: {(phoneCheck as { reason: string }).reason} A ação ocorre normalmente, mas o WhatsApp não será aberto.</>
-                    )}
-                  </div>
-
-                  {!isApprove && (
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-bold uppercase tracking-wide">
-                        {isAjuste ? "O que precisa ajustar?" : "Motivo da rejeição (opcional)"}
-                      </Label>
-                      <Textarea
-                        rows={2}
-                        value={review.reason}
-                        onChange={(e) => updateReviewReason(e.target.value.slice(0, 400))}
-                        placeholder={isAjuste ? "Ex: A data está incorreta ou falta a descrição." : "Ex.: Faltam dados de localização."}
-                      />
-                      <p className="text-[10px] text-muted-foreground">Será incluído como observação interna e na mensagem do WhatsApp.</p>
-                    </div>
-                  )}
-
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-bold uppercase tracking-wide flex items-center gap-2">
-                      <Eye className="h-3.5 w-3.5" /> Pré-visualização da mensagem
-                    </Label>
-                    <Textarea
-                      rows={10}
-                      value={review.message}
-                      onChange={(e) => setReview({ ...review, message: e.target.value.slice(0, 1500) })}
-                      className="font-mono text-xs leading-relaxed"
-                    />
-                    <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                      <span>Você pode editar a mensagem antes de enviar.</span>
-                      <span>{review.message.length} / 1500</span>
-                    </div>
-                  </div>
-                </div>
-
-                <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setReview(null)} disabled={review.submitting}>
-                    Cancelar
-                  </Button>
-                  <Button
-                    onClick={confirmReview}
-                    disabled={review.submitting}
-                    className={isApprove ? "bg-success text-success-foreground hover:bg-success/90" : isAjuste ? "bg-warning text-warning-foreground hover:bg-warning/90" : "bg-destructive text-destructive-foreground hover:bg-destructive/90"}
-                  >
-                    {review.submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : (isApprove ? <CheckCircle className="h-4 w-4 mr-2" /> : isAjuste ? <History className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />)}
-                    {isApprove ? "Aprovar e enviar WhatsApp" : isAjuste ? "Solicitar ajuste" : "Rejeitar e enviar WhatsApp"}
-                  </Button>
-                </DialogFooter>
-              </>
-            );
-          })()}
-        </DialogContent>
-      </Dialog>
+      <ModerationReviewDialog
+        review={review}
+        onClose={() => setReview(null)}
+        onReasonChange={updateReviewReason}
+        onMessageChange={(message) => setReview((current) => current ? { ...current, message } : current)}
+        onConfirm={confirmReview}
+      />
 
       <QuickEditEventDialog
         event={quickEdit}
