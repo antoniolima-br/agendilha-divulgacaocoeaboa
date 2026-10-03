@@ -29,6 +29,28 @@ export const qk = {
     events: () => [...qk.agenda.all, "events"] as const,
     ratings: () => [...qk.agenda.all, "ratings"] as const,
   },
+  favorites: {
+    all: ["favorites"] as const,
+    byUser: (userId: string | null | undefined) =>
+      [...qk.favorites.all, userId ?? "anon"] as const,
+  },
+  profile: {
+    all: ["profile"] as const,
+    byUser: (userId: string | null | undefined) =>
+      [...qk.profile.all, userId ?? "anon"] as const,
+  },
+  ads: {
+    all: ["ads"] as const,
+    published: () => [...qk.ads.all, "publicados"] as const,
+    mine: (userId: string | null | undefined) => [...qk.ads.all, "meus", userId ?? "anon"] as const,
+    list: () => [...qk.ads.all, "todos"] as const,
+    byId: (id: string | null | undefined) => [...qk.ads.all, "detalhe", id ?? "none"] as const,
+    flyersHome: () => [...qk.ads.all, "flyers-home"] as const,
+  },
+  highlights: {
+    all: ["admin", "highlights"] as const,
+    candidates: (search: string) => ["admin", "highlight-candidates", search] as const,
+  },
   estabelecimentos: {
     all: ["estabelecimentos"] as const,
     mine: (userId: string | null | undefined) =>

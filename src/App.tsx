@@ -1,4 +1,4 @@
-import { QueryCache, QueryClient, QueryClientProvider, MutationCache } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,12 +10,12 @@ import { SubmissionProvider } from "@/contexts/SubmissionContext";
 import Header from "@/components/Header";
 import { Suspense, lazy } from "react";
 import { Loader2 } from "lucide-react";
-import { useAppPermissions, PermissionName } from "@/hooks/usePermissions";
+import { useAppPermissions, type PermissionName } from "@/hooks/useAppPermissions";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { AppShell } from "@/components/layout/AppShell";
-import { handleError } from "@/lib/error-handler";
-import { logger } from "@/lib/logger";
+import { queryClient } from "@/lib/queryClient";
+import { installGlobalErrorHandlers } from "@/lib/globalErrorHandlers";
 import { ROUTES } from "@/routes/config";
 import { PromotorRoute } from "@/components/auth/PromotorRoute";
 
@@ -86,55 +86,7 @@ const ImpulsionamentoPage = lazy(() => import("./pages/PlaceholderInfo").then(m 
 const StatusDivulgador = lazy(() => import("./pages/divulgador/StatusDivulgador"));
 const PublicProfile = lazy(() => import("./pages/divulgador/PublicProfile"));
 
-const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error, query) => {
-      // Só avisa via toast se a query já tinha dado certo antes (evita duplicar
-      // com o InlineError/estado vazio no primeiro load).
-      if (query.state.data !== undefined) {
-        handleError(error, {
-          fallback: "Não deu pra atualizar os dados. Tenta de novo.",
-          context: `query:${String(query.queryKey?.[0] ?? "unknown")}`,
-        });
-      } else {
-        logger.error(`[query:${String(query.queryKey?.[0] ?? "unknown")}] load failed`, error);
-      }
-    },
-  }),
-  mutationCache: new MutationCache({
-    onError: (error, _vars, _ctx, mutation) => {
-      // Se a mutation tem onError próprio que já trata o erro (ex: retorna true no handler), não duplica.
-      // Aqui apenas garantimos que erros não tratados cheguem ao usuário.
-      if (mutation.options.onError) return;
-      handleError(error, { 
-        fallback: "Não deu pra completar a ação. Tenta de novo.",
-        context: `mutation:${mutation.options.mutationKey?.[0] ?? "unknown"}`
-      });
-    },
-  }),
-  defaultOptions: {
-    queries: {
-      staleTime: 60_000,
-      gcTime: 5 * 60_000,
-      refetchOnWindowFocus: false,
-      retry: (failureCount, error: unknown) => {
-        const e = error as { status?: number; code?: string } | null;
-        if (e?.status === 404 || e?.status === 403 || e?.code === 'PGRST116') return false;
-        return failureCount < 2;
-      },
-    },
-  },
-});
-
-// Global unhandled promise rejection handler
-window.onunhandledrejection = (event) => {
-  logger.error("Unhandled promise rejection:", event.reason);
-};
-
-// Global error handler for non-React errors
-window.onerror = (message, source, lineno, colno, error) => {
-  logger.error("Global error:", { message, source, lineno, colno, error });
-};
+installGlobalErrorHandlers();
 
 
 const PageFallback = () => (
@@ -216,7 +168,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />
-          <Route path="/divulgador/:userId" element={<PublicProfile />} />
+          <Route path={ROUTES.DIVULGADOR_PUBLIC_PROFILE} element={<PublicProfile />} />
         </Route>
 
         {/* Full width detail pages */}
@@ -245,8 +197,8 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ADMIN_WHATSAPP_TEMPLATES} element={<AdminWhatsAppTemplates />} />
           <Route path={ROUTES.ADMIN_DESTAQUES} element={<AdminDestaques />} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
-          <Route path="/admin/rolando-agora" element={<AdminRolandoAgora />} />
-          <Route path="/admin/aprovar-eventos" element={<AdminAprovarEventos />} />
+          <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
+          <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<AdminAprovarEventos />} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />
           <Route path={ROUTES.ADMIN_ESTABELECIMENTOS} element={<AdminEstabelecimentos />} />
           <Route path={ROUTES.ADMIN_ATRATIVOS} element={<AdminAtrativos />} />
@@ -281,13 +233,13 @@ export const AppRoutes = () => (
           <Route path={ROUTES.PRIVACIDADE} element={<PrivacidadePage />} />
           <Route path={ROUTES.IMPULSIONAMENTO} element={<ImpulsionamentoPage />} />
         </Route>
-        <Route path="/coeaboa" element={<Navigate to={ROUTES.AGENDA} replace />} />
-        <Route path="/lp" element={<Navigate to={ROUTES.LANDING} replace />} />
+        <Route path={ROUTES.LEGACY_COEABOA} element={<Navigate to={ROUTES.AGENDA} replace />} />
+        <Route path={ROUTES.LEGACY_LANDING} element={<Navigate to={ROUTES.LANDING} replace />} />
         {/* Defensive: bare /master and /admin should land on a real page */}
-        <Route path="/master" element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
-        <Route path="/admin/master" element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
-        <Route path="/admin" element={<Navigate to={ROUTES.ADMIN_EVENTS} replace />} />
-        <Route path="/carrossel" element={<Carrossel />} />
+        <Route path={ROUTES.MASTER_ROOT} element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
+        <Route path={ROUTES.LEGACY_ADMIN_MASTER} element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
+        <Route path={ROUTES.ADMIN_ROOT} element={<Navigate to={ROUTES.ADMIN_EVENTS} replace />} />
+        <Route path={ROUTES.CARROSSEL} element={<Carrossel />} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

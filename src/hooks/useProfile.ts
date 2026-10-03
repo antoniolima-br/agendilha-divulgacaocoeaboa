@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
+import { qk } from "@/data/queryKeys";
 
 
  export interface ProfileAddress {
@@ -64,7 +65,7 @@ export function useProfile() {
   const userId = user?.id ?? null;
 
   const profileQuery = useQuery({
-    queryKey: ["profile", userId],
+    queryKey: qk.profile.byUser(userId),
     enabled: !!userId,
     staleTime: 5 * 60_000,
     gcTime: 15 * 60_000,
@@ -109,7 +110,7 @@ export function useProfile() {
   useEffect(() => {
     if (!userId) return;
     const refreshProfile = () => {
-      void queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+      void queryClient.invalidateQueries({ queryKey: qk.profile.byUser(userId) });
     };
     window.addEventListener("agendilha:profile-updated", refreshProfile);
     return () => window.removeEventListener("agendilha:profile-updated", refreshProfile);
@@ -125,7 +126,7 @@ export function useProfile() {
     if (error) {
       handleError(error, "Erro ao salvar perfil");
     } else {
-      queryClient.setQueryData<ProfileAddress>(["profile", user.id], (previous) => ({
+      queryClient.setQueryData<ProfileAddress>(qk.profile.byUser(user.id), (previous) => ({
         ...(previous ?? emptyAddress),
         ...data,
       }));
