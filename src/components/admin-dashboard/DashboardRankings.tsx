@@ -15,7 +15,7 @@ interface RankingListProps {
 }
 
 const RankingList = ({ title, icon: Icon, items }: RankingListProps) => (
-  <Card className="bg-white/60 backdrop-blur-md border-white/40 shadow-sm">
+  <Card className="border-border bg-card shadow-sm">
     <CardHeader className="pb-2">
       <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
         <Icon className="h-4 w-4" />
@@ -27,7 +27,7 @@ const RankingList = ({ title, icon: Icon, items }: RankingListProps) => (
         <p className="text-xs text-muted-foreground py-4 text-center">Sem dados disponíveis.</p>
       )}
       {items.map((item, i) => (
-        <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-white/40 border border-white/50">
+        <div key={i} className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2">
           <div className="flex items-center gap-3 min-w-0">
             <div className={`h-6 w-6 rounded-full flex items-center justify-center font-bold text-[10px] ${
               i === 0 ? "bg-amber-100 text-amber-700" : 

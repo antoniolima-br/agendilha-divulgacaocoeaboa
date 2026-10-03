@@ -24,15 +24,15 @@ export function SystemHealthBlock({ health }: SystemHealthProps) {
   };
 
   return (
-    <Card className="bg-white/60 backdrop-blur-md border-white/40 shadow-sm overflow-hidden">
-      <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-3">
-        <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+    <Card className="overflow-hidden border-border bg-card shadow-sm">
+      <CardHeader className="border-b border-border bg-muted/40 py-3">
+        <CardTitle className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-foreground">
           <RefreshCcw className="h-4 w-4" />
           Saúde do Sistema
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+        <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">

@@ -88,7 +88,7 @@ export function SidebarMenu({ onClose }: Props) {
           <Separator className="bg-sidebar-border/50" />
         </div>
         
-        <div className="flex flex-col gap-3 p-3 md:p-4 rounded-2xl bg-white/40 border border-white/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex flex-col gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent p-3 shadow-sm transition-all hover:shadow-md md:p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-primary via-primary to-accent text-primary-foreground flex items-center justify-center font-display text-base font-bold shrink-0 shadow-lg ring-2 ring-white/50">
               {user ? initials : <User className="h-5 w-5" />}
@@ -112,7 +112,7 @@ export function SidebarMenu({ onClose }: Props) {
         {filteredSections.map((section, idx) => (
           <div key={section.id} className="space-y-2 animate-in fade-in slide-in-from-left-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
             <div className="flex items-center gap-2 px-3 mb-3 opacity-80">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">
                 {section.title}
               </h3>
             </div>
@@ -165,7 +165,7 @@ export function SidebarMenu({ onClose }: Props) {
           </div>
         )}
         <div className="mt-4 text-center">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground/30">
+          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
             © {new Date().getFullYear()} Coé a Boa?
           </p>
         </div>
@@ -258,8 +258,8 @@ function SidebarNavigationItem({
               className={cn(
                 "h-5 min-w-[20px] px-1.5 border-none text-[10px] font-bold",
                 isPending
-                  ? "bg-amber-500 text-white animate-pulse shadow-sm"
-                  : "bg-primary/20 text-primary"
+                  ? "bg-warning text-warning-foreground animate-pulse shadow-sm"
+                  : "bg-primary text-primary-foreground"
               )}
             >
               {itemBadge}

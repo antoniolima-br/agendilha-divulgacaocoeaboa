@@ -118,7 +118,7 @@ export default function Eventos() {
     if (list.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <CalendarDays className="h-12 w-12 text-muted-foreground/40 mb-3" />
+          <CalendarDays className="h-12 w-12 text-muted-foreground/70 mb-3" />
           <p className="text-muted-foreground text-sm">Nenhum rolê por aqui ainda. Tenta ajustar os filtros ou volta mais tarde.</p>
         </div>
       );

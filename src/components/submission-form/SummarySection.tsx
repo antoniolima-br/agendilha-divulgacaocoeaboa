@@ -28,7 +28,7 @@ export function SummarySection({ title, items, onEdit }: SummarySectionProps) {
           <div key={idx} className="space-y-1">
             <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-wider">{item.label}</p>
             <p className="text-sm sm:text-base font-medium text-foreground break-words">
-              {item.value || <span className="text-muted-foreground/50 italic">Não informado</span>}
+              {item.value || <span className="text-muted-foreground/80 italic">Não informado</span>}
             </p>
           </div>
         ))}

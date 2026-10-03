@@ -409,7 +409,7 @@ function AdminEventsInner() {
           ) : (
             <div className="divide-y divide-border">
               {filtered.map((sub) => (
-             <div key={sub.id} className="p-3 transition-colors hover:bg-muted/5 sm:p-5">
+             <div key={sub.id} className="p-3 transition-colors hover:bg-muted/20 dark:hover:bg-muted/40 sm:p-5">
                    <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-12 md:gap-6">
                     {/* Informações Principais */}
                      <div className="col-span-3 space-y-2">
@@ -427,7 +427,7 @@ function AdminEventsInner() {
                                 download={`flyer-${sub.event_title}.jpg`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-white rounded-full flex items-center justify-center opacity-0 group-hover/flyer:opacity-100 transition-opacity shadow-sm"
+                                className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center opacity-0 group-hover/flyer:opacity-100 transition-opacity shadow-sm"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <FileDown className="h-3 w-3" />
@@ -435,7 +435,7 @@ function AdminEventsInner() {
                             </div>
                           ) : (
                             <div className="h-14 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                              <CalendarDays className="h-5 w-5 text-muted-foreground/40" />
+                              <CalendarDays className="h-5 w-5 text-muted-foreground/70" />
                             </div>
                           )}
                          <div className="min-w-0 flex-1">
@@ -452,7 +452,7 @@ function AdminEventsInner() {
                          <Badge variant="secondary" className="text-[10px] font-bold bg-primary/10 text-primary border-none uppercase tracking-wider">
                            {categoryLabels[sub.category || ''] || 'Outros'}
                          </Badge>
-                         <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">ID: {sub.id.slice(0, 8)}</span>
+                         <span className="text-[10px] text-muted-foreground/90 font-mono bg-muted dark:bg-muted/50 px-1.5 py-0.5 rounded">ID: {sub.id.slice(0, 8)}</span>
                        </div>
                          <div className="flex flex-col gap-1 mt-3 p-2 bg-muted/20 rounded-lg border border-border/30">
                           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest px-0.5">Data de Cadastro</span>
@@ -468,7 +468,7 @@ function AdminEventsInner() {
                              </Badge>
                            )}
                            {(sub.report_count ?? 0) > 0 && (
-                             <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50 flex items-center gap-1 text-[9px] font-black uppercase">
+                             <Badge variant="outline" className="flex items-center gap-1 border-destructive/50 bg-destructive/15 text-[9px] font-black uppercase text-foreground">
                                🚩 {sub.report_count} Denúncias
                              </Badge>
                            )}
@@ -519,7 +519,7 @@ function AdminEventsInner() {
                               {cfg.label.toUpperCase()}
                             </Badge>
                             {sub.status === 'aprovado' && (
-                              <span className="text-[10px] font-bold text-indigo-600 flex items-center gap-1.5 ml-1">
+                              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 ml-1">
                                 <Globe className="h-3 w-3" />
                                 NA AGENDA
                               </span>
@@ -534,7 +534,7 @@ function AdminEventsInner() {
                         {/* Ver Detalhes */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-primary/5 hover:text-primary hover:border-primary/20 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
+                             <Button size="icon" variant="outline" className="bg-transparent border-border hover:bg-muted hover:text-primary hover:border-primary/20 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setExpandedId(expandedId === sub.id ? null : sub.id)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -544,7 +544,7 @@ function AdminEventsInner() {
                         {/* Editar (Abre expansão ou poderia ser rota dedicada) */}
                         <Tooltip>
                           <TooltipTrigger asChild>
-                             <Button size="icon" variant="outline" className="bg-white border-border hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setQuickEdit(sub)}>
+                             <Button size="icon" variant="outline" className="bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all shadow-sm md:h-9 md:w-9" onClick={() => setQuickEdit(sub)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
@@ -557,7 +557,7 @@ function AdminEventsInner() {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                  <span className="inline-flex">
-                                    <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
+                                    <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="border-success/50 bg-success/15 text-foreground hover:bg-success hover:text-success-foreground transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
                                      <CheckCircle className="h-4 w-4" />
                                    </Button>
                                  </span>
@@ -600,7 +600,7 @@ function AdminEventsInner() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="inline-flex">
-                                <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
+                                <Button size="icon" variant="outline" disabled={missingPublishFields(sub).length > 0} className="border-success/50 bg-success/15 text-foreground hover:bg-success hover:text-success-foreground transition-all shadow-sm disabled:opacity-50 md:h-9 md:w-9" onClick={() => openReview(sub, 'approved')}>
                                   <CheckCircle className="h-4 w-4" />
                                 </Button>
                               </span>
@@ -616,7 +616,7 @@ function AdminEventsInner() {
                         {sub.slug && (
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button size="icon" variant="outline" className="bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm md:h-9 md:w-9" onClick={() => window.open(`/evento/${sub.slug}`, '_blank')}>
+                              <Button size="icon" variant="outline" className="border-primary/50 bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all shadow-sm md:h-9 md:w-9" onClick={() => window.open(`/evento/${sub.slug}`, '_blank')}>
                                 <ExternalLink className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
@@ -630,7 +630,7 @@ function AdminEventsInner() {
                             <TooltipTrigger asChild>
                               <Button
                                 size="sm"
-                                className="h-9 px-3 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm font-bold text-xs gap-1.5"
+                                className="h-9 bg-success px-3 text-xs font-bold text-success-foreground shadow-sm hover:bg-success/90 gap-1.5"
                                 onClick={() => window.open(`https://wa.me/?text=${buildWhatsAppMessage(sub)}`, "_blank")}
                               >
                                 <MessageCircle className="h-4 w-4" />
@@ -651,7 +651,7 @@ function AdminEventsInner() {
                                 "transition-all shadow-sm md:h-9 md:w-9",
                                 sub.is_highlight
                                   ? "bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100"
-                                  : "bg-white border-border hover:bg-amber-50 hover:text-amber-600"
+                                  : "bg-transparent border-border hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600"
                               )}
                               onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}
                             >
@@ -715,7 +715,7 @@ function AdminEventsInner() {
                             <h4 className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-3">Classificação e Segurança</h4>
                             <div className="space-y-3 text-sm mb-6">
                               <div className="flex items-center gap-2">
-                                <Badge className={cn("rounded-full px-3 py-1 font-black", sub.age_rating === '18+' ? "bg-red-500" : "bg-green-500")}>
+                                <Badge className={cn("rounded-full px-3 py-1 font-black", sub.age_rating === '18+' ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground")}>
                                   {sub.age_rating || 'Livre'}
                                 </Badge>
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">Classificação Etária</span>
@@ -764,7 +764,7 @@ function AdminEventsInner() {
                                const missing = missingPublishFields(sub);
                                const disabled = missing.length > 0;
                                const btn = (
-                                 <Button size="sm" variant="default" disabled={disabled} onClick={() => openReview(sub, 'approved')} className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50">
+                                 <Button size="sm" variant="default" disabled={disabled} onClick={() => openReview(sub, 'approved')} className="bg-success text-success-foreground hover:bg-success/90 disabled:opacity-50">
                                    <CheckCircle className="h-4 w-4 mr-2" /> Aprovar e Publicar
                                  </Button>
                                );
@@ -828,7 +828,7 @@ function AdminEventsInner() {
                 </DialogHeader>
 
                 <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
-                  <div className={`rounded-lg border p-3 text-xs ${phoneCheck.valid ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
+                  <div className={`rounded-lg border p-3 text-xs text-foreground ${phoneCheck.valid ? "bg-success/15 border-success/50" : "bg-warning/15 border-warning/50"}`}>
                     {phoneCheck.valid ? (
                       <>📱 WhatsApp do divulgador validado: <strong>{phoneCheck.display}</strong> — a mensagem abrirá em uma nova aba para você revisar e enviar.</>
                     ) : (
@@ -875,7 +875,7 @@ function AdminEventsInner() {
                   <Button
                     onClick={confirmReview}
                     disabled={review.submitting}
-                    className={isApprove ? "bg-emerald-600 hover:bg-emerald-700" : isAjuste ? "bg-amber-600 hover:bg-amber-700" : "bg-rose-600 hover:bg-rose-700"}
+                    className={isApprove ? "bg-success text-success-foreground hover:bg-success/90" : isAjuste ? "bg-warning text-warning-foreground hover:bg-warning/90" : "bg-destructive text-destructive-foreground hover:bg-destructive/90"}
                   >
                     {review.submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : (isApprove ? <CheckCircle className="h-4 w-4 mr-2" /> : isAjuste ? <History className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />)}
                     {isApprove ? "Aprovar e enviar WhatsApp" : isAjuste ? "Solicitar ajuste" : "Rejeitar e enviar WhatsApp"}

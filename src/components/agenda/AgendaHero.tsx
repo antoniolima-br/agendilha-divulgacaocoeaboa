@@ -40,7 +40,7 @@ export function AgendaHero({
     <div className="mb-12 sm:mb-20 text-center space-y-8 relative animate-in fade-in slide-in-from-top-4 duration-700">
       <div className="flex flex-col items-center gap-4 sm:gap-6">
         <div className="inline-flex items-center justify-center px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-2 shadow-sm">
-          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-primary">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-foreground">
             Coé a Boa?
           </span>
         </div>
@@ -126,7 +126,7 @@ export function AgendaHero({
             <Megaphone className="h-5 w-5 mr-2.5" /> Divulgar Evento
           </Button>
           <Button
-            className="rounded-full shadow-lg sm:shadow-xl gradient-sunset text-primary-foreground font-black px-6 sm:px-12 h-14 sm:h-16 text-sm sm:text-base transition-all uppercase tracking-widest focus-visible:ring-4 focus-visible:ring-primary/40 outline-none hover:scale-[1.02] active:scale-95 w-full sm:flex-1"
+            className="rounded-full bg-secondary text-secondary-foreground shadow-lg sm:shadow-xl font-black px-6 sm:px-12 h-14 sm:h-16 text-sm sm:text-base transition-all uppercase tracking-widest focus-visible:ring-4 focus-visible:ring-primary/40 outline-none hover:bg-secondary/90 hover:scale-[1.02] active:scale-95 w-full sm:flex-1"
             onClick={onWhatsApp}
             aria-label="Compartilhar agenda no WhatsApp"
           >

@@ -20,7 +20,7 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
     <footer className={`w-full border-t border-border/40 px-4 py-10 sm:px-6 ${bg} ${className}`}>
       <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center gap-6 text-center sm:grid-cols-3 sm:text-left">
         {/* Copyright */}
-        <div className="text-xs text-foreground/60 font-medium order-2 sm:order-1">
+        <div className="text-xs text-foreground/80 font-medium order-2 sm:order-1">
           © {year} — Todos os direitos reservados
         </div>
 
@@ -35,14 +35,14 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
             <div className="font-display text-sm font-black text-foreground tracking-tight">
               Coé a Boa?
             </div>
-            <div className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-semibold">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-foreground font-semibold">
               Transparência e Cultura
             </div>
           </div>
         </div>
 
         {/* Créditos */}
-        <div className="text-xs text-foreground/60 font-medium order-3 sm:text-right">
+        <div className="text-xs text-foreground/80 font-medium order-3 sm:text-right">
           Criado por{" "}
           <a
             href="https://limaxsistemas.online/"

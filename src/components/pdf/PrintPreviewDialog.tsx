@@ -121,7 +121,7 @@ export function PrintPreviewDialog({
                 <div className="text-[10px] opacity-80">{cover.subtitle || "Capa"}</div>
               </div>
               <div className="flex-1 flex flex-col justify-center items-center text-center px-4">
-                <div className="text-[10px] uppercase tracking-widest text-slate-500 mb-3">Ficha do evento</div>
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 mb-3">Ficha do evento</div>
                 <h1 className="text-3xl font-bold leading-tight mb-6 capitalize">{cover.eventTitle}</h1>
                 {cover.date && (
                   <div className="text-base text-slate-700 mb-1">{cover.date}</div>
@@ -130,7 +130,7 @@ export function PrintPreviewDialog({
                   <div className="text-sm text-slate-600">{cover.location}</div>
                 )}
               </div>
-              <div className="flex justify-between text-[9px] text-slate-500">
+              <div className="flex justify-between text-[9px] text-slate-400">
                 <span>agendilha.lovable.app</span>
                 <span>Capa</span>
               </div>
@@ -183,7 +183,7 @@ export function PrintPreviewDialog({
                 </div>
               )}
 
-              <div className="absolute bottom-4 left-8 right-8 flex justify-between text-[9px] text-slate-500">
+              <div className="absolute bottom-4 left-8 right-8 flex justify-between text-[9px] text-slate-400">
                 <span>agendilha.lovable.app</span>
                 <span>Página {idx + 1 + (cover ? 1 : 0)} de {totalPages}</span>
               </div>

@@ -63,7 +63,7 @@ export default function EventReviews({ eventId, eventTitle }: EventReviewsProps)
           <div className="text-center py-4 text-muted-foreground">Carregando avaliações...</div>
         ) : reviews.length === 0 ? (
           <div className="text-center py-8 bg-muted/20 rounded-2xl border-2 border-dashed border-border/40">
-            <MessageSquare className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
+            <MessageSquare className="h-8 w-8 text-muted-foreground/60 mx-auto mb-3" />
             <p className="text-muted-foreground font-medium">Seja o primeiro a avaliar!</p>
           </div>
         ) : (
@@ -76,12 +76,12 @@ export default function EventReviews({ eventId, eventTitle }: EventReviewsProps)
                       key={i}
                       className={cn(
                         "h-3 w-3",
-                        i < review.rating ? "text-primary fill-primary" : "text-muted-foreground/30"
+                        i < review.rating ? "text-primary fill-primary" : "text-muted-foreground/60"
                       )}
                     />
                   ))}
                 </div>
-                <span className="text-[10px] text-muted-foreground/60 font-mono">
+                <span className="text-[10px] text-muted-foreground font-mono">
                   {new Date(review.created_at).toLocaleDateString("pt-BR")}
                 </span>
               </div>
@@ -120,7 +120,7 @@ export default function EventReviews({ eventId, eventTitle }: EventReviewsProps)
                 <Star
                   className={cn(
                     "h-6 w-6 transition-colors",
-                    star <= newRating ? "text-primary fill-primary" : "text-muted-foreground/30 hover:text-primary/50"
+                    star <= newRating ? "text-primary fill-primary" : "text-muted-foreground/60 hover:text-primary/50"
                   )}
                 />
               </button>

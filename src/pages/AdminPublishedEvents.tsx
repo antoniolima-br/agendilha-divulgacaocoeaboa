@@ -121,7 +121,7 @@ export default function AdminPublishedEvents() {
         />
       ) : (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
-          <div className="hidden grid-cols-[minmax(0,1.5fr)_minmax(10rem,1fr)_minmax(0,1fr)_auto] gap-4 border-b border-border bg-muted/40 px-5 py-3 text-xs font-bold uppercase text-muted-foreground md:grid">
+          <div className="hidden grid-cols-[minmax(0,1.5fr)_minmax(10rem,1fr)_minmax(0,1fr)_auto] gap-4 border-b border-border bg-muted/40 px-5 py-3 text-xs font-bold uppercase text-muted-foreground/90 md:grid">
             <span>Evento</span><span>Data e horário</span><span>Local</span><span>Ações</span>
           </div>
           <div className="divide-y divide-border">

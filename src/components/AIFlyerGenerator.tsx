@@ -277,7 +277,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
                     {data.date} • {data.time}
                   </p>
                   <div className={cn(
-                    "flex items-center gap-2 text-white/70 text-xs sm:text-sm font-medium",
+                    "flex items-center gap-2 text-white/90 text-xs sm:text-sm font-medium",
                     layout === 'center' ? "justify-center" : "justify-start"
                   )}>
                     <span className="uppercase">{data.location}</span>
@@ -286,7 +286,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
                   </div>
                 </div>
                 
-                <div className="pt-4 border-t border-white/10 flex justify-between items-center text-[8px] sm:text-[10px] font-bold text-white/40 tracking-widest uppercase">
+                <div className="pt-4 border-t border-white/10 flex justify-between items-center text-[8px] sm:text-[10px] font-bold text-white/70 tracking-widest uppercase">
                   <span>@coeaboa</span>
                   <span>#agendilha</span>
                   <span>Rio de Janeiro</span>

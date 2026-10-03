@@ -59,7 +59,7 @@ export type EditorialStatus =
   | "rejeitado";
 
 export const EDITORIAL_STAGES: { key: EditorialStatus; label: string; nextStep: string; color: string }[] = [
-  { key: "recebido",        label: "Recebido",         nextStep: "Validar dados básicos",     color: "bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800/40 dark:text-slate-200" },
+  { key: "recebido",        label: "Recebido",         nextStep: "Validar dados básicos",     color: "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800/40 dark:text-slate-200" },
   { key: "em_revisao",      label: "Em revisão",       nextStep: "Curar conteúdo e flyer",    color: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-200" },
   { key: "flyer_aprovado",  label: "Flyer aprovado",   nextStep: "Marcar pronto p/ divulgar", color: "bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-200" },
   { key: "pronto_divulgar", label: "Pronto p/ divulgar", nextStep: "Agendar canal e horário", color: "bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/30 dark:text-orange-200" },

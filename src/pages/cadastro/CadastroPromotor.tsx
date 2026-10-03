@@ -95,15 +95,15 @@ export default function CadastroPromotor() {
           </p>
         </header>
 
-        <Card className="p-5 space-y-2 border-2 border-rose-200 bg-rose-50/60">
+        <Card className="space-y-2 border-2 border-primary/40 bg-primary/10 p-5">
           <div className="flex items-start gap-2">
-            <CheckCircle2 className="h-5 w-5 text-rose-600 mt-0.5 shrink-0" />
+            <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
             <p className="text-sm text-foreground">
               Após concluir, você entra direto no <strong>painel do divulgador</strong>.
             </p>
           </div>
           <div className="flex items-start gap-2">
-            <CheckCircle2 className="h-5 w-5 text-rose-600 mt-0.5 shrink-0" />
+            <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
             <p className="text-sm text-foreground">
               Somente você poderá editar os registros que cadastrar.
             </p>
@@ -161,7 +161,7 @@ export default function CadastroPromotor() {
             autoComplete="new-password"
           />
           <div className="space-y-1.5">
-            <div className="flex items-start gap-3 rounded-xl border-2 border-rose-200 bg-rose-50/60 p-4">
+            <div className="flex items-start gap-3 rounded-lg border-2 border-primary/40 bg-primary/10 p-4">
               <Checkbox
                 id="aceite"
                 checked={aceite}
@@ -180,7 +180,7 @@ export default function CadastroPromotor() {
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full h-14 text-base font-bold rounded-full bg-rose-600 hover:bg-rose-700 shadow-lg"
+          className="w-full h-14 text-base font-bold rounded-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
         >
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Começar a divulgar"}
         </Button>
@@ -189,7 +189,7 @@ export default function CadastroPromotor() {
           Já tem conta?{" "}
           <button
             onClick={() => navigate(ROUTES.AUTH)}
-            className="font-semibold text-rose-600 hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Entrar
           </button>

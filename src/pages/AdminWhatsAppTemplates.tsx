@@ -163,7 +163,7 @@ export default function AdminWhatsAppTemplates() {
                 <Label className="text-xs font-bold uppercase tracking-wide flex items-center gap-2">
                   <Eye className="h-3.5 w-3.5" /> Pré-visualização (com dados de exemplo)
                 </Label>
-                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-sm whitespace-pre-wrap leading-relaxed">
+                <div className="rounded-xl border border-success/40 bg-success/10 p-4 text-sm text-foreground whitespace-pre-wrap leading-relaxed">
                   {preview || <span className="text-muted-foreground italic">— vazio —</span>}
                 </div>
               </div>
@@ -181,7 +181,7 @@ export default function AdminWhatsAppTemplates() {
                   size="sm"
                   disabled={!dirty || saving === kind}
                   onClick={() => handleSave(kind)}
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-success text-success-foreground hover:bg-success/90"
                 >
                   {saving === kind ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
                   Salvar template

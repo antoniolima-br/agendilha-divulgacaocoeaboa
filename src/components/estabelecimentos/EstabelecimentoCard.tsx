@@ -161,7 +161,7 @@ export function EstabelecimentoCard({ estab, canEdit, canDelete, canApprove, onS
                     </dl>
                   </div>
                 )}
-                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-mono">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
                   ID: {estab.id}
                 </p>
                 <div className="flex flex-col gap-4 pt-3 border-t border-border">
@@ -291,7 +291,7 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   return (
     <div className="min-w-0">
       <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">{label}</p>
-      <p className="truncate">{value || <span className="text-muted-foreground/60 italic">—</span>}</p>
+      <p className="truncate">{value || <span className="text-muted-foreground italic">—</span>}</p>
     </div>
   );
 }
