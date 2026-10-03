@@ -32,6 +32,7 @@ const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AdminPublishedEvents = lazy(() => import("./pages/AdminPublishedEvents"));
 const AgendaCultural = lazy(() => import("./pages/AgendaCultural"));
 const EventosPublicos = lazy(() => import("./pages/EventosPublicos"));
+const EventosEmDestaque = lazy(() => import("./pages/EventosEmDestaque"));
 const Explorar = lazy(() => import("./pages/Explorar"));
 const CuradoriaHoje = lazy(() => import("./pages/CuradoriaHoje"));
 const AdminCollaborators = lazy(() => import("./pages/AdminCollaborators"));
@@ -66,6 +67,7 @@ const ContratarDestaqueEvento = lazy(() => import("./pages/ContratarDestaqueEven
 const MeusEventos = lazy(() => import("./pages/MeusEventos"));
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
+const AdminHighlightPayments = lazy(() => import("./pages/AdminHighlightPayments"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
 const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
@@ -168,6 +170,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
           <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SubmitEvent /></PromotorRoute>} />
           <Route path={ROUTES.EVENTOS} element={<EventosPublicos />} />
+          <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
@@ -200,6 +203,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ADMIN_AGENDA_INFORMA_COMPARTILHAR} element={<CompartilharAgendaInforma />} />
           <Route path={ROUTES.ADMIN_WHATSAPP_TEMPLATES} element={<AdminWhatsAppTemplates />} />
           <Route path={ROUTES.ADMIN_DESTAQUES} element={<AdminDestaques />} />
+          <Route path={ROUTES.ADMIN_PAGAMENTOS_DESTAQUE} element={<AdminHighlightPayments />} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
           <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
           <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<AdminAprovarEventos />} />

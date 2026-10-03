@@ -21,7 +21,8 @@ import {
   Building2,
   FolderKanban,
   ShoppingBag,
-  Settings2
+  Settings2,
+  CreditCard
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
@@ -67,6 +68,13 @@ export const sidebarConfig: SidebarSection[] = [
         roles: ["public_registered"] 
       },
       {
+        id: "eventos_destaque",
+        label: "Eventos em destaque",
+        path: ROUTES.EVENTOS_DESTAQUE,
+        icon: Sparkles,
+        roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+      },
+      {
         id: "anuncios_destaques",
         label: "Anúncios e Destaques",
         path: ROUTES.ANUNCIOS,
@@ -107,6 +115,13 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Gestão de destaques",
             path: ROUTES.ADMIN_DESTAQUES,
             icon: Sparkles,
+            roles: ["admin", "master"]
+          },
+          {
+            id: "pagamentos_destaque_admin",
+            label: "Pagamentos dos destaques",
+            path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE,
+            icon: CreditCard,
             roles: ["admin", "master"]
           },
           {

@@ -56,6 +56,8 @@ export const qk = {
   highlights: {
     all: ["admin", "highlights"] as const,
     candidates: (search: string) => ["admin", "highlight-candidates", search] as const,
+    publicList: () => ["highlights", "public"] as const,
+    payments: () => [...qk.highlights.all, "payments"] as const,
   },
   estabelecimentos: {
     all: ["estabelecimentos"] as const,
