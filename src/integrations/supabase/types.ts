@@ -1832,6 +1832,7 @@ export type Database = {
           flyer_approved_at: string | null
           flyer_aprovado: boolean
           fotos: string[] | null
+          highlight_grant_type: string | null
           highlight_hidden: boolean
           highlight_package_id: string | null
           highlight_starts_at: string | null
@@ -1934,6 +1935,7 @@ export type Database = {
           flyer_approved_at?: string | null
           flyer_aprovado?: boolean
           fotos?: string[] | null
+          highlight_grant_type?: string | null
           highlight_hidden?: boolean
           highlight_package_id?: string | null
           highlight_starts_at?: string | null
@@ -2036,6 +2038,7 @@ export type Database = {
           flyer_approved_at?: string | null
           flyer_aprovado?: boolean
           fotos?: string[] | null
+          highlight_grant_type?: string | null
           highlight_hidden?: boolean
           highlight_package_id?: string | null
           highlight_starts_at?: string | null

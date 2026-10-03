@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Home, Loader2 } from "lucide-react";
+import { Gift, Home, Loader2, Wallet } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +29,7 @@ export interface QuickEditableEvent {
   image_url?: string | null;
   status?: string | null;
   is_highlight?: boolean | null;
+  highlight_grant_type?: string | null;
 }
 
 const FIELDS = ["event_title", "date", "start_time", "end_time", "location", "address_street", "address_neighborhood", "category", "description", "image_url", "status"] as const;
@@ -59,12 +60,14 @@ export function QuickEditEventDialog({
 }) {
   const [form, setForm] = useState<FormState>(() => toForm(event));
   const [isHighlight, setIsHighlight] = useState(Boolean(event?.is_highlight));
+  const [highlightGrantType, setHighlightGrantType] = useState<"courtesy" | "paid">(event?.highlight_grant_type === "paid" ? "paid" : "courtesy");
   const [saving, setSaving] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     setForm(toForm(event));
     setIsHighlight(Boolean(event?.is_highlight));
+    setHighlightGrantType(event?.highlight_grant_type === "paid" ? "paid" : "courtesy");
   }, [event]);
 
   const set = (f: Field) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -78,7 +81,7 @@ export function QuickEditEventDialog({
     }
     setSaving(true);
     try {
-      if (isHighlight && !event.is_highlight) {
+      if (isHighlight && highlightGrantType === "paid" && !event.is_highlight) {
         const { data: payment, error: paymentError } = await supabase
           .from("payment_records")
           .select("id")
@@ -88,7 +91,7 @@ export function QuickEditEventDialog({
           .maybeSingle();
         if (paymentError) throw paymentError;
         if (!payment) {
-          toast.info("O destaque será liberado depois da baixa do pagamento.");
+          toast.info("Para usar o status Pago, registre a baixa primeiro. Você também pode liberar como cortesia.");
           return;
         }
       }
@@ -116,6 +119,7 @@ export function QuickEditEventDialog({
       payload.status = form.status;
       payload.image_url = imageUrl;
       payload.is_highlight = isHighlight;
+      payload.highlight_grant_type = isHighlight ? highlightGrantType : null;
       if (isHighlight) payload.highlight_hidden = false;
 
       const { error } = await supabase.from("submissions").update(payload as never).eq("id", event.id);
@@ -126,8 +130,8 @@ export function QuickEditEventDialog({
         queryClient.invalidateQueries({ queryKey: qk.agenda.all }),
         queryClient.invalidateQueries({ queryKey: qk.submissions.all }),
       ]);
-      toast.success(isHighlight ? "Evento salvo com Destaque na Home." : "Evento salvo.");
-      onSaved({ ...event, ...payload, is_highlight: isHighlight });
+      toast.success(isHighlight ? `Evento salvo com Destaque na Home (${highlightGrantType === "courtesy" ? "cortesia" : "pago"}).` : "Evento salvo.");
+      onSaved({ ...event, ...payload, is_highlight: isHighlight, highlight_grant_type: isHighlight ? highlightGrantType : null });
       onClose();
     } catch (error) {
       handleError(error, "Não deu pra salvar o evento agora");
@@ -205,6 +209,19 @@ export function QuickEditEventDialog({
               aria-label="Destaque na Home"
             />
           </div>
+          {isHighlight && (
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="qe-highlight-type">Forma de liberação</Label>
+              <Select value={highlightGrantType} onValueChange={(value: "courtesy" | "paid") => setHighlightGrantType(value)}>
+                <SelectTrigger id="qe-highlight-type" className="h-11"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="courtesy"><span className="inline-flex items-center gap-2"><Gift className="h-4 w-4" /> Cortesia (Período de Divulgação)</span></SelectItem>
+                  <SelectItem value="paid"><span className="inline-flex items-center gap-2"><Wallet className="h-4 w-4" /> Pago</span></SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">A cortesia libera o flyer agora, sem exigir transação financeira.</p>
+            </div>
+          )}
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="qe-desc">Descrição</Label>
             <Textarea id="qe-desc" rows={4} value={form.description} onChange={set("description")} />

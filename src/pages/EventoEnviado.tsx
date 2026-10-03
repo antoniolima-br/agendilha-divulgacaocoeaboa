@@ -293,12 +293,12 @@ export default function EventoEnviado() {
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-amber-400" />
             <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-50">
-              Destaque sua publicação para maior visibilidade
+              Destaque grátis no período de divulgação
             </h2>
           </div>
           <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
-            Contrate o destaque e seu flyer ficará em evidência no carrossel de até 10 eventos,
-            aumentando alcance e público.
+            Nesta fase de lançamento, a equipe pode liberar seu flyer em evidência como cortesia,
+            para você experimentar o alcance do app sem pagar.
           </p>
 
           {pacotes.length > 0 && (
@@ -365,7 +365,7 @@ export default function EventoEnviado() {
             className="h-12 rounded-xl px-6 font-bold bg-gradient-to-r from-purple-600 via-fuchsia-500 to-amber-400 text-white hover:opacity-90 shadow-lg shadow-purple-900/40 transition-opacity"
           >
             <Star className="h-4 w-4 mr-2" />
-            Destacar publicação
+            Solicitar destaque grátis
           </Button>
         </section>
 

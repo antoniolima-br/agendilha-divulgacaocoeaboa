@@ -1,6 +1,6 @@
 
 - Níveis admin: papéis `senior` e `financeiro` em user_roles somados ao `admin`; baixa de pagamento só via `payment_records` (financeiro/master) — separa quem modera de quem mexe em dinheiro.
-- A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; só a confirmação financeira ativa a prioridade, e gratuitos ficam sem flyer automático.
+- A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
 - O horário de funcionamento do atrativo fica em `atrativos.opening_hours` como texto livre e é exibido ao selecioná-lo no formulário; a agenda de apresentações continua sendo validada separadamente.
