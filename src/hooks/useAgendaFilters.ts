@@ -3,6 +3,7 @@ import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { eventDateISO, isCurrentOrFutureEventDate } from "@/lib/eventDate";
+import { isHighlightActive } from "@/lib/highlights";
 
 export interface AgendaProfileHints {
   home_location?: string | null;
@@ -101,7 +102,7 @@ export function useAgendaFilters(params: {
   const grouped = useMemo(() => {
     const map: Record<string, AgendaDayGroup> = {};
     for (const ev of filteredEvents) {
-      if (isFreeMention(ev)) continue;
+      if (isFreeMention(ev) || isHighlightActive(ev)) continue;
       const d = parseDateToObj(ev.date);
       const key = d
         ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
@@ -172,6 +173,6 @@ export function useAgendaFilters(params: {
   };
 }
 
-function isFreeMention(ev: { is_free?: boolean | null; is_highlight?: boolean | null }) {
-  return !!ev.is_free && !ev.is_highlight;
+function isFreeMention(ev: AgendaEvent) {
+  return !!ev.is_free && !isHighlightActive(ev);
 }

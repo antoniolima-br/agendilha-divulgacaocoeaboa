@@ -46,7 +46,7 @@ import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarous
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
-import { prioritizeHomeHeroEvents } from "@/lib/highlights";
+import { isHighlightActive, prioritizeHomeHeroEvents } from "@/lib/highlights";
 
 const HOME_CATEGORIES = [
   { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
@@ -201,6 +201,27 @@ export default function Landing() {
           .slice(0, 8);
       },
     });
+
+    const { data: promotionalFlyerEventsData } = useQuery({
+      queryKey: qk.home.promotionalFlyers(),
+      queryFn: async () => {
+        const today = saoPauloTodayISO();
+        const { data, error } = await supabase
+          .from("public_submissions")
+          .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
+          .in("status", [...PUBLIC_EVENT_STATUSES])
+          .not("image_url", "is", null)
+          .gte("date", addDaysToISO(today, -1))
+          .order("date", { ascending: true })
+          .order("start_time", { ascending: true, nullsFirst: false })
+          .limit(100);
+
+        if (error) throw error;
+        return (Array.isArray(data) ? data : []).filter(
+          (event) => eventDateISO(event.date) >= today && typeof event.image_url === "string" && event.image_url.trim().length > 0,
+        );
+      },
+    });
  
     const freeEvents = useMemo(
       () => Array.isArray(freeEventsData) ? freeEventsData : [],
@@ -214,8 +235,12 @@ export default function Landing() {
       () => eventPages.flatMap((page) => Array.isArray(page?.items) ? page.items : []),
       [eventPages],
     );
+    const promotionalFlyerEvents = useMemo(
+      () => Array.isArray(promotionalFlyerEventsData) ? promotionalFlyerEventsData : [],
+      [promotionalFlyerEventsData],
+    );
     const visualEvents = useMemo(
-      () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
+      () => allEvents.filter((event) => isHighlightActive(event) || !isFreeEventPrice(event.sale_price)),
       [allEvents],
     );
     const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
@@ -259,10 +284,12 @@ export default function Landing() {
           };
         });
       const today = saoPauloTodayISO();
-       const pool = [...flyers, ...allEvents];
+       const pool = Array.from(new Map(
+         [...promotionalFlyerEvents, ...flyers, ...allEvents].map((event) => [event.id, event]),
+       ).values());
       const todays = pool.filter((ev) => eventDateISO(ev.date) === today);
        const activeHighlights = pool.filter((event) =>
-         eventDateISO(event.date) >= today && Boolean(event.is_highlight || event.highlight_active),
+         eventDateISO(event.date) >= today && isHighlightActive(event),
        );
        // Destaques ativos sempre entram no banner; as vagas restantes priorizam o que acontece hoje.
        const base = Array.from(new Map([
@@ -276,7 +303,7 @@ export default function Landing() {
         return h >>> 0;
       };
        return prioritizeHomeHeroEvents(base, rand).slice(0, 8);
-    }, [allEvents, flyerAds, flyerUrls, heroSeed]);
+    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
     useEffect(() => {
       const channel = supabase

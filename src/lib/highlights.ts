@@ -5,6 +5,18 @@ export interface HighlightFields {
   highlight_hidden?: boolean | null;
   highlight_until?: string | null;
   highlight_active?: boolean | null;
+  image_url?: string | null;
+}
+
+/** Cortesia de lançamento: todo evento publicado com flyer recebe destaque automático. */
+export const LAUNCH_FLYER_PROMOTION_ACTIVE = true;
+
+export function hasEventFlyer(event: Pick<HighlightFields, "image_url">): boolean {
+  return typeof event.image_url === "string" && event.image_url.trim().length > 0;
+}
+
+export function isLaunchPromotionalHighlight(event: HighlightFields): boolean {
+  return LAUNCH_FLYER_PROMOTION_ACTIVE && hasEventFlyer(event);
 }
 
 /** Status do destaque de um rolê, derivado dos campos de destaque. */
@@ -12,6 +24,7 @@ export function highlightStatus(
   event: HighlightFields,
   now: Date = new Date(),
 ): HighlightStatus {
+  if (isLaunchPromotionalHighlight(event)) return "ativo";
   if (!event.is_highlight) return "sem_destaque";
   if (event.highlight_hidden) return "escondido";
   if (event.highlight_until && new Date(event.highlight_until).getTime() <= now.getTime()) {
@@ -22,6 +35,7 @@ export function highlightStatus(
 
 /** true quando o destaque está valendo agora (respeita prazo e destaque escondido). */
 export function isHighlightActive(event: HighlightFields, now: Date = new Date()): boolean {
+  if (isLaunchPromotionalHighlight(event)) return true;
   if (typeof event.highlight_active === "boolean") {
     // A view já calcula, mas revalidamos o prazo no cliente para não depender do cache.
     return event.highlight_active && highlightStatus(event, now) === "ativo";
