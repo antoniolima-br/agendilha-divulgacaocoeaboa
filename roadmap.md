@@ -98,3 +98,4 @@
 - [x] Ampliar a gestão de atrativos com cadastro, edição, exclusão, descrição e horário de funcionamento.
 - [x] Disponibilizar os dados atualizados dos atrativos no formulário de eventos.
 - [x] Atualizar o cadastro público de estabelecimento com ViaCEP e seletor de categoria.
+- [x] Garantir contraste WCAG AA em todos os textos do cadastro público de estabelecimento.

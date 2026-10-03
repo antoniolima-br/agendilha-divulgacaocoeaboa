@@ -141,7 +141,7 @@ export default function CadastroEstabelecimentoPublico() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-8 max-w-lg mx-auto">
+    <main className="min-h-screen px-4 py-8 max-w-lg mx-auto [&_input::placeholder]:text-muted-foreground [&_textarea::placeholder]:text-muted-foreground">
       <Helmet>
         <title>Cadastro de estabelecimento | Coé a Boa?</title>
         <meta
