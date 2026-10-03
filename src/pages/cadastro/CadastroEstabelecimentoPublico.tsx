@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, Loader2, Store } from "lucide-react";
+import { CheckCircle2, Store } from "lucide-react";
 import { toast } from "sonner";
 import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
 import { toE164, validateIntlPhone } from "@/lib/intlPhone";
 import { submitPublicCadastro } from "@/lib/publicCadastro";
 import { handleError } from "@/lib/error-handler";
 import { formatCep } from "@/lib/autofillValidation";
+import { CepAddressSearch } from "@/components/estabelecimentos/CepAddressSearch";
 import {
   Select,
   SelectContent,
@@ -37,15 +38,6 @@ export default function CadastroEstabelecimentoPublico() {
   const [loading, setLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
   const [cepMessage, setCepMessage] = useState("");
-  const [addressSearchOpen, setAddressSearchOpen] = useState(false);
-  const [addressSearchLoading, setAddressSearchLoading] = useState(false);
-  const [addressSearchMessage, setAddressSearchMessage] = useState("");
-  const [addressSearch, setAddressSearch] = useState({
-    estado: "RJ",
-    cidade: "Rio de Janeiro",
-    bairro: "",
-    rua: "",
-  });
   const cepRequest = useRef(0);
   const [form, setForm] = useState({
     nome: "",
@@ -101,47 +93,6 @@ export default function CadastroEstabelecimentoPublico() {
       }
     } finally {
       if (requestId === cepRequest.current) setCepLoading(false);
-    }
-  };
-
-  const buscarCepPorEndereco = async () => {
-    const estado = addressSearch.estado.trim().toUpperCase();
-    const cidade = addressSearch.cidade.trim();
-    const rua = addressSearch.rua.trim();
-    const bairroBuscado = addressSearch.bairro.trim().toLocaleLowerCase("pt-BR");
-
-    if (estado.length !== 2 || cidade.length < 3 || rua.length < 3) {
-      setAddressSearchMessage("Preencha Estado, Cidade e Nome da Rua para buscar.");
-      return;
-    }
-
-    setAddressSearchLoading(true);
-    setAddressSearchMessage("");
-    try {
-      const response = await fetch(
-        `https://viacep.com.br/ws/${encodeURIComponent(estado)}/${encodeURIComponent(cidade)}/${encodeURIComponent(rua)}/json/`,
-      );
-      if (!response.ok) throw new Error("Não foi possível consultar o endereço");
-
-      const results: Array<{ cep?: string; bairro?: string }> = await response.json();
-      const matchingResult = bairroBuscado
-        ? results.find((result) => result.bairro?.trim().toLocaleLowerCase("pt-BR") === bairroBuscado)
-        : results[0];
-      const result = matchingResult ?? results[0];
-
-      if (!result?.cep) {
-        setAddressSearchMessage("Não encontramos um CEP. Confira os dados e tente novamente.");
-        return;
-      }
-
-      set("cep", formatCep(result.cep));
-      setCepMessage("CEP encontrado. Confira antes de enviar.");
-      setAddressSearchOpen(false);
-      setAddressSearchMessage("");
-    } catch {
-      setAddressSearchMessage("Não rolou buscar agora. Tente novamente ou preencha o CEP manualmente.");
-    } finally {
-      setAddressSearchLoading(false);
     }
   };
 
@@ -226,97 +177,12 @@ export default function CadastroEstabelecimentoPublico() {
             onChange={(e) => void handleCepChange(e.target.value)}
             placeholder="00000-000"
           />
-          <Button
-            type="button"
-            variant="link"
-            className="h-auto px-0 py-0 text-sm"
-            aria-expanded={addressSearchOpen}
-            aria-controls="buscar-cep-por-endereco"
-            onClick={() => {
-              setAddressSearchOpen((open) => !open);
-              setAddressSearchMessage("");
+          <CepAddressSearch
+            onCepFound={(cep) => {
+              set("cep", cep);
+              setCepMessage("CEP encontrado. Confira antes de enviar.");
             }}
-          >
-            Não sei o CEP
-          </Button>
-          {addressSearchOpen && (
-            <div
-              id="buscar-cep-por-endereco"
-              className="space-y-3 rounded-md border border-border bg-card p-3"
-            >
-              <div className="grid grid-cols-[88px_minmax(0,1fr)] gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="buscar-cep-estado">Estado</Label>
-                  <Input
-                    id="buscar-cep-estado"
-                    maxLength={2}
-                    autoComplete="address-level1"
-                    value={addressSearch.estado}
-                    onChange={(event) =>
-                      setAddressSearch((current) => ({
-                        ...current,
-                        estado: event.target.value.toUpperCase(),
-                      }))
-                    }
-                    placeholder="RJ"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="buscar-cep-cidade">Cidade</Label>
-                  <Input
-                    id="buscar-cep-cidade"
-                    autoComplete="address-level2"
-                    value={addressSearch.cidade}
-                    onChange={(event) =>
-                      setAddressSearch((current) => ({ ...current, cidade: event.target.value }))
-                    }
-                    placeholder="Rio de Janeiro"
-                  />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="buscar-cep-bairro">Bairro</Label>
-                <Input
-                  id="buscar-cep-bairro"
-                  autoComplete="address-level3"
-                  value={addressSearch.bairro}
-                  onChange={(event) =>
-                    setAddressSearch((current) => ({ ...current, bairro: event.target.value }))
-                  }
-                  placeholder="Ex.: Copacabana"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="buscar-cep-rua">Nome da Rua</Label>
-                <Input
-                  id="buscar-cep-rua"
-                  autoComplete="address-line1"
-                  value={addressSearch.rua}
-                  onChange={(event) =>
-                    setAddressSearch((current) => ({ ...current, rua: event.target.value }))
-                  }
-                  placeholder="Ex.: Avenida Atlântica"
-                />
-              </div>
-              {addressSearchMessage && (
-                <p className="text-xs text-muted-foreground" role="status">
-                  {addressSearchMessage}
-                </p>
-              )}
-              <div className="flex justify-end">
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => void buscarCepPorEndereco()}
-                  disabled={addressSearchLoading}
-                  className="gap-2"
-                >
-                  {addressSearchLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  {addressSearchLoading ? "Buscando..." : "Buscar CEP"}
-                </Button>
-              </div>
-            </div>
-          )}
+          />
           {(cepLoading || cepMessage) && (
             <p className="text-xs text-muted-foreground" aria-live="polite">
               {cepLoading ? "Buscando endereço..." : cepMessage}
