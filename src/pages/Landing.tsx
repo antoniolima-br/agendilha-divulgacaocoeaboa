@@ -43,7 +43,7 @@ import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarous
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
-import { isHighlightActive, prioritizeHomeHeroEvents, selectHomeLaunchFlyerEvents } from "@/lib/highlights";
+import { isHighlightActive, limitHomeCarouselEvents, prioritizeHomeHeroEvents, selectHomeLaunchFlyerEvents } from "@/lib/highlights";
 
 const HOME_CATEGORIES = [
   { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
@@ -227,9 +227,9 @@ export default function Landing() {
         for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 2654435761);
         return h >>> 0;
       };
-        return prioritizeHomeHeroEvents(base, rand)
-          .sort((a, b) => Number(eventDateISO(b.date) === today) - Number(eventDateISO(a.date) === today))
-          .slice(0, 8);
+         const ordered = prioritizeHomeHeroEvents(base, rand)
+           .sort((a, b) => Number(eventDateISO(b.date) === today) - Number(eventDateISO(a.date) === today));
+         return limitHomeCarouselEvents(ordered, today);
     }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
      useEffect(() => {
@@ -258,7 +258,7 @@ export default function Landing() {
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
     const todayEvents = useMemo(
-      () => allEvents.filter((event) => eventDateISO(event.date) === todayStr).slice(0, 6),
+       () => allEvents.filter((event) => eventDateISO(event.date) === todayStr),
       [allEvents, todayStr],
     );
 
