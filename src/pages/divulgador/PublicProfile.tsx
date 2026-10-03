@@ -10,6 +10,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { cn } from "@/lib/utils";
 import { InlineError } from "@/components/errors/InlineError";
+import { isCurrentOrFutureEventDate } from "@/lib/eventDate";
 
 
 export default function PublicProfile() {

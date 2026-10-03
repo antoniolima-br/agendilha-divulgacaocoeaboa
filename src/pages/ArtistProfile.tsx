@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { formatBrazilianDate } from "@/lib/date-utils";
+import { addDaysToISO, isCurrentOrFutureEventDate, saoPauloTodayISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { addDaysToISO, isCurrentOrFutureEventDate, saoPauloTodayISO } from "@/lib/eventDate";
 
 interface Estabelecimento {
   id: string;
