@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, Store } from "lucide-react";
+import { CheckCircle2, Loader2, Store } from "lucide-react";
 import { toast } from "sonner";
 import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
 import { toE164, validateIntlPhone } from "@/lib/intlPhone";
