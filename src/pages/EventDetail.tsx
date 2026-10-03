@@ -439,7 +439,7 @@ export default function EventDetail() {
               </div>
 
               {event.updated_at && (
-                <p className="text-[9px] uppercase tracking-[0.2em] text-foreground/30 mt-8">
+                <p className="text-[9px] uppercase tracking-[0.2em] text-foreground/70 mt-8">
                   Atualizado em {formatBrazilianDate(event.updated_at)}
                 </p>
               )}

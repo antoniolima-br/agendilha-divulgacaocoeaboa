@@ -196,7 +196,7 @@ export default function MeusEventos() {
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-foreground/30">
+                    <div className="w-full h-full flex items-center justify-center text-foreground/70">
                       <Calendar className="h-6 w-6" />
                     </div>
                   )}
