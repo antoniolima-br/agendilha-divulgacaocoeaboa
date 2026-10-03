@@ -6,6 +6,7 @@ import {
   getLovableAiGatewayRunId,
   withLovableAiGatewayRunIdHeader,
 } from "../_shared/run-id.ts";
+import { buildGuideAgenda, type GuideEstablishment, type GuideEvent } from "./agenda.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -30,14 +31,26 @@ Deno.serve(async (req) => {
     if (messages.length === 0) return json({ error: "Manda uma mensagem pra começar." }, 400);
 
     const today = saoPauloToday();
-    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
-    const { data: events } = await sb
+    const databaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY");
+    if (!databaseKey) return json({ error: "O Guia tá fora do ar agora. Tenta daqui a pouco." }, 500);
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, databaseKey);
+    const { data: events, error: eventsError } = await sb
       .from("public_submissions")
-      .select("event_title, date, start_time, end_time, location, address_neighborhood, category, description, slug, id, is_highlight")
+      .select("event_title, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, latitude, longitude, category, description, slug, id, is_highlight")
       .in("status", ["aprovado", "publicado", "divulgado"])
       .gte("date", today)
       .order("date", { ascending: true })
+      .order("start_time", { ascending: true })
       .limit(60);
+
+    if (eventsError) throw eventsError;
+
+    const { data: establishments, error: establishmentsError } = await sb
+      .from("estabelecimentos_public")
+      .select("nome, endereco, numero, complemento, bairro, cep")
+      .limit(1000);
+
+    if (establishmentsError) throw establishmentsError;
 
     const { data: settings } = await sb.from("app_settings").select("key, value").in("key", ["team_whatsapp", "team_contact_name", "live_overrides"]);
     const setting = (k: string) => String((settings ?? []).find((r: any) => r.key === k)?.value ?? "").trim();
@@ -51,10 +64,10 @@ Deno.serve(async (req) => {
       return en > s ? nowHM >= s && nowHM <= en : nowHM >= s || nowHM <= en;
     };
 
-    const agenda = (events ?? [])
-      .map((e: any) =>
-        `- ${isLive(e) ? "🔴 ROLANDO AGORA | " : ""}${e.is_highlight ? "⭐ DESTAQUE | " : ""}${e.event_title ?? "Rolê sem título"} | ${String(e.date ?? "").slice(0, 10)} ${e.start_time ?? ""} | ${e.location ?? ""}${e.address_neighborhood ? ` (${e.address_neighborhood})` : ""} | ${e.category ?? ""} | link: /evento/${e.slug ?? e.id}${e.description ? ` | ${String(e.description).slice(0, 160)}` : ""}`,
-      )
+    const typedEvents = (events ?? []) as GuideEvent[];
+    const agenda = buildGuideAgenda(typedEvents, (establishments ?? []) as GuideEstablishment[])
+      .split("\n")
+      .map((line, index) => `${isLive(typedEvents[index]) ? "🔴 ROLANDO AGORA | " : ""}${line}`)
       .join("\n");
 
     const teamPhone = setting("team_whatsapp").replace(/\D/g, "");
@@ -80,13 +93,15 @@ Deno.serve(async (req) => {
 - **Atendimento humano comercial:** ${comercial}
 - Se perguntarem sobre divulgar, patrocinar ou destacar, explique com simpatia os benefícios de aparecer no topo e oriente a chamar no atendimento ou preencher o formulário. Não invente preços.
 
-### 3. Agenda oficial em tempo real (use EXCLUSIVAMENTE estes eventos)
+### 3. Agenda oficial consultada agora (use EXCLUSIVAMENTE estes eventos)
 ${agenda || "(nenhum rolê cadastrado nos próximos dias)"}
 Eventos marcados com 🔴 ROLANDO AGORA estão acontecendo neste momento: priorize quando pedirem algo pra agora. Cruze o que a pessoa pede com essa agenda. Não invente eventos, horários ou preços. Se nada combinar, diga com leveza e sugira o mais próximo.
 
 ### 4. Diretrizes de resposta
 - Natural, direta e empolgante. Faça uma pergunta por vez.
-- Ao sugerir um evento: nome em negrito, dia/hora, local e o link [ver rolê](link). Respostas curtas (até ~6 linhas).
+- Quando pedirem os eventos de hoje, liste os eventos da data de hoje presentes na agenda. Não responda “sem indicação” se houver algum deles.
+- Ao sugerir um evento, use exatamente os dados da agenda: **nome**, dia/hora, local, endereço, [ver rolê](link) e [Vá de Uber](link Uber). Nunca crie ou altere local, endereço, horário ou link.
+- Se não houver evento hoje, diga isso e ofereça o próximo evento real da agenda. Respostas curtas e fáceis de ler.
 
 Hoje é ${today}.`;
 
