@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildGuideAddress, buildGuideAgenda, buildGuideUberLink, resolveEstablishment, type GuideEvent } from "./agenda";
+import { buildGuideAddress, buildGuideAgenda, buildGuideUberLink, resolveEstablishment, type GuideEvent } from "../../supabase/functions/coezinho/agenda";
 
 const event: GuideEvent = {
   id: "event-1",
