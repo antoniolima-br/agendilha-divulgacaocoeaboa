@@ -31,7 +31,9 @@ Deno.serve(async (req) => {
     if (messages.length === 0) return json({ error: "Manda uma mensagem pra começar." }, 400);
 
     const today = saoPauloToday();
-    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const databaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY");
+    if (!databaseKey) return json({ error: "O Guia tá fora do ar agora. Tenta daqui a pouco." }, 500);
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, databaseKey);
     const { data: events, error: eventsError } = await sb
       .from("public_submissions")
       .select("event_title, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, latitude, longitude, category, description, slug, id, is_highlight")
