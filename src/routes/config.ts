@@ -56,6 +56,7 @@ export const ROUTES = {
   PRIVACIDADE: "/privacidade",
   IMPULSIONAMENTO: "/impulsionamento-em-breve",
   DIVULGADOR_STATUS: "/divulgador/status",
+  DIVULGADOR_PUBLIC_PROFILE: "/divulgador/:userId",
   ANUNCIOS: "/anuncios",
   ANUNCIO_NOVO: "/anuncios/novo",
   ANUNCIO_EDITAR: "/anuncios/:id/editar",
@@ -63,6 +64,13 @@ export const ROUTES = {
   MEUS_ANUNCIOS: "/meus-anuncios",
   ADMIN_ANUNCIOS: "/admin/anuncios",
   ADMIN_PLANOS_ANUNCIO: "/admin/planos-anuncio",
+  ADMIN_ROLANDO_AGORA: "/admin/rolando-agora",
+  ADMIN_APROVAR_EVENTOS: "/admin/aprovar-eventos",
+  ADMIN_ROOT: "/admin",
+  MASTER_ROOT: "/master",
+  LEGACY_ADMIN_MASTER: "/admin/master",
+  LEGACY_COEABOA: "/coeaboa",
+  LEGACY_LANDING: "/lp",
 };
 
 export const VALID_ROUTES = Object.values(ROUTES);

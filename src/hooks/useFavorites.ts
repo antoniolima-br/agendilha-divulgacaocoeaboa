@@ -3,6 +3,7 @@
  import { supabase } from "@/integrations/supabase/client";
  import { useAuth } from "@/contexts/AuthContext";
  import { toast } from "sonner";
+ import { qk } from "@/data/queryKeys";
 
  export function useFavorites() {
    const { user } = useAuth();
@@ -10,7 +11,7 @@
     const channelInstanceId = useRef(Math.random().toString(36).slice(2));
 
    const { data: favorites = [], isLoading } = useQuery({
-     queryKey: ["favorites", user?.id],
+     queryKey: qk.favorites.byUser(user?.id),
      queryFn: async () => {
        if (!user) return [];
        const { data, error } = await supabase
@@ -50,10 +51,10 @@
        }
      },
      onMutate: async (eventId) => {
-       await queryClient.cancelQueries({ queryKey: ["favorites", user?.id] });
-       const previousFavorites = queryClient.getQueryData<string[]>(["favorites", user?.id]);
+       await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(user?.id) });
+       const previousFavorites = queryClient.getQueryData<string[]>(qk.favorites.byUser(user?.id));
 
-       queryClient.setQueryData<string[]>(["favorites", user?.id], (old = []) => {
+       queryClient.setQueryData<string[]>(qk.favorites.byUser(user?.id), (old = []) => {
          if (old.includes(eventId)) {
            return old.filter((id) => id !== eventId);
          }
@@ -64,13 +65,13 @@
      },
      onError: (_err, _eventId, context) => {
        if (context?.previousFavorites) {
-         queryClient.setQueryData(["favorites", user?.id], context.previousFavorites);
+         queryClient.setQueryData(qk.favorites.byUser(user?.id), context.previousFavorites);
        }
        // best-effort; UI already reverted state
        toast.error("Erro ao atualizar favorito.");
      },
      onSettled: () => {
-       queryClient.invalidateQueries({ queryKey: ["favorites", user?.id] });
+       queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(user?.id) });
      },
    });
 
@@ -88,7 +89,7 @@
            filter: `user_id=eq.${user.id}`,
          },
          () => {
-           queryClient.invalidateQueries({ queryKey: ["favorites", user.id] });
+           queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(user.id) });
          }
        )
        .subscribe();

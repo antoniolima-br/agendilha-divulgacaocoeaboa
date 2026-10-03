@@ -13,7 +13,7 @@ import { buildWhatsAppMessage } from "@/lib/eventWhatsapp";
 import { EventSocialCard } from "./EventSocialCard";
 import { EventAuditLog } from "./EventAuditLog";
 import { EditorialTransitionPanel } from "./EditorialTransitionPanel";
-import { StatusBadge } from "./StatusBadge";
+import { EditorialStatusBadge } from "./EditorialStatusBadge";
 import {
   categoryLabels, formatDate, stageBadgeVariant, stageLabels,
   type AuditLogEntry, type EditorialStatus, type Submission,
@@ -64,7 +64,7 @@ export function EventCard({
               >
                 {sub.status === "approved" ? "✅ Aprovado" : sub.status === "rejected" ? "❌ Rejeitado" : "⏳ Pendente"}
               </Badge>
-              <StatusBadge status={sub.editorial_status} />
+              <EditorialStatusBadge status={sub.editorial_status} />
               {sub.stage && (
                 <Badge variant={stageBadgeVariant[sub.stage] || "outline"} className="text-xs shrink-0">
                   {stageLabels[sub.stage] || sub.stage}
