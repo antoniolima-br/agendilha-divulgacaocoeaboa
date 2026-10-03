@@ -98,8 +98,8 @@ describe("prioritizeHomeHeroEvents", () => {
 
     expect(prioritizeHomeHeroEvents(events, (id) => id.length).map((event) => event.id)).toEqual([
       "destaque",
-      "outro",
       "comum",
+      "outro",
     ]);
   });
 });
