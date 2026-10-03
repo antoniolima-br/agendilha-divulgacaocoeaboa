@@ -2,13 +2,11 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
-import { CoezinhoChat } from "@/components/coezinho/CoezinhoChat";
-import { InstallBanner } from "@/components/system/InstallBanner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SubmissionProvider } from "@/contexts/SubmissionContext";
 import Header from "@/components/Header";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useAppPermissions, type PermissionName } from "@/hooks/useAppPermissions";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
@@ -18,6 +16,7 @@ import { queryClient } from "@/lib/queryClient";
 import { installGlobalErrorHandlers } from "@/lib/globalErrorHandlers";
 import { ROUTES } from "@/routes/config";
 import { PromotorRoute } from "@/components/auth/PromotorRoute";
+import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 
 // Critical (above-the-fold) — keep eager
 import Landing from "./pages/Landing";
@@ -90,15 +89,48 @@ const PrivacidadePage = lazy(() => import("./pages/PlaceholderInfo").then(m => (
 const ImpulsionamentoPage = lazy(() => import("./pages/PlaceholderInfo").then(m => ({ default: m.ImpulsionamentoPage })));
 const StatusDivulgador = lazy(() => import("./pages/divulgador/StatusDivulgador"));
 const PublicProfile = lazy(() => import("./pages/divulgador/PublicProfile"));
+const CoezinhoChat = lazy(() => import("@/components/coezinho/CoezinhoChat").then((module) => ({ default: module.CoezinhoChat })));
+const InstallBanner = lazy(() => import("@/components/system/InstallBanner").then((module) => ({ default: module.InstallBanner })));
 
 installGlobalErrorHandlers();
 
 
 const PageFallback = () => (
-  <div className="flex items-center justify-center min-h-[50vh]">
+  <div className="flex min-h-[60vh] items-center justify-center" aria-live="polite" aria-label="Carregando página">
     <Loader2 className="h-8 w-8 animate-spin text-primary" />
   </div>
 );
+
+function DeferredAppFeatures() {
+  const [ready, setReady] = useState(false);
+  const [chatRequested, setChatRequested] = useState(false);
+
+  useEffect(() => {
+    const openChat = () => {
+      setChatRequested(true);
+      setReady(true);
+    };
+    window.addEventListener(OPEN_KOE_EVENT, openChat);
+
+    const schedule = window.requestIdleCallback?.bind(window);
+    const idleId = schedule ? schedule(() => setReady(true), { timeout: 1800 }) : undefined;
+    const timerId = schedule ? undefined : window.setTimeout(() => setReady(true), 1200);
+
+    return () => {
+      window.removeEventListener(OPEN_KOE_EVENT, openChat);
+      if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+      if (timerId !== undefined) window.clearTimeout(timerId);
+    };
+  }, []);
+
+  if (!ready) return null;
+  return (
+    <Suspense fallback={null}>
+      <CoezinhoChat initiallyOpen={chatRequested} />
+      <InstallBanner />
+    </Suspense>
+  );
+}
 
 export function ProtectedRoute({ 
   children, 
@@ -267,8 +299,7 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <AppRoutes />
-            <CoezinhoChat />
-            <InstallBanner />
+            <DeferredAppFeatures />
           </AuthProvider>
         </BrowserRouter>
       </AppErrorBoundary>

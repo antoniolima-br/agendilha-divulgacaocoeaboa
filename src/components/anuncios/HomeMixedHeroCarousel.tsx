@@ -42,7 +42,9 @@ export function HomeMixedHeroCarousel({
   const items = useMemo(() => events.slice(0, 6), [events]);
   useEffect(() => {
     let cancelled = false;
-    items.forEach((slide) => {
+    let idleId: number | undefined;
+    const visibleSlides = [items[index], items[(index + 1) % Math.max(1, items.length)]].filter(Boolean);
+    const analyzeSlides = () => visibleSlides.forEach((slide) => {
       const src = slide.image_url;
       if (!src || trims[slide.id]) return;
       const img = new Image();
@@ -87,9 +89,14 @@ export function HomeMixedHeroCarousel({
       };
       img.src = src;
     });
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
+    idleId = window.requestIdleCallback?.(analyzeSlides, { timeout: 800 });
+    const timerId = idleId === undefined ? window.setTimeout(analyzeSlides, 0) : undefined;
+    return () => {
+      cancelled = true;
+      if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+      if (timerId !== undefined) window.clearTimeout(timerId);
+    };
+  }, [index, items, trims]);
 
 
   const total = items.length;
@@ -106,7 +113,7 @@ export function HomeMixedHeroCarousel({
   }, []);
 
   useEffect(() => {
-    if (paused || total < 2) return;
+    if (paused || reduceMotion || total < 2) return;
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % total), AUTOPLAY_MS);
     return () => window.clearInterval(timer);
   }, [paused, reduceMotion, total]);
@@ -153,7 +160,7 @@ export function HomeMixedHeroCarousel({
                 active ? "z-10 opacity-100" : "z-0 opacity-0 pointer-events-none",
               )}
             >
-              <div className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] overflow-hidden"><img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 w-full object-fill" style={(() => { const t = trims[slide.id]?.t ?? 0; const b = trims[slide.id]?.b ?? 0; const k = Math.max(0.3, 1 - t - b); return { top: `${(-t / k) * 100}%`, height: `${100 / k}%` }; })()} /></div>
+              <div className="absolute inset-x-0 top-0 h-[calc(100%-9.5rem)] overflow-hidden"><img src={slideImage} alt={slideTitle} decoding="async" loading={slideIndex === 0 ? "eager" : "lazy"} fetchPriority={slideIndex === 0 ? "high" : "low"} onLoad={(e) => { const el = e.currentTarget; if (el.naturalWidth && el.naturalHeight) { const r = el.naturalWidth / el.naturalHeight; setRatios((prev) => (prev[slide.id] === r ? prev : { ...prev, [slide.id]: r })); } }} className="absolute inset-x-0 w-full object-fill" style={(() => { const t = trims[slide.id]?.t ?? 0; const b = trims[slide.id]?.b ?? 0; const k = Math.max(0.3, 1 - t - b); return { top: `${(-t / k) * 100}%`, height: `${100 / k}%` }; })()} /></div>
               <div className="absolute inset-0 bg-gradient-to-t from-background from-[9.5rem] to-transparent to-[9.5rem]" />
               <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-6xl px-4 flex h-[9.5rem] flex-col justify-end pb-5 text-center text-foreground sm:px-8 sm:pb-9">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>

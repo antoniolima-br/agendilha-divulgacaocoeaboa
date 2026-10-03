@@ -1,7 +1,6 @@
-import { lazy, Suspense, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { activeRegions, regionOf } from "@/lib/regions";
-import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -26,9 +25,8 @@ import {
   Map as MapIcon,
   ChevronLeft
 } from "lucide-react";
-import { format, startOfWeek, addDays, eachDayOfInterval, isSameDay, parseISO, subWeeks, startOfDay, isToday } from "date-fns";
+import { format, addDays, eachDayOfInterval, subWeeks } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { DiscoveryEventCard } from "@/components/DiscoveryEventCard";
 import { supabase } from "@/integrations/supabase/client";
 import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
@@ -39,7 +37,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import logo from "@/assets/coeaboa-logo.webp";
-import { getShareData } from "@/lib/sharing";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
@@ -57,24 +54,6 @@ const HOME_CATEGORIES = [
   { key: "promocoes", label: "Promoções", hint: "Ofertas da região", match: ["promocoes", "promoções"] },
   { key: "outros", label: "Outros", hint: "Tudo o que não cabe acima", match: ["outros"] },
 ];
-
-const sitelinks = [
-  { href: "#oferecemos", label: "O que oferecemos" },
-  { href: "#ecossistema", label: "Ecossistema" },
-  { href: "#diferenciais", label: "Diferenciais" },
-  { href: "#contato", label: "Contato" },
-];
-
-const genres = [
-  { id: "musica", label: "Música", icon: Music },
-  { id: "cultura", label: "Cultura", icon: Sparkles },
-  { id: "gastronomia", label: "Gastronomia", icon: Globe2 },
-  { id: "esporte", label: "Esporte", icon: Calendar },
-  { id: "turismo", label: "Turismo", icon: Compass },
-  { id: "outros", label: "Outros", icon: Megaphone },
-];
-
-const marqueeWords = ["Música", "Teatro", "Gastronomia", "Arte", "Workshops", "Feiras", "Cinema", "Literatura", "Dança", "Cultura local"];
 
 function isFreeEventPrice(price?: string | null): boolean {
   const value = (price ?? "").trim().toLowerCase();
@@ -134,7 +113,6 @@ export default function Landing() {
     return () => ro.disconnect();
   }, []);
   useScrollReveal();
-  const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
@@ -149,17 +127,9 @@ export default function Landing() {
     }, 6000);
     return () => window.clearInterval(timer);
   }, []);
-   const { ref: loadMoreRef, inView: loadMoreInView } = useInView();
- 
-   const { 
-     data: eventsData, 
-     fetchNextPage, 
-     hasNextPage, 
-     isFetchingNextPage,
-     isLoading: eventsLoading 
-   } = useInfiniteQuery({
+   const { data: eventsData } = useQuery({
     queryKey: qk.home.events(),
-    queryFn: async ({ pageParam = 0 }) => {
+     queryFn: async () => {
       const today = saoPauloTodayISO();
       const { data, error } = await supabase
          .from("public_submissions")
@@ -168,92 +138,28 @@ export default function Landing() {
         .gte("date", addDaysToISO(today, -1))
         .order('highlight_active', { ascending: false, nullsFirst: false })
         .order('date', { ascending: true })
-        .range(pageParam, pageParam + 9);
+         .order('start_time', { ascending: true, nullsFirst: false })
+         .limit(150);
        
        if (error) throw error;
        const rows = Array.isArray(data) ? data : [];
-       return {
-         items: rows.filter((event) => eventDateISO(event.date) >= today),
-         nextPage: rows.length === 10 ? pageParam + 10 : undefined
-       };
+       return rows.filter((event) => eventDateISO(event.date) >= today);
      },
-     initialPageParam: 0,
-     getNextPageParam: (lastPage) => lastPage.nextPage,
+     staleTime: 2 * 60_000,
    });
-
-    const { data: freeEventsData, isLoading: freeEventsLoading } = useQuery({
-      queryKey: qk.home.freeEvents(),
-      queryFn: async () => {
-        const today = saoPauloTodayISO();
-        const { data, error } = await supabase
-          .from("public_submissions")
-          .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
-          .in("status", [...PUBLIC_EVENT_STATUSES])
-          .gte("date", addDaysToISO(today, -1))
-          .order("date", { ascending: true })
-          .order("start_time", { ascending: true, nullsFirst: false })
-          .limit(100);
-
-        if (error) throw error;
-        const rows = Array.isArray(data) ? data : [];
-        return rows
-          .filter((event) => eventDateISO(event.date) >= today && !isHighlightActive(event) && isFreeEventPrice(event.sale_price))
-          .slice(0, 8);
-      },
-    });
-
-    const { data: promotionalFlyerEventsData } = useQuery({
-      queryKey: qk.home.promotionalFlyers(),
-      queryFn: async () => {
-        const today = saoPauloTodayISO();
-        const { data, error } = await supabase
-          .from("public_submissions")
-          .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
-          .in("status", [...PUBLIC_EVENT_STATUSES])
-          .not("image_url", "is", null)
-          .gte("date", addDaysToISO(today, -1))
-          .order("date", { ascending: true })
-          .order("start_time", { ascending: true, nullsFirst: false })
-          .limit(100);
-
-        if (error) throw error;
-        return (Array.isArray(data) ? data : []).filter(
-          (event) => eventDateISO(event.date) >= today && typeof event.image_url === "string" && event.image_url.trim().length > 0,
-        );
-      },
-    });
-
-    const { data: todayEventsCount = 0 } = useQuery({
-      queryKey: qk.home.todayCount(),
-      queryFn: async () => {
-        const today = saoPauloTodayISO();
-        const { count, error } = await supabase
-          .from("public_submissions")
-          .select("id", { count: "exact", head: true })
-          .in("status", [...PUBLIC_EVENT_STATUSES])
-          .eq("date", today);
-
-        if (error) throw error;
-        return typeof count === "number" ? count : 0;
-      },
-    });
- 
+    const allEvents = useMemo(() => Array.isArray(eventsData) ? eventsData : [], [eventsData]);
     const freeEvents = useMemo(
-      () => Array.isArray(freeEventsData) ? freeEventsData : [],
-      [freeEventsData],
-    );
-    const eventPages = useMemo(
-      () => eventsData && Array.isArray(eventsData.pages) ? eventsData.pages : [],
-      [eventsData],
-    );
-    const allEvents = useMemo(
-      () => eventPages.flatMap((page) => Array.isArray(page?.items) ? page.items : []),
-      [eventPages],
+      () => allEvents.filter((event) => !isHighlightActive(event) && isFreeEventPrice(event.sale_price)).slice(0, 8),
+      [allEvents],
     );
     const promotionalFlyerEvents = useMemo(
-      () => Array.isArray(promotionalFlyerEventsData) ? promotionalFlyerEventsData : [],
-      [promotionalFlyerEventsData],
+      () => allEvents.filter((event) => typeof event.image_url === "string" && event.image_url.trim().length > 0),
+      [allEvents],
     );
+    const todayEventsCount = useMemo(() => {
+      const today = saoPauloTodayISO();
+      return allEvents.filter((event) => eventDateISO(event.date) === today).length;
+    }, [allEvents]);
     const visualEvents = useMemo(
       () => allEvents.filter((event) => isHighlightActive(event) || !isFreeEventPrice(event.sale_price)),
       [allEvents],
@@ -325,17 +231,25 @@ export default function Landing() {
        return prioritizeHomeHeroEvents(base, rand).slice(0, 8);
     }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents, todayEventsCount]);
 
-    useEffect(() => {
-      const channel = supabase
-        .channel("home-highlight-updates")
-        .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "submissions" },
-          () => void queryClient.invalidateQueries({ queryKey: qk.home.all }),
-        )
-        .subscribe();
-
-      return () => { void supabase.removeChannel(channel); };
+     useEffect(() => {
+       let channel: ReturnType<typeof supabase.channel> | undefined;
+       const subscribe = () => {
+         channel = supabase
+           .channel("home-highlight-updates")
+           .on(
+             "postgres_changes",
+             { event: "UPDATE", schema: "public", table: "submissions" },
+             () => void queryClient.invalidateQueries({ queryKey: qk.home.events() }),
+           )
+           .subscribe();
+       };
+       const idleId = window.requestIdleCallback?.(subscribe, { timeout: 2000 });
+       const timerId = idleId === undefined ? window.setTimeout(subscribe, 1200) : undefined;
+       return () => {
+         if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+         if (timerId !== undefined) window.clearTimeout(timerId);
+         if (channel) void supabase.removeChannel(channel);
+       };
     }, [queryClient]);
     const todayStart = useMemo(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); }, []);
     const [weekStart, setWeekStart] = useState(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); });
@@ -367,41 +281,12 @@ export default function Landing() {
       .filter(e => !todayEvents.find(t => t.id === e.id))
       .slice(0, 8), [visualEvents, todayEvents]);
  
-   useEffect(() => {
-     if (loadMoreInView && hasNextPage && !isFetchingNextPage) {
-       fetchNextPage();
-     }
-   }, [loadMoreInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem("agendilha_favorites");
-      const parsed = saved ? JSON.parse(saved) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  });
   const [subscriberPhone, setSubscriberPhone] = useState("");
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberNeighborhood, setSubscriberNeighborhood] = useState("");
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
-  const [shareData, setShareData] = useState<{ title: string; text: string; url: string; eventId?: string } | null>(null);
-
-  const toggleFavorite = (id: string) => {
-    setFavorites(prev => {
-      const isFav = prev.includes(id);
-      const next = isFav ? prev.filter(f => f !== id) : [...prev, id];
-      try {
-        localStorage.setItem("agendilha_favorites", JSON.stringify(next));
-        window.dispatchEvent(new Event("agendilha:favorites"));
-      } catch {
-        // storage cheio ou bloqueado: segue só com o estado em memória
-      }
-      return next;
-    });
-  };
 
   const handleNewsletterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -482,12 +367,6 @@ export default function Landing() {
      return (matchingUpcoming.length > 0 ? matchingUpcoming : allEvents).slice(0, 5);
    }, [allEvents, profile?.event_type_preferences, profile?.followed_styles, profile?.musical_preferences, profileLoaded, todayEvents, user]);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
   const [homeBairro, setHomeBairro] = useState("all");
   const [homeCat, setHomeCat] = useState("all");
   const [homeNbh, setHomeNbh] = useState("all");
@@ -624,11 +503,7 @@ export default function Landing() {
               </Link>
             </div>
 
-            {freeEventsLoading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="h-7 w-7 animate-spin text-primary" />
-              </div>
-            ) : freeEvents.length > 0 ? (
+            {freeEvents.length > 0 ? (
               <ul
                 className={cn(
                   "divide-y divide-border border-y border-border",
@@ -875,19 +750,7 @@ export default function Landing() {
         </div>
       </footer>
 
-      <Suspense fallback={null}>
-        
-        <PersonalizationDialog open={personalizationOpen} onOpenChange={setPersonalizationOpen} />
-        {shareData && (
-          <ShareDialog
-            open={!!shareData}
-            onOpenChange={(open) => !open && setShareData(null)}
-            title={shareData.title}
-            text={shareData.text}
-            url={shareData.url}
-          />
-        )}
-      </Suspense>
+      {personalizationOpen && <Suspense fallback={null}><PersonalizationDialog open onOpenChange={setPersonalizationOpen} /></Suspense>}
     </div>
   );
 }

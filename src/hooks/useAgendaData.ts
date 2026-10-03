@@ -41,7 +41,6 @@ export function useAgendaData() {
         () => invalidate(qk.agenda.events()),
       )
       .subscribe();
-
     const ratingsChannel = supabase
       .channel("ratings-changes")
       .on(

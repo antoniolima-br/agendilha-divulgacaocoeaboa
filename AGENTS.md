@@ -16,3 +16,4 @@
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - During the launch promotion, Home automatically highlights today's flyers; future flyers are automatic only when today has no events, unless an admin explicitly activates them. Agenda keeps its existing promotional behavior.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
+- Heavy global features and export libraries load only on idle time or explicit interaction; public event data uses shared cached queries to keep initial navigation light.

@@ -80,7 +80,7 @@ export function useHighlightActions() {
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: HIGHLIGHTS_KEY });
     void qc.invalidateQueries({ queryKey: qk.agenda.all });
-    void qc.invalidateQueries({ queryKey: ["events"] });
+    void qc.invalidateQueries({ queryKey: qk.home.all });
   };
 
   const ativar = useMutation({

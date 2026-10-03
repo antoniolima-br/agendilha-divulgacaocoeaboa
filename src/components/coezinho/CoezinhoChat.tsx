@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 const QUICK_PROMPTS = ["Rolês de hoje", "Música ao vivo", "Um barzinho"];
 
 
-export function CoezinhoChat() {
-  const [open, setOpen] = useState(false);
+export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  const [open, setOpen] = useState(initiallyOpen);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
