@@ -1,6 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Atualizar a saudação e refinar a janela do Guia do Coé com cabeçalho em gradiente e atalhos rápidos.
 - [x] Permitir vários eventos no mesmo estabelecimento, com data, início e detalhes individuais.
 - [x] Permitir eventos na mesma data no mesmo estabelecimento, exigindo horários de início diferentes.
 - [x] Proteger a página inicial e suas seções contra dados ausentes e cobrir o estado vazio com teste.
