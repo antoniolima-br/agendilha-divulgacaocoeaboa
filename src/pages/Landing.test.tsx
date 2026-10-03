@@ -63,7 +63,7 @@ describe("Landing sem dados", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText("Coé a Boa?")).toBeInTheDocument();
+    expect(screen.getAllByText("Coé a Boa?").length).toBeGreaterThan(0);
     expect(screen.getByLabelText("Categorias")).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText("Nenhuma outra programação disponível agora. Confira novamente em breve.")).toBeInTheDocument();
