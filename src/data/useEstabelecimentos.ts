@@ -10,6 +10,9 @@ export interface EstabelecimentoRow {
   nome: string;
   endereco: string | null;
   bairro: string | null;
+  cep?: string | null;
+  numero?: string | null;
+  complemento?: string | null;
   tipo: string | null;
   contato: string | null;
   tipos?: string[] | null;
@@ -24,7 +27,7 @@ export interface EstabelecimentoRow {
 }
 
 const SELECT_MINE =
-  "id, nome, endereco, bairro, tipo, contato, tipos, anotacoes, cnpj, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved";
+  "id, nome, endereco, bairro, cep, numero, complemento, tipo, contato, tipos, anotacoes, cnpj, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved";
 
 export function useMyEstabelecimentos(userId: string | null | undefined) {
   return useQuery({

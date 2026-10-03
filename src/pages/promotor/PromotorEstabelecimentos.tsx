@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, MapPin, Pencil, Trash2, Loader2 } from "lucide-react";
 import { LoadingState } from "@/components/ui/LoadingState";
@@ -11,9 +11,16 @@ import { SuggestInput } from "@/components/ui/SuggestInput";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
+import { formatCep } from "@/lib/autofillValidation";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { PromotorBadge } from "@/components/promotor/PromotorBadge";
 import { useProfile } from "@/hooks/useProfile";
@@ -35,7 +42,10 @@ const TIPOS_ESTAB = [
 
 const empty = {
   nome: "",
+  cep: "",
   endereco: "",
+  numero: "",
+  complemento: "",
   bairro: "",
   tipo: "",
   contato: "",
@@ -66,7 +76,48 @@ function PromotorEstabelecimentosInner() {
   const remove_ = useDeleteEstabelecimento();
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState({ ...empty });
+  const [cepLoading, setCepLoading] = useState(false);
+  const [cepMessage, setCepMessage] = useState("");
+  const cepRequest = useRef(0);
   const saving = upsert.isPending;
+
+  const handleCepChange = async (rawCep: string) => {
+    const cep = formatCep(rawCep);
+    const digits = cep.replace(/\D/g, "");
+    setForm((current) => ({ ...current, cep }));
+    setCepMessage("");
+
+    const requestId = ++cepRequest.current;
+    if (digits.length !== 8) {
+      setCepLoading(false);
+      return;
+    }
+
+    setCepLoading(true);
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      if (!response.ok) throw new Error("Falha ao consultar CEP");
+      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      if (requestId !== cepRequest.current) return;
+      if (data.erro) {
+        setCepMessage("CEP não encontrado. Preencha o endereço manualmente.");
+        return;
+      }
+      setForm((current) => ({
+        ...current,
+        cep,
+        endereco: data.logradouro?.trim() || current.endereco,
+        bairro: data.bairro?.trim() || current.bairro,
+      }));
+      setCepMessage("Endereço encontrado. Confira e complete os dados.");
+    } catch {
+      if (requestId === cepRequest.current) {
+        setCepMessage("Não rolou buscar agora. Preencha o endereço manualmente.");
+      }
+    } finally {
+      if (requestId === cepRequest.current) setCepLoading(false);
+    }
+  };
 
   const reset = () => {
     setEditing(null);
@@ -82,7 +133,10 @@ function PromotorEstabelecimentosInner() {
     setEditing(e.id);
     setForm({
       nome: e.nome ?? "",
+      cep: e.cep ?? "",
       endereco: e.endereco ?? "",
+      numero: e.numero ?? "",
+      complemento: e.complemento ?? "",
       bairro: e.bairro ?? "",
       tipo: e.tipo ?? "",
       contato: e.contato ?? "",
@@ -120,7 +174,10 @@ function PromotorEstabelecimentosInner() {
           id: editing,
           payload: {
             nome: form.nome.trim(),
+            cep: form.cep || null,
             endereco: form.endereco || null,
+            numero: form.numero || null,
+            complemento: form.complemento || null,
             bairro: form.bairro || null,
             tipo: form.tipo || null,
             contato: form.contato || null,
@@ -132,7 +189,10 @@ function PromotorEstabelecimentosInner() {
         await upsert.mutateAsync({
           payload: {
             nome: form.nome.trim(),
+            cep: form.cep || null,
             endereco: form.endereco || null,
+            numero: form.numero || null,
+            complemento: form.complemento || null,
             bairro: form.bairro || null,
             tipo: form.tipo || null,
             contato: form.contato || null,
@@ -191,6 +251,23 @@ function PromotorEstabelecimentosInner() {
               suggestFrom="estabelecimentos_public"
               suggestColumn="nome"
             />
+            <div className="space-y-1.5">
+              <Label htmlFor="estabelecimento-cep" className="text-sm font-semibold">CEP</Label>
+              <Input
+                id="estabelecimento-cep"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                maxLength={9}
+                value={form.cep}
+                onChange={(event) => void handleCepChange(event.target.value)}
+                placeholder="00000-000"
+              />
+              {(cepLoading || cepMessage) && (
+                <p className="text-xs text-muted-foreground" aria-live="polite">
+                  {cepLoading ? "Buscando endereço..." : cepMessage}
+                </p>
+              )}
+            </div>
             <Field
               label="Endereço"
               value={form.endereco}
@@ -199,38 +276,29 @@ function PromotorEstabelecimentosInner() {
               suggestColumn="endereco"
               autoComplete="street-address"
             />
+            <Field label="Número" value={form.numero} onChange={(v) => setForm({ ...form, numero: v })} autoComplete="address-line2" />
+            <Field label="Complemento" value={form.complemento} onChange={(v) => setForm({ ...form, complemento: v })} autoComplete="address-line2" />
             <Field label="Bairro" value={form.bairro} onChange={(v) => setForm({ ...form, bairro: v })} autoComplete="address-level3" />
             <Field label="Contato do local (opcional)" value={form.contato} onChange={(v) => setForm({ ...form, contato: v })} placeholder="WhatsApp ou e-mail" autoComplete="off" />
           </div>
         </div>
 
-        {/* Bloco: Tipos (multi) */}
+        {/* Bloco: Tipo */}
         <div className="space-y-2">
-          <Label className="text-sm font-semibold">Tipo de estabelecimento</Label>
-          <p className="text-xs text-muted-foreground">Toque em quantos combinarem.</p>
-          <div className="flex flex-wrap gap-2">
-            {TIPOS_ESTAB.map((t) => {
-              const on = form.tipos.includes(t);
-              return (
-                <Badge
-                  key={t}
-                  variant="outline"
-                  className={cn(
-                    "inline-flex min-h-11 cursor-pointer items-center rounded-full px-3 py-2 transition-all md:min-h-0 md:py-1",
-                    on ? "bg-primary text-primary-foreground border-primary" : "hover:bg-primary/10"
-                  )}
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      tipos: on ? f.tipos.filter((x) => x !== t) : [...f.tipos, t],
-                    }))
-                  }
-                >
-                  {t}
-                </Badge>
-              );
-            })}
-          </div>
+          <Label htmlFor="estabelecimento-tipo" className="text-sm font-semibold">Tipo de estabelecimento</Label>
+          <Select
+            value={form.tipo}
+            onValueChange={(value) => setForm((current) => ({ ...current, tipo: value, tipos: [value] }))}
+          >
+            <SelectTrigger id="estabelecimento-tipo" className="h-11">
+              <SelectValue placeholder="Selecione uma categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {TIPOS_ESTAB.map((tipo) => (
+                <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Bloco: Responsável pelos contatos */}
