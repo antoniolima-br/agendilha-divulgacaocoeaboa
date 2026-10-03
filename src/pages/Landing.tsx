@@ -651,7 +651,7 @@ export default function Landing() {
 
         {/* Newsletter / Public Registration */}
         <section className="mb-12">
-          <div className="bg-secondary/10 rounded-[2.5rem] p-8 sm:p-12 overflow-hidden relative">
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-primary/25 bg-card p-8 sm:p-12">
             <div className="absolute -right-20 -top-20 h-64 w-64 bg-secondary/20 rounded-full blur-3xl" />
             <div className="relative z-10 max-w-2xl">
                <h2 className="mb-4 font-display text-2xl font-black sm:text-3xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
@@ -662,14 +662,16 @@ export default function Landing() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <Input 
+                      aria-label="Seu nome"
                       placeholder="Seu nome" 
                       value={subscriberName}
                       onChange={(e) => setSubscriberName(e.target.value)}
-                      className="h-14 px-6 rounded-2xl border-none bg-white/50 backdrop-blur-sm focus:ring-secondary/20"
+                      className="h-14 rounded-2xl border-border bg-background px-6 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     />
                   </div>
                   <div className="space-y-1">
                     <Input 
+                      aria-label="WhatsApp com DDD"
                       type="tel" 
                       placeholder="WhatsApp (DDD + Número)" 
                       value={subscriberPhone}
@@ -678,21 +680,21 @@ export default function Landing() {
                         if (val.length <= 11) setSubscriberPhone(val);
                       }}
                       required
-                      className="h-14 px-6 rounded-2xl border-none bg-white/50 backdrop-blur-sm focus:ring-secondary/20"
+                      className="h-14 rounded-2xl border-border bg-background px-6 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col justify-end px-1 sm:px-4">
-                    <div className="flex items-start gap-2 bg-white/40 sm:bg-transparent rounded-xl p-3 sm:p-0">
+                    <div className="flex items-start gap-2 rounded-xl border border-border bg-background p-3 sm:border-0 sm:bg-transparent sm:p-0">
                       <input 
                         type="checkbox" 
                         id="whatsapp-consent-landing" 
                         checked={whatsappConsent}
                         onChange={(e) => setWhatsappConsent(e.target.checked)}
-                    className="relative mt-0.5 h-5 w-5 shrink-0 rounded border-gray-300 text-secondary after:absolute after:-inset-3 after:content-[''] focus:ring-secondary/20 accent-secondary"
+                    className="relative mt-0.5 h-5 w-5 shrink-0 rounded border-border text-primary after:absolute after:-inset-3 after:content-[''] focus:ring-primary accent-primary"
                       />
-                      <label htmlFor="whatsapp-consent-landing" className="text-xs sm:text-xs font-medium text-foreground/75 leading-snug cursor-pointer break-words">
+                      <label htmlFor="whatsapp-consent-landing" className="cursor-pointer break-words text-xs font-medium leading-snug text-foreground">
                         Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
                       </label>
                     </div>
@@ -739,7 +741,7 @@ export default function Landing() {
         <div className="mx-auto max-w-6xl flex flex-col">
           <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-3 text-center sm:text-left">
             {/* Copyright */}
-            <div className="text-xs text-foreground/60 font-medium order-2 sm:order-1">
+            <div className="order-2 text-xs font-medium text-muted-foreground sm:order-1">
               © {new Date().getFullYear()} — Todos os direitos reservados
             </div>
 
@@ -750,20 +752,20 @@ export default function Landing() {
                 <div className="font-display text-sm font-black text-foreground tracking-tight">
                   Coé a Boa?
                 </div>
-                <div className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-semibold">
+                <div className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
                   Transparência e Cultura
                 </div>
               </div>
             </div>
 
             {/* Créditos */}
-            <div className="text-xs text-foreground/60 font-medium order-3 sm:text-right">
+            <div className="order-3 text-xs font-medium text-muted-foreground sm:text-right">
               Criado por{" "}
               <a
                 href="https://limaxsistemas.online/"
                 target="_blank"
                 rel="noreferrer"
-                className="font-bold text-foreground/80 hover:text-primary transition-colors hover:underline"
+                className="font-bold text-foreground transition-colors hover:text-primary hover:underline"
               >
                 Lima<span className="text-orange-500">X</span> Soluções
               </a>
