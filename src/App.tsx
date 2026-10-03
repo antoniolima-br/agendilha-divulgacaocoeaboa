@@ -62,6 +62,7 @@ const CadastroAtrativoPublico = lazy(() => import("./pages/cadastro/CadastroAtra
 const CadastroEstabelecimentoPublico = lazy(() => import("./pages/cadastro/CadastroEstabelecimentoPublico"));
 const Carrossel = lazy(() => import("./pages/Carrossel"));
 const EventoEnviado = lazy(() => import("./pages/EventoEnviado"));
+const ContratarDestaqueEvento = lazy(() => import("./pages/ContratarDestaqueEvento"));
 const MeusEventos = lazy(() => import("./pages/MeusEventos"));
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
@@ -75,9 +76,11 @@ const AnuncioDetalhe = lazy(() => import("./pages/anuncios/AnuncioDetalhe"));
 const NovoAnuncio = lazy(() => import("./pages/anuncios/NovoAnuncio"));
 const MeusAnuncios = lazy(() => import("./pages/anuncios/MeusAnuncios"));
 const AdminEstabelecimentos = lazy(() => import("./pages/AdminEstabelecimentos"));
+const AdminNegocios = lazy(() => import("./pages/AdminEstabelecimentos").then((module) => ({ default: module.AdminNegocios })));
 const AdminAtrativos = lazy(() => import("./pages/AdminAtrativos"));
 const CadastroPromotor = lazy(() => import("./pages/cadastro/CadastroPromotor"));
 const PromotorEstabelecimentos = lazy(() => import("./pages/promotor/PromotorEstabelecimentos"));
+const PromotorNegocios = lazy(() => import("./pages/promotor/PromotorEstabelecimentos").then((module) => ({ default: module.PromotorNegocios })));
 const PromotorAtrativos = lazy(() => import("./pages/promotor/PromotorAtrativos"));
 const PromotorPerfil = lazy(() => import("./pages/PromotorPerfil"));
 const TermosPage = lazy(() => import("./pages/PlaceholderInfo").then(m => ({ default: m.TermosPage })));
@@ -167,6 +170,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.EVENTOS} element={<EventosPublicos />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
+          <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_PUBLIC_PROFILE} element={<PublicProfile />} />
         </Route>
@@ -201,6 +205,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<AdminAprovarEventos />} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />
           <Route path={ROUTES.ADMIN_ESTABELECIMENTOS} element={<AdminEstabelecimentos />} />
+          <Route path={ROUTES.ADMIN_NEGOCIOS} element={<AdminNegocios />} />
           <Route path={ROUTES.ADMIN_ATRATIVOS} element={<AdminAtrativos />} />
           <Route path={ROUTES.ADMIN_ANUNCIOS} element={<AdminAds />} />
           <Route path={ROUTES.ADMIN_PLANOS_ANUNCIO} element={<AdminAdPlans />} />
@@ -210,6 +215,7 @@ export const AppRoutes = () => (
         <Route element={<PromotorRoute><AppShell maxWidth="lg"><Outlet /></AppShell></PromotorRoute>}>
           <Route path={ROUTES.PROMOTOR_HOME} element={<Navigate to={ROUTES.PROMOTOR_ESTABELECIMENTOS} replace />} />
           <Route path={ROUTES.PROMOTOR_ESTABELECIMENTOS} element={<PromotorEstabelecimentos />} />
+          <Route path={ROUTES.PROMOTOR_NEGOCIOS} element={<PromotorNegocios />} />
           <Route path={ROUTES.PROMOTOR_ATRATIVOS} element={<PromotorAtrativos />} />
           <Route path={ROUTES.PROMOTOR_PERFIL} element={<PromotorPerfil />} />
         </Route>

@@ -53,8 +53,10 @@ export const qk = {
   },
   estabelecimentos: {
     all: ["estabelecimentos"] as const,
-    mine: (userId: string | null | undefined) =>
-      [...qk.estabelecimentos.all, "mine", userId ?? "anon"] as const,
+    mine: (userId: string | null | undefined, listingKind = "event_venue") =>
+      [...qk.estabelecimentos.all, "mine", userId ?? "anon", listingKind] as const,
+    admin: (listingKind = "event_venue") =>
+      [...qk.estabelecimentos.all, "admin", listingKind] as const,
     approved: (search?: string) =>
       [...qk.estabelecimentos.all, "approved", search ?? ""] as const,
   },

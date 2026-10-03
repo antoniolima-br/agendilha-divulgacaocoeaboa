@@ -36,15 +36,18 @@ describe("sidebarConfig", () => {
     expect(exploreRegistrations?.children?.map((item) => item.id)).toEqual([
       "artists",
       "estabelecimentos_explorar",
+      "negocios_explorar",
     ]);
     expect(adminRegistrations?.children?.map((item) => item.id)).toEqual([
       "atrativos_admin",
       "estabelecimentos_admin",
+      "negocios_admin",
     ]);
     expect(adminRegistrations?.label).toBe("Gerenciamento de Cadastros");
     expect(adminRegistrations?.children?.map((item) => item.label)).toEqual([
       "Gerenciar Atrativos",
-      "Gerenciar Estabelecimentos",
+      "Gerenciar Locais de Rolê",
+      "Gerenciar Negócios Gerais",
     ]);
     expect(explore?.items.some((item) => ["artists", "estabelecimentos_explorar"].includes(item.id))).toBe(false);
     expect(operation?.items.some((item) => ["atrativos_admin", "estabelecimentos_admin"].includes(item.id))).toBe(false);

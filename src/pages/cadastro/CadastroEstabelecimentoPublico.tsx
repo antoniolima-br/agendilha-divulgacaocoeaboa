@@ -143,19 +143,19 @@ export default function CadastroEstabelecimentoPublico() {
   return (
     <main className="min-h-screen px-4 py-8 max-w-lg mx-auto [&_input::placeholder]:text-muted-foreground [&_textarea::placeholder]:text-muted-foreground">
       <Helmet>
-        <title>Cadastro de estabelecimento | Coé a Boa?</title>
+        <title>Cadastro de local de rolê | Coé a Boa?</title>
         <meta
           name="description"
-          content="Cadastre seu bar, restaurante ou casa de eventos para entrar na agenda do Coé a Boa?."
+          content="Cadastre seu bar, restaurante ou casa de eventos para receber rolês na agenda do Coé a Boa?."
         />
       </Helmet>
 
       <header className="mb-6 space-y-1">
         <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
-          <Store className="h-6 w-6" /> Cadastro de estabelecimento
+          <Store className="h-6 w-6" /> Cadastro de local de rolê
         </h1>
         <p className="text-sm text-muted-foreground">
-          Preencha só o essencial. É rapidinho e a equipe cuida do resto.
+          Esta área é só para locais que recebem eventos. Negócios gerais são cadastrados separadamente no painel.
         </p>
       </header>
 

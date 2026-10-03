@@ -962,6 +962,7 @@ export type Database = {
           fotos: string[] | null
           id: string
           is_approved: boolean
+          listing_kind: string
           nome: string
           numero: string | null
           responsavel_email: string | null
@@ -988,6 +989,7 @@ export type Database = {
           fotos?: string[] | null
           id?: string
           is_approved?: boolean
+          listing_kind?: string
           nome: string
           numero?: string | null
           responsavel_email?: string | null
@@ -1014,6 +1016,7 @@ export type Database = {
           fotos?: string[] | null
           id?: string
           is_approved?: boolean
+          listing_kind?: string
           nome?: string
           numero?: string | null
           responsavel_email?: string | null
@@ -1853,6 +1856,7 @@ export type Database = {
           moderation_status: string | null
           phone: string | null
           predicted_duration: string | null
+          promotion_choice: string
           promotion_rules: string | null
           promotion_type: string | null
           published_at: string | null
@@ -1954,6 +1958,7 @@ export type Database = {
           moderation_status?: string | null
           phone?: string | null
           predicted_duration?: string | null
+          promotion_choice?: string
           promotion_rules?: string | null
           promotion_type?: string | null
           published_at?: string | null
@@ -2055,6 +2060,7 @@ export type Database = {
           moderation_status?: string | null
           phone?: string | null
           predicted_duration?: string | null
+          promotion_choice?: string
           promotion_rules?: string | null
           promotion_type?: string | null
           published_at?: string | null

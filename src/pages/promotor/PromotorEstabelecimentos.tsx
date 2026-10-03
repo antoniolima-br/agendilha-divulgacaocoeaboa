@@ -40,6 +40,7 @@ const TIPOS_ESTAB = [
   "Bar", "Restaurante", "Casa de show", "Quiosque",
   "Centro cultural", "Igreja", "Praça", "Clube", "Outro",
 ];
+const TIPOS_NEGOCIO = ["Farmácia", "Padaria", "Mercado", "Loja", "Serviços", "Saúde", "Beleza", "Outro"];
 
 const empty = {
   nome: "",
@@ -64,15 +65,24 @@ const empty = {
 export default function PromotorEstabelecimentos() {
   return (
     <SectionErrorBoundary context="PromotorEstabelecimentos">
-      <PromotorEstabelecimentosInner />
+      <PromotorEstabelecimentosInner listingKind="event_venue" />
     </SectionErrorBoundary>
   );
 }
 
-function PromotorEstabelecimentosInner() {
+export function PromotorNegocios() {
+  return (
+    <SectionErrorBoundary context="PromotorNegocios">
+      <PromotorEstabelecimentosInner listingKind="general_business" />
+    </SectionErrorBoundary>
+  );
+}
+
+function PromotorEstabelecimentosInner({ listingKind }: { listingKind: "event_venue" | "general_business" }) {
+  const isBusiness = listingKind === "general_business";
   const { user } = useAuth();
   const { profile } = useProfile();
-  const { data: items = [], isLoading: loading } = useMyEstabelecimentos(user?.id);
+  const { data: items = [], isLoading: loading } = useMyEstabelecimentos(user?.id, listingKind);
   const upsert = useUpsertEstabelecimento();
   const remove_ = useDeleteEstabelecimento();
   const [editing, setEditing] = useState<string | null>(null);
@@ -199,6 +209,7 @@ function PromotorEstabelecimentosInner() {
             contato: form.contato || null,
             responsavel_id: user.id,
             created_by: user.id,
+            listing_kind: listingKind,
             ...commonPatch,
           },
         });
@@ -226,11 +237,11 @@ function PromotorEstabelecimentosInner() {
         <PromotorBadge />
         <SectionHeader
           className="mt-2 mb-0"
-          title="Meus estabelecimentos"
-          subtitle="Somente você pode editar os estabelecimentos cadastrados aqui."
+          title={isBusiness ? "Meus negócios gerais" : "Meus locais de rolê"}
+          subtitle={isBusiness ? "Farmácias, padarias, mercados e outros negócios que não entram na agenda." : "Somente locais que recebem eventos e rolês entram nesta lista."}
           rightElement={
-            <Link to={ROUTES.PROMOTOR_ATRATIVOS} className="w-full sm:w-auto">
-              <Button variant="outline" className="w-full sm:w-auto">Ir para Atrativos</Button>
+            <Link to={isBusiness ? ROUTES.PROMOTOR_ESTABELECIMENTOS : ROUTES.PROMOTOR_NEGOCIOS} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">{isBusiness ? "Ver locais de rolê" : "Ver negócios gerais"}</Button>
             </Link>
           }
         />
@@ -238,7 +249,7 @@ function PromotorEstabelecimentosInner() {
 
       <Card className="space-y-4 p-4 sm:p-5">
         <h2 className="font-bold text-lg">
-          {editing ? "Editar estabelecimento" : "Novo estabelecimento"}
+          {editing ? `Editar ${isBusiness ? "negócio" : "local de rolê"}` : `Novo ${isBusiness ? "negócio geral" : "local de rolê"}`}
         </h2>
 
         {/* Bloco: Básico */}
@@ -305,7 +316,7 @@ function PromotorEstabelecimentosInner() {
               <SelectValue placeholder="Selecione uma categoria" />
             </SelectTrigger>
             <SelectContent>
-              {TIPOS_ESTAB.map((tipo) => (
+              {(isBusiness ? TIPOS_NEGOCIO : TIPOS_ESTAB).map((tipo) => (
                 <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
               ))}
             </SelectContent>
@@ -382,7 +393,7 @@ function PromotorEstabelecimentosInner() {
           <LoadingState message="Carregando estabelecimentos..." />
         ) : items.length === 0 ? (
           <Card className="p-8 text-center text-muted-foreground text-sm">
-            Você ainda não cadastrou nenhum estabelecimento.
+            {isBusiness ? "Você ainda não cadastrou nenhum negócio geral." : "Você ainda não cadastrou nenhum local de rolê."}
           </Card>
         ) : (
           items.map((e) => (

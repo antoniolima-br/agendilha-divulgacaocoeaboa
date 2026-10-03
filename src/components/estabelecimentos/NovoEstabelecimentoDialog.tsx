@@ -134,6 +134,7 @@ export function NovoEstabelecimentoDialog({
           contato: contato.trim() || null,
           created_by: uid,
           responsavel_id: uid,
+           listing_kind: "event_venue",
         })
         .select("id, nome, endereco, bairro, cep, numero, complemento, tipo, contato")
         .single();

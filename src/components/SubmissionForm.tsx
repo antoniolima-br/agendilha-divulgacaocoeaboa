@@ -45,7 +45,6 @@ export default function SubmissionForm() {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
   const [imageSource, setImageSource] = useState<"upload" | "ai" | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [destaqueRecolhido, setDestaqueRecolhido] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const { addSubmission } = useSubmissions();
@@ -69,6 +68,7 @@ export default function SubmissionForm() {
       locationName: "", estabelecimentoId: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
       fotos: [],
       additionalEvents: [],
+      promotionChoice: "free",
       duvidasSource: "promotor",
       duvidasWhatsapp: "",
       responsavelNome: "",
@@ -412,7 +412,7 @@ export default function SubmissionForm() {
 
       // Envio gratuito: não gera flyer automático. O flyer profissional é
       // benefício exclusivo do Evento em Destaque (pago).
-      const IS_FREE_SUBMISSION = true;
+      const IS_FREE_SUBMISSION = values.promotionChoice === "free";
       if (!imageUrl && !IS_FREE_SUBMISSION) {
         try {
           const { blob, filePath } = await measureFlowOperation(
@@ -457,6 +457,7 @@ export default function SubmissionForm() {
       // Map camelCase form fields → snake_case DB columns
       const payload: any = {
         is_free: IS_FREE_SUBMISSION,
+        promotion_choice: values.promotionChoice,
         company_name: clean(values.companyName) || clean(values.nickName) || clean(profile?.responsible_name) || null,
         // responsible_name é preenchido abaixo com o nome do responsável (Fase 7).
         email: clean(values.email),
@@ -536,6 +537,24 @@ export default function SubmissionForm() {
       const insertedSubmissionIds = [result.id];
       for (let index = 0; index < values.additionalEvents.length; index += 1) {
         const event = values.additionalEvents[index];
+        let additionalImageUrl: string | null = null;
+        if (!IS_FREE_SUBMISSION) {
+          try {
+            const dataUrl = await generateFallbackFlyer({
+              title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
+              date: clean(event.date),
+              startTime: clean(event.startTime),
+              location: clean(values.locationName),
+              category: clean(event.category) || payload.category,
+            });
+            const blob = await (await fetch(dataUrl)).blob();
+            const filePath = `${user?.id ?? "anon"}/fallback-${crypto.randomUUID()}.jpg`;
+            const { error } = await supabaseClient.storage.from("event-flyers").upload(filePath, blob, { contentType: "image/jpeg", upsert: false });
+            if (!error) additionalImageUrl = supabaseClient.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+          } catch (error) {
+            logger.warn("[fallback flyer] evento adicional sem imagem", error);
+          }
+        }
         const additionalPayload = {
           ...payload,
           event_title: clean(event.eventTitle),
@@ -549,7 +568,7 @@ export default function SubmissionForm() {
           age_rating: event.ageRating,
           is_suitable_for_minors: event.ageRating === "Livre",
           description: clean(event.description),
-          image_url: null,
+          image_url: additionalImageUrl,
           image_url_story: null,
           image_url_whatsapp: null,
         };
@@ -613,6 +632,7 @@ export default function SubmissionForm() {
               endereco: clean(values.eventAddress),
               cep: clean((values as any).locationCep),
               contato: clean(values.locationContact),
+              listing_kind: "event_venue",
               responsavel_id: user.id,
               created_by: user.id,
             })
@@ -667,7 +687,12 @@ export default function SubmissionForm() {
 
       localStorage.removeItem(DRAFT_KEY);
       submissionTimer.finish({ outcome: "success" });
-      navigate(`/evento-enviado/${result.id}`, { replace: true });
+      navigate(
+        values.promotionChoice === "highlight"
+          ? `/evento-enviado/${result.id}/contratar-destaque`
+          : `/evento-enviado/${result.id}`,
+        { replace: true },
+      );
     } catch (error) {
       submissionTimer.finish({ outcome: "failure", error });
       handleError(error, { context: "SubmissionForm.onSubmit", fallback: "Não deu pra enviar o evento. Tenta de novo." });
@@ -866,9 +891,8 @@ export default function SubmissionForm() {
               />
               <DestaquePremiumSection
                 submitting={submitting}
-                eventTitle={form.watch("eventTitle")}
-                dismissed={destaqueRecolhido}
-                onDismissedChange={setDestaqueRecolhido}
+                value={form.watch("promotionChoice")}
+                onChange={(value) => form.setValue("promotionChoice", value, { shouldDirty: true, shouldValidate: true })}
               />
             </div>
           )}
