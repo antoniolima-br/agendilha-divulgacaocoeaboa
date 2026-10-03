@@ -254,6 +254,8 @@ export default function Landing() {
             category: ad.category,
             description: ad.description,
             image_url: firstPhoto ? flyerUrls[firstPhoto] : undefined,
+             is_highlight: false,
+             highlight_active: false,
           };
         });
       const today = saoPauloTodayISO();
