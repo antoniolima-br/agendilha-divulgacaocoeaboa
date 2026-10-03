@@ -4,8 +4,10 @@ import {
   highlightStatus,
   isLaunchPromotionalHighlight,
   isHighlightActive,
+  isManualHighlightActive,
   pickCarouselEvents,
   prioritizeHomeHeroEvents,
+  selectHomeLaunchFlyerEvents,
 } from "@/lib/highlights";
 
 const now = new Date("2026-09-05T12:00:00Z");
@@ -59,6 +61,36 @@ describe("isHighlightActive", () => {
   it("não promove automaticamente evento sem flyer", () => {
     expect(isLaunchPromotionalHighlight({ image_url: "  " })).toBe(false);
     expect(isHighlightActive({ is_highlight: false, image_url: null }, now)).toBe(false);
+  });
+});
+
+describe("regra promocional do banner da Home", () => {
+  const today = "2026-09-05";
+  const events = [
+    { id: "hoje", date: today, image_url: "hoje.webp", is_highlight: false },
+    { id: "amanha", date: "2026-09-06", image_url: "amanha.webp", is_highlight: false },
+    { id: "manual", date: "2026-09-07", image_url: "manual.webp", is_highlight: true, highlight_active: true, highlight_until: future },
+    { id: "sem-flyer", date: today, image_url: null, is_highlight: true },
+  ];
+
+  it("mostra flyers de hoje e somente futuros liberados quando existe evento hoje", () => {
+    expect(selectHomeLaunchFlyerEvents(events, today, true, now).map((event) => event.id)).toEqual([
+      "hoje",
+      "manual",
+    ]);
+  });
+
+  it("mostra flyers futuros automaticamente quando não existe evento hoje", () => {
+    expect(selectHomeLaunchFlyerEvents(events, today, false, now).map((event) => event.id)).toEqual([
+      "hoje",
+      "amanha",
+      "manual",
+    ]);
+  });
+
+  it("diferencia liberação administrativa da cortesia automática por flyer", () => {
+    expect(isManualHighlightActive(events[1], now)).toBe(false);
+    expect(isManualHighlightActive(events[2], now)).toBe(true);
   });
 });
 

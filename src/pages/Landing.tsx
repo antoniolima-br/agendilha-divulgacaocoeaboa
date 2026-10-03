@@ -46,7 +46,7 @@ import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarous
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
-import { isHighlightActive, prioritizeHomeHeroEvents } from "@/lib/highlights";
+import { isHighlightActive, prioritizeHomeHeroEvents, selectHomeLaunchFlyerEvents } from "@/lib/highlights";
 
 const HOME_CATEGORIES = [
   { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
@@ -222,6 +222,21 @@ export default function Landing() {
         );
       },
     });
+
+    const { data: todayEventsCount = 0 } = useQuery({
+      queryKey: qk.home.todayCount(),
+      queryFn: async () => {
+        const today = saoPauloTodayISO();
+        const { count, error } = await supabase
+          .from("public_submissions")
+          .select("id", { count: "exact", head: true })
+          .in("status", [...PUBLIC_EVENT_STATUSES])
+          .eq("date", today);
+
+        if (error) throw error;
+        return typeof count === "number" ? count : 0;
+      },
+    });
  
     const freeEvents = useMemo(
       () => Array.isArray(freeEventsData) ? freeEventsData : [],
@@ -284,12 +299,17 @@ export default function Landing() {
           };
         });
       const today = saoPauloTodayISO();
+       const eligiblePromotionalFlyers = selectHomeLaunchFlyerEvents(
+         promotionalFlyerEvents,
+         today,
+         todayEventsCount > 0,
+       );
        const pool = Array.from(new Map(
-         [...promotionalFlyerEvents, ...flyers, ...allEvents].map((event) => [event.id, event]),
+          [...eligiblePromotionalFlyers, ...flyers, ...allEvents.filter((event) => !event.image_url)].map((event) => [event.id, event]),
        ).values());
       const todays = pool.filter((ev) => eventDateISO(ev.date) === today);
-       const activeHighlights = pool.filter((event) =>
-         eventDateISO(event.date) >= today && isHighlightActive(event),
+        const activeHighlights = pool.filter((event) =>
+          eventDateISO(event.date) >= today && (event.id.startsWith("ad:") || isHighlightActive(event)),
        );
        // Destaques ativos sempre entram no banner; as vagas restantes priorizam o que acontece hoje.
        const base = Array.from(new Map([
@@ -303,7 +323,7 @@ export default function Landing() {
         return h >>> 0;
       };
        return prioritizeHomeHeroEvents(base, rand).slice(0, 8);
-    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
+    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents, todayEventsCount]);
 
     useEffect(() => {
       const channel = supabase

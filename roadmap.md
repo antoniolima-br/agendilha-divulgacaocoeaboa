@@ -9,6 +9,7 @@
 - [x] Liberar Destaque na Home como cortesia promocional imediata, mantendo a opção paga e o registro financeiro futuro.
 - [x] Criar vitrine pública de destaques com rota real, gestão administrativa de pagamento e validação na Home e no Guia.
 - [x] Promover automaticamente na Home e na agenda todos os eventos atuais ou futuros com flyer durante o lançamento.
+- [x] Priorizar flyers de hoje na Home e liberar flyers futuros somente sem eventos hoje ou por ativação administrativa.
 
 - [x] Conectar o Guia do Coé à agenda e aos estabelecimentos aprovados, com locais, horários e rotas de Uber reais.
 - [x] Manter apenas “ver rolê” nas sugestões do Guia e deixar a opção de Uber nos detalhes do evento.

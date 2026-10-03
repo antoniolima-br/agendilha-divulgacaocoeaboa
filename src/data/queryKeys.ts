@@ -35,6 +35,7 @@ export const qk = {
     events: () => [...qk.home.all, "events"] as const,
     freeEvents: () => [...qk.home.all, "free-events"] as const,
     promotionalFlyers: () => [...qk.home.all, "promotional-flyers"] as const,
+    todayCount: () => [...qk.home.all, "today-count"] as const,
   },
   favorites: {
     all: ["favorites"] as const,
