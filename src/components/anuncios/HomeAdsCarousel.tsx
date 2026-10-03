@@ -11,7 +11,7 @@ import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
-const AUTOPLAY_MS = 4_000;
+const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
 
 function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () => void; compact?: boolean }) {
