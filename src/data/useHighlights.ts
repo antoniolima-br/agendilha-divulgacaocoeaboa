@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { highlightStatus, type HighlightStatus } from "@/lib/highlights";
+import { qk } from "@/data/queryKeys";
 
 export interface HighlightedEvent {
   id: string;
@@ -18,7 +19,7 @@ export interface HighlightedEvent {
   status: HighlightStatus;
 }
 
-export const HIGHLIGHTS_KEY = ["admin", "highlights"] as const;
+export const HIGHLIGHTS_KEY = qk.highlights.all;
 
 /** Rolês com destaque (ativo, expirado ou escondido) para a gestão administrativa. */
 export function useHighlightedEvents() {
@@ -78,7 +79,7 @@ export function useHighlightActions() {
 
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: HIGHLIGHTS_KEY });
-    void qc.invalidateQueries({ queryKey: ["agenda"] });
+    void qc.invalidateQueries({ queryKey: qk.agenda.all });
     void qc.invalidateQueries({ queryKey: ["events"] });
   };
 
@@ -148,7 +149,7 @@ export function useHighlightActions() {
 /** Rolês aprovados sem destaque, para a equipe escolher quem destacar. */
 export function useHighlightCandidates(search: string) {
   return useQuery({
-    queryKey: ["admin", "highlight-candidates", search],
+    queryKey: qk.highlights.candidates(search),
     queryFn: async () => {
       let query = supabase
         .from("submissions")

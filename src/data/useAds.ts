@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { qk } from "@/data/queryKeys";
 
 export type AdStatus = "pendente" | "publicado" | "recusado";
 
@@ -41,12 +42,12 @@ export const AD_CATEGORIES = [
 const AD_COLUMNS =
   "id, user_id, title, description, category, price_cents, contact_whatsapp, city, neighborhood, photos, status, rejection_reason, is_highlight, highlight_plan_id, highlight_until, views_count, created_at, ad_type, event_date, event_location";
 
-export const ADS_KEY = ["ads"] as const;
+export const ADS_KEY = qk.ads.all;
 
 /** Anúncios publicados (vitrine pública). */
 export function usePublishedAds() {
   return useQuery({
-    queryKey: [...ADS_KEY, "publicados"],
+    queryKey: qk.ads.published(),
     queryFn: async (): Promise<Ad[]> => {
       const { data, error } = await supabase
         .from("ads")
@@ -67,7 +68,7 @@ export function usePublishedAds() {
 export function useMyAds(userId: string | undefined) {
   const qc = useQueryClient();
   const query = useQuery({
-    queryKey: [...ADS_KEY, "meus", userId],
+    queryKey: qk.ads.mine(userId),
     enabled: !!userId,
     queryFn: async (): Promise<Ad[]> => {
       if (!userId) return [];
@@ -94,7 +95,7 @@ export function useMyAds(userId: string | undefined) {
           table: "ads",
           filter: `user_id=eq.${userId}`,
         },
-        () => void qc.invalidateQueries({ queryKey: [...ADS_KEY, "meus", userId] }),
+        () => void qc.invalidateQueries({ queryKey: qk.ads.mine(userId) }),
       )
       .subscribe();
 
@@ -109,7 +110,7 @@ export function useMyAds(userId: string | undefined) {
 /** Todos os anúncios — usado na tela de moderação (RLS libera só para a equipe). */
 export function useAllAds(enabled: boolean) {
   return useQuery({
-    queryKey: [...ADS_KEY, "todos"],
+    queryKey: qk.ads.list(),
     enabled,
     queryFn: async (): Promise<Ad[]> => {
       const { data, error } = await supabase
@@ -125,7 +126,7 @@ export function useAllAds(enabled: boolean) {
 /** Um anúncio pelo id. */
 export function useAd(id: string | undefined) {
   return useQuery({
-    queryKey: [...ADS_KEY, "detalhe", id],
+    queryKey: qk.ads.byId(id),
     enabled: !!id,
     queryFn: async (): Promise<Ad | null> => {
       if (!id) return null;
@@ -274,7 +275,7 @@ export function normalizeAds(rows: unknown): Ad[] {
 /** Flyers publicados com data futura — entram no carrossel principal da Home. */
 export function usePublishedFlyerAds() {
   return useQuery({
-    queryKey: [...ADS_KEY, "flyers-home"],
+    queryKey: qk.ads.flyersHome(),
     queryFn: async (): Promise<Ad[]> => {
       const since = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
       const { data, error } = await supabase

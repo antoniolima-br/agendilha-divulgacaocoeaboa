@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAppPermissions as usePermissions } from "@/hooks/usePermissions";
+import { useAppPermissions as usePermissions } from "@/hooks/useAppPermissions";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

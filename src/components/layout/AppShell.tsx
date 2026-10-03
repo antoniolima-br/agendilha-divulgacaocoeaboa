@@ -4,7 +4,7 @@ import { SidebarMenu } from "@/components/SidebarMenu";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAppPermissions } from "@/hooks/usePermissions";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useLocation } from "react-router-dom";

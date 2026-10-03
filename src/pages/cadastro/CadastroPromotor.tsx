@@ -19,16 +19,7 @@ import { maskPhone } from "@/lib/registration";
 import { handleError } from "@/lib/error-handler";
 import { toast } from "sonner";
 import { ROUTES } from "@/routes/config";
-
-const BAIRROS_ILHA = [
-  "Jardim Guanabara",
-  "Cocotá",
-  "Cacuia",
-  "Ribeira",
-  "Galeão",
-  "Freguesia",
-  "Ilha do Governador (outros)",
-];
+import { BAIRROS } from "@/lib/neighborhoods";
 
 export default function CadastroPromotor() {
   const navigate = useNavigate();
@@ -141,7 +132,7 @@ export default function CadastroPromotor() {
                 <SelectValue placeholder="Escolha seu bairro" />
               </SelectTrigger>
               <SelectContent>
-                {BAIRROS_ILHA.map((b) => (
+                {BAIRROS.map((b) => (
                   <SelectItem key={b} value={b}>
                     {b}
                   </SelectItem>

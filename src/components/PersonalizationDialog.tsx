@@ -10,6 +10,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Music, Bell, Check, ChevronsUpDown, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { BAIRROS } from "@/lib/neighborhoods";
 
 const genres = [
   { id: "Samba", label: "Samba / Pagode" },
@@ -22,7 +23,7 @@ const genres = [
   { id: "Pop", label: "Pop" },
 ];
 
-const neighborhoods: string[] = [];
+const neighborhoods: readonly string[] = BAIRROS;
 
 interface PersonalizationDialogProps {
   open: boolean;
