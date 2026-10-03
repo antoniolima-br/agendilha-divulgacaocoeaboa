@@ -34,7 +34,7 @@ export function ModerationReviewDialog({
   if (!review) return null;
 
   const phoneCheck = validateBrazilianMobile(review.sub.phone || "");
-  const invalidPhoneReason = phoneCheck.valid ? "" : phoneCheck.reason;
+  const invalidPhoneReason = "reason" in phoneCheck ? phoneCheck.reason : "Número fora do padrão.";
   const isApprove = review.kind === "approved";
   const isAjuste = review.kind === "ajuste";
 
