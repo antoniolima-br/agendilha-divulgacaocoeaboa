@@ -14,6 +14,6 @@
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
 - Public event lists use the São Paulo calendar day as their cutoff: today's events remain visible all day and become past events only on the following day.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
-- During the launch promotion, Home automatically highlights today's flyers; future flyers are automatic only when today has no events, unless an admin explicitly activates them. Agenda keeps its existing promotional behavior.
+- During the launch promotion, Home rotates multiple current and future flyers together, prioritizing today's events; Agenda keeps its existing promotional behavior.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
 - Heavy global features and export libraries load only on idle time or explicit interaction; public event data uses shared cached queries to keep initial navigation light.

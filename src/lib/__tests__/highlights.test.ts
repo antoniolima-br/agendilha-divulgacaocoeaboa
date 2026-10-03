@@ -73,19 +73,20 @@ describe("regra promocional do banner da Home", () => {
     { id: "sem-flyer", date: today, image_url: null, is_highlight: true },
   ];
 
-  it("mostra flyers de hoje e somente futuros liberados quando existe evento hoje", () => {
-    expect(selectHomeLaunchFlyerEvents(events, today, true, now).map((event) => event.id)).toEqual([
-      "hoje",
-      "manual",
-    ]);
-  });
-
-  it("mostra flyers futuros automaticamente quando não existe evento hoje", () => {
-    expect(selectHomeLaunchFlyerEvents(events, today, false, now).map((event) => event.id)).toEqual([
+  it("mostra vários flyers de hoje e futuros na mesma rotação", () => {
+    expect(selectHomeLaunchFlyerEvents(events, today).map((event) => event.id)).toEqual([
       "hoje",
       "amanha",
       "manual",
     ]);
+  });
+
+  it("ignora flyers anteriores e itens atuais sem flyer", () => {
+    const mixedEvents = [
+      ...events,
+      { id: "ontem", date: "2026-09-04", image_url: "ontem.webp", is_highlight: true },
+    ];
+    expect(selectHomeLaunchFlyerEvents(mixedEvents, today).map((event) => event.id)).toEqual(["hoje", "amanha", "manual"]);
   });
 
   it("diferencia liberação administrativa da cortesia automática por flyer", () => {

@@ -208,7 +208,6 @@ export default function Landing() {
        const eligiblePromotionalFlyers = selectHomeLaunchFlyerEvents(
          promotionalFlyerEvents,
          today,
-         todayEventsCount > 0,
        );
        const pool = Array.from(new Map(
           [...eligiblePromotionalFlyers, ...flyers, ...allEvents.filter((event) => !event.image_url)].map((event) => [event.id, event]),
@@ -222,14 +221,16 @@ export default function Landing() {
          ...activeHighlights,
          ...(todays.length > 0 ? todays : pool.filter((ev) => eventDateISO(ev.date) >= today)),
        ].map((event) => [event.id, event])).values());
-      // Ordem aleatória a cada abertura da página (semente fixa durante a visita).
+       // Ordem aleatória por visita dentro de cada grupo, mantendo os flyers de hoje primeiro.
       const rand = (id: string) => {
         let h = heroSeed;
         for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 2654435761);
         return h >>> 0;
       };
-       return prioritizeHomeHeroEvents(base, rand).slice(0, 8);
-    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents, todayEventsCount]);
+        return prioritizeHomeHeroEvents(base, rand)
+          .sort((a, b) => Number(eventDateISO(b.date) === today) - Number(eventDateISO(a.date) === today))
+          .slice(0, 8);
+    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
      useEffect(() => {
        let channel: ReturnType<typeof supabase.channel> | undefined;

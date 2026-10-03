@@ -52,24 +52,20 @@ export function isManualHighlightActive(event: HighlightFields, now: Date = new 
 
 /**
  * Regra promocional exclusiva do banner da Home:
- * - flyers de hoje entram automaticamente;
- * - flyers futuros entram automaticamente apenas quando não há evento hoje;
- * - uma liberação administrativa válida sempre permite o flyer futuro.
+ * - flyers de hoje entram automaticamente e recebem prioridade;
+ * - flyers futuros também entram para manter uma rotação variada;
+ * - eventos anteriores e itens sem flyer ficam de fora.
  */
 export function selectHomeLaunchFlyerEvents<
   T extends HighlightFields & { date?: string | null },
 >(
   events: T[],
   todayISO: string,
-  hasEventsToday: boolean,
-  now: Date = new Date(),
 ): T[] {
   return events.filter((event) => {
     if (!hasEventFlyer(event)) return false;
     const date = event.date?.trim() ?? "";
-    if (date === todayISO) return true;
-    if (date <= todayISO) return false;
-    return !hasEventsToday || isManualHighlightActive(event, now);
+    return date >= todayISO;
   });
 }
 
