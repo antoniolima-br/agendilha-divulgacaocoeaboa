@@ -53,7 +53,6 @@ export default function CadastroEstabelecimentoPublico() {
     tipoOutro: "",
     endereco: "",
     numero: "",
-    complemento: "",
     bairro: "",
     cep: "",
     responsavelNome: "",
@@ -353,15 +352,15 @@ export default function CadastroEstabelecimentoPublico() {
           <Input id="endereco" className="h-12 text-base" value={form.endereco} onChange={(e) => set("endereco", e.target.value)} placeholder="Rua / Avenida" />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label htmlFor="numero">Número</Label>
-            <Input id="numero" inputMode="numeric" className="h-12 text-base" value={form.numero} onChange={(e) => set("numero", e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="complemento">Complemento</Label>
-            <Input id="complemento" className="h-12 text-base" value={form.complemento} onChange={(e) => set("complemento", e.target.value)} />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="numero">Número</Label>
+          <Input
+            id="numero"
+            className="h-12 text-base"
+            value={form.numero}
+            onChange={(e) => set("numero", e.target.value)}
+            placeholder="Ex.: 120, sala 2"
+          />
         </div>
 
         <div className="space-y-2">
