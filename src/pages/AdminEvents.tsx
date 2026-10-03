@@ -574,12 +574,12 @@ function AdminEventsInner() {
                                 NA AGENDA
                               </span>
                             )}
-                          </div>
-                          {sub.is_highlight && (
-                            <Badge variant="outline" className="mt-1 text-[9px]">
-                              {sub.highlight_grant_type === "paid" ? "Destaque pago" : "Cortesia · Período de Divulgação"}
-                            </Badge>
-                          )}
+                             {sub.is_highlight && (
+                               <Badge variant="outline" className="mt-1 text-[9px]">
+                                 {sub.highlight_grant_type === "paid" ? "Destaque pago" : "Cortesia · Período de Divulgação"}
+                               </Badge>
+                             )}
+                           </div>
                         );
                       })()}
                     </div>
