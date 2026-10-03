@@ -97,4 +97,4 @@
 - [x] Criar gestão administrativa de eventos publicados com início, término, edição e exclusão.
 - [x] Ampliar a gestão de atrativos com cadastro, edição, exclusão, descrição e horário de funcionamento.
 - [x] Disponibilizar os dados atualizados dos atrativos no formulário de eventos.
-- [ ] Atualizar o cadastro público de estabelecimento com ViaCEP e seletor de categoria.
+- [x] Atualizar o cadastro público de estabelecimento com ViaCEP e seletor de categoria.
