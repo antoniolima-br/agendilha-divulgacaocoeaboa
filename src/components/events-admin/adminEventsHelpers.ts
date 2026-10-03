@@ -36,6 +36,7 @@ export interface AdminSubmission {
   additional_details: string | null;
   status: string;
   is_highlight?: boolean;
+  highlight_grant_type?: "courtesy" | "paid" | null;
   views_count?: number;
   shares_count?: number;
   age_rating?: string;

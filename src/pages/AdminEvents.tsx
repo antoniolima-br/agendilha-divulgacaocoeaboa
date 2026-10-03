@@ -329,12 +329,12 @@ function AdminEventsInner() {
 
   }
 
-  async function toggleHighlight(id: string, current: boolean) {
+  async function toggleHighlight(id: string, current: boolean, grantType: "courtesy" | "paid" = "courtesy") {
     const target = submissions.find((submission) => submission.id === id);
     if (!target) return;
     setHighlightingId(id);
     try {
-      if (!current) {
+      if (!current && grantType === "paid") {
         const { data: payment, error: paymentError } = await supabase
           .from("payment_records")
           .select("id")
@@ -344,7 +344,7 @@ function AdminEventsInner() {
           .maybeSingle();
         if (paymentError) throw paymentError;
         if (!payment) {
-          toast.info("O destaque será liberado depois da baixa do pagamento.");
+          toast.info("Para marcar como Pago, registre a baixa primeiro. A cortesia pode ser liberada agora.");
           return;
         }
       }
@@ -370,19 +370,19 @@ function AdminEventsInner() {
       const nextHighlight = !current;
       const { error } = await supabase
         .from("submissions")
-        .update({ is_highlight: nextHighlight, highlight_hidden: false, image_url: imageUrl })
+        .update({ is_highlight: nextHighlight, highlight_hidden: false, image_url: imageUrl, highlight_grant_type: nextHighlight ? grantType : null })
         .eq("id", id);
       if (error) throw error;
 
       setSubmissions((previous) => previous.map((submission) =>
-        submission.id === id ? { ...submission, is_highlight: nextHighlight, image_url: imageUrl } : submission,
+         submission.id === id ? { ...submission, is_highlight: nextHighlight, image_url: imageUrl, highlight_grant_type: nextHighlight ? grantType : null } : submission,
       ));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: qk.home.all }),
         queryClient.invalidateQueries({ queryKey: qk.agenda.all }),
         queryClient.invalidateQueries({ queryKey: qk.submissions.all }),
       ]);
-      toast.success(nextHighlight ? "Evento em Destaque máximo na Home!" : "Destaque removido");
+      toast.success(nextHighlight ? `Evento em Destaque na Home como ${grantType === "courtesy" ? "cortesia" : "pago"}!` : "Destaque removido");
     } catch (error) {
       handleError(error, "Erro ao atualizar destaque");
     } finally {
@@ -575,6 +575,11 @@ function AdminEventsInner() {
                               </span>
                             )}
                           </div>
+                          {sub.is_highlight && (
+                            <Badge variant="outline" className="mt-1 text-[9px]">
+                              {sub.highlight_grant_type === "paid" ? "Destaque pago" : "Cortesia · Período de Divulgação"}
+                            </Badge>
+                          )}
                         );
                       })()}
                     </div>
@@ -704,12 +709,12 @@ function AdminEventsInner() {
                                   ? "bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100"
                                   : "bg-transparent border-border hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-600"
                               )}
-                              onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}
+                              onClick={() => toggleHighlight(sub.id, !!sub.is_highlight, "courtesy")}
                             >
                               <Star className={cn("h-4 w-4", sub.is_highlight && "fill-amber-600")} />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>{sub.is_highlight ? 'Remover Destaque' : 'Tornar Destaque'}</TooltipContent>
+                           <TooltipContent>{sub.is_highlight ? 'Remover Destaque' : 'Conceder cortesia'}</TooltipContent>
                         </Tooltip>
 
                         {/* Menu Adicional (PDF, WhatsApp, Excluir) */}
@@ -830,10 +835,20 @@ function AdminEventsInner() {
                             {sub.status === 'pendente' && (
                              <Button size="sm" variant="outline" onClick={() => openReview(sub, 'ajuste')} className="text-orange-600 border-orange-200 hover:bg-orange-50"><AlertCircle className="h-4 w-4 mr-2" /> Solicitar Ajuste</Button>
                             )}
-                             <Button size="sm" disabled={highlightingId === sub.id} variant={sub.is_highlight ? 'secondary' : 'outline'} className={sub.is_highlight ? 'bg-amber-100 text-amber-700' : ''} onClick={() => toggleHighlight(sub.id, !!sub.is_highlight)}>
+                             <Button size="sm" disabled={highlightingId === sub.id} variant={sub.is_highlight ? 'secondary' : 'outline'} className={sub.is_highlight ? 'bg-amber-100 text-amber-700' : ''} onClick={() => toggleHighlight(sub.id, !!sub.is_highlight, "courtesy")}>
                                {highlightingId === sub.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Star className={`mr-2 h-4 w-4 ${sub.is_highlight ? 'fill-amber-500' : ''}`} />}
-                               {sub.is_highlight ? 'Remover Destaque' : 'Tornar Destaque'}
+                               {sub.is_highlight ? 'Remover Destaque' : 'Conceder cortesia'}
                              </Button>
+                             {!sub.is_highlight && (
+                               <Button size="sm" disabled={highlightingId === sub.id} variant="outline" onClick={() => toggleHighlight(sub.id, false, "paid")}>
+                                 <Wallet className="mr-2 h-4 w-4" /> Ativar como pago
+                               </Button>
+                             )}
+                             {sub.is_highlight && (
+                               <Badge variant="outline">
+                                 {sub.highlight_grant_type === "paid" ? "Pago" : "Cortesia (Período de Divulgação)"}
+                               </Badge>
+                             )}
                             {sub.is_highlight && <PaymentStatus itemType="evento" itemId={sub.id} />}
                             <Button size="sm" variant="ghost" className="text-muted-foreground ml-auto"><History className="h-4 w-4 mr-2" /> Histórico</Button>
                           </div>

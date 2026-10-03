@@ -1,4 +1,4 @@
-import { Crown, Check, Megaphone } from "lucide-react";
+import { Crown, Check, Gift, Megaphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const BENEFITS = [
@@ -55,14 +55,23 @@ export function DestaquePremiumSection({
         </button>
       </div>
       {value === "highlight" && (
-        <ul className="space-y-2 rounded-lg border bg-muted/30 p-4">
-          {BENEFITS.map((benefit) => (
-            <li key={benefit} className="flex items-start gap-2 text-sm">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden /> {benefit}
-            </li>
-          ))}
-          <li className="text-xs text-muted-foreground">A prioridade é ativada pela equipe depois da confirmação do pagamento.</li>
-        </ul>
+        <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
+          <div className="flex items-start gap-3 rounded-md border border-primary/30 bg-primary/10 p-3">
+            <Gift className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
+            <div>
+              <p className="text-sm font-bold">Cortesia de lançamento: destaque grátis</p>
+              <p className="mt-1 text-xs text-muted-foreground">Durante o período de divulgação, você experimenta o alcance do app sem pagar.</p>
+            </div>
+          </div>
+          <ul className="space-y-2">
+            {BENEFITS.map((benefit) => (
+              <li key={benefit} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden /> {benefit}
+              </li>
+            ))}
+            <li className="text-xs text-muted-foreground">A equipe libera a cortesia após analisar o evento. Planos pagos poderão ser registrados futuramente.</li>
+          </ul>
+        </div>
       )}
     </section>
   );
