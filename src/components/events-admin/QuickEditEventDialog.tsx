@@ -29,7 +29,7 @@ export interface QuickEditableEvent {
   image_url?: string | null;
   status?: string | null;
   is_highlight?: boolean | null;
-  highlight_grant_type?: "courtesy" | "paid" | null;
+  highlight_grant_type?: string | null;
 }
 
 const FIELDS = ["event_title", "date", "start_time", "end_time", "location", "address_street", "address_neighborhood", "category", "description", "image_url", "status"] as const;
