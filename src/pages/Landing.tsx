@@ -92,6 +92,10 @@ function normalizePreferenceText(value?: string | null): string {
     .trim();
 }
 
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
 function useScrollReveal() {
   const observed = useRef<Set<Element>>(new Set());
   useEffect(() => {
@@ -175,7 +179,7 @@ export default function Landing() {
      getNextPageParam: (lastPage) => lastPage.nextPage,
    });
 
-    const { data: freeEvents = [], isLoading: freeEventsLoading } = useQuery({
+    const { data: freeEventsData, isLoading: freeEventsLoading } = useQuery({
       queryKey: ["landing-free-events"],
       queryFn: async () => {
         const today = saoPauloTodayISO();
@@ -196,10 +200,17 @@ export default function Landing() {
       },
     });
  
-    const allEvents = useMemo(
-      () => (Array.isArray(eventsData?.pages) ? eventsData.pages : [])
-        .flatMap((page) => Array.isArray(page?.items) ? page.items : []),
+    const freeEvents = useMemo(
+      () => Array.isArray(freeEventsData) ? freeEventsData : [],
+      [freeEventsData],
+    );
+    const eventPages = useMemo(
+      () => eventsData && Array.isArray(eventsData.pages) ? eventsData.pages : [],
       [eventsData],
+    );
+    const allEvents = useMemo(
+      () => eventPages.flatMap((page) => Array.isArray(page?.items) ? page.items : []),
+      [eventPages],
     );
     const visualEvents = useMemo(
       () => allEvents.filter((event) => event.is_highlight || event.highlight_active || !isFreeEventPrice(event.sale_price)),
@@ -370,8 +381,12 @@ export default function Landing() {
   };
 
    const recommendedEvents = useMemo(() => {
-     const preferences = profileLoaded && user
-       ? [...(profile?.musical_preferences ?? []), ...(profile?.event_type_preferences ?? []), ...(profile?.followed_styles ?? [])]
+      const preferences = profileLoaded && user
+        ? [
+            ...stringList(profile?.musical_preferences),
+            ...stringList(profile?.event_type_preferences),
+            ...stringList(profile?.followed_styles),
+          ]
            .map(normalizePreferenceText)
            .filter(Boolean)
        : [];

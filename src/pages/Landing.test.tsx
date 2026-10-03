@@ -22,7 +22,14 @@ vi.mock("@/contexts/AuthContext", () => ({
 }));
 
 vi.mock("@/hooks/useProfile", () => ({
-  useProfile: () => ({ profile: undefined, loaded: true }),
+  useProfile: () => ({
+    profile: {
+      musical_preferences: { length: vi.fn() },
+      event_type_preferences: null,
+      followed_styles: undefined,
+    },
+    loaded: true,
+  }),
 }));
 
 vi.mock("@/data/useAds", () => ({
@@ -51,7 +58,7 @@ vi.mock("@/components/PersonalizationDialog", () => ({ PersonalizationDialog: ()
 vi.mock("@/components/ShareDialog", () => ({ ShareDialog: () => null }));
 
 describe("Landing sem dados", () => {
-  it("renderiza a página inicial e suas seções sem eventos, anúncios ou perfil", async () => {
+  it("renderiza sem falhar com coleções ausentes ou malformadas", async () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false } },
     });
