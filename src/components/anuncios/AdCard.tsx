@@ -12,9 +12,9 @@ const STATUS_LABEL: Record<Ad["status"], string> = {
 };
 
 const STATUS_STYLE: Record<Ad["status"], string> = {
-  pendente: "border-warning/40 bg-warning/15 text-warning-foreground",
-  publicado: "border-success/30 bg-success/10 text-success",
-  recusado: "border-destructive/30 bg-destructive/10 text-destructive",
+  pendente: "border-warning/50 bg-warning/15 text-foreground",
+  publicado: "border-success/40 bg-success/15 text-foreground",
+  recusado: "border-destructive/40 bg-destructive/15 text-foreground",
 };
 
 const STATUS_ICON = {

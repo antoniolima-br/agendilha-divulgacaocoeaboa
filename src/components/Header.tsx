@@ -384,7 +384,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   >
                     <div className="relative">
                       <Avatar className={`h-6 w-6 ${isMaster ? "ring-2 ring-secondary ring-offset-1 ring-offset-background" : isAdmin ? "ring-2 ring-accent ring-offset-1 ring-offset-background" : ""}`}>
-                        <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-[10px] font-semibold text-primary-foreground">
+                        <AvatarFallback className="bg-primary text-[10px] font-semibold text-primary-foreground">
                           {getInitials(fullName)}
                         </AvatarFallback>
                       </Avatar>

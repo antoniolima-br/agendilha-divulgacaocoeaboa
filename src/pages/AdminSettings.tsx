@@ -154,7 +154,7 @@ export default function AdminSettings() {
                 href={previewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-semibold text-emerald-700 underline break-all"
+                className="text-xs font-semibold text-primary underline break-all"
               >
                 Testar conversa
               </a>

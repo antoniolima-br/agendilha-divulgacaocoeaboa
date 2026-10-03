@@ -100,4 +100,4 @@
 - [x] Atualizar o cadastro público de estabelecimento com ViaCEP e seletor de categoria.
 - [x] Garantir contraste WCAG AA em todos os textos do cadastro público de estabelecimento.
 - [x] Aplicar ViaCEP e seletor de categoria também aos cadastros administrativo e do divulgador.
-- [ ] Corrigir contraste WCAG AA em todas as páginas, painéis, tabelas, botões e textos secundários.
+- [x] Corrigir contraste WCAG AA em todas as páginas, painéis, tabelas, botões e textos secundários.

@@ -90,7 +90,7 @@ interface Props {
     return (
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3 p-3 rounded-2xl glass">
-          <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-sm font-medium">
+          <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-sm font-bold">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
@@ -115,7 +115,7 @@ interface Props {
          <Button
           size="lg"
           variant="outline"
-          className="w-full rounded-full bg-white/70"
+           className="w-full rounded-full bg-background text-foreground"
           onClick={handleLogout}
         >
           <LogOut className="h-4 w-4 mr-1.5" />
@@ -128,8 +128,8 @@ interface Props {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-full hover:bg-white/50 transition-colors group">
-          <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-xs font-medium">
+         <button className="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-full hover:bg-muted transition-colors group">
+           <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-xs font-bold">
             {initials}
           </div>
            {!hideContext && (
@@ -152,7 +152,7 @@ interface Props {
       <DropdownMenuContent align="end" className="w-64 rounded-2xl glass border-white/40 shadow-elevated p-2">
         <DropdownMenuLabel className="px-3 py-2.5">
           <div className="flex items-center gap-2.5">
-            <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-sm font-medium">
+             <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-display text-sm font-bold">
               {initials}
             </div>
             <div className="flex-1 min-w-0">
