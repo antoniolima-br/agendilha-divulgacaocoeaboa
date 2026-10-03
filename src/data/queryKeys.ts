@@ -27,6 +27,7 @@ export const qk = {
   agenda: {
     all: ["agenda"] as const,
     events: () => [...qk.agenda.all, "events"] as const,
+    publicEvents: () => [...qk.agenda.all, "public-events"] as const,
     ratings: () => [...qk.agenda.all, "ratings"] as const,
   },
   home: {

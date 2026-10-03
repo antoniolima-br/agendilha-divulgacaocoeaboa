@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Home, Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
+import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
+import { formatBrazilianDate } from "@/lib/date-utils";
+import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -23,6 +28,7 @@ export interface QuickEditableEvent {
   description?: string | null;
   image_url?: string | null;
   status?: string | null;
+  is_highlight?: boolean | null;
 }
 
 const FIELDS = ["event_title", "date", "start_time", "end_time", "location", "address_street", "address_neighborhood", "category", "description", "image_url", "status"] as const;
@@ -30,15 +36,15 @@ type Field = (typeof FIELDS)[number];
 type FormState = Record<Field, string>;
 
 const STATUS_OPTIONS = [
-  { value: "pendente", label: "Aguardando análise" },
-  { value: "aprovado", label: "Publicado" },
-  { value: "rejeitado", label: "Recusado" },
+  { value: "pending", label: "Aguardando análise" },
+  { value: "approved", label: "Publicado" },
+  { value: "rejected", label: "Recusado" },
 ];
 
 function toForm(ev: QuickEditableEvent | null): FormState {
   const out = {} as FormState;
   FIELDS.forEach((f) => { out[f] = (ev?.[f] as string | null | undefined) ?? ""; });
-  if (!out.status) out.status = "pendente";
+  if (!out.status) out.status = "pending";
   return out;
 }
 
@@ -52,9 +58,14 @@ export function QuickEditEventDialog({
   onSaved: (updated: QuickEditableEvent) => void;
 }) {
   const [form, setForm] = useState<FormState>(() => toForm(event));
+  const [isHighlight, setIsHighlight] = useState(Boolean(event?.is_highlight));
   const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => { setForm(toForm(event)); }, [event]);
+  useEffect(() => {
+    setForm(toForm(event));
+    setIsHighlight(Boolean(event?.is_highlight));
+  }, [event]);
 
   const set = (f: Field) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [f]: e.target.value }));
@@ -66,18 +77,63 @@ export function QuickEditEventDialog({
       return;
     }
     setSaving(true);
-    const payload: Record<string, string | null> = {};
-    FIELDS.forEach((f) => { payload[f] = form[f].trim() || null; });
-    payload.status = form.status;
-    const { error } = await supabase.from("submissions").update(payload as never).eq("id", event.id);
-    setSaving(false);
-    if (error) {
+    try {
+      if (isHighlight && !event.is_highlight) {
+        const { data: payment, error: paymentError } = await supabase
+          .from("payment_records")
+          .select("id")
+          .eq("item_type", "evento")
+          .eq("item_id", event.id)
+          .limit(1)
+          .maybeSingle();
+        if (paymentError) throw paymentError;
+        if (!payment) {
+          toast.info("O destaque será liberado depois da baixa do pagamento.");
+          return;
+        }
+      }
+
+      let imageUrl = form.image_url.trim() || null;
+      if (isHighlight && !imageUrl) {
+        const dataUrl = await generateFallbackFlyer({
+          title: form.event_title || "Evento",
+          date: formatBrazilianDate(form.date),
+          startTime: form.start_time,
+          location: form.location,
+          category: form.category,
+        });
+        const blob = await (await fetch(dataUrl)).blob();
+        const filePath = `admin/fallback-${event.id}-${Date.now()}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("event-flyers")
+          .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
+        if (uploadError) throw uploadError;
+        imageUrl = supabase.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+      }
+
+      const payload: Record<string, string | boolean | null> = {};
+      FIELDS.forEach((f) => { payload[f] = form[f].trim() || null; });
+      payload.status = form.status;
+      payload.image_url = imageUrl;
+      payload.is_highlight = isHighlight;
+      if (isHighlight) payload.highlight_hidden = false;
+
+      const { error } = await supabase.from("submissions").update(payload as never).eq("id", event.id);
+      if (error) throw error;
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: qk.home.all }),
+        queryClient.invalidateQueries({ queryKey: qk.agenda.all }),
+        queryClient.invalidateQueries({ queryKey: qk.submissions.all }),
+      ]);
+      toast.success(isHighlight ? "Evento salvo com Destaque na Home." : "Evento salvo.");
+      onSaved({ ...event, ...payload, is_highlight: isHighlight });
+      onClose();
+    } catch (error) {
       handleError(error, "Não deu pra salvar o evento agora");
-      return;
+    } finally {
+      setSaving(false);
     }
-    toast.success(form.status === "aprovado" ? "Evento salvo e publicado." : "Evento salvo.");
-    onSaved({ ...event, ...payload });
-    onClose();
   }
 
   return (
@@ -134,6 +190,20 @@ export function QuickEditEventDialog({
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="qe-img">Link da imagem do flyer</Label>
             <Input id="qe-img" value={form.image_url} onChange={set("image_url")} className="h-11" />
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-md border border-border bg-muted/30 p-4 sm:col-span-2">
+            <div className="min-w-0 space-y-1">
+              <Label htmlFor="qe-highlight" className="flex items-center gap-2 font-bold">
+                <Home className="h-4 w-4 text-primary" /> Destaque na Home
+              </Label>
+              <p className="text-xs text-muted-foreground">Prioriza este flyer no destaque principal.</p>
+            </div>
+            <Switch
+              id="qe-highlight"
+              checked={isHighlight}
+              onCheckedChange={setIsHighlight}
+              aria-label="Destaque na Home"
+            />
           </div>
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="qe-desc">Descrição</Label>

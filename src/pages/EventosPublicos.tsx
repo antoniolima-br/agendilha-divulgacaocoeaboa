@@ -1,14 +1,18 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, Clock, MapPin, MessageCircle, Search } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { CalendarDays, Clock, Edit, MapPin, MessageCircle, Search } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
+import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { addDaysToISO, formatEventDateTimeBR, isCurrentOrFutureEventDate, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { QuickEditEventDialog } from "@/components/events-admin/QuickEditEventDialog";
 
 type PublicEvent = {
   id: string;
@@ -20,6 +24,7 @@ type PublicEvent = {
   location: string | null;
   address_neighborhood: string | null;
   duvidas_phone: string | null;
+  is_highlight: boolean;
 };
 
 function eventContactUrl(event: PublicEvent) {
@@ -31,13 +36,18 @@ function eventContactUrl(event: PublicEvent) {
 }
 
 export default function EventosPublicos() {
+  const { user } = useAuth();
+  const { hasPermission } = useAppPermissions();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState<PublicEvent | null>(null);
+  const canEditEvents = Boolean(user && hasPermission("events.update"));
   const { data: events = [], isLoading, isError } = useQuery({
-    queryKey: ["public-events-contact-list"],
+    queryKey: qk.agenda.publicEvents(),
     queryFn: async (): Promise<PublicEvent[]> => {
       const { data, error } = await supabase
         .from("public_submissions")
-        .select("id, slug, event_title, date, start_time, end_time, location, address_neighborhood, duvidas_phone")
+        .select("id, slug, event_title, date, start_time, end_time, location, address_neighborhood, duvidas_phone, is_highlight")
         .in("status", [...PUBLIC_EVENT_STATUSES])
         .or("moderation_status.is.null,moderation_status.neq.blocked")
         .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
@@ -138,9 +148,15 @@ export default function EventosPublicos() {
                     ) : (
                       <span className="flex min-h-11 items-center text-xs text-muted-foreground">Contato não informado</span>
                     )}
-                    <Button asChild variant="outline" className="min-h-11 flex-1 sm:flex-none">
-                      <Link to={detailsPath}>Ver evento</Link>
-                    </Button>
+                    {canEditEvents ? (
+                      <Button variant="outline" className="min-h-11 flex-1 sm:flex-none" onClick={() => setEditing(event)}>
+                        <Edit className="mr-2 h-4 w-4" /> Ver evento
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" className="min-h-11 flex-1 sm:flex-none">
+                        <Link to={detailsPath}>Ver evento</Link>
+                      </Button>
+                    )}
                   </div>
                 </article>
               </li>
@@ -148,6 +164,13 @@ export default function EventosPublicos() {
           })}
         </ul>
       )}
+      <QuickEditEventDialog
+        event={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          void queryClient.invalidateQueries({ queryKey: qk.agenda.publicEvents() });
+        }}
+      />
     </div>
   );
 }
