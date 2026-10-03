@@ -29,6 +29,7 @@ import type { AgendaEvent } from "@/components/agenda/types";
 import { exportEditorialAgendaPdf } from "@/lib/pdfExport";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
+import { isHighlightActive } from "@/lib/highlights";
 
 export default function AgendaCultural() {
   return (
@@ -192,7 +193,7 @@ function AgendaCulturalInner() {
               />
             ) : (
               <div className="space-y-12">
-                {filters.filteredEvents.some((e) => e.is_highlight) && (
+                {filters.filteredEvents.some((event) => isHighlightActive(event)) && (
                   <section>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-3 w-3 rounded-full bg-orange-500 animate-pulse" />
@@ -201,7 +202,7 @@ function AgendaCulturalInner() {
                     <div className="space-y-6">
                       {Object.entries(
                         filters.filteredEvents
-                          .filter((e) => e.is_highlight)
+                          .filter((event) => isHighlightActive(event))
                           .slice()
                           .sort((a, b) => `${eventDateISO(a.date)} ${a.start_time ?? ""}`.localeCompare(`${eventDateISO(b.date)} ${b.start_time ?? ""}`))
                           .reduce<Record<string, AgendaEvent[]>>((acc, ev) => {

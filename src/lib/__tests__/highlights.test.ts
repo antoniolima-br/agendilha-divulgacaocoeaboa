@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   highlightDaysLeft,
   highlightStatus,
+  isLaunchPromotionalHighlight,
   isHighlightActive,
   pickCarouselEvents,
   prioritizeHomeHeroEvents,
@@ -46,6 +47,18 @@ describe("isHighlightActive", () => {
     expect(
       isHighlightActive({ is_highlight: true, highlight_active: true, highlight_until: future }, now),
     ).toBe(true);
+  });
+
+  it("ativa automaticamente evento com flyer durante a promoção de lançamento", () => {
+    const event = { is_highlight: false, highlight_hidden: true, image_url: " https://cdn/flyer.webp " };
+    expect(isLaunchPromotionalHighlight(event)).toBe(true);
+    expect(isHighlightActive(event, now)).toBe(true);
+    expect(highlightStatus(event, now)).toBe("ativo");
+  });
+
+  it("não promove automaticamente evento sem flyer", () => {
+    expect(isLaunchPromotionalHighlight({ image_url: "  " })).toBe(false);
+    expect(isHighlightActive({ is_highlight: false, image_url: null }, now)).toBe(false);
   });
 });
 
@@ -100,6 +113,20 @@ describe("prioritizeHomeHeroEvents", () => {
       "destaque",
       "comum",
       "outro",
+    ]);
+  });
+
+  it("coloca eventos com flyer antes dos demais sem ativação manual", () => {
+    const events = [
+      { id: "manual", is_highlight: true },
+      { id: "flyer", is_highlight: false, image_url: "https://cdn/flyer.webp" },
+      { id: "comum", is_highlight: false },
+    ];
+
+    expect(prioritizeHomeHeroEvents(events, (id) => ({ flyer: 1, manual: 2, comum: 3 }[id] ?? 9)).map((event) => event.id)).toEqual([
+      "flyer",
+      "manual",
+      "comum",
     ]);
   });
 });
