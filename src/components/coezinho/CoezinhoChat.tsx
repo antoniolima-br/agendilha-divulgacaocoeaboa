@@ -114,16 +114,16 @@ export function CoezinhoChat() {
                   <ReactMarkdown
                     components={{
                       a: ({ href, children }) =>
-                        href?.startsWith("/") ? (
+                        href?.startsWith("/evento/") ? (
+                          <Button asChild size="sm" className="my-2 rounded-full">
+                            <Link to={href} onClick={() => setOpen(false)}>
+                              {children}
+                            </Link>
+                          </Button>
+                        ) : href?.startsWith("/") ? (
                           <Link to={href} onClick={() => setOpen(false)} className="font-semibold text-primary underline">
                             {children}
                           </Link>
-                        ) : href?.startsWith("https://m.uber.com/") ? (
-                          <Button asChild size="sm" className="my-2 rounded-full">
-                            <a href={href} target="_blank" rel="noreferrer">
-                              {children}
-                            </a>
-                          </Button>
                         ) : (
                           <a href={href} target="_blank" rel="noreferrer" className="text-primary underline">
                             {children}

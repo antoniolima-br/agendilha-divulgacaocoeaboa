@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildGuideAddress, buildGuideAgenda, buildGuideUberLink, resolveEstablishment, type GuideEvent } from "../../supabase/functions/coezinho/agenda";
+import { buildGuideAddress, buildGuideAgenda, resolveEstablishment, type GuideEvent } from "../../supabase/functions/coezinho/agenda";
 
 const event: GuideEvent = {
   id: "event-1",
@@ -37,16 +37,11 @@ describe("agenda do Guia do Coé", () => {
     expect(buildGuideAddress(event, establishment)).toContain("Rua da Praia, 10 - Ribeira");
   });
 
-  it("inclui links do evento e da rota na agenda enviada ao Guia", () => {
+  it("inclui somente o link de detalhes na agenda enviada ao Guia", () => {
     const agenda = buildGuideAgenda([event], [establishment]);
     expect(agenda).toContain("ver rolê: /evento/samba-de-hoje");
-    expect(agenda).toContain("Vá de Uber: https://m.uber.com/ul/");
+    expect(agenda).not.toContain("Vá de Uber");
+    expect(agenda).not.toContain("m.uber.com");
     expect(agenda).toContain("Bár do Pôrto");
-  });
-
-  it("usa coordenadas reais quando elas estão disponíveis", () => {
-    const link = buildGuideUberLink({ ...event, latitude: -22.8, longitude: -43.2 }, "Rua da Praia, 10");
-    expect(link).toContain("dropoff%5Blatitude%5D=-22.8");
-    expect(link).toContain("dropoff%5Blongitude%5D=-43.2");
   });
 });

@@ -60,25 +60,12 @@ export function buildGuideAddress(event: GuideEvent, establishment?: GuideEstabl
   return [streetWithNumber, neighborhood, city, state, zip].filter(Boolean).join(" - ");
 }
 
-export function buildGuideUberLink(event: GuideEvent, address: string): string {
-  const params = new URLSearchParams({ action: "setPickup", pickup: "my_location" });
-  const location = clean(event.location) || clean(event.event_title) || "Evento";
-  params.set("dropoff[nickname]", location);
-  params.set("dropoff[formatted_address]", address || location);
-  if (typeof event.latitude === "number" && typeof event.longitude === "number") {
-    params.set("dropoff[latitude]", String(event.latitude));
-    params.set("dropoff[longitude]", String(event.longitude));
-  }
-  return `https://m.uber.com/ul/?${params.toString()}`;
-}
-
 export function buildGuideAgenda(events: GuideEvent[], establishments: GuideEstablishment[]): string {
   return events
     .map((event) => {
       const establishment = resolveEstablishment(event, establishments);
       const placeName = clean(establishment?.nome) || clean(event.location) || "Local a confirmar";
       const address = buildGuideAddress(event, establishment);
-      const uberLink = buildGuideUberLink(event, address);
       const eventLink = `/evento/${clean(event.slug) || clean(event.id)}`;
       const time = clean(event.start_time).slice(0, 5);
       const endTime = clean(event.end_time).slice(0, 5);
@@ -92,7 +79,6 @@ export function buildGuideAgenda(events: GuideEvent[], establishments: GuideEsta
         address,
         clean(event.category),
         `ver rolê: ${eventLink}`,
-        `Vá de Uber: ${uberLink}`,
         clean(event.description).slice(0, 160),
       ].filter(Boolean).join(" | ");
     })
