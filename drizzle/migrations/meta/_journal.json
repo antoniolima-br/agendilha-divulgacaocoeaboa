@@ -36,6 +36,13 @@
       "when": 1791045810679,
       "tag": "0004_separate_event_venues_and_promotion_intent",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791047368205,
+      "tag": "0005_add_event_highlight_grant_type",
+      "breakpoints": true
     }
   ]
 }
