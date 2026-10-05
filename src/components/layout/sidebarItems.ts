@@ -108,7 +108,7 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Planos disponíveis",
             path: ROUTES.ADMIN_PLANOS_ANUNCIO,
             icon: LayoutDashboard,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "destaques_admin",
@@ -235,14 +235,14 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Moderação",
         path: ROUTES.ADMIN_EVENTS,
         icon: ShieldCheck,
-        roles: ["admin", "master"],
+        roles: ["admin", "senior", "master"],
         children: [
           {
             id: "manage_events",
             label: "Gerenciar Eventos",
             path: ROUTES.ADMIN_EVENTS,
             icon: ShieldCheck,
-            roles: ["admin", "master"],
+            roles: ["admin", "senior", "master"],
             exact: true
           },
           {
@@ -250,14 +250,14 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Eventos Publicados",
             path: ROUTES.ADMIN_PUBLISHED_EVENTS,
             icon: CalendarDays,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "flyer_moderator",
             label: "Moderador de Flyers",
             path: ROUTES.ADMIN_MEDIA,
             icon: Shield,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           }
         ]
       },
