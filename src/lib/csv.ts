@@ -1,6 +1,8 @@
 /** Escapa um valor para CSV RFC 4180 (vírgula, aspas, quebras). */
 function escapeCell(value: unknown): string {
-  const s = value === null || value === undefined ? "" : String(value);
+  const raw = value === null || value === undefined ? "" : String(value);
+  // Planilhas interpretam estes prefixos como fórmula, inclusive após espaços.
+  const s = /^[\t\r ]*[=+\-@]/.test(raw) ? `'${raw}` : raw;
   if (/[",\n\r]/.test(s)) {
     return `"${s.replace(/"/g, '""')}"`;
   }

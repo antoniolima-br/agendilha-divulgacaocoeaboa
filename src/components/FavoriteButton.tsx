@@ -2,7 +2,6 @@
  import { Button } from "@/components/ui/button";
  import { cn } from "@/lib/utils";
  import { useFavorites } from "@/hooks/useFavorites";
- import { toast } from "sonner";
 
  interface FavoriteButtonProps {
    eventId: string;
@@ -12,7 +11,7 @@
  }
 
  export function FavoriteButton({ eventId, className, variant = "ghost", size = "icon" }: FavoriteButtonProps) {
-   const { isFavorite, toggleFavorite } = useFavorites();
+   const { isFavorite, toggleFavorite, isToggling } = useFavorites();
    const active = isFavorite(eventId);
 
    return (
@@ -27,8 +26,10 @@
        onClick={(e) => {
          e.stopPropagation();
          toggleFavorite(eventId);
-         toast.success(active ? "Removido dos favoritos" : "Adicionado aos favoritos");
        }}
+        disabled={isToggling}
+        aria-label={active ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        aria-pressed={active}
      >
        <Heart className={cn("h-4 w-4", active && "fill-current")} />
      </Button>

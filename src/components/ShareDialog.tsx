@@ -17,14 +17,20 @@ export const ShareDialog = memo(function ShareDialog({ open, onOpenChange, title
   const fullText = `${text}\n${url}`;
 
   const handleShare = async (platform: "whatsapp" | "copy") => {
-    onShare?.(platform);
-    if (platform === "whatsapp") {
-      window.open(`https://wa.me/?text=${encodeURIComponent(fullText)}`, "_blank");
-    } else {
-      await navigator.clipboard.writeText(url);
-      toast.success("Link copiado!");
+    try {
+      if (platform === "whatsapp") {
+        window.open(`https://wa.me/?text=${encodeURIComponent(fullText)}`, "_blank", "noopener,noreferrer");
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copiado!");
+      } else {
+        throw new Error("CLIPBOARD_UNAVAILABLE");
+      }
+      onShare?.(platform);
+      onOpenChange(false);
+    } catch {
+      toast.error("Não deu pra copiar o link.", { description: "Você pode selecionar e copiar o endereço do navegador." });
     }
-    onOpenChange(false);
   };
 
   return (

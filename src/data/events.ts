@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { qk } from "./queryKeys";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { eventDateISO, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 
 export type Rating = { average: number; total: number };
@@ -90,7 +90,7 @@ export function useEvents(options: {
 
   const events = normalizeEvents(eventsQuery.data);
 
-  const ratingIds = events.map((event) => event.id).sort();
+  const ratingIds = useMemo(() => events.map((event) => event.id).sort(), [events]);
   const ratingsQuery = useQuery({
     queryKey: [...qk.agenda.ratings(), ratingIds.join(",")],
     enabled: (options.enabled ?? true) && ratingIds.length > 0,

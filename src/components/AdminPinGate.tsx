@@ -108,7 +108,7 @@ export default function AdminPinGate({ children }: { children: ReactNode }) {
       }
 
       const status = data?.[0] as { is_admin?: boolean; has_pin?: boolean; requires_change?: boolean } | undefined;
-      if (status?.is_admin && !status.has_pin) {
+      if (!unlocked && status?.is_admin && !status.has_pin) {
         setMode("setup");
       }
     };
@@ -116,7 +116,7 @@ export default function AdminPinGate({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [unlocked, user]);
 
   if (!user) return null;
   if (unlocked) return <>{children}</>;

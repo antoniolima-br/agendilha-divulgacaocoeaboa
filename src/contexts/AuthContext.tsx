@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { toAuthEmail, toLegacyAuthEmail, toE164Digits, validateWhatsappForAccount } from "@/lib/phone";
@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [mustChangePassword, setMustChangePassword] = useState(false);
+  const authCheckSequence = useRef(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -54,8 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        setTimeout(() => checkAdmin(session.user.id), 0);
-        setTimeout(() => checkMustChangePassword(session.user.id), 0);
+        const sequence = ++authCheckSequence.current;
+        setTimeout(() => void refreshAccountState(session.user.id, sequence), 0);
       } else {
         setIsAdmin(false);
         setMustChangePassword(false);
@@ -67,8 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdmin(session.user.id);
-        checkMustChangePassword(session.user.id);
+        const sequence = ++authCheckSequence.current;
+        void refreshAccountState(session.user.id, sequence);
       }
       setLoading(false);
     });
@@ -82,6 +83,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Interval removed
     };
   }, []);
+
+  async function refreshAccountState(userId: string, sequence: number) {
+    const [rolesResponse, profileResponse] = await Promise.all([
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase.from("profiles").select("must_change_password").eq("user_id", userId).maybeSingle(),
+    ]);
+    if (sequence !== authCheckSequence.current) return;
+    if (rolesResponse.error) handleError(rolesResponse.error, { silent: true, context: "AuthContext:roles" });
+    if (profileResponse.error) handleError(profileResponse.error, { silent: true, context: "AuthContext:passwordState" });
+    setIsAdmin(!!rolesResponse.data?.some(({ role }) => role === "admin" || role === "master"));
+    setMustChangePassword(!!profileResponse.data?.must_change_password);
+  }
 
   async function checkAdmin(userId: string) {
     const { data: roles, error } = await supabase
