@@ -68,7 +68,14 @@ export default function AdminHighlightPayments() {
       return;
     }
     if (status === "cancelled" && event.highlight_grant_type === "paid") {
-      await supabase.from("submissions").update({ is_highlight: false, highlight_hidden: true }).eq("id", event.id);
+      const { error: highlightError } = await supabase
+        .from("submissions")
+        .update({ is_highlight: false, highlight_hidden: true })
+        .eq("id", event.id);
+      if (highlightError) {
+        toast.error("O pagamento foi atualizado, mas não deu pra ocultar o destaque.");
+        return;
+      }
     }
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: qk.highlights.all }),

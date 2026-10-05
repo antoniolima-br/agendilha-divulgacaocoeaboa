@@ -38,6 +38,7 @@ export function NotificationBell() {
   const navigate = useNavigate();
   const [items, setItems] = useState<AppNotification[]>([]);
   const [open, setOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const canSee = !!user && (isAdmin || isMaster || isPromoter);
 
@@ -48,9 +49,9 @@ export function NotificationBell() {
       .select("id,type,title,body,link,read_at,created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(PAGE_SIZE);
+      .limit(visibleCount);
     if (!error && data) setItems(data as AppNotification[]);
-  }, [user]);
+  }, [user, visibleCount]);
 
   useEffect(() => {
     if (!canSee || !user) return;
@@ -192,6 +193,13 @@ export function NotificationBell() {
                   </button>
                 </li>
               ))}
+              {items.length >= visibleCount && (
+                <li className="p-2">
+                  <Button variant="ghost" size="sm" className="w-full" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>
+                    Ver notificações anteriores
+                  </Button>
+                </li>
+              )}
             </ul>
           )}
         </ScrollArea>

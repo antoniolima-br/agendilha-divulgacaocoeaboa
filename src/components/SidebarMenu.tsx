@@ -30,7 +30,7 @@ export function SidebarMenu({ onClose }: Props) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { name, initials, loaded: badgeLoaded } = useUserBadge();
-  const { isMaster, isAdmin, isPromoter } = useAppPermissions();
+  const { isMaster, isAdmin, isSenior, isFinanceiro, isPromoter } = useAppPermissions();
   const { savedCount } = useSubmissions();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const { data: pendingCount = 0 } = useSubmissionsCount(
@@ -41,16 +41,20 @@ export function SidebarMenu({ onClose }: Props) {
   const currentRole = useMemo<Role>(() => {
     if (!user) return "public_guest";
     if (isMaster) return "master";
+    if (isFinanceiro) return "financeiro";
+    if (isSenior) return "senior";
     if (isAdmin) return "admin";
     if (isPromoter) return "promoter";
     return "public_registered";
-  }, [isAdmin, isMaster, isPromoter, user]);
+  }, [isAdmin, isFinanceiro, isMaster, isPromoter, isSenior, user]);
 
   const roleLabels: Record<Role, string> = {
     public_guest: "Visitante",
     public_registered: "Usuário",
     promoter: "Divulgador",
     admin: "Administrador",
+    senior: "Sênior",
+    financeiro: "Financeiro",
     master: "Admin Master"
   };
 

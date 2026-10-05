@@ -96,38 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMustChangePassword(!!profileResponse.data?.must_change_password);
   }
 
-  async function checkAdmin(userId: string) {
-    const { data: roles, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId);
-
-    if (error) {
-      handleError(error, { 
-        silent: true, 
-        context: "AuthContext:checkAdmin" 
-      });
-    }
-
-    setIsAdmin(!!roles?.some(({ role }) => role === 'admin' || role === 'master'));
-  }
-
-  async function checkMustChangePassword(userId: string) {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("must_change_password")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (error) {
-      handleError(error, { 
-        silent: true, 
-        context: "AuthContext:checkMustChangePassword" 
-      });
-    }
-    setMustChangePassword(!!data?.must_change_password);
-  }
-
   async function refreshMustChangePassword() {
     if (user?.id) {
       const sequence = ++authCheckSequence.current;

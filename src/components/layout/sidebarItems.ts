@@ -86,7 +86,7 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Explorar Anúncios",
             path: ROUTES.ANUNCIOS,
             icon: Eye,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
             exact: true
           },
           {
@@ -94,7 +94,7 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Contratar",
             path: ROUTES.ANUNCIO_NOVO,
             icon: ShoppingBag,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
           },
           {
             id: "meus_anuncios",
@@ -204,14 +204,14 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Relatório Diário (Coé a Boa?)",
         path: ROUTES.ADMIN_AGENDA_INFORMA,
         icon: Megaphone,
-        roles: ["admin", "master"],
+        roles: ["admin", "senior", "master"],
         children: [
           {
             id: "agenda_informa",
             label: "AgendIlha Informa",
             path: ROUTES.ADMIN_AGENDA_INFORMA,
             icon: Megaphone,
-            roles: ["admin", "master"],
+            roles: ["admin", "senior", "master"],
             exact: true
           },
           {
@@ -219,14 +219,14 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Carrossel WhatsApp",
             path: ROUTES.CARROSSEL,
             icon: Images,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "whatsapp_templates",
             label: "Templates WhatsApp",
             path: ROUTES.ADMIN_WHATSAPP_TEMPLATES,
             icon: MessageSquare,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           }
         ]
       },
