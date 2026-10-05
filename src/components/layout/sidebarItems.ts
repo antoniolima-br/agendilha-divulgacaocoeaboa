@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
-export type Role = "public_guest" | "public_registered" | "promoter" | "admin" | "master";
+export type Role = "public_guest" | "public_registered" | "promoter" | "admin" | "senior" | "financeiro" | "master";
 
 export interface SidebarItem {
   id: string;
@@ -50,14 +50,14 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "explorar",
     title: "Explorar",
-    roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+    roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
     items: [
       { 
         id: "events", 
         label: "Eventos", 
         path: ROUTES.EVENTOS, 
         icon: CalendarDays, 
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
         exact: true
       },
       { 
@@ -72,21 +72,21 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Eventos em destaque",
         path: ROUTES.EVENTOS_DESTAQUE,
         icon: Sparkles,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
       },
       {
         id: "anuncios_destaques",
         label: "Anúncios e Destaques",
         path: ROUTES.ANUNCIOS,
         icon: ShoppingBag,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
         children: [
           {
             id: "ver_anuncios",
             label: "Explorar Anúncios",
             path: ROUTES.ANUNCIOS,
             icon: Eye,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
             exact: true
           },
           {
@@ -94,7 +94,7 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Contratar",
             path: ROUTES.ANUNCIO_NOVO,
             icon: ShoppingBag,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
           },
           {
             id: "meus_anuncios",
@@ -108,7 +108,7 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Planos disponíveis",
             path: ROUTES.ADMIN_PLANOS_ANUNCIO,
             icon: LayoutDashboard,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "destaques_admin",
@@ -197,21 +197,21 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "operacao",
     title: "Operação",
-    roles: ["admin", "master"],
+    roles: ["admin", "senior", "financeiro", "master"],
     items: [
       {
         id: "relatorio_diario",
         label: "Relatório Diário (Coé a Boa?)",
         path: ROUTES.ADMIN_AGENDA_INFORMA,
         icon: Megaphone,
-        roles: ["admin", "master"],
+        roles: ["admin", "senior", "master"],
         children: [
           {
             id: "agenda_informa",
             label: "AgendIlha Informa",
             path: ROUTES.ADMIN_AGENDA_INFORMA,
             icon: Megaphone,
-            roles: ["admin", "master"],
+            roles: ["admin", "senior", "master"],
             exact: true
           },
           {
@@ -219,14 +219,14 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Carrossel WhatsApp",
             path: ROUTES.CARROSSEL,
             icon: Images,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "whatsapp_templates",
             label: "Templates WhatsApp",
             path: ROUTES.ADMIN_WHATSAPP_TEMPLATES,
             icon: MessageSquare,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           }
         ]
       },
@@ -235,14 +235,14 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Moderação",
         path: ROUTES.ADMIN_EVENTS,
         icon: ShieldCheck,
-        roles: ["admin", "master"],
+        roles: ["admin", "senior", "master"],
         children: [
           {
             id: "manage_events",
             label: "Gerenciar Eventos",
             path: ROUTES.ADMIN_EVENTS,
             icon: ShieldCheck,
-            roles: ["admin", "master"],
+            roles: ["admin", "senior", "master"],
             exact: true
           },
           {
@@ -250,14 +250,14 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Eventos Publicados",
             path: ROUTES.ADMIN_PUBLISHED_EVENTS,
             icon: CalendarDays,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "flyer_moderator",
             label: "Moderador de Flyers",
             path: ROUTES.ADMIN_MEDIA,
             icon: Shield,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           }
         ]
       },

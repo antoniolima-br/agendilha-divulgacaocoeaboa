@@ -38,7 +38,7 @@ export default function AdminWhatsAppTemplates() {
   const [bodies, setBodies] = useState<Record<Kind, string>>({ approved: "", rejected: "" });
   const [original, setOriginal] = useState<Record<Kind, string>>({ approved: "", rejected: "" });
 
-  const canManage = hasPermission("events.read"); // admin or master
+  const canManage = hasPermission("events.approve");
 
   useEffect(() => {
     if (!canManage) return;

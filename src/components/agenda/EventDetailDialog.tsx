@@ -26,14 +26,22 @@ interface EventDetailDialogProps {
   trackShare: (id: string) => void;
 }
 
-function downloadImage(url: string, filename: string, label: string) {
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  toast.success(`Iniciando download (${label})...`);
+async function downloadImage(url: string, filename: string, label: string) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const objectUrl = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(objectUrl);
+    toast.success(`Download iniciado (${label}).`);
+  } catch {
+    toast.error(`Não deu pra baixar o flyer de ${label}.`, { description: "Abra a imagem e salve pelo navegador." });
+  }
 }
 
 export function EventDetailDialog({
@@ -210,8 +218,8 @@ export function EventDetailDialog({
                         className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
                         onClick={(e) => {
                           e.stopPropagation();
-                          downloadImage(
-                            event.image_url!,
+                          void downloadImage(
+                            event.image_url,
                             `flyer-feed-${event.event_title}.jpg`,
                             "Feed",
                           );
@@ -226,8 +234,8 @@ export function EventDetailDialog({
                         className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
                         onClick={(e) => {
                           e.stopPropagation();
-                          downloadImage(
-                            (event as any).image_url_story!,
+                          void downloadImage(
+                            (event as any).image_url_story,
                             `flyer-story-${event.event_title}.jpg`,
                             "Story",
                           );
@@ -242,8 +250,8 @@ export function EventDetailDialog({
                         className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
                         onClick={(e) => {
                           e.stopPropagation();
-                          downloadImage(
-                            (event as any).image_url_whatsapp!,
+                          void downloadImage(
+                            (event as any).image_url_whatsapp,
                             `flyer-whatsapp-${event.event_title}.jpg`,
                             "WhatsApp",
                           );

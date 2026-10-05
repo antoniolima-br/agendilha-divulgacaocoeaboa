@@ -135,14 +135,16 @@ function DeferredAppFeatures() {
 export function ProtectedRoute({ 
   children, 
   requiredPermission,
-  masterOnly
+  masterOnly,
+  staffOnly,
 }: { 
   children: React.ReactNode; 
   requiredPermission?: PermissionName;
   masterOnly?: boolean;
+  staffOnly?: boolean;
 }) {
   const { user, loading: authLoading, mustChangePassword } = useAuth();
-  const { hasPermission, isMaster, loading: permsLoading } = useAppPermissions();
+  const { hasPermission, isMaster, isAdmin, isSenior, isFinanceiro, loading: permsLoading } = useAppPermissions();
   const location = useLocation();
   
   if (authLoading || permsLoading) {
@@ -162,6 +164,10 @@ export function ProtectedRoute({
   }
 
   if (masterOnly && !isMaster) {
+    return <Navigate to={ROUTES.AGENDA} replace />;
+  }
+
+  if (staffOnly && !(isAdmin || isSenior || isFinanceiro)) {
     return <Navigate to={ROUTES.AGENDA} replace />;
   }
 
@@ -223,7 +229,7 @@ export const AppRoutes = () => (
         </Route>
 
         {/* Admin Pages - Full sidebar integration */}
-        <Route element={<ProtectedRoute requiredPermission="events.read"><AppShell showSidebar={true} maxWidth="xl"><Outlet /></AppShell></ProtectedRoute>}>
+        <Route element={<ProtectedRoute staffOnly><AppShell showSidebar={true} maxWidth="xl"><Outlet /></AppShell></ProtectedRoute>}>
           <Route path={ROUTES.ADMIN_EVENTS} element={<AdminEvents />} />
           <Route path={ROUTES.ADMIN_PUBLISHED_EVENTS} element={<AdminPublishedEvents />} />
           <Route path={ROUTES.ADMIN_USERS} element={<AdminUsers />} />

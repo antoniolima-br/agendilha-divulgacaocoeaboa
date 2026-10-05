@@ -1,6 +1,8 @@
 /** Escapa um valor para CSV RFC 4180 (vírgula, aspas, quebras). */
-function escapeCell(value: unknown): string {
-  const s = value === null || value === undefined ? "" : String(value);
+export function escapeCsvCell(value: unknown): string {
+  const raw = value === null || value === undefined ? "" : String(value);
+  // Planilhas interpretam estes prefixos como fórmula, inclusive após espaços.
+  const s = /^[\t\r ]*[=+\-@]/.test(raw) ? `'${raw}` : raw;
   if (/[",\n\r]/.test(s)) {
     return `"${s.replace(/"/g, '""')}"`;
   }
@@ -14,8 +16,8 @@ export function exportRowsToCsv(
   rows: Array<Array<unknown>>
 ): void {
   const csv = [
-    headers.map(escapeCell).join(","),
-    ...rows.map((r) => r.map(escapeCell).join(",")),
+    headers.map(escapeCsvCell).join(","),
+    ...rows.map((r) => r.map(escapeCsvCell).join(",")),
   ].join("\n");
 
   const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });

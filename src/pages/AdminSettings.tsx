@@ -26,12 +26,12 @@ const digits = (v: string | null | undefined) => (v ?? "").replace(/\D/g, "").re
 type Form = Record<string, string>;
 
 export default function AdminSettings() {
-  const { hasPermission, loading: permsLoading } = useAppPermissions();
+  const { isMaster, loading: permsLoading } = useAppPermissions();
   const { data: settings, isLoading } = useAppSettings();
   const save = useSaveAppSettings();
   const [form, setForm] = useState<Form>({ ...DEFAULT_SETTINGS });
 
-  const canManage = hasPermission("events.read");
+  const canManage = isMaster;
   const { data: users } = useAdminUsers(canManage);
   const atendentes = (users ?? []).filter((u) => (u.is_admin || u.is_master) && digits(u.phone).length >= 10);
 

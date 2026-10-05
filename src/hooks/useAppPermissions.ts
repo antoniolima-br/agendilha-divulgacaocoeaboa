@@ -20,6 +20,16 @@ const ADMIN_PERMISSIONS: PermissionName[] = [
   "audit_logs.read",
 ];
 
+const SENIOR_PERMISSIONS: PermissionName[] = [
+  "events.create",
+  "events.read",
+  "events.update",
+  "events.approve",
+  "events.cancel",
+  "events.delete",
+  "audit_logs.read",
+];
+
 const collaboratorPermissionMap: Array<[keyof CollaboratorPermissions, PermissionName]> = [
   ["can_submit", "events.create"],
   ["can_approve", "events.approve"],
@@ -69,6 +79,9 @@ export function computePermissions(input: {
 
   if (isAdminRole) {
     ADMIN_PERMISSIONS.forEach((p) => permissions.add(p));
+  }
+  if (roleNames.includes("senior")) {
+    SENIOR_PERMISSIONS.forEach((p) => permissions.add(p));
   }
 
   const collaborator = input.collaborator;

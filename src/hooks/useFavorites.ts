@@ -27,10 +27,7 @@
 
    const toggleFavoriteMutation = useMutation({
      mutationFn: async (eventId: string) => {
-       if (!user) {
-         toast.error("Você precisa estar logado para favoritar eventos.");
-         return;
-       }
+       if (!user) throw new Error("AUTH_REQUIRED");
 
        const isFavorite = favorites.includes(eventId);
 
@@ -51,6 +48,7 @@
        }
      },
      onMutate: async (eventId) => {
+       if (!user) return { previousFavorites: favorites, skipped: true };
        await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(user?.id) });
        const previousFavorites = queryClient.getQueryData<string[]>(qk.favorites.byUser(user?.id));
 
@@ -61,14 +59,19 @@
          return [...old, eventId];
        });
 
-       return { previousFavorites };
+       return { previousFavorites, skipped: false };
      },
-     onError: (_err, _eventId, context) => {
-       if (context?.previousFavorites) {
+     onError: (error, _eventId, context) => {
+       if (context?.previousFavorites !== undefined) {
          queryClient.setQueryData(qk.favorites.byUser(user?.id), context.previousFavorites);
        }
-       // best-effort; UI already reverted state
-       toast.error("Erro ao atualizar favorito.");
+       toast.error(error instanceof Error && error.message === "AUTH_REQUIRED"
+         ? "Você precisa entrar para favoritar eventos."
+         : "Não deu pra atualizar o favorito.");
+     },
+     onSuccess: (result) => {
+       if (!result) return;
+       toast.success(result.action === "removed" ? "Removido dos favoritos" : "Adicionado aos favoritos");
      },
      onSettled: () => {
        queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(user?.id) });
@@ -106,5 +109,6 @@
      isLoading,
      isFavorite,
      toggleFavorite: (eventId: string) => toggleFavoriteMutation.mutate(eventId),
+     isToggling: toggleFavoriteMutation.isPending,
    };
  }

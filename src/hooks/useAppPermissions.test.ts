@@ -23,6 +23,14 @@ describe("computePermissions", () => {
     expect(permissions.has("roles.manage")).toBe(true);
   });
 
+  it("sênior recebe moderação sem gestão de usuários ou papéis", () => {
+    const { permissions } = computePermissions({ roleNames: ["senior"], collaborator: null, profileRole: null });
+    expect(permissions.has("events.approve")).toBe(true);
+    expect(permissions.has("events.delete")).toBe(true);
+    expect(permissions.has("users.update")).toBe(false);
+    expect(permissions.has("roles.manage")).toBe(false);
+  });
+
   it("colaborador ativo só ganha o que foi marcado", () => {
     const { roles, permissions } = computePermissions({
       roleNames: [],

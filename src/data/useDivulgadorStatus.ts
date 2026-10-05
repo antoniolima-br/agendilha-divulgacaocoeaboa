@@ -33,19 +33,20 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
     enabled: !!userId,
     staleTime: 60_000,
     queryFn: async () => {
+      if (!userId) return { isAdmin: false, isDivulgador: false, isCollaborator: false, profile: null, request: null };
       const [profileRes, rolesRes, collabRes, requestRes] = await Promise.all([
-        supabase.from("profiles").select("user_type, responsible_name, phone, whatsapp_phone").eq("user_id", userId!).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", userId!),
+        supabase.from("profiles").select("user_type, responsible_name, phone, whatsapp_phone").eq("user_id", userId).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", userId),
         supabase
           .from("collaborators")
           .select("can_submit, is_active")
-          .eq("user_id", userId!)
+          .eq("user_id", userId)
           .eq("is_active", true)
           .maybeSingle(),
         supabase
           .from("divulgador_requests")
           .select("id, user_id, nome, whatsapp, tipo_divulgador, motivo, status, admin_notes, reviewed_at, created_at")
-          .eq("user_id", userId!)
+          .eq("user_id", userId)
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
@@ -53,6 +54,8 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
 
       if (profileRes.error) throw profileRes.error;
       if (rolesRes.error) throw rolesRes.error;
+      if (collabRes.error) throw collabRes.error;
+      if (requestRes.error) throw requestRes.error;
 
       const userType = ((profileRes.data as { user_type?: string | null } | null)?.user_type ?? "").toLowerCase();
       const isAdmin = !!rolesRes.data?.some((r: { role: string }) => r.role === "admin" || r.role === "master");

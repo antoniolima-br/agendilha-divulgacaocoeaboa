@@ -30,18 +30,19 @@ export function useUserDetails(userId: string | null | undefined, enabled = true
     queryKey: qk.userDetails.byId(userId),
     enabled: enabled && !!userId,
     queryFn: async (): Promise<UserDetails> => {
+      if (!userId) return { events: [], roles: [], collab: null };
       const [events, roles, collab] = await Promise.all([
         supabase
           .from("submissions")
           .select("id, event_title, date, status")
-          .eq("user_id", userId!)
+          .eq("user_id", userId)
           .order("date", { ascending: false })
           .limit(30),
-        supabase.from("user_roles").select("role").eq("user_id", userId!),
+        supabase.from("user_roles").select("role").eq("user_id", userId),
         supabase
           .from("collaborators")
           .select("can_submit, can_approve, can_edit, can_delete, is_active, role_title")
-          .eq("user_id", userId!)
+          .eq("user_id", userId)
           .maybeSingle(),
       ]);
       if (events.error) throw events.error;
