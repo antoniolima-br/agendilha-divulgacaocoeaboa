@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 
-export type Role = "public_guest" | "public_registered" | "promoter" | "admin" | "master";
+export type Role = "public_guest" | "public_registered" | "promoter" | "admin" | "senior" | "financeiro" | "master";
 
 export interface SidebarItem {
   id: string;
@@ -50,14 +50,14 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "explorar",
     title: "Explorar",
-    roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+    roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
     items: [
       { 
         id: "events", 
         label: "Eventos", 
         path: ROUTES.EVENTOS, 
         icon: CalendarDays, 
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
         exact: true
       },
       { 
@@ -72,14 +72,14 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Eventos em destaque",
         path: ROUTES.EVENTOS_DESTAQUE,
         icon: Sparkles,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"]
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
       },
       {
         id: "anuncios_destaques",
         label: "Anúncios e Destaques",
         path: ROUTES.ANUNCIOS,
         icon: ShoppingBag,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
         children: [
           {
             id: "ver_anuncios",
@@ -197,7 +197,7 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "operacao",
     title: "Operação",
-    roles: ["admin", "master"],
+    roles: ["admin", "senior", "financeiro", "master"],
     items: [
       {
         id: "relatorio_diario",

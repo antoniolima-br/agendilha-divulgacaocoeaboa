@@ -41,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const sequence = ++authCheckSequence.current;
       if (event === "TOKEN_REFRESHED") {
         // Session token refreshed
       }
@@ -55,7 +56,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        const sequence = ++authCheckSequence.current;
         setTimeout(() => void refreshAccountState(session.user.id, sequence), 0);
       } else {
         setIsAdmin(false);
@@ -129,7 +129,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function refreshMustChangePassword() {
-    if (user?.id) await checkMustChangePassword(user.id);
+    if (user?.id) {
+      const sequence = ++authCheckSequence.current;
+      await refreshAccountState(user.id, sequence);
+    }
   }
 
   /**

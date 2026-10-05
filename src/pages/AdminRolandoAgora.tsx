@@ -26,7 +26,7 @@ export function isLiveByTime(start?: string | null, end?: string | null) {
 }
 
 export default function AdminRolandoAgora() {
-  const { isAdmin, loading } = useAppPermissions() as any;
+  const { canApprove, loading } = useAppPermissions();
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
   const today = saoPauloTodayISO();
 
@@ -61,7 +61,7 @@ export default function AdminRolandoAgora() {
   };
 
   if (loading) return <LoadingState />;
-  if (!isAdmin) return <Navigate to="/" replace />;
+  if (!canApprove) return <Navigate to="/" replace />;
 
   return (
     <PageContainer>

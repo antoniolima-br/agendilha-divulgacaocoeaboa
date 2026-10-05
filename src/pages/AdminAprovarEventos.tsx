@@ -15,7 +15,7 @@ import { formatEventDateTimeBR, saoPauloTodayISO, PUBLIC_EVENT_STATUSES } from "
 const FIELDS = "id, event_title, date, start_time, end_time, location, status, image_url, category";
 
 export default function AdminAprovarEventos() {
-  const { isAdmin, loading } = useAppPermissions() as any;
+  const { canApprove, loading } = useAppPermissions();
   const qc = useQueryClient();
   const today = saoPauloTodayISO();
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
@@ -69,7 +69,7 @@ export default function AdminAprovarEventos() {
   };
 
   if (loading) return <LoadingState />;
-  if (!isAdmin) return <Navigate to="/" replace />;
+  if (!canApprove) return <Navigate to="/" replace />;
 
   const row = (e: any, actions: React.ReactNode) => (
     <Card key={e.id}>
