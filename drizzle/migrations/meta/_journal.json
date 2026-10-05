@@ -57,6 +57,13 @@
       "when": 1791048325402,
       "tag": "0007_restore_public_event_detail_access",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791224471377,
+      "tag": "0008_harden_submission_moderation_and_public_rpc_access",
+      "breakpoints": true
     }
   ]
 }
