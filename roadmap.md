@@ -3,11 +3,11 @@
 
 - [x] Executar otimização profunda de performance, navegação, consultas, assets e experiência visual sem alterar funcionalidades.
 
-- [ ] Concluir auditoria técnica integral e corrigir falhas confirmadas em segurança, acesso, dados, interface, desempenho e testes.
+- [x] Concluir auditoria técnica integral e corrigir falhas confirmadas em segurança, acesso, dados, interface, desempenho e testes.
   - [x] Auditar frontend, backend, banco, dependências, desempenho e fluxos de acesso.
-  - [ ] Corrigir falhas críticas de permissões e funções privilegiadas no banco.
-  - [ ] Corrigir regressões confirmadas de favoritos, compartilhamento, downloads, sessão e layout móvel.
-  - [ ] Atualizar dependências vulneráveis compatíveis e executar validação final completa.
+  - [x] Corrigir falhas críticas de permissões e funções privilegiadas no banco.
+  - [x] Corrigir regressões confirmadas de favoritos, compartilhamento, downloads, sessão e layout móvel.
+  - [x] Atualizar dependências vulneráveis compatíveis e executar validação final completa.
 - [x] Adicionar escolha entre anúncio gratuito e destaque, com flyer e contratação vinculados ao evento.
 - [x] Separar locais de rolê de negócios gerais nos cadastros e listagens dos painéis.
 - [x] Permitir tornar um evento pago em Destaque no painel e priorizá-lo imediatamente no banner principal da Home com flyer.
