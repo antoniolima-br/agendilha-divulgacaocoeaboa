@@ -64,6 +64,13 @@
       "when": 1791224471377,
       "tag": "0008_harden_submission_moderation_and_public_rpc_access",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791224754518,
+      "tag": "0009_tighten_legacy_access_policies",
+      "breakpoints": true
     }
   ]
 }
