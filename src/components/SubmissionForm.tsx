@@ -708,6 +708,11 @@ export default function SubmissionForm() {
       logRuntimeError("EventForm.submit", error, { step: currentStep, detail: { promotionChoice: values.promotionChoice, extraEvents: values.additionalEvents.length } });
       const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
       const dbError = error as { code?: string; details?: string; hint?: string } | null;
+      console.error("EVENT_SUBMISSION_ERROR", {
+        error,
+        currentStep,
+        formData: { ...values, basicPhone: values.basicPhone ? "[redacted]" : "", duvidasWhatsapp: values.duvidasWhatsapp ? "[redacted]" : "", email: values.email ? "[redacted]" : "" },
+      });
       console.error("[EventForm.submit] Falha no envio do evento", {
         message: detail,
         code: dbError?.code,
@@ -941,7 +946,7 @@ export default function SubmissionForm() {
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
+              <Button key="publish" type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {form.watch("additionalEvents").length > 0 ? "Publicar eventos" : "Publicar evento"}
               </Button>
