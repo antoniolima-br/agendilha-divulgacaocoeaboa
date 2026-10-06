@@ -2672,16 +2672,16 @@ export type Database = {
           address_street?: string | null
           address_zip?: string | null
           age_rating?: string | null
-          ai_moderation_labels?: string[] | null
-          ai_moderation_score?: number | null
+          ai_moderation_labels?: never
+          ai_moderation_score?: never
           approved_at?: string | null
-          approved_by?: string | null
+          approved_by?: never
           artist_id?: string | null
           atrativo_name?: string | null
           atrativo_style?: string | null
           atrativo_type?: string | null
           category?: string | null
-          commission?: string | null
+          commission?: never
           company_name?: string | null
           concept_description?: string | null
           created_at?: string | null
@@ -2712,13 +2712,13 @@ export type Database = {
           location_type?: string | null
           long_copy?: string | null
           longitude?: number | null
-          maintenance_cost?: string | null
+          maintenance_cost?: never
           moderation_status?: string | null
           predicted_duration?: string | null
           promotion_rules?: string | null
           promotion_type?: string | null
           published_at?: string | null
-          rejection_reason?: string | null
+          rejection_reason?: never
           report_count?: number | null
           responsavel_duvidas_whatsapp?: string | null
           sale_price?: string | null
@@ -2743,16 +2743,16 @@ export type Database = {
           address_street?: string | null
           address_zip?: string | null
           age_rating?: string | null
-          ai_moderation_labels?: string[] | null
-          ai_moderation_score?: number | null
+          ai_moderation_labels?: never
+          ai_moderation_score?: never
           approved_at?: string | null
-          approved_by?: string | null
+          approved_by?: never
           artist_id?: string | null
           atrativo_name?: string | null
           atrativo_style?: string | null
           atrativo_type?: string | null
           category?: string | null
-          commission?: string | null
+          commission?: never
           company_name?: string | null
           concept_description?: string | null
           created_at?: string | null
@@ -2783,13 +2783,13 @@ export type Database = {
           location_type?: string | null
           long_copy?: string | null
           longitude?: number | null
-          maintenance_cost?: string | null
+          maintenance_cost?: never
           moderation_status?: string | null
           predicted_duration?: string | null
           promotion_rules?: string | null
           promotion_type?: string | null
           published_at?: string | null
-          rejection_reason?: string | null
+          rejection_reason?: never
           report_count?: number | null
           responsavel_duvidas_whatsapp?: string | null
           sale_price?: string | null
