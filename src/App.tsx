@@ -184,7 +184,7 @@ export const AppRoutes = () => (
       <Suspense fallback={<PageFallback />}>
         <Routes>
         {/* Públicas */}
-        <Route path={ROUTES.LANDING} element={<Landing />} />
+        <Route path={ROUTES.LANDING} element={<SectionErrorBoundary context="Home" title="Não deu pra carregar a página inicial agora." description="Tenta de novo em instantes."><Landing /></SectionErrorBoundary>} />
         <Route path={ROUTES.EXPLORAR} element={<Explorar />} />
          <Route path={ROUTES.CURADORIA_HOJE} element={<CuradoriaHoje />} />
         <Route path={ROUTES.EVENTO_IMPRIMIR} element={<PrintEvent />} />
@@ -206,7 +206,7 @@ export const AppRoutes = () => (
           <Route path={ROUTES.ARTISTAS} element={<ArtistFeed />} />
           <Route path={ROUTES.AUTH} element={<Auth />} />
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
-          <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SubmitEvent /></PromotorRoute>} />
+          <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SectionErrorBoundary context="EventForm" title="O formulário do evento deu um tropeço." description="Seu rascunho fica salvo. Toca em tentar de novo."><SubmitEvent /></SectionErrorBoundary></PromotorRoute>} />
           <Route path={ROUTES.EVENTOS} element={<EventosPublicos />} />
           <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />

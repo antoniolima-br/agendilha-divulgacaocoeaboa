@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logRuntimeError } from "@/lib/runtimeDiagnostics";
 
 let installed = false;
 
@@ -7,16 +7,12 @@ export function installGlobalErrorHandlers() {
   installed = true;
 
   window.addEventListener("unhandledrejection", (event) => {
-    logger.error("Unhandled promise rejection:", event.reason);
+    logRuntimeError("unhandled-promise", event.reason);
   });
 
   window.addEventListener("error", (event) => {
-    logger.error("Global error:", {
-      message: event.message,
-      source: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-      error: event.error,
+    logRuntimeError("global", event.error ?? event.message, {
+      detail: { source: event.filename, lineno: event.lineno, colno: event.colno },
     });
   });
 }
