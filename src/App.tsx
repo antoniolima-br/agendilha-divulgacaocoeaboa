@@ -30,7 +30,6 @@ const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AdminPublishedEvents = lazy(() => import("./pages/AdminPublishedEvents"));
 const AgendaCultural = lazy(() => import("./pages/AgendaCultural"));
-const EventosPublicos = lazy(() => import("./pages/EventosPublicos"));
 const EventosEmDestaque = lazy(() => import("./pages/EventosEmDestaque"));
 const Explorar = lazy(() => import("./pages/Explorar"));
 const CuradoriaHoje = lazy(() => import("./pages/CuradoriaHoje"));
@@ -207,7 +206,6 @@ export const AppRoutes = () => (
           <Route path={ROUTES.AUTH} element={<Auth />} />
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
           <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SectionErrorBoundary context="EventForm" title="O formulário do evento deu um tropeço." description="Seu rascunho fica salvo. Toca em tentar de novo."><SubmitEvent /></SectionErrorBoundary></PromotorRoute>} />
-          <Route path={ROUTES.EVENTOS} element={<SectionErrorBoundary context="PublicEvents" title="A agenda não carregou agora." description="Tenta de novo em instantes."><EventosPublicos /></SectionErrorBoundary>} />
           <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
