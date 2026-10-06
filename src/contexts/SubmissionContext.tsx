@@ -125,7 +125,9 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
     if (error || !inserted) {
       logger.error("[addSubmission] insert failed", error);
       toast.error("Não deu pra salvar seu evento", {
-        description: error?.message || "Tenta de novo em alguns minutos.",
+        description: error?.message?.includes("DUPLICATE_EVENT_START")
+          ? "Já existe um evento seu nesse local, data e horário. Escolhe outro horário de início."
+          : error?.message || "Tenta de novo em alguns minutos.",
       });
       return null;
     }
