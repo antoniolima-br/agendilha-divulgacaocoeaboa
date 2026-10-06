@@ -124,10 +124,19 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
 
     if (error || !inserted) {
       logger.error("[addSubmission] insert failed", error);
+      console.error("[addSubmission] Falha ao salvar evento no banco", {
+        message: error?.message ?? "Nenhuma linha retornada",
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint,
+        isRlsBlock: error?.code === "42501",
+      });
       toast.error("Não deu pra salvar seu evento", {
         description: error?.message?.includes("DUPLICATE_EVENT_START")
           ? "Já existe um evento seu nesse local, data e horário. Escolhe outro horário de início."
-          : error?.message || "Tenta de novo em alguns minutos.",
+          : error?.code === "42501"
+            ? "Sua conta ainda não tem permissão pra divulgar eventos. Fala com a equipe pelo WhatsApp."
+            : error?.message || "Tenta de novo em alguns minutos.",
       });
       return null;
     }

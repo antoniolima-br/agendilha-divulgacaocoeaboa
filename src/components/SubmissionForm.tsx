@@ -690,6 +690,16 @@ export default function SubmissionForm() {
       submissionTimer.finish({ outcome: "failure", error });
       logRuntimeError("EventForm.submit", error, { step: currentStep, detail: { promotionChoice: values.promotionChoice, extraEvents: values.additionalEvents.length } });
       const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
+      const dbError = error as { code?: string; details?: string; hint?: string } | null;
+      console.error("[EventForm.submit] Falha no envio do evento", {
+        message: detail,
+        code: dbError?.code,
+        details: dbError?.details,
+        hint: dbError?.hint,
+        step: currentStep,
+        extraEvents: values.additionalEvents.length,
+        error,
+      });
       toast.error("Não deu pra enviar o evento", {
         description: detail?.includes("DUPLICATE_EVENT_START")
           ? "Já existe um evento seu nesse local, data e horário. Escolhe outro horário de início."
