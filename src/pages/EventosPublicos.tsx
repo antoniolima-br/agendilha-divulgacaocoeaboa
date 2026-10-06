@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock, Edit, MapPin, MessageCircle, Search } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { qk } from "@/data/queryKeys";
@@ -10,22 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingState } from "@/components/ui/LoadingState";
-import { addDaysToISO, formatEventDateTimeBR, isCurrentOrFutureEventDate, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
+import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { QuickEditEventDialog } from "@/components/events-admin/QuickEditEventDialog";
-
-type PublicEvent = {
-  id: string;
-  slug: string | null;
-  event_title: string | null;
-  date: string | null;
-  start_time: string | null;
-  end_time: string | null;
-  location: string | null;
-  address_neighborhood: string | null;
-  duvidas_phone: string | null;
-  is_highlight: boolean;
-};
+import { fetchPublicEventsList, type PublicEvent } from "@/data/publicEventsList";
 
 function eventContactUrl(event: PublicEvent) {
   if (!event.duvidas_phone) return null;
@@ -42,24 +29,12 @@ export default function EventosPublicos() {
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<PublicEvent | null>(null);
   const canEditEvents = Boolean(user && hasPermission("events.update"));
-  const { data: events = [], isLoading, isError } = useQuery({
+  const { data: events = [], isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: qk.agenda.publicEvents(),
-    queryFn: async (): Promise<PublicEvent[]> => {
-      const { data, error } = await supabase
-        .from("public_submissions")
-        .select("id, slug, event_title, date, start_time, end_time, location, address_neighborhood, duvidas_phone, is_highlight")
-        .in("status", [...PUBLIC_EVENT_STATUSES])
-        .or("moderation_status.is.null,moderation_status.neq.blocked")
-        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
-        .order("date", { ascending: true })
-        .order("start_time", { ascending: true })
-        .limit(500);
-      if (error) throw error;
-      return (data ?? []).filter(
-        (event): event is PublicEvent => Boolean(event.id) && isCurrentOrFutureEventDate(event.date),
-      );
-    },
+    queryFn: fetchPublicEventsList,
     staleTime: 60_000,
+    retry: 1,
+    throwOnError: false,
   });
 
   const filtered = useMemo(() => {
@@ -101,7 +76,7 @@ export default function EventosPublicos() {
           title="A agenda não carregou agora"
           description="Tente novamente em instantes. Seus eventos continuam seguros."
           actionLabel="Tentar novamente"
-          onAction={() => window.location.reload()}
+          onAction={() => { if (!isFetching) void refetch(); }}
         />
       ) : filtered.length === 0 ? (
         <EmptyState
