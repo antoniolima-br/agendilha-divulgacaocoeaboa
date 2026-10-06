@@ -1,7 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "./ui/button";
 import { AlertCircle, RotateCcw } from "lucide-react";
-import { logger } from "@/lib/logger";
+import { logRuntimeError } from "@/lib/runtimeDiagnostics";
 
 interface Props {
   children: ReactNode;
@@ -33,11 +33,7 @@ export class AppErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error(
-      this.props.context ? `[${this.props.context}] Uncaught error:` : "Uncaught error:",
-      error,
-      errorInfo,
-    );
+    logRuntimeError(this.props.context ?? "App", error, { componentStack: errorInfo.componentStack });
   }
 
   private handleReset = () => {

@@ -1,3 +1,4 @@
+import { logRuntimeError } from "@/lib/runtimeDiagnostics";
 import { toE164 } from "@/lib/intlPhone";
 import { FinalReviewStep, missingFinalFields } from "./submission-form/steps/FinalReviewStep";
 import { useState, useEffect, useRef } from "react";
@@ -687,7 +688,7 @@ export default function SubmissionForm() {
       );
     } catch (error) {
       submissionTimer.finish({ outcome: "failure", error });
-      logger.error("[SubmissionForm.onSubmit] envio falhou", error);
+      logRuntimeError("EventForm.submit", error, { step: currentStep, detail: { promotionChoice: values.promotionChoice, extraEvents: values.additionalEvents.length } });
       const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
       toast.error("Não deu pra enviar o evento", {
         description: detail?.includes("DUPLICATE_EVENT_START")
