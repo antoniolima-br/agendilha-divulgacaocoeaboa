@@ -95,6 +95,16 @@ export default function SubmissionForm() {
     startTime: watchedStartTime,
     endTime: watchedEndTime,
   });
+  const attractionScheduleRef = useRef(attractionSchedule);
+  attractionScheduleRef.current = attractionSchedule;
+  /** Espera a conferência da agenda terminar (até ~8s) em vez de bloquear o avanço. */
+  const waitForAttractionSchedule = async () => {
+    const started = Date.now();
+    while (attractionScheduleRef.current.loading && Date.now() - started < 8000) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+    return attractionScheduleRef.current;
+  };
 
   // Load profile data into form when ready + limpa rascunho stale de contato.
   useEffect(() => {
@@ -267,11 +277,12 @@ export default function SubmissionForm() {
       throw error;
     }
     if (isValid && currentStep === 1) {
-      if (attractionSchedule.loading) {
-        toast.info("Só um instante", { description: "Estamos conferindo a agenda do atrativo." });
+      const schedule = await waitForAttractionSchedule();
+      if (schedule.loading) {
+        toast.info("Só um instante", { description: "Ainda estamos conferindo a agenda do atrativo. Toca em continuar de novo." });
         return;
       }
-      if (attractionSchedule.hasConflict) {
+      if (schedule.hasConflict) {
         toast.error("Horário indisponível para este atrativo", {
           description: "Ajuste os horários para manter pelo menos 2 horas entre as apresentações.",
         });
@@ -445,7 +456,7 @@ export default function SubmissionForm() {
           "fallback-flyer",
           () => uploadFallbackFlyer({
             title: clean(values.eventTitle) || clean(values.atrativoName) || "Evento",
-            date: clean(values.date),
+            date: toEventDateOnly(values.date),
             startTime: clean(values.startTime),
             location: clean(values.locationName),
             category: resolveAtrativoCategory(values) || clean(values.category),
@@ -463,7 +474,7 @@ export default function SubmissionForm() {
         email: clean(values.email),
         phone: toE164(values.basicPhone),
         event_title: eventTitle,
-        date: clean(values.date),
+        date: toEventDateOnly(values.date),
         start_time: clean(values.startTime),
         end_time: clean(values.endTime),
         location: clean(values.locationName),
@@ -539,7 +550,7 @@ export default function SubmissionForm() {
         const event = values.additionalEvents[index];
         const additionalImageUrl = IS_FREE_SUBMISSION ? null : await uploadFallbackFlyer({
           title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
-          date: clean(event.date),
+          date: toEventDateOnly(event.date),
           startTime: clean(event.startTime),
           location: clean(values.locationName),
           category: clean(event.category) || payload.category,
@@ -547,7 +558,7 @@ export default function SubmissionForm() {
         const additionalPayload = {
           ...payload,
           event_title: clean(event.eventTitle),
-          date: clean(event.date),
+          date: toEventDateOnly(event.date),
           start_time: clean(event.startTime),
           end_time: clean(event.endTime),
           atrativo_name: clean(event.atrativoName),
@@ -940,4 +951,14 @@ function resolveAtrativoCategory(values: { atrativoCategory?: string; atrativoCa
   const cat = (values.atrativoCategory ?? "").trim();
   if (cat === "Outros") return (values.atrativoCategoryOther ?? "").trim() || "Outros";
   return cat || null;
+}
+
+/** Grava sempre a data do evento como "yyyy-MM-dd" (dia de São Paulo), mesmo vinda de rascunho antigo em ISO. */
+function toEventDateOnly(value?: string | null): string | null {
+  const v = (value ?? "").trim();
+  if (!v) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return v;
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 }
