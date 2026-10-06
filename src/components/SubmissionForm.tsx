@@ -312,6 +312,23 @@ export default function SubmissionForm() {
   };
 
 
+  /** Gera e sobe um flyer automático; retorna a URL pública ou null (nunca bloqueia o envio). */
+  const uploadFallbackFlyer = async (input: Parameters<typeof generateFallbackFlyer>[0]): Promise<string | null> => {
+    try {
+      const dataUrl = await generateFallbackFlyer(input);
+      const blob = await (await fetch(dataUrl)).blob();
+      const filePath = `${user?.id ?? "anon"}/fallback-${crypto.randomUUID()}.jpg`;
+      const { error } = await supabaseClient.storage
+        .from("event-flyers")
+        .upload(filePath, blob, { contentType: "image/jpeg", upsert: false });
+      if (error) return null;
+      return supabaseClient.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+    } catch (e) {
+      logger.warn("[fallback flyer] falhou, seguindo sem imagem", e);
+      return null;
+    }
+  };
+
   const onSubmit = async (values: FormData) => {
     setSubmitting(true);
     const submissionTimer = startFlowMeasure("event-submission", "complete-submission", currentStep);
@@ -414,44 +431,18 @@ export default function SubmissionForm() {
       // benefício exclusivo do Evento em Destaque (pago).
       const IS_FREE_SUBMISSION = values.promotionChoice === "free";
       if (!imageUrl && !IS_FREE_SUBMISSION) {
-        try {
-          const { blob, filePath } = await measureFlowOperation(
-            "event-submission",
-            "fallback-flyer-generation",
-            async () => {
-              const dataUrl = await generateFallbackFlyer({
-                title: clean(values.eventTitle) || clean(values.atrativoName) || "Evento",
-                date: clean(values.date),
-                startTime: clean(values.startTime),
-                location: clean(values.locationName),
-                category: resolveAtrativoCategory(values) || clean(values.category),
-              });
-              const generatedBlob = await (await fetch(dataUrl)).blob();
-              return {
-                blob: generatedBlob,
-                filePath: `${user?.id ?? "anon"}/fallback-${crypto.randomUUID()}.jpg`,
-              };
-            },
-            currentStep,
-          );
-          const { error: fbErr } = await measureFlowOperation(
-            "event-submission",
-            "fallback-flyer-upload",
-            () => supabaseClient.storage
-              .from("event-flyers")
-              .upload(filePath, blob, { contentType: "image/jpeg", upsert: false }),
-            currentStep,
-          );
-          if (!fbErr) {
-            const { data: { publicUrl } } = supabaseClient.storage
-              .from("event-flyers")
-              .getPublicUrl(filePath);
-            imageUrl = publicUrl;
-          }
-        } catch (e) {
-          // Segue sem flyer se algo der errado — não bloqueia o envio.
-          logger.warn("[fallback flyer] falhou, seguindo sem imagem", e);
-        }
+        imageUrl = (await measureFlowOperation(
+          "event-submission",
+          "fallback-flyer",
+          () => uploadFallbackFlyer({
+            title: clean(values.eventTitle) || clean(values.atrativoName) || "Evento",
+            date: clean(values.date),
+            startTime: clean(values.startTime),
+            location: clean(values.locationName),
+            category: resolveAtrativoCategory(values) || clean(values.category),
+          }),
+          currentStep,
+        )) ?? imageUrl;
       }
 
       // Map camelCase form fields → snake_case DB columns
@@ -537,24 +528,13 @@ export default function SubmissionForm() {
       const insertedSubmissionIds = [result.id];
       for (let index = 0; index < values.additionalEvents.length; index += 1) {
         const event = values.additionalEvents[index];
-        let additionalImageUrl: string | null = null;
-        if (!IS_FREE_SUBMISSION) {
-          try {
-            const dataUrl = await generateFallbackFlyer({
-              title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
-              date: clean(event.date),
-              startTime: clean(event.startTime),
-              location: clean(values.locationName),
-              category: clean(event.category) || payload.category,
-            });
-            const blob = await (await fetch(dataUrl)).blob();
-            const filePath = `${user?.id ?? "anon"}/fallback-${crypto.randomUUID()}.jpg`;
-            const { error } = await supabaseClient.storage.from("event-flyers").upload(filePath, blob, { contentType: "image/jpeg", upsert: false });
-            if (!error) additionalImageUrl = supabaseClient.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
-          } catch (error) {
-            logger.warn("[fallback flyer] evento adicional sem imagem", error);
-          }
-        }
+        const additionalImageUrl = IS_FREE_SUBMISSION ? null : await uploadFallbackFlyer({
+          title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
+          date: clean(event.date),
+          startTime: clean(event.startTime),
+          location: clean(values.locationName),
+          category: clean(event.category) || payload.category,
+        });
         const additionalPayload = {
           ...payload,
           event_title: clean(event.eventTitle),

@@ -96,14 +96,16 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
       query = query.eq("user_id", user.id);
     }
 
-    const { data, error } = await query;
-
-    if (error) {
-      toast.error("Não rolou carregar os envios agora. Tenta de novo em instantes.");
-    } else {
-      setSubmissions(data || []);
+    try {
+      const { data, error } = await query;
+      if (error) {
+        toast.error("Não rolou carregar os envios agora. Tenta de novo em instantes.");
+      } else {
+        setSubmissions(data || []);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [user]);
 
   const addSubmission = useCallback(async (data: Omit<SubmissionEntry, "id" | "created_at" | "user_id" | "deleted_at" | "status" | "rejection_reason"> & { status?: string }) => {
