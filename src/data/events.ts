@@ -57,7 +57,7 @@ export function useEvents(options: {
         `)
         .in("status", [...PUBLIC_EVENT_STATUSES])
         .or("moderation_status.is.null,moderation_status.neq.blocked")
-        .gte("date", addDaysToISO(saoPauloTodayISO(), -1))
+        .eq("is_archived", false)
         .order("date", { ascending: true })
         .limit(1000);
       

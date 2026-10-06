@@ -43,7 +43,7 @@ export default function EventosEmDestaque() {
         .select("id, slug, event_title, atrativo_name, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, address_state, latitude, longitude, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until")
         .in("status", [...PUBLIC_EVENT_STATUSES])
         .eq("is_highlight", true)
-        .gte("date", saoPauloTodayISO())
+        .eq("is_archived", false)
         .order("date", { ascending: true })
         .order("start_time", { ascending: true });
       if (error) throw error;
