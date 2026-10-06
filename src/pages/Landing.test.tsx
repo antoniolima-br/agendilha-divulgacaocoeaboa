@@ -88,4 +88,18 @@ describe("Landing sem dados", () => {
     });
     expect(screen.getByText("Ainda não temos sugestões personalizadas")).toBeInTheDocument();
   });
+
+  it("mostra estado vazio quando a consulta devolve null", async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <Landing />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.getByText("Nenhuma outra programação disponível agora. Confira novamente em breve.")).toBeInTheDocument();
+    });
+  });
 });

@@ -53,7 +53,7 @@ export function useAgendaFilters(params: {
 
 
   const upcomingEvents = useMemo(() => {
-    return events.filter((event) => isCurrentOrFutureEventDate(event.date));
+    return (Array.isArray(events) ? events : []).filter((event) => Boolean(event) && isCurrentOrFutureEventDate(event.date));
   }, [events]);
 
   const filteredEvents = useMemo(() => {
