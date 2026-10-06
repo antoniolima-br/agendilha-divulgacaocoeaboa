@@ -94,7 +94,7 @@ function CuradoriaHojeInner() {
         .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, description, image_url, age_rating, is_suitable_for_minors, slug, is_highlight, highlight_active")
         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .gte("date", addDaysToISO(today, -1))
+        .eq("is_archived", false)
         .order("date", { ascending: true })
         .order("start_time", { ascending: true });
 

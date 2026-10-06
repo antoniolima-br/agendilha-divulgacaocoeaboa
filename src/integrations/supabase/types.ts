@@ -2620,6 +2620,7 @@ export type Database = {
           duvidas_phone: string | null
           duvidas_source: string | null
           end_time: string | null
+          event_day: string | null
           event_title: string | null
           fotos: string[] | null
           highlight_active: boolean | null
@@ -2629,6 +2630,7 @@ export type Database = {
           image_url: string | null
           image_url_story: string | null
           image_url_whatsapp: string | null
+          is_archived: boolean | null
           is_free: boolean | null
           is_highlight: boolean | null
           is_suitable_for_minors: boolean | null
@@ -2689,6 +2691,7 @@ export type Database = {
           duvidas_phone?: never
           duvidas_source?: string | null
           end_time?: string | null
+          event_day?: never
           event_title?: string | null
           fotos?: string[] | null
           highlight_active?: never
@@ -2698,6 +2701,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_archived?: never
           is_free?: boolean | null
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
@@ -2758,6 +2762,7 @@ export type Database = {
           duvidas_phone?: never
           duvidas_source?: string | null
           end_time?: string | null
+          event_day?: never
           event_title?: string | null
           fotos?: string[] | null
           highlight_active?: never
@@ -2767,6 +2772,7 @@ export type Database = {
           image_url?: string | null
           image_url_story?: string | null
           image_url_whatsapp?: string | null
+          is_archived?: never
           is_free?: boolean | null
           is_highlight?: boolean | null
           is_suitable_for_minors?: boolean | null
@@ -2860,6 +2866,7 @@ export type Database = {
           session_token: string
         }[]
       }
+      event_day_sp: { Args: { p_date: string }; Returns: string }
       generate_slug: { Args: { title: string }; Returns: string }
       get_admin_dashboard_stats: {
         Args: {

@@ -29,6 +29,7 @@ export default function Carrossel() {
       const { data, error } = await supabase
         .from("public_submissions")
         .select("*")
+        .eq("is_archived", false)
         .eq("status", "aprovado")
         .neq("moderation_status", "blocked")
         .order("date", { ascending: true });

@@ -113,6 +113,7 @@ function ExplorarInner() {
         .from("public_submissions")
         .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug, is_highlight, highlight_active")
         .eq("status", "aprovado")
+        .eq("is_archived", false)
         .order("date", { ascending: true });
       if (error) throw error;
       return data || [];
