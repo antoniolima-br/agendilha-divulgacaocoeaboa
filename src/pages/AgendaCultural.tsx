@@ -244,7 +244,7 @@ function AgendaCulturalInner() {
                       </h2>
                     </div>
                     <div className="grid grid-cols-1 gap-3">
-                      {filters.grouped[dayKey].items.map((ev) => (
+                      {(filters.grouped[dayKey]?.items ?? []).map((ev) => (
                         <DayEventCard
                           key={ev.id}
                           event={ev}

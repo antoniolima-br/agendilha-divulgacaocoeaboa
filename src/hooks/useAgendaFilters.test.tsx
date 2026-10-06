@@ -83,4 +83,23 @@ describe("useAgendaFilters", () => {
     expect(result.current.freeEvents.map((item) => item.id)).toEqual(["sem-flyer"]);
     expect(Object.values(result.current.grouped).flatMap((group) => group.items.map((item) => item.id))).toEqual([]);
   });
+
+  it("não trava quando a lista de eventos ou itens vêm nulos", () => {
+    const { result } = renderHook(() => useAgendaFilters({
+      events: null as unknown as AgendaEvent[],
+      profile: null,
+      isFavorite: () => false,
+      favorites: null,
+    }));
+    expect(result.current.upcomingEvents).toEqual([]);
+    expect(result.current.filteredEvents).toEqual([]);
+
+    const { result: withNullItems } = renderHook(() => useAgendaFilters({
+      events: [null, event("hoje", "2026-09-22"), undefined] as unknown as AgendaEvent[],
+      profile: null,
+      isFavorite: () => false,
+      favorites: [],
+    }));
+    expect(withNullItems.current.upcomingEvents.map((item) => item.id)).toEqual(["hoje"]);
+  });
 });
