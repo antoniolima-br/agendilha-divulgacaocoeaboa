@@ -87,7 +87,7 @@ describe("SidebarMenu", () => {
     expect(screen.getByText("Usuário")).toBeDefined();
     
     // Explorar items
-    expect(screen.getByText("Eventos")).toBeDefined();
+    expect(screen.queryByText("Eventos")).toBeNull();
     // "Atrativos" é só de Divulgador/Admin — usuário comum não vê
     expect(screen.queryByText("Atrativos")).toBeNull();
     
