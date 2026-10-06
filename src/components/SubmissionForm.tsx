@@ -95,6 +95,16 @@ export default function SubmissionForm() {
     startTime: watchedStartTime,
     endTime: watchedEndTime,
   });
+  const attractionScheduleRef = useRef(attractionSchedule);
+  attractionScheduleRef.current = attractionSchedule;
+  /** Espera a conferência da agenda terminar (até ~8s) em vez de bloquear o avanço. */
+  const waitForAttractionSchedule = async () => {
+    const started = Date.now();
+    while (attractionScheduleRef.current.loading && Date.now() - started < 8000) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+    return attractionScheduleRef.current;
+  };
 
   // Load profile data into form when ready + limpa rascunho stale de contato.
   useEffect(() => {
@@ -267,11 +277,12 @@ export default function SubmissionForm() {
       throw error;
     }
     if (isValid && currentStep === 1) {
-      if (attractionSchedule.loading) {
-        toast.info("Só um instante", { description: "Estamos conferindo a agenda do atrativo." });
+      const schedule = await waitForAttractionSchedule();
+      if (schedule.loading) {
+        toast.info("Só um instante", { description: "Ainda estamos conferindo a agenda do atrativo. Toca em continuar de novo." });
         return;
       }
-      if (attractionSchedule.hasConflict) {
+      if (schedule.hasConflict) {
         toast.error("Horário indisponível para este atrativo", {
           description: "Ajuste os horários para manter pelo menos 2 horas entre as apresentações.",
         });
