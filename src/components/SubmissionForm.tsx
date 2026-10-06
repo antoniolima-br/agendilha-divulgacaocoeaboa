@@ -330,6 +330,14 @@ export default function SubmissionForm() {
   };
 
   const onSubmit = async (values: FormData) => {
+    const missing = missingFinalFields(values);
+    if (missing.length > 0) {
+      toast.error("Faltam informações obrigatórias", {
+        description: "Confira data, horário de início, atração e o aceite dos termos antes de enviar.",
+      });
+      setCurrentStep(missing.includes("legalAcceptance") && missing.length === 1 ? 2 : 1);
+      return;
+    }
     setSubmitting(true);
     const submissionTimer = startFlowMeasure("event-submission", "complete-submission", currentStep);
     try {
@@ -679,7 +687,13 @@ export default function SubmissionForm() {
       );
     } catch (error) {
       submissionTimer.finish({ outcome: "failure", error });
-      handleError(error, { context: "SubmissionForm.onSubmit", fallback: "Não deu pra enviar o evento. Tenta de novo." });
+      logger.error("[SubmissionForm.onSubmit] envio falhou", error);
+      const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
+      toast.error("Não deu pra enviar o evento", {
+        description: detail?.includes("DUPLICATE_EVENT_START")
+          ? "Já existe um evento seu nesse local, data e horário. Escolhe outro horário de início."
+          : detail || "Algo falhou ao salvar. Confere os dados e tenta de novo em instantes.",
+      });
     } finally {
       setSubmitting(false);
     }
