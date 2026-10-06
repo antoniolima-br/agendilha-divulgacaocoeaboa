@@ -342,6 +342,12 @@ export default function SubmissionForm() {
   };
 
   const onSubmit = async (values: FormData) => {
+    // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
+    if (currentStep < steps.length) {
+      logger.info("[EventForm] submit ignorado fora da revisão", { currentStep });
+      void nextStep();
+      return;
+    }
     const missing = missingFinalFields(values);
     if (missing.length > 0) {
       toast.error("Faltam informações obrigatórias", {
@@ -702,6 +708,11 @@ export default function SubmissionForm() {
       logRuntimeError("EventForm.submit", error, { step: currentStep, detail: { promotionChoice: values.promotionChoice, extraEvents: values.additionalEvents.length } });
       const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
       const dbError = error as { code?: string; details?: string; hint?: string } | null;
+      console.error("EVENT_SUBMISSION_ERROR", {
+        error,
+        currentStep,
+        formData: { ...values, basicPhone: values.basicPhone ? "[redacted]" : "", duvidasWhatsapp: values.duvidasWhatsapp ? "[redacted]" : "", email: values.email ? "[redacted]" : "" },
+      });
       console.error("[EventForm.submit] Falha no envio do evento", {
         message: detail,
         code: dbError?.code,
@@ -929,11 +940,13 @@ export default function SubmissionForm() {
             </Button>
 
             {currentStep < steps.length ? (
-              <Button type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
+              // `key` distinto impede o React de reaproveitar o mesmo botão: sem isso, o clique em
+              // "Continuar" virava "Publicar" no meio do evento e enviava o formulário sem passar pela Revisão.
+              <Button key="next-step" type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
+              <Button key="publish" type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {form.watch("additionalEvents").length > 0 ? "Publicar eventos" : "Publicar evento"}
               </Button>
