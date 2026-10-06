@@ -92,6 +92,13 @@
       "when": 1791293443734,
       "tag": "0012_fix_submission_insert_trigger_privileges",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791293664823,
+      "tag": "0013_restore_public_submissions_view_access",
+      "breakpoints": true
     }
   ]
 }
