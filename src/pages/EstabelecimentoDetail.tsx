@@ -72,7 +72,7 @@ export default function EstabelecimentoDetail() {
         .from("public_submissions")
         .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, slug, age_rating, is_suitable_for_minors")
         .ilike("location", `%${data.nome}%`)
-        .gte("date", addDaysToISO(today, -1))
+        .eq("is_archived", false)
         .order("date", { ascending: true })
         .limit(24);
       if (!cancelled) {

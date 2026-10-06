@@ -135,7 +135,7 @@ export default function Landing() {
          .from("public_submissions")
         .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .gte("date", addDaysToISO(today, -1))
+        .eq("is_archived", false)
         .order('highlight_active', { ascending: false, nullsFirst: false })
         .order('date', { ascending: true })
          .order('start_time', { ascending: true, nullsFirst: false })

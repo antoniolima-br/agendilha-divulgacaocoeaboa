@@ -76,7 +76,7 @@ export default function ArtistProfile() {
         )
         .eq("artist_id", id!)
         .in("status", ["aprovado", "publicado"])
-        .gte("date", addDaysToISO(today, -1))
+        .eq("is_archived", false)
         .order("date", { ascending: true })
         .limit(50);
       if (error) throw error;
