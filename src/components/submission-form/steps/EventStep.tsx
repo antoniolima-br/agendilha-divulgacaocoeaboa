@@ -54,7 +54,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
         control={form.control}
         name="date"
         render={({ field }) => {
-          const selected = field.value ? new Date(field.value) : undefined;
+          const selected = parseEventDateValue(field.value);
           return (
             <FormItem className="flex flex-col">
               <FormLabel className="mb-1.5">Data do evento *</FormLabel>
@@ -81,7 +81,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
                   <Calendar
                     mode="single"
                     selected={selected}
-                    onSelect={(date) => field.onChange(date?.toISOString())}
+                    onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                     initialFocus
                     locale={ptBR}
                   />
@@ -296,4 +296,12 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
       </AlertDialog>
     </div>
   );
+}
+/** Aceita "yyyy-MM-dd" (dia local) e valores antigos em ISO completo vindos de rascunhos. */
+function parseEventDateValue(value?: string | null): Date | undefined {
+  if (!value) return undefined;
+  const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? undefined : d;
 }
