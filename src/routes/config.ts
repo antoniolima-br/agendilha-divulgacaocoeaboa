@@ -5,7 +5,6 @@ export const ROUTES = {
   AUTH: "/auth",
   CONFIGURAR_ARTISTA: "/configurar-artista",
   ENVIAR_EVENTO: "/enviar-evento",
-  EVENTOS: "/eventos",
   EVENTOS_DESTAQUE: "/destaques",
   EXPLORAR: "/explorar",
   CURADORIA_HOJE: "/hoje",
