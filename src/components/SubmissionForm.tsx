@@ -687,6 +687,10 @@ export default function SubmissionForm() {
 
       localStorage.removeItem(DRAFT_KEY);
       submissionTimer.finish({ outcome: "success" });
+      toast.success(
+        insertedSubmissionIds.length > 1 ? `${insertedSubmissionIds.length} eventos enviados!` : "Evento enviado!",
+        { description: "Agora é com a gente: a equipe vai revisar e te avisa." },
+      );
       navigate(
         values.promotionChoice === "highlight"
           ? `/evento-enviado/${result.id}/contratar-destaque`

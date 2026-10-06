@@ -71,6 +71,13 @@
       "when": 1791224754518,
       "tag": "0009_tighten_legacy_access_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791288579498,
+      "tag": "0010_fix_duplicate_start_trigger_unaccent",
+      "breakpoints": true
     }
   ]
 }
