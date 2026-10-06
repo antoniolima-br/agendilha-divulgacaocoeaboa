@@ -342,6 +342,12 @@ export default function SubmissionForm() {
   };
 
   const onSubmit = async (values: FormData) => {
+    // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
+    if (currentStep < steps.length) {
+      logger.info("[EventForm] submit ignorado fora da revisão", { currentStep });
+      void nextStep();
+      return;
+    }
     const missing = missingFinalFields(values);
     if (missing.length > 0) {
       toast.error("Faltam informações obrigatórias", {
@@ -929,7 +935,9 @@ export default function SubmissionForm() {
             </Button>
 
             {currentStep < steps.length ? (
-              <Button type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
+              // `key` distinto impede o React de reaproveitar o mesmo botão: sem isso, o clique em
+              // "Continuar" virava "Publicar" no meio do evento e enviava o formulário sem passar pela Revisão.
+              <Button key="next-step" type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
