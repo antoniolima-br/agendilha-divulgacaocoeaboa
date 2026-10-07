@@ -1,39 +1,31 @@
 // Shared helpers for temporary password flows
 
-const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz";
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz!@#$%";
 
-export function generateTempPassword(length = 10): string {
-  const bytes = new Uint8Array(length);
-  crypto.getRandomValues(bytes);
+export function generateTempPassword(length = 16): string {
+  const size = Math.max(length, 16);
+  const limit = 256 - (256 % ALPHABET.length);
   let out = "";
-  for (let i = 0; i < length; i++) {
-    out += ALPHABET[bytes[i] % ALPHABET.length];
+  while (out.length < size) {
+    const bytes = crypto.getRandomValues(new Uint8Array(size));
+    for (const byte of bytes) {
+      if (byte < limit && out.length < size) out += ALPHABET[byte % ALPHABET.length];
+    }
   }
-  // Ensure complexity: at least 1 digit
-  if (!/\d/.test(out)) {
-    out = out.slice(0, -1) + "7";
-  }
-  return out;
+  return /[A-Z]/.test(out) && /[a-z]/.test(out) && /\d/.test(out) && /[!@#$%]/.test(out)
+    ? out : generateTempPassword(size);
 }
 
 export function normalizePhone(phone: string): string {
-  const digits = (phone ?? "").replace(/\D/g, "");
-  return digits.startsWith("55") ? digits : `55${digits}`;
+  let digits = (phone ?? "").replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (digits.length > 11 && digits.startsWith("55")) digits = digits.slice(2);
+  return `55${digits}`;
 }
 
-/**
- * Strict Brazilian mobile validation.
- * 11 digits (DDD 11–99, mobile prefix 9), with optional country code 55.
- */
 export function isValidBrazilianMobile(phone: string): boolean {
-  let d = (phone ?? "").replace(/\D/g, "");
-  if (d.startsWith("55")) d = d.slice(2);
-  if (d.length !== 11) return false;
-  const ddd = parseInt(d.slice(0, 2), 10);
-  if (isNaN(ddd) || ddd < 11 || ddd > 99) return false;
-  if (d[2] !== "9") return false;
-  if (/^(\d)\1+$/.test(d)) return false;
-  return true;
+  const d = normalizePhone(phone).slice(2);
+  return /^[1-9]\d9\d{8}$/.test(d) && !/^(\d)\1+$/.test(d);
 }
 
 export interface BuildMessageInput {
@@ -47,13 +39,13 @@ export function buildTempPasswordMessage({
   tempPassword,
   recipientName,
   customNote,
-  loginUrl = "https://agendilha.lovable.app/auth",
+  loginUrl = "https://coeaboa.online/auth",
 }: BuildMessageInput): string {
   const name = (recipientName ?? "").trim().split(" ")[0];
   const greeting = name ? `Olá, ${name}! 👋` : "Olá! 👋";
   const extra = customNote?.trim() ? `\n\n📝 ${customNote.trim()}` : "";
   return (
-    `🔐 *AgendIlha — Senha temporária*\n\n` +
+    `🔐 *Coé a Boa? — Senha temporária*\n\n` +
     `${greeting}\n\n` +
     `Sua nova senha de acesso é: *${tempPassword}*\n\n` +
     `👉 Acesse: ${loginUrl}\n` +

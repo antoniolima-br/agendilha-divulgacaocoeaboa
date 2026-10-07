@@ -49,14 +49,14 @@ export default function Auth() {
   if (user) return <Navigate to={mustChangePassword ? ROUTES.TROCAR_SENHA : redirect} replace />;
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(maskBrPhone(e.target.value));
+    setPhone(e.target.value);
   }
 
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const phoneProblem = validateWhatsappForAccount(phone);
+    const phoneProblem = phone.includes("@") ? (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phone.trim()) ? null : "Confira seu e-mail.") : validateWhatsappForAccount(phone);
     if (phoneProblem) {
       toast.error("Número inválido", { description: phoneProblem });
       return;
@@ -95,7 +95,7 @@ export default function Auth() {
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-[280px] mx-auto">
             {mode === "login" 
-              ? "Use seu WhatsApp para entrar na sua conta e salvar seus favoritos." 
+              ? "Use seu e-mail ou WhatsApp para entrar na sua conta e salvar seus favoritos." 
               : "Cadastre-se para receber sugestões personalizadas de eventos baseadas no seu bairro e estilo musical."}
           </p>
         </div>
@@ -105,17 +105,17 @@ export default function Auth() {
             <div className="space-y-2">
               <Label htmlFor="phone" className="flex items-center gap-2">
                 <Phone className="h-3.5 w-3.5 text-primary" />
-                WhatsApp (Identificador da Conta)
+                E-mail ou WhatsApp
               </Label>
               <Input
                 id="phone"
                 name="tel"
-                autoComplete="tel"
-                type="tel"
+                autoComplete="username"
+                type="text"
                 value={phone}
                 onChange={handlePhoneChange}
                 required
-                placeholder="(21) 98765-4321"
+                placeholder="Seu e-mail ou celular com DDD"
                 className="h-11 sm:h-12 bg-muted/30 focus-visible:ring-primary/20"
               />
               <p className="text-[10px] text-muted-foreground">O DDD é obrigatório. Ex: 21 para o Rio. Prefixo +55 opcional.</p>
@@ -145,7 +145,7 @@ export default function Auth() {
               )}
               Entrar
             </Button>
-            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2">
               <Button asChild type="button" variant="outline" className="w-full font-display font-semibold text-[11px] sm:text-xs">
                 <Link to={ROUTES.FORGOT_PASSWORD}>
                   <Lock className="mr-1.5 h-3.5 w-3.5" />
