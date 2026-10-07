@@ -184,7 +184,7 @@ interface Props {
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
           <Link to={isDivulgador ? ROUTES.MEUS_EVENTOS : ROUTES.SEU_RADAR}>
             <ListChecks className="h-4 w-4 mr-2" />
-            {isDivulgador ? "Área do Divulgador" : "Seu Radar"}
+            {isDivulgador ? "Meus eventos" : "Seu Radar"}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">

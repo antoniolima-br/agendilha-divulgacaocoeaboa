@@ -163,21 +163,21 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "divulgacao",
     title: "Área do Divulgador",
-    roles: ["promoter"],
+    roles: ["promoter", "admin", "senior", "master"],
     items: [
       { 
         id: "my_submissions", 
         label: "Meus eventos",
         path: ROUTES.MEUS_EVENTOS,
         icon: ClipboardList, 
-        roles: ["promoter"] 
+        roles: ["promoter", "admin", "senior", "master"] 
       },
       { 
         id: "send_event", 
         label: "Enviar Evento", 
         path: ROUTES.ENVIAR_EVENTO, 
         icon: PlusCircle, 
-        roles: ["promoter"] 
+        roles: ["promoter", "admin", "senior", "master"] 
       },
       {
         id: "promotor_perfil",

@@ -20,7 +20,7 @@
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.
-- Public event reads use the date-filtered public view; organizer archives use owner-scoped paginated queries, while authorized administration retains oversight.
+- Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Personalized radar reads shared public event queries and owner-scoped profile preferences; organizer history and curatorial queries stay separate to prevent cross-experience state leakage.
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.

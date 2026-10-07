@@ -2,6 +2,14 @@ import { describe, it, expect } from "vitest";
 import { computePermissions } from "./useAppPermissions";
 
 describe("computePermissions", () => {
+  it("admin e divulgador pode enviar e moderar, mas não alterar o financeiro", () => {
+    const { permissions } = computePermissions({ roleNames: ["admin"], collaborator: null, profileRole: "divulgador" });
+    expect(permissions.has("events.create")).toBe(true);
+    expect(permissions.has("events.approve")).toBe(true);
+    expect(permissions.has("finance.read")).toBe(true);
+    expect(permissions.has("finance.settle")).toBe(false);
+    expect(permissions.has("finance.release")).toBe(false);
+  });
   it.each(["financeiro", "senior", "master"])("%s pode dar baixa e liberar", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
     expect(permissions.has("finance.read")).toBe(true);
