@@ -23,6 +23,7 @@ import {
   ShoppingBag,
   Settings2,
   CreditCard
+  , CheckCircle2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 

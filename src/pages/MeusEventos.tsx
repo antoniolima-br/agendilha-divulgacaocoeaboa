@@ -123,7 +123,7 @@ export default function MeusEventos() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
-              Meus eventos
+              Área do Divulgador
             </h1>
             <p className="text-foreground/65 mt-1 text-sm">
               Acompanhe o status de tudo que você enviou para análise.
