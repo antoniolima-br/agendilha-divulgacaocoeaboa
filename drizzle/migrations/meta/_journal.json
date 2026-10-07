@@ -127,6 +127,13 @@
       "when": 1791377826421,
       "tag": "0017_retire_pin_and_protect_password_change",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791378170131,
+      "tag": "0018_private_event_archives_public_date_cutoff",
+      "breakpoints": true
     }
   ]
 }

@@ -58,6 +58,7 @@ export function useEvents(options: {
         .in("status", [...PUBLIC_EVENT_STATUSES])
         .or("moderation_status.is.null,moderation_status.neq.blocked")
         .eq("is_archived", false)
+        .gte("event_day", saoPauloTodayISO())
         .order("date", { ascending: true })
         .limit(1000);
       

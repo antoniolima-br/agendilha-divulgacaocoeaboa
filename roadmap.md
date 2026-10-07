@@ -1,6 +1,10 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Ocultar eventos passados de consultas públicas e restringir o histórico ao organizador.
+- [x] Adicionar Arquivados no painel pessoal com consulta e repetição em nova data/horário.
+- [ ] Validar histórico privado e repetição no navegador autenticado — bloqueado: solicitante sem conta correspondente; precisa entrar na prévia ou escolher uma conta de teste. Datas e consulta pública já verificadas.
+
 - [x] Remover telas de PIN e oferecer recuperação segura assistida por WhatsApp.
 - [x] Garantir troca obrigatória após senha provisória e validar os fluxos de acesso.
 
