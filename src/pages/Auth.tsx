@@ -20,10 +20,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { RegistrationFlow } from "@/components/auth/RegistrationFlow";
 import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
-import { supabase } from "@/integrations/supabase/client";
+import { ROUTES } from "@/routes/config";
 
 export default function Auth() {
-  const { user, loading } = useAuth();
+  const { user, loading, mustChangePassword } = useAuth();
   const [searchParams] = useSearchParams();
   const rawRedirect = searchParams.get("redirect") || "/";
   // Only allow same-origin relative paths to prevent open-redirect phishing.
@@ -46,7 +46,7 @@ export default function Auth() {
     );
   }
 
-  if (user) return <Navigate to={redirect} replace />;
+  if (user) return <Navigate to={mustChangePassword ? ROUTES.TROCAR_SENHA : redirect} replace />;
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPhone(maskBrPhone(e.target.value));
@@ -72,14 +72,6 @@ export default function Auth() {
         return;
       }
 
-      // Sem PIN a pessoa fica sem recuperação self-service depois. Avisa na hora.
-      const { data: hasPin } = await supabase.rpc("user_pin_status");
-      if (hasPin === false) {
-        toast.info("Cadastra teu PIN de 4 números", {
-          description: "É com ele que você redefine a senha sozinho depois. Vai em Configurações da conta.",
-          duration: 8000,
-        });
-      }
     } catch (err) {
       handleError(err, "Erro no processo de autenticação");
     } finally {
@@ -155,20 +147,14 @@ export default function Auth() {
             </Button>
             <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
               <Button asChild type="button" variant="outline" className="w-full font-display font-semibold text-[11px] sm:text-xs">
-                <Link to="/forgot-password?tab=senha">
+                <Link to={ROUTES.FORGOT_PASSWORD}>
                   <Lock className="mr-1.5 h-3.5 w-3.5" />
                   Esqueci minha senha
                 </Link>
               </Button>
-              <Button asChild type="button" variant="outline" className="w-full font-display font-semibold text-[11px] sm:text-xs">
-                <Link to="/forgot-password?tab=pin">
-                  <KeyRound className="mr-1.5 h-3.5 w-3.5" />
-                  Esqueci meu PIN
-                </Link>
-              </Button>
             </div>
             <p className="text-[10px] text-muted-foreground text-center">
-              Redefinição na hora, sem depender de administrador.
+              Recuperação com a equipe pelo WhatsApp.
             </p>
           </form>
         ) : (

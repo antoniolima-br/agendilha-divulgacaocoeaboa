@@ -177,7 +177,16 @@ export function ProtectedRoute({
   return <>{children}</>;
 }
 
-export const AppRoutes = () => (
+export const AppRoutes = () => {
+  const { user, loading, mustChangePassword } = useAuth();
+  const location = useLocation();
+  if (loading) return <PageFallback />;
+  if (user && mustChangePassword) {
+    return location.pathname === ROUTES.TROCAR_SENHA
+      ? <Suspense fallback={<PageFallback />}><MustChangePassword /></Suspense>
+      : <Navigate to={ROUTES.TROCAR_SENHA} replace />;
+  }
+  return (
   <SubmissionProvider>
     <SectionErrorBoundary context="AppRoutes">
       <Suspense fallback={<PageFallback />}>
@@ -292,7 +301,8 @@ export const AppRoutes = () => (
     </SectionErrorBoundary>
 
   </SubmissionProvider>
-);
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

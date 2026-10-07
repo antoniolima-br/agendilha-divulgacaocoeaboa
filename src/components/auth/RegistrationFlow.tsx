@@ -32,7 +32,6 @@ import {
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
-import { onlyPinDigits, validatePin } from "@/lib/pin";
 
 const NEIGHBORHOODS = [
   "Bancários", "Cacuia", "Cidade Universitária", "Cocotá", "Freguesia",
@@ -76,8 +75,6 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
     phone: "",
     email: "",
     password: "",
-    pin: "",
-    pinConfirm: "",
     // User specific
     homeLocation: "",
     musicalInterests: [] as string[],
@@ -174,7 +171,6 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
         formData.name,
         additionalData,
         type === "public" ? "publico" : (type === "promoter" ? "divulgador" : "artista"),
-        formData.pin,
       );
 
       if (error) {
@@ -198,7 +194,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
     const phoneProblem = validateWhatsappForAccount(formData.phone);
     if (phoneProblem) return phoneProblem;
     if (formData.password.length < 8) return "A senha precisa de no mínimo 8 caracteres.";
-    return validatePin(formData.pin, formData.pinConfirm);
+    return null;
   };
 
   const renderStep = () => {
@@ -296,36 +292,6 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Mínimo 8 caracteres"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label>PIN de recuperação (4 números)</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    id="pin"
-                    type="password"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    maxLength={4}
-                    value={formData.pin}
-                    onChange={(e) => setFormData({ ...formData, pin: onlyPinDigits(e.target.value) })}
-                    placeholder="••••"
-                    className="text-center text-xl tracking-[0.4em]"
-                  />
-                  <Input
-                    id="pinConfirm"
-                    type="password"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    maxLength={4}
-                    value={formData.pinConfirm}
-                    onChange={(e) => setFormData({ ...formData, pinConfirm: onlyPinDigits(e.target.value) })}
-                    placeholder="Repetir"
-                    className="text-center text-xl tracking-[0.4em]"
-                  />
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  Com esse PIN você redefine a senha na hora, sem depender de ninguém. Guarda ele.
-                </p>
               </div>
             </div>
             <div className="flex gap-3 pt-4">
