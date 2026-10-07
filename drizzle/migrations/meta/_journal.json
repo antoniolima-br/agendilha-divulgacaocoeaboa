@@ -120,6 +120,13 @@
       "when": 1791297025887,
       "tag": "0016_mask_internal_fields_in_public_submissions",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791377826421,
+      "tag": "0017_retire_pin_and_protect_password_change",
+      "breakpoints": true
     }
   ]
 }

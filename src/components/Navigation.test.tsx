@@ -21,7 +21,7 @@ vi.mock('@/pages/AdminMaster', () => ({ default: () => <div data-testid="admin-m
 vi.mock('@/pages/Landing', () => ({ default: () => <div data-testid="landing">Landing Page</div> }));
 vi.mock('@/pages/AgendaCultural', () => ({ default: () => <div data-testid="agenda">Agenda Page</div> }));
 vi.mock('@/pages/Auth', () => ({ default: () => <div data-testid="auth">Auth Page</div> }));
-vi.mock('@/components/AdminPinGate', () => ({ default: ({ children }: any) => <div data-testid="pin-gate">{children}</div> }));
+vi.mock('@/pages/MustChangePassword', () => ({ default: () => <div data-testid="must-change">Defina sua nova senha</div> }));
 
 
 describe('Admin/Master Route Protection Integration', () => {
@@ -79,6 +79,15 @@ describe('Admin/Master Route Protection Integration', () => {
     await waitFor(() => {
       expect(screen.getByTestId('auth')).toBeInTheDocument();
     });
+  });
+
+  it.each(['/', '/agenda', '/enviar-evento', '/admin/events'])('requires temporary-password change even on %s', async (path) => {
+    setupMocks({ id: '1', email: 'temporary@test.com' }, ['user'], false, false);
+    vi.mocked(authContext.useAuth).mockReturnValue({ ...authContext.useAuth(), mustChangePassword: true } as any);
+    renderAt(path);
+    await waitFor(() => expect(screen.getByTestId('must-change')).toBeInTheDocument());
+    expect(screen.queryByTestId('landing')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('agenda')).not.toBeInTheDocument();
   });
 
   it('redirects regular user to agenda when accessing /admin/events', async () => {

@@ -101,6 +101,7 @@ const PageFallback = () => (
 );
 
 function DeferredAppFeatures() {
+  const { loading, mustChangePassword } = useAuth();
   const [ready, setReady] = useState(false);
   const [chatRequested, setChatRequested] = useState(false);
 
@@ -122,7 +123,7 @@ function DeferredAppFeatures() {
     };
   }, []);
 
-  if (!ready) return null;
+  if (!ready || loading || mustChangePassword) return null;
   return (
     <Suspense fallback={null}>
       <CoezinhoChat initiallyOpen={chatRequested} />
@@ -177,7 +178,16 @@ export function ProtectedRoute({
   return <>{children}</>;
 }
 
-export const AppRoutes = () => (
+export const AppRoutes = () => {
+  const { user, loading, mustChangePassword } = useAuth();
+  const location = useLocation();
+  if (loading) return <PageFallback />;
+  if (user && mustChangePassword) {
+    return location.pathname === ROUTES.TROCAR_SENHA
+      ? <Suspense fallback={<PageFallback />}><MustChangePassword /></Suspense>
+      : <Navigate to={ROUTES.TROCAR_SENHA} replace />;
+  }
+  return (
   <SubmissionProvider>
     <SectionErrorBoundary context="AppRoutes">
       <Suspense fallback={<PageFallback />}>
@@ -292,7 +302,8 @@ export const AppRoutes = () => (
     </SectionErrorBoundary>
 
   </SubmissionProvider>
-);
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

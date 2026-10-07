@@ -137,7 +137,7 @@ export interface TempPasswordMessageInput {
 export function buildTempPasswordMessage({
   recipientName,
   tempPassword,
-  loginUrl = "https://agendilha.lovable.app/auth",
+  loginUrl = "https://coeaboa.online/auth",
   customNote,
 }: TempPasswordMessageInput): string {
   const name = (recipientName ?? "").trim().split(" ")[0];

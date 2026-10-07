@@ -87,7 +87,7 @@ export function TermosPage() {
         },
         {
           heading: "Conta e acesso",
-          body: "O acesso é feito com seu WhatsApp e uma senha ou PIN de 4 dígitos. Guarde esses dados com você: tudo que for feito na sua conta é considerado feito por você.",
+          body: "O acesso é feito com seu e-mail ou WhatsApp e senha. A recuperação é assistida pela equipe no WhatsApp. Se receber uma senha temporária, você precisa trocá-la antes de continuar. Guarde sua senha com você.",
         },
         {
           heading: "Uso do conteúdo",
@@ -119,7 +119,7 @@ export function PrivacidadePage() {
         },
         {
           heading: "O que aparece em público",
-          body: "Só o que faz parte do evento: título, descrição, data, local, imagens e o contato que o divulgador escolheu divulgar. Seu WhatsApp pessoal, senha e PIN nunca aparecem na agenda.",
+          body: "Só o que faz parte do evento: título, descrição, data, local, imagens e o contato que o divulgador escolheu divulgar. Sua senha nunca aparece na agenda.",
         },
         {
           heading: "Quem tem acesso interno",

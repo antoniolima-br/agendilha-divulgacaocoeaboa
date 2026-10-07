@@ -23,7 +23,6 @@ interface AuthContextType {
     name?: string,
     additionalData?: SignUpAdditionalData,
     role?: string,
-    pin?: string,
   ) => Promise<{ error: Error | null }>;
   signIn: (phone: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -37,10 +36,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [mustChangePassword, setMustChangePassword] = useState(false);
+  const [accountStateReady, setAccountStateReady] = useState(false);
   const authCheckSequence = useRef(0);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED" && session?.user) {
+        setSession(session);
+        setUser(session.user);
+        setLoading(false);
+        return;
+      }
       const sequence = ++authCheckSequence.current;
       if (event === "SIGNED_OUT" || (!session && event === "TOKEN_REFRESHED")) {
         setSession(null);
@@ -52,11 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setSession(session);
       setUser(session?.user ?? null);
-      if (event === "TOKEN_REFRESHED" && session?.user) {
-        setLoading(false);
-        return;
-      }
       if (session?.user) {
+        setAccountStateReady(false);
         setTimeout(() => void refreshAccountState(session.user.id, sequence), 0);
       } else {
         setIsAdmin(false);
@@ -69,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        setAccountStateReady(false);
         const sequence = ++authCheckSequence.current;
         void refreshAccountState(session.user.id, sequence);
       }
@@ -86,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function refreshAccountState(userId: string, sequence: number) {
+    try {
     const [rolesResponse, profileResponse] = await Promise.all([
       supabase.from("user_roles").select("role").eq("user_id", userId),
       supabase.from("profiles").select("must_change_password").eq("user_id", userId).maybeSingle(),
@@ -94,7 +99,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (rolesResponse.error) handleError(rolesResponse.error, { silent: true, context: "AuthContext:roles" });
     if (profileResponse.error) handleError(profileResponse.error, { silent: true, context: "AuthContext:passwordState" });
     setIsAdmin(!!rolesResponse.data?.some(({ role }) => role === "admin" || role === "master"));
-    setMustChangePassword(!!profileResponse.data?.must_change_password);
+    setMustChangePassword(profileResponse.error ? true : !!profileResponse.data?.must_change_password);
+    } catch (error) {
+      if (sequence !== authCheckSequence.current) return;
+      setMustChangePassword(true);
+      handleError(error, { silent: true, context: "AuthContext:passwordState" });
+    } finally {
+      if (sequence === authCheckSequence.current) setAccountStateReady(true);
+    }
   }
 
   async function refreshMustChangePassword() {
@@ -125,7 +137,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     name?: string,
     additionalData: SignUpAdditionalData = {},
     role: string = 'publico',
-    pin?: string,
   ) => {
     const cleanName = name?.trim();
 
@@ -133,7 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (phoneProblem) return { error: new Error(phoneProblem) };
 
     const fullPhone = `+${toE164Digits(phone)}`;
-    const fakeEmail = toAuthEmail(phone)!;
+    const fakeEmail = toAuthEmail(phone);
+    if (!fakeEmail) return { error: new Error("Informe o WhatsApp com DDD.") };
 
     const { data, error } = await supabase.auth.signUp({
       email: fakeEmail,
@@ -162,11 +174,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     await ensureProfile(data.user.id);
 
-    // PIN de recuperação: sem ele a pessoa não consegue redefinir a senha sozinha depois.
-    if (pin && /^\d{4}$/.test(pin)) {
-      const { error: pinError } = await supabase.rpc("set_user_pin", { new_pin: pin, current_password: password });
-      if (pinError) logger.warn("[Auth] não deu pra salvar o PIN no cadastro", pinError);
-    }
 
     if (!cleanName) return { error: null };
 
@@ -206,7 +213,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (phone: string, password: string) => {
-    const email = toAuthEmail(phone);
+    const identifier = phone.trim();
+    const email = identifier.includes("@") ? identifier.toLowerCase() : toAuthEmail(identifier);
     if (!email) {
       return { error: new Error("Informe o WhatsApp com DDD. Ex: (21) 98765-4321") };
     }
@@ -218,7 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Contas criadas antes da correção de normalização usam outro e-mail sintético.
-    const legacyEmail = toLegacyAuthEmail(phone);
+    const legacyEmail = identifier.includes("@") ? null : toLegacyAuthEmail(phone);
     if (legacyEmail && legacyEmail !== email) {
       const legacy = await supabase.auth.signInWithPassword({ email: legacyEmail, password });
       if (!legacy.error && legacy.data.user) {
@@ -237,12 +245,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    sessionStorage.removeItem("admin_pin_token");
     await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, mustChangePassword, refreshMustChangePassword, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading: loading || (!!user && !accountStateReady), isAdmin, mustChangePassword, refreshMustChangePassword, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
