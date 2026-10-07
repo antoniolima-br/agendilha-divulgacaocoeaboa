@@ -101,6 +101,7 @@ const PageFallback = () => (
 );
 
 function DeferredAppFeatures() {
+  const { loading, mustChangePassword } = useAuth();
   const [ready, setReady] = useState(false);
   const [chatRequested, setChatRequested] = useState(false);
 
@@ -122,7 +123,7 @@ function DeferredAppFeatures() {
     };
   }, []);
 
-  if (!ready) return null;
+  if (!ready || loading || mustChangePassword) return null;
   return (
     <Suspense fallback={null}>
       <CoezinhoChat initiallyOpen={chatRequested} />

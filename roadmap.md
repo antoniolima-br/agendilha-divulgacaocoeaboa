@@ -1,8 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Remover telas de PIN e oferecer recuperação segura assistida por WhatsApp.
-- [ ] Garantir troca obrigatória após senha provisória e validar os fluxos de acesso.
+- [x] Remover telas de PIN e oferecer recuperação segura assistida por WhatsApp.
+- [x] Garantir troca obrigatória após senha provisória e validar os fluxos de acesso.
 
 - [x] Executar otimização profunda de performance, navegação, consultas, assets e experiência visual sem alterar funcionalidades.
 
