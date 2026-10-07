@@ -41,6 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED" && session?.user) {
+        setSession(session);
+        setUser(session.user);
+        setLoading(false);
+        return;
+      }
       const sequence = ++authCheckSequence.current;
       if (event === "SIGNED_OUT" || (!session && event === "TOKEN_REFRESHED")) {
         setSession(null);
@@ -52,10 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setSession(session);
       setUser(session?.user ?? null);
-      if (event === "TOKEN_REFRESHED" && session?.user) {
-        setLoading(false);
-        return;
-      }
       if (session?.user) {
         setAccountStateReady(false);
         setTimeout(() => void refreshAccountState(session.user.id, sequence), 0);

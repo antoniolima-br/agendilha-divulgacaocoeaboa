@@ -7,9 +7,10 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 import { PasswordStrengthMeter, calculatePasswordScore } from "@/components/PasswordStrengthMeter";
 import { toast } from "sonner";
 import { Loader2, KeyRound, ShieldCheck } from "lucide-react";
+import { callEdge } from "@/lib/edge";
 
 interface Props {
-  /** When true, hides the "current password" field — used right after a temp-password login. */
+  /** Requires a personal password after a temporary-password login. */
   isTemporary?: boolean;
   /** Called after successful password change. */
   onSuccess?: () => void;
@@ -49,41 +50,7 @@ export function ChangePasswordSection({ isTemporary = false, onSuccess }: Props)
 
     setSubmitting(true);
     try {
-      // Reautentica imediatamente antes da alteração. Isso substitui sessões
-      // antigas que podem ter sido revogadas quando a senha temporária foi criada.
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: currentPassword,
-      });
-      if (signInError) {
-        toast.error("Senha atual incorreta", {
-          description: isTemporary
-            ? "Digite a senha temporária usada para entrar."
-            : "Confira a senha atual e tente novamente.",
-        });
-        return;
-      }
-
-      const { error } = await supabase.auth.updateUser({ password: newPassword });
-      if (error) {
-        const msg = error.message || "";
-        const isWeak = /weak|pwned|leaked|easy to guess|short/i.test(msg);
-        const isMissingSession = /auth session missing|session.*(missing|not found)/i.test(msg);
-        toast.error(
-          isMissingSession
-            ? "Sua sessão expirou. Entre novamente e repita a troca de senha."
-            : isWeak
-            ? "Senha vazada ou muito fraca. Use uma combinação mais segura."
-            : msg || "Erro ao atualizar senha",
-        );
-        return;
-      }
-
-      // Clear must_change_password flag
-      await supabase
-        .from("profiles")
-        .update({ must_change_password: false })
-        .eq("user_id", user.id);
+      await callEdge("complete-password-change", { currentPassword, newPassword });
       await refreshMustChangePassword();
 
       toast.success("Senha alterada!", {

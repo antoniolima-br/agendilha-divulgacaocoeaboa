@@ -39,7 +39,7 @@ export function ResetPasswordDialog({ resetResult, setResetResult }: Props) {
             Senha temporária gerada
           </DialogTitle>
           <DialogDescription>
-            Copie ou envie pelo WhatsApp agora. Por segurança, esta senha só aparece uma vez.
+            Confirme a identidade pelo WhatsApp cadastrado antes de enviar. A troca da senha será obrigatória no próximo acesso.
           </DialogDescription>
         </DialogHeader>
 
@@ -124,10 +124,10 @@ export function ResetPasswordDialog({ resetResult, setResetResult }: Props) {
                 ? buildWhatsappUrl(resetResult.phone, resetResult.message)
                 : null;
               return liveUrl ? (
-                <Button asChild className="w-full h-11 bg-[#25D366] hover:bg-[#1ebe5b] text-white font-bold">
+                 <Button asChild className="w-full h-11 font-bold">
                   <a href={liveUrl} target="_blank" rel="noreferrer">
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Enviar pelo WhatsApp
+                    Abrir WhatsApp para enviar
                   </a>
                 </Button>
               ) : (

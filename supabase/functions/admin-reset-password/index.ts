@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import {
   generateTempPassword,
   buildWhatsappUrl,
@@ -6,15 +7,11 @@ import {
   normalizePhone,
 } from "../_shared/temp-password.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return new Response(JSON.stringify({ error: "Método não permitido" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   try {
     const authHeader = req.headers.get("Authorization");
@@ -25,9 +22,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) throw new Error("Serviço indisponível");
 
     const anonClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
@@ -107,7 +105,13 @@ Deno.serve(async (req) => {
     const recipientName =
       profile?.responsible_name || profile?.nick_name || null;
 
-    const tempPassword = generateTempPassword(10);
+    const tempPassword = generateTempPassword(16);
+
+    // Set the access gate before issuing credentials; never return a password
+    // unless the required-change state has been persisted successfully.
+    const { error: flagError } = await admin.from("profiles")
+      .upsert({ user_id, must_change_password: true }, { onConflict: "user_id" });
+    if (flagError) throw new Error("Não deu pra preparar a troca obrigatória. Nenhuma senha foi gerada.");
 
     const { error: updateError } = await admin.auth.admin.updateUserById(
       user_id,
@@ -120,10 +124,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    await admin
-      .from("profiles")
-      .update({ must_change_password: true })
-      .eq("user_id", user_id);
 
     // Audit log
     await admin.from("audit_logs").insert({
