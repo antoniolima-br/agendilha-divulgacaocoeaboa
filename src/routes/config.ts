@@ -1,6 +1,7 @@
 export const ROUTES = {
   LANDING: "/",
   AGENDA: "/agenda",
+  SEU_RADAR: "/seu-radar",
   ARTISTAS: "/artistas",
   AUTH: "/auth",
   CONFIGURAR_ARTISTA: "/configurar-artista",

@@ -52,6 +52,7 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Explorar",
     roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
     items: [
+      { id: "seu_radar", label: "Seu Radar", path: ROUTES.SEU_RADAR, icon: Heart, roles: ["public_registered", "promoter", "admin", "senior", "financeiro", "master"] },
       { 
         id: "favorites", 
         label: "Meus Favoritos", 
@@ -160,12 +161,12 @@ export const sidebarConfig: SidebarSection[] = [
   },
   {
     id: "divulgacao",
-    title: "Divulgação",
+    title: "Área do Divulgador",
     roles: ["promoter"],
     items: [
       { 
         id: "my_submissions", 
-        label: "Meus Envios", 
+        label: "Meus eventos",
         path: ROUTES.MEUS_EVENTOS,
         icon: ClipboardList, 
         roles: ["promoter"] 
@@ -237,6 +238,7 @@ export const sidebarConfig: SidebarSection[] = [
             roles: ["admin", "senior", "master"],
             exact: true
           },
+          { id: "curadoria", label: "Curadoria", path: ROUTES.ADMIN_APROVAR_EVENTOS, icon: CheckCircle2, roles: ["admin", "senior", "master"] },
           {
             id: "published_events",
             label: "Eventos Publicados",
