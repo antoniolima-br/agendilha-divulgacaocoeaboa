@@ -196,7 +196,7 @@ export default function MeusEventos() {
                   {r.image_url ? (
                     <img
                       src={r.image_url}
-                      alt={r.event_title}
+                      alt={r.event_title || r.atrativo_name || "Evento"}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -210,7 +210,7 @@ export default function MeusEventos() {
                 <div className="flex-1 min-w-0 space-y-2">
                    <div className="flex min-w-0 flex-col items-start gap-2 xs:flex-row xs:justify-between xs:gap-3">
                      <h3 className="min-w-0 break-words font-semibold tracking-tight text-foreground xs:truncate">
-                      {r.event_title}
+                      {r.event_title || r.atrativo_name || "Evento sem título"}
                     </h3>
                       <StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} />
                   </div>
