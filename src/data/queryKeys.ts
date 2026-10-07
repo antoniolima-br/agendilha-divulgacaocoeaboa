@@ -19,6 +19,7 @@ export const qk = {
     count: (filters?: Record<string, unknown>) =>
       [...qk.submissions.all, "count", filters ?? {}] as const,
     byId: (id: string) => [...qk.submissions.all, "byId", id] as const,
+    mine: (userId: string | undefined) => [...qk.submissions.all, "mine", userId ?? "anon"] as const,
   },
   adminStats: {
     all: ["admin-stats"] as const,

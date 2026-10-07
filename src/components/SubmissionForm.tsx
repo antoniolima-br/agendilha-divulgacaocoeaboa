@@ -42,7 +42,7 @@ type FormData = SubmissionFormData;
 
 const DRAFT_KEY = "agendilha_event_submission_draft";
 
-export default function SubmissionForm() {
+export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
   const [imageSource, setImageSource] = useState<"upload" | "ai" | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -176,6 +176,12 @@ export default function SubmissionForm() {
 
   // Handle draft loading
   useEffect(() => {
+    if (initialValues) {
+      form.reset({ ...form.getValues(), ...initialValues });
+      setCurrentStep(1);
+      draftLoadedRef.current = true;
+      return;
+    }
     const saved = localStorage.getItem(DRAFT_KEY);
     if (saved) {
       try {

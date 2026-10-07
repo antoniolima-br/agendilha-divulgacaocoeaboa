@@ -40,15 +40,17 @@ export default function PrintEvent() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      if (!slug) return;
-      const { data } = await supabase
-        .from("events" as any)
-        .select("id, slug, event_title, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, category, age_rating, description, artist_name, music_style, sale_price")
+       try {
+       if (!slug) return;
+       const { data } = await supabase
+         .from("public_submissions")
+         .select("id, slug, event_title, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, category, age_rating, description, atrativo_name, atrativo_style, sale_price")
         .eq("slug", slug)
         .maybeSingle();
       if (!alive) return;
-      setEvent((data as any) ?? null);
-      setLoading(false);
+       setEvent(data ? { ...data, artist_name: data.atrativo_name, music_style: data.atrativo_style } as unknown as EventRow : null);
+       } catch { if (alive) setEvent(null); }
+       finally { if (alive) setLoading(false); }
     })();
     return () => { alive = false; };
   }, [slug]);

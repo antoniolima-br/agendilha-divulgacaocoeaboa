@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSubmissions } from "@/data";
+import { useMyEventHistory } from "@/data/useMyEventHistory";
+import { isArchivedEvent } from "@/lib/eventArchive";
+import { ROUTES } from "@/routes/config";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { EditarMeuEventoDialog, type EventoEditavel } from "@/components/divulgador/EditarMeuEventoDialog";
-import { Pencil, Lock } from "lucide-react";
+import { Pencil, Lock, Archive, Eye, Repeat2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,7 +23,7 @@ import { SolicitarDivulgadorCard } from "@/components/divulgador/SolicitarDivulg
 import { useDivulgadorStatus } from "@/data/useDivulgadorStatus";
 import { LoadingState } from "@/components/ui/LoadingState";
 
-type StatusKey = "todos" | "pendente" | "aprovado" | "rejeitado";
+type StatusKey = "todos" | "pendente" | "aprovado" | "rejeitado" | "arquivados";
 
 interface Row {
   id: string;
@@ -83,31 +86,30 @@ export default function MeusEventos() {
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
+  const [viewing, setViewing] = useState<Row | null>(null);
+  const navigate = useNavigate();
 
-  const { data: rows = [], isLoading: loading, refetch } = useSubmissions<Row>(
-    {
-      select:
-        "id, event_title, date, start_time, end_time, location, description, status, rejection_reason, admin_notes, approved_at, image_url, slug, created_at, user_id",
-      eq: user ? { user_id: user.id } : undefined,
-    },
-    { enabled: !!user }
-  );
+  const { data: rows = [], isLoading: loading, isError, refetch } = useMyEventHistory(user?.id);
 
   const counts = useMemo(() => {
-    const c = { todos: rows.length, pendente: 0, aprovado: 0, rejeitado: 0 } as Record<StatusKey, number>;
+    const c = { todos: 0, pendente: 0, aprovado: 0, rejeitado: 0, arquivados: 0 } as Record<StatusKey, number>;
     rows.forEach((r) => {
+      if (isArchivedEvent(r.date)) { c.arquivados++; return; }
+      c.todos++;
       if (r.status === "pendente") c.pendente++;
-      else if (r.status === "aprovado" || r.status === "publicado") c.aprovado++;
+      else if (["aprovado", "publicado", "divulgado"].includes(r.status)) c.aprovado++;
       else if (r.status === "rejeitado") c.rejeitado++;
     });
     return c;
   }, [rows]);
 
   const filtered = useMemo(() => {
-    if (tab === "todos") return rows;
+    if (tab === "arquivados") return rows.filter((r) => isArchivedEvent(r.date));
+    const active = rows.filter((r) => !isArchivedEvent(r.date));
+    if (tab === "todos") return active;
     if (tab === "aprovado")
-      return rows.filter((r) => r.status === "aprovado" || r.status === "publicado");
-    return rows.filter((r) => r.status === tab);
+      return active.filter((r) => ["aprovado", "publicado", "divulgado"].includes(r.status));
+    return active.filter((r) => r.status === tab);
   }, [rows, tab]);
 
   return (
@@ -157,11 +159,14 @@ export default function MeusEventos() {
             <TabsTrigger value="rejeitado" className="shrink-0 rounded-full px-4">
               Rejeitados <span className="ml-1.5 opacity-60">{counts.rejeitado}</span>
             </TabsTrigger>
+            <TabsTrigger value="arquivados" className="shrink-0 rounded-full px-4">
+              <Archive className="mr-1.5 h-3.5 w-3.5" /> Arquivados <span className="ml-1.5 opacity-60">{counts.arquivados}</span>
+            </TabsTrigger>
           </TabsList>
           </div>
         </Tabs>
 
-        {loading ? (
+        {isError ? <div role="alert" className="space-y-3 text-sm text-destructive"><p>Não deu pra carregar seus eventos. Tente novamente.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : loading ? (
           <LoadingState message="Carregando seus rolês…" />
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center space-y-3 border border-dashed border-foreground/15 rounded-2xl">
@@ -207,7 +212,7 @@ export default function MeusEventos() {
                      <h3 className="min-w-0 break-words font-semibold tracking-tight text-foreground xs:truncate">
                       {r.event_title}
                     </h3>
-                    <StatusBadge status={r.status} />
+                      <StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} />
                   </div>
                   <p className="text-xs text-foreground/60 flex items-center gap-2">
                     <Calendar className="h-3 w-3" />
@@ -220,7 +225,10 @@ export default function MeusEventos() {
                       {r.rejection_reason}
                     </p>
                   )}
-                  {isDivulgador && user && r.user_id === user.id && (
+                  {tab === "arquivados" ? <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setViewing(r as unknown as Row)}><Eye className="mr-1.5 h-3.5 w-3.5" /> Consultar</Button>
+                    {isDivulgador && <Button variant="outline" size="sm" onClick={() => navigate(ROUTES.ENVIAR_EVENTO, { state: { repeatEventId: r.id } })}><Repeat2 className="mr-1.5 h-3.5 w-3.5" /> Repetir evento</Button>}
+                  </div> : isDivulgador && user && r.user_id === user.id && (
                     <div className="pt-1">
                        {["aprovado", "publicado", "divulgado"].includes(r.status) ? (
                         <span className="inline-flex items-center gap-1.5 text-[11px] text-foreground/55">
@@ -240,7 +248,7 @@ export default function MeusEventos() {
                       )}
                     </div>
                   )}
-                  {(r.status === "aprovado" || r.status === "publicado") && r.slug && (
+                  {tab !== "arquivados" && ["aprovado", "publicado", "divulgado"].includes(r.status) && r.slug && (
                     <Link
                       to={`/evento/${r.slug}`}
                       className="inline-block text-xs font-semibold text-foreground/80 hover:text-foreground underline underline-offset-4"
@@ -261,6 +269,16 @@ export default function MeusEventos() {
         onOpenChange={(v) => !v && setEditing(null)}
         onSaved={() => refetch?.()}
       />
+      <Dialog open={!!viewing} onOpenChange={(open) => !open && setViewing(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>{viewing?.event_title || "Evento arquivado"}</DialogTitle><DialogDescription>Histórico privado · somente consulta</DialogDescription></DialogHeader>
+          {viewing && <div className="space-y-3 text-sm">
+            <p>{viewing.date ? formatBrazilianDate(viewing.date) : "Data a confirmar"} · {viewing.start_time?.slice(0, 5)}{viewing.end_time ? ` às ${viewing.end_time.slice(0, 5)}` : ""}</p>
+            <p className="font-medium">{viewing.location || "Local não informado"}</p>
+            <p className="max-h-60 overflow-y-auto whitespace-pre-wrap break-words text-muted-foreground">{viewing.description || "Sem descrição cadastrada."}</p>
+          </div>}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
