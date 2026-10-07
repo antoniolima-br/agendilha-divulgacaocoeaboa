@@ -49,6 +49,7 @@ export const ROUTES = {
   ADMIN_WHATSAPP_TEMPLATES: "/admin/whatsapp-templates",
   ADMIN_DESTAQUES: "/admin/destaques",
   ADMIN_PAGAMENTOS_DESTAQUE: "/admin/destaques/pagamentos",
+  ADMIN_FINANCEIRO: "/admin/financeiro",
   ADMIN_CONFIGURACOES: "/admin/configuracoes",
   CADASTRO_PROMOTOR: "/cadastro-promotor",
   PROMOTOR_HOME: "/promotor",

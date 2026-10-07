@@ -14,7 +14,7 @@ type Record_ = { id: string; amount_cents: number; receipt_path: string | null; 
 
 /**
  * Status financeiro de um anúncio/evento em destaque.
- * Todo admin vê; só Financeiro (ou Master) dá baixa.
+ * Todo admin vê; Financeiro, Sênior ou Master dão baixa.
  */
 export function PaymentStatus({ itemType, itemId }: { itemType: "anuncio" | "evento"; itemId: string }) {
   const { user } = useAuth();

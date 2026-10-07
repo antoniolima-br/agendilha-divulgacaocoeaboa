@@ -1,0 +1,53 @@
+import { useMemo, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { Wallet, FileText, CheckCircle2, Pencil, X, Search } from "lucide-react";
+import { toast } from "sonner";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
+import { useFinance } from "@/data/useFinance";
+import { financeLabels, financeActionLabels, financeSummary, moneyBR, type FinanceItem, type FinanceEntry } from "@/lib/finance";
+import { FinanceActionDialog, type FinanceAction } from "@/components/admin/finance/FinanceActionDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { formatEventDateTimeBR } from "@/lib/eventDate";
+import { ROUTES } from "@/routes/config";
+const dateBR = (date: string) => new Date(date).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
+export default function AdminFinanceiro() {
+  const { canViewFinance, canSettlePayments, loading } = useAppPermissions();
+  const { data, isLoading, isError, refetch, mutation } = useFinance();
+  const [search, setSearch] = useState("");
+  const [kind, setKind] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [period, setPeriod] = useState("all");
+  const [selected, setSelected] = useState<{ item: FinanceItem; action: FinanceAction } | null>(null);
+  const [page, setPage] = useState(1);
+  const items = data?.items ?? [];
+  const filtered = useMemo(() => items.filter((item) => (kind === "all" || item.item_type === kind) && (status === "all" || item.status === status) && item.title.toLocaleLowerCase("pt-BR").includes(search.toLocaleLowerCase("pt-BR"))), [items, kind, status, search]);
+  const summary = financeSummary(items, data?.payments ?? []);
+  const reportFilter = (entry: FinanceEntry) => (kind === "all" || entry.item_type === kind) && (period === "all" || Date.now() - new Date(entry.created_at).getTime() <= Number(period) * 86400000);
+  const payments = (data?.payments ?? []).filter(reportFilter);
+  const history = (data?.history ?? []).filter(reportFilter);
+  async function receipt(path: string) {
+    const { data: link, error } = await supabase.storage.from("payment-receipts").createSignedUrl(path, 300);
+    if (error || !link?.signedUrl) return void toast.error("Não deu pra abrir o comprovante. Tenta de novo.");
+    window.open(link.signedUrl, "_blank", "noopener,noreferrer");
+  }
+  if (loading || isLoading) return <LoadingState message="Carregando financeiro…" fullPage />;
+  if (!canViewFinance) return <Navigate to={ROUTES.AGENDA} replace />;
+  return <PageContainer maxWidth="6xl"><header className="space-y-2 border-b border-border pb-5"><p className="flex items-center gap-2 text-xs font-bold uppercase text-primary"><Wallet className="h-4 w-4" />Coé a Boa?</p><h1 className="font-display text-3xl font-black">Financeiro</h1><p className="text-sm text-muted-foreground">Eventos patrocinados e espaços publicitários</p>{!canSettlePayments && <Badge variant="outline">Somente leitura</Badge>}</header>
+    {isError ? <div role="alert" className="space-y-3 py-8"><p>Não deu pra carregar o financeiro. Tenta de novo.</p><Button onClick={() => void refetch()} variant="outline">Tentar de novo</Button></div> : <>
+    <dl className="grid grid-cols-2 gap-4 border-b border-border py-5 lg:grid-cols-4">{[["Entradas registradas", moneyBR(summary.received)], ["Cobranças pendentes", `${summary.pending} · ${moneyBR(summary.expected)}`], ["Pagos, aguardando liberação", summary.paid], ["Publicações liberadas", summary.released]].map(([label,value]) => <div key={label} className="min-w-0"><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-xl font-bold">{value}</dd></div>)}</dl>
+    <Tabs defaultValue="charges" className="space-y-5"><TabsList><TabsTrigger value="charges">Pagamentos</TabsTrigger><TabsTrigger value="reports">Relatórios</TabsTrigger></TabsList>
+    <TabsContent value="charges" className="space-y-4"><div className="flex flex-wrap gap-3"><div className="relative min-w-0 flex-1"><Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" /><Input aria-label="Buscar cobrança" placeholder="Buscar cobrança" className="pl-9" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} /></div><Select value={kind} onValueChange={(v) => {setKind(v); setPage(1);}}><SelectTrigger className="w-full sm:w-52" aria-label="Tipo de cobrança"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todos os tipos</SelectItem><SelectItem value="evento">Eventos patrocinados</SelectItem><SelectItem value="anuncio">Espaços publicitários</SelectItem></SelectContent></Select><Select value={status} onValueChange={(v) => {setStatus(v); setPage(1);}}><SelectTrigger className="w-full sm:w-40" aria-label="Status da cobrança"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todos os status</SelectItem>{Object.entries(financeLabels).map(([key,label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectContent></Select></div>
+    {filtered.length === 0 ? <EmptyState icon={Wallet} title="Nenhuma cobrança por aqui" description="Tente outro filtro ou aguarde novas solicitações." /> : <ul className="divide-y divide-border border-y border-border">{filtered.slice((page-1)*20,page*20).map((item) => <li key={`${item.item_type}-${item.item_id}`} className="flex flex-col justify-between gap-4 py-5 lg:flex-row"><div className="min-w-0 space-y-2"><div className="flex flex-wrap items-center gap-2"><h2 className="break-words font-bold">{item.title}</h2><Badge variant={item.status === "released" || item.status === "paid" ? "secondary" : "outline"}>{financeLabels[item.status]}</Badge></div><p className="text-xs text-muted-foreground">{item.item_type === "evento" ? "Evento patrocinado" : "Espaço publicitário"}{item.date && ` · ${formatEventDateTimeBR(item.date,item.start_time)}`}</p>{item.location && <p className="text-xs text-muted-foreground">{item.location}</p>}<p className="text-sm">Cobrança: {item.expected_amount_cents == null ? "Valor a definir" : moneyBR(item.expected_amount_cents)}{item.amount_cents != null && ` · Recebido: ${moneyBR(item.amount_cents)}`}</p>{item.settled_at && <p className="text-xs text-muted-foreground">Baixa em {dateBR(item.settled_at)}</p>}{item.released_at && <p className="text-xs text-muted-foreground">Liberado em {dateBR(item.released_at)}</p>}</div><div className="flex shrink-0 flex-wrap items-start gap-2">{item.receipt_path && <Button variant="ghost" size="sm" onClick={() => void receipt(item.receipt_path ?? "")}><FileText className="mr-1 h-4 w-4" />Comprovante</Button>}{canSettlePayments && item.status !== "cancelled" && <><Button variant="ghost" size="icon" title="Editar cobrança" aria-label={`Editar cobrança de ${item.title}`} onClick={() => setSelected({item,action:"edit"})}><Pencil className="h-4 w-4" /></Button>{item.amount_cents == null && <Button variant="outline" size="sm" onClick={() => setSelected({item,action:"settle"})}><Wallet className="mr-1 h-4 w-4" />Dar baixa</Button>}{item.amount_cents != null && item.status !== "released" && <Button size="sm" onClick={() => setSelected({item,action:"release"})}><CheckCircle2 className="mr-1 h-4 w-4" />Liberar</Button>}<Button variant="ghost" size="icon" title="Cancelar cobrança" aria-label={`Cancelar cobrança de ${item.title}`} onClick={() => setSelected({item,action:"cancel"})}><X className="h-4 w-4" /></Button></>}</div></li>)}</ul>}
+    {filtered.length>20 && <div className="flex items-center justify-center gap-3"><Button variant="outline" disabled={page===1} onClick={() => setPage(page-1)}>Anterior</Button><span className="text-sm">{page} / {Math.ceil(filtered.length/20)}</span><Button variant="outline" disabled={page*20>=filtered.length} onClick={() => setPage(page+1)}>Próxima</Button></div>}</TabsContent>
+    <TabsContent value="reports" className="space-y-5"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-bold text-xl">Entradas e histórico de liberação</h2><Select value={period} onValueChange={setPeriod}><SelectTrigger className="w-48" aria-label="Período do relatório"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todo o período</SelectItem><SelectItem value="7">Últimos 7 dias</SelectItem><SelectItem value="30">Últimos 30 dias</SelectItem><SelectItem value="90">Últimos 90 dias</SelectItem></SelectContent></Select></div><p className="text-sm">Entradas no período: <strong>{moneyBR(payments.reduce((total,p) => total+(p.amount_cents ?? 0),0))}</strong> · {payments.length} baixas</p><div className="flex flex-wrap gap-3">{Object.entries(financeLabels).map(([key,label]) => <Badge key={key} variant="outline">{label}: {items.filter((i) => i.status===key).length}</Badge>)}</div><h3 className="font-bold">Baixas financeiras</h3>{payments.length===0 ? <p className="text-sm text-muted-foreground">Nenhuma entrada registrada nesse período.</p> : <ul className="max-h-96 overflow-y-auto divide-y divide-border">{payments.map((p) => <li key={p.id} className="flex flex-wrap justify-between gap-2 py-3 text-sm"><span className="min-w-0 break-words">{p.title}<span className="block text-xs text-muted-foreground">{dateBR(p.created_at)}</span></span><strong>{moneyBR(p.amount_cents ?? 0)}</strong></li>)}</ul>}<h3 className="font-bold">Histórico de alterações e liberações</h3>{history.length===0 ? <p className="text-sm text-muted-foreground">As próximas ações financeiras aparecerão aqui.</p> : <ul className="max-h-96 overflow-y-auto divide-y divide-border">{history.map((h) => <li key={h.id} className="py-3 text-sm"><p className="break-words font-medium">{h.item_title}</p><p>{financeActionLabels[h.action ?? ""] ?? h.action} · {dateBR(h.created_at)}</p>{h.notes && <p className="break-words text-xs text-muted-foreground">{h.notes}</p>}</li>)}</ul>}</TabsContent></Tabs></>}
+    {selected && canSettlePayments && <FinanceActionDialog key={`${selected.item.item_id}-${selected.action}`} item={selected.item} action={selected.action} onClose={() => setSelected(null)} onConfirm={mutation.mutateAsync} />}
+  </PageContainer>;
+}

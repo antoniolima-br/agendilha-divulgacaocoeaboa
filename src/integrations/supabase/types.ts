@@ -1201,6 +1201,78 @@ export type Database = {
           },
         ]
       }
+      finance_history: {
+        Row: {
+          action: string
+          actor_id: string
+          amount_cents: number | null
+          created_at: string
+          id: string
+          item_id: string
+          item_title: string
+          item_type: string
+          notes: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          amount_cents?: number | null
+          created_at?: string
+          id?: string
+          item_id: string
+          item_title: string
+          item_type: string
+          notes?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          amount_cents?: number | null
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_title?: string
+          item_type?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      finance_workflow: {
+        Row: {
+          expected_amount_cents: number | null
+          id: string
+          item_id: string
+          item_type: string
+          notes: string | null
+          released_at: string | null
+          released_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          expected_amount_cents?: number | null
+          id?: string
+          item_id: string
+          item_type: string
+          notes?: string | null
+          released_at?: string | null
+          released_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          expected_amount_cents?: number | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          notes?: string | null
+          released_at?: string | null
+          released_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -2834,6 +2906,8 @@ export type Database = {
         }[]
       }
       can_create_events: { Args: { _user_id: string }; Returns: boolean }
+      can_read_finance: { Args: { p_user: string }; Returns: boolean }
+      can_write_finance: { Args: { p_user: string }; Returns: boolean }
       check_attraction_schedule: {
         Args: {
           p_artist_id: string
@@ -2867,6 +2941,19 @@ export type Database = {
         }[]
       }
       event_day_sp: { Args: { p_date: string }; Returns: string }
+      finance_manage: {
+        Args: {
+          p_action: string
+          p_amount_cents?: number
+          p_item_id: string
+          p_item_type: string
+          p_notes?: string
+          p_receipt_path?: string
+          p_release?: boolean
+        }
+        Returns: Json
+      }
+      finance_overview: { Args: never; Returns: Json }
       generate_slug: { Args: { title: string }; Returns: string }
       get_admin_dashboard_stats: {
         Args: {

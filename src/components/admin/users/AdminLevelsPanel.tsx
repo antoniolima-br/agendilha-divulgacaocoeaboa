@@ -8,7 +8,7 @@ import type { UserWithRole } from "./types";
 type Level = "senior" | "financeiro";
 const LEVELS: { id: Level; label: string; hint: string }[] = [
   { id: "senior", label: "Sênior", hint: "Moderação e gestão de todos os módulos" },
-  { id: "financeiro", label: "Financeiro", hint: "Único que dá baixa em pagamentos" },
+  { id: "financeiro", label: "Administrador Financeiro", hint: "Gestão financeira, baixa e liberação de itens patrocinados" },
 ];
 
 /** Master define o nível de cada admin (Sênior / Financeiro). */
@@ -59,7 +59,7 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
       <div>
         <h2 className="font-bold">Níveis de administrador</h2>
         <p className="text-xs text-muted-foreground">
-          Admin comum modera e vê pagamentos. Sênior tem gestão ampla. Só o Financeiro (ou o Master) dá baixa.
+          Admin comum consulta o financeiro. Administrador Financeiro, Sênior e Master podem dar baixa e liberar publicações.
         </p>
       </div>
       <ul className="divide-y">

@@ -1,5 +1,5 @@
 
-- Níveis admin: papéis `senior` e `financeiro` em user_roles somados ao `admin`; baixa de pagamento só via `payment_records` (financeiro/master) — separa quem modera de quem mexe em dinheiro.
+- Administrative capabilities derive only from protected user_roles; finance read/write helpers enforce the same role access in SQL and the permission module, preventing profile-based escalation.
 - A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
@@ -24,3 +24,4 @@
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Personalized radar reads shared public event queries and owner-scoped profile preferences; organizer history and curatorial queries stay separate to prevent cross-experience state leakage.
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.
+- Central finance uses authenticated atomic RPCs for settlement and publication, with payment_records as evidence and append-only workflow history; this prevents partial releases and duplicate settlement.

@@ -193,6 +193,7 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Operação",
     roles: ["admin", "senior", "financeiro", "master"],
     items: [
+      { id: "financeiro", label: "Financeiro", path: ROUTES.ADMIN_FINANCEIRO, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
       {
         id: "relatorio_diario",
         label: "Relatório Diário (Coé a Boa?)",

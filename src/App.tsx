@@ -67,6 +67,7 @@ const SeuRadar = lazy(() => import("./pages/SeuRadar"));
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
 const AdminHighlightPayments = lazy(() => import("./pages/AdminHighlightPayments"));
+const AdminFinanceiro = lazy(() => import("./pages/AdminFinanceiro"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
 const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
@@ -252,6 +253,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_WHATSAPP_TEMPLATES} element={<AdminWhatsAppTemplates />} />
           <Route path={ROUTES.ADMIN_DESTAQUES} element={<AdminDestaques />} />
           <Route path={ROUTES.ADMIN_PAGAMENTOS_DESTAQUE} element={<AdminHighlightPayments />} />
+          <Route path={ROUTES.ADMIN_FINANCEIRO} element={<ProtectedRoute requiredPermission="finance.read"><AdminFinanceiro /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
           <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
           <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<ProtectedRoute requiredPermission="events.approve"><AdminAprovarEventos /></ProtectedRoute>} />

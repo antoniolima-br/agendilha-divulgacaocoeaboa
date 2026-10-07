@@ -2,6 +2,23 @@ import { describe, it, expect } from "vitest";
 import { computePermissions } from "./useAppPermissions";
 
 describe("computePermissions", () => {
+  it.each(["financeiro", "senior", "master"])("%s pode dar baixa e liberar", (role) => {
+    const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
+    expect(permissions.has("finance.read")).toBe(true);
+    expect(permissions.has("finance.settle")).toBe(true);
+    expect(permissions.has("finance.release")).toBe(true);
+  });
+  it("admin comum tem somente leitura financeira", () => {
+    const { permissions } = computePermissions({ roleNames: ["admin"], collaborator: null, profileRole: null });
+    expect(permissions.has("finance.read")).toBe(true);
+    expect(permissions.has("finance.settle")).toBe(false);
+  });
+  it.each(["admin", "financeiro", "senior", "master"])("perfil editável não concede cargo %s", (profileRole) => {
+    const { roles, permissions } = computePermissions({ roleNames: [], collaborator: null, profileRole });
+    expect(roles).not.toContain(profileRole);
+    expect(permissions.has("finance.read")).toBe(false);
+    expect(permissions.has("events.approve")).toBe(false);
+  });
   it("dá todas as permissões de admin quando role = admin", () => {
     const { roles, permissions } = computePermissions({
       roleNames: ["admin"],
