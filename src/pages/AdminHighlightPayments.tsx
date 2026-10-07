@@ -123,7 +123,7 @@ export default function AdminHighlightPayments() {
           </table>
         </div>
       )}
-      {!canSettlePayments && <p className="text-xs text-muted-foreground">Apenas Financeiro ou Master pode alterar os status.</p>}
+      {!canSettlePayments && <p className="text-xs text-muted-foreground">Apenas Financeiro, Sênior ou Master pode alterar os status.</p>}
     </PageContainer>
   );
 }

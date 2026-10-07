@@ -1,6 +1,10 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Criar Financeiro centralizado para eventos patrocinados e publicidade, com relatórios e histórico.
+- [ ] Proteger baixa/liberação para Financeiro, Sênior ou Master e leitura para demais administradores.
+- [ ] Validar gestão financeira e permissões sem alterar cobranças reais.
+
 - [x] Separar Seu Radar, Área do Divulgador e Curadoria com rotas e acessos próprios.
 - [x] Criar preferências e feed personalizado por categorias, estilos e bairros; salvar e reler com sessão real.
 - [x] Isolar consultas e ações de aprovação/rejeição e validar acessos com testes; Curadoria carregada com sessão real.

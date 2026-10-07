@@ -47,6 +47,9 @@ type CollaboratorPermissions = {
 };
 
 export type PermissionName =
+  | "finance.read"
+  | "finance.settle"
+  | "finance.release"
   | "events.create"
   | "events.read"
   | "events.update"
@@ -83,6 +86,11 @@ export function computePermissions(input: {
   if (roleNames.includes("senior")) {
     SENIOR_PERMISSIONS.forEach((p) => permissions.add(p));
   }
+  if (roleNames.some((role) => ["admin", "senior", "financeiro", "master"].includes(role))) permissions.add("finance.read");
+  if (roleNames.some((role) => ["senior", "financeiro", "master"].includes(role))) {
+    permissions.add("finance.settle");
+    permissions.add("finance.release");
+  }
 
   const collaborator = input.collaborator;
   if (collaborator?.is_active) {
@@ -97,7 +105,7 @@ export function computePermissions(input: {
   // senão quem é Divulgador ficava sem permissão de criar evento.
   const profileRole = (input.profileRole ?? "").toLowerCase();
   const normalizedRole = PROMOTER_ALIASES.includes(profileRole) ? "promoter" : profileRole;
-  if (normalizedRole && !roleNames.includes(normalizedRole)) {
+  if (normalizedRole && !["admin", "master", "senior", "financeiro"].includes(normalizedRole) && !roleNames.includes(normalizedRole)) {
     roleNames.push(normalizedRole);
   }
   if (normalizedRole === "promoter") {
@@ -183,8 +191,8 @@ export function useAppPermissions() {
   // Níveis administrativos: Sênior (moderação ampla) e Financeiro (único que dá baixa).
   const isSenior = roles.includes("senior") || isMaster;
   const isFinanceiro = roles.includes("financeiro");
-  const canSettlePayments = isFinanceiro || isMaster;
-  const canViewFinance = isAdmin || isSenior || isFinanceiro;
+  const canSettlePayments = hasPermission("finance.settle");
+  const canViewFinance = hasPermission("finance.read");
   const isCollaborator = roles.includes("collaborator") || isAdmin;
   const collaboratorName = data?.collaboratorName ?? null;
 

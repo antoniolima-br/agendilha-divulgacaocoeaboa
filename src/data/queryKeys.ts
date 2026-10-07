@@ -3,6 +3,10 @@
  * Keeps cache invalidation explicit and prevents typos in key arrays.
  */
 export const qk = {
+  finance: {
+    all: ["finance"] as const,
+    overview: (userId: string | null) => [...qk.finance.all, userId] as const,
+  },
   newsletter: {
     all: ["newsletter"] as const,
     list: () => [...qk.newsletter.all, "list"] as const,
