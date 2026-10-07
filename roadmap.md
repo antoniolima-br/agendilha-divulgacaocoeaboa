@@ -1,6 +1,10 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Separar Seu Radar, Área do Divulgador e Curadoria com rotas e acessos próprios.
+- [ ] Criar preferências e feed personalizado por categorias, estilos e bairros.
+- [ ] Isolar consultas e ações de aprovação/rejeição; validar acessos e atualização da agenda.
+
 - [x] Ocultar eventos passados de consultas públicas e restringir o histórico ao organizador.
 - [x] Adicionar Arquivados no painel pessoal com consulta e repetição em nova data/horário.
 - [ ] Validar histórico privado e repetição no navegador autenticado — bloqueado: solicitante sem conta correspondente; precisa entrar na prévia ou escolher uma conta de teste. Datas e consulta pública já verificadas.
