@@ -22,3 +22,5 @@
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.
 - Public event reads use the date-filtered public view; organizer archives use owner-scoped paginated queries, while authorized administration retains oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
+- Personalized radar reads shared public event queries and owner-scoped profile preferences; organizer history and curatorial queries stay separate to prevent cross-experience state leakage.
+- Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.

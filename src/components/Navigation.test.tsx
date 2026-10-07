@@ -22,6 +22,8 @@ vi.mock('@/pages/Landing', () => ({ default: () => <div data-testid="landing">La
 vi.mock('@/pages/AgendaCultural', () => ({ default: () => <div data-testid="agenda">Agenda Page</div> }));
 vi.mock('@/pages/Auth', () => ({ default: () => <div data-testid="auth">Auth Page</div> }));
 vi.mock('@/pages/MustChangePassword', () => ({ default: () => <div data-testid="must-change">Defina sua nova senha</div> }));
+vi.mock('@/pages/SeuRadar', () => ({ default: () => <div data-testid="radar">Seu Radar</div> }));
+vi.mock('@/pages/AdminAprovarEventos', () => ({ default: () => <div data-testid="curation">Curadoria</div> }));
 
 
 describe('Admin/Master Route Protection Integration', () => {
@@ -79,6 +81,28 @@ describe('Admin/Master Route Protection Integration', () => {
     await waitFor(() => {
       expect(screen.getByTestId('auth')).toBeInTheDocument();
     });
+  });
+
+  it('requires sign-in for personal radar', async () => {
+    setupMocks(null, [], false, false);
+    renderAt('/seu-radar');
+    await waitFor(() => expect(screen.getByTestId('auth')).toBeInTheDocument());
+  });
+  it('keeps regular users out of organizer history', async () => {
+    setupMocks({ id: 'public' }, ['user'], false, false);
+    renderAt('/meus-eventos');
+    await waitFor(() => expect(screen.getByTestId('radar')).toBeInTheDocument());
+  });
+  it('keeps regular users out of curation', async () => {
+    setupMocks({ id: 'public' }, ['user'], false, false);
+    renderAt('/admin/aprovar-eventos');
+    await waitFor(() => expect(screen.getByTestId('agenda')).toBeInTheDocument());
+    expect(screen.queryByTestId('curation')).not.toBeInTheDocument();
+  });
+  it('opens curation for authorized administrators', async () => {
+    setupMocks({ id: 'admin' }, ['admin'], true, false, ['events.approve']);
+    renderAt('/admin/aprovar-eventos');
+    await waitFor(() => expect(screen.getByTestId('curation')).toBeInTheDocument());
   });
 
   it.each(['/', '/agenda', '/enviar-evento', '/admin/events'])('requires temporary-password change even on %s', async (path) => {

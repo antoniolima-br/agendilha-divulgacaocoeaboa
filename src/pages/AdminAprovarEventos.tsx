@@ -12,14 +12,11 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { toast } from "sonner";
 import { Check, Plus, Radio, X } from "lucide-react";
-import { formatEventDateTimeBR, saoPauloTodayISO, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
-
-const FIELDS = "id, event_title, date, start_time, end_time, location, status, image_url, category";
+import { formatEventDateTimeBR } from "@/lib/eventDate";
 
 export default function AdminAprovarEventos() {
   const { canApprove, loading } = useAppPermissions();
   const decision = useCurationDecision();
-  const today = saoPauloTodayISO();
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
 
   const pending = useCuration(!loading && canApprove, "pending");
@@ -61,6 +58,7 @@ export default function AdminAprovarEventos() {
         {e.image_url && <img src={e.image_url} alt="" className="h-20 w-20 shrink-0 rounded-md object-cover" />}
         <div className="min-w-0 flex-1">
           <p className="font-semibold">{e.event_title || "Rolê sem título"}</p>
+          {e.responsible_name && <p className="text-xs text-muted-foreground">Enviado por {e.responsible_name}</p>}
           <p className="text-sm text-muted-foreground">{formatEventDateTimeBR(e.date, e.start_time)} · {e.location || "Local a confirmar"}</p>
         </div>
         <div className="flex flex-wrap gap-2">{actions}</div>
@@ -85,7 +83,7 @@ export default function AdminAprovarEventos() {
         <TabsContent value="pendentes" className="space-y-3">
           {pending.isError ? <div role="alert"><p>Não deu pra carregar os envios.</p><Button variant="outline" onClick={() => void pending.refetch()}>Tentar novamente</Button></div> : pending.isLoading ? <LoadingState /> : (pending.data ?? []).length === 0
             ? <p className="text-sm text-muted-foreground">Nada esperando aprovação. Tudo em dia!</p>
-            : (pending.data ?? []).map((e: any) => row(e, <>
+             : (pending.data ?? []).map((e) => row(e, <>
                 <Button size="sm" disabled={decision.isPending} onClick={() => decide(e.id, true)}><Check className="mr-1 h-4 w-4" /> Aprovar</Button>
                 <Button size="sm" variant="outline" disabled={decision.isPending} onClick={() => decide(e.id, false)}><X className="mr-1 h-4 w-4" /> Rejeitar</Button>
               </>))}
@@ -93,7 +91,7 @@ export default function AdminAprovarEventos() {
         <TabsContent value="aprovados" className="space-y-3">
           {approved.isError ? <div role="alert"><p>Não deu pra carregar os aprovados.</p><Button variant="outline" onClick={() => void approved.refetch()}>Tentar novamente</Button></div> : approved.isLoading ? <LoadingState /> : currentApproved.length === 0
             ? <p className="text-sm text-muted-foreground">Nenhum rolê aprovado de hoje em diante. Envia um evento pra começar.</p>
-            : currentApproved.map((e: any) => row(e,
+             : currentApproved.map((e) => row(e,
                 <Button size="sm" variant={overrides[e.id] ? "default" : "outline"} onClick={() => toggleLive(e.id)}>
                   <Radio className="mr-1 h-4 w-4" /> {overrides[e.id] ? "No Rolando agora" : "Enviar pro Rolando agora"}
                 </Button>))}
