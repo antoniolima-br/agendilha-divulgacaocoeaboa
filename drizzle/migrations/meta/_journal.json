@@ -141,6 +141,13 @@
       "when": 1791380299886,
       "tag": "0019_central_finance_management",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791380557378,
+      "tag": "0020_enforce_finance_publication_and_sync",
+      "breakpoints": true
     }
   ]
 }
