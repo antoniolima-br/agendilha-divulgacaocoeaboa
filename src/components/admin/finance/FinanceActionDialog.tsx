@@ -34,6 +34,7 @@ export function FinanceActionDialog({ item, action, onClose, onConfirm }: { item
       toast.success(action === "settle" && release ? "Baixa registrada e publicação liberada!" : `${titles[action]}: pronto!`);
       onClose();
     } catch (error) {
+      if (path) await supabase.storage.from("payment-receipts").remove([path]);
       toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : "Não deu pra salvar. Tenta de novo.");
     } finally { setSaving(false); }
   }
