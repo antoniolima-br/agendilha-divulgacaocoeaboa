@@ -25,6 +25,10 @@ export const qk = {
     all: ["admin-stats"] as const,
     master: () => [...qk.adminStats.all, "master"] as const,
   },
+  curation: {
+    all: ["curation"] as const,
+    list: (userId: string | undefined, status: string) => [...qk.curation.all, userId ?? "anon", status] as const,
+  },
   agenda: {
     all: ["agenda"] as const,
     events: () => [...qk.agenda.all, "events"] as const,

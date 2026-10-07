@@ -63,6 +63,7 @@ const Carrossel = lazy(() => import("./pages/Carrossel"));
 const EventoEnviado = lazy(() => import("./pages/EventoEnviado"));
 const ContratarDestaqueEvento = lazy(() => import("./pages/ContratarDestaqueEvento"));
 const MeusEventos = lazy(() => import("./pages/MeusEventos"));
+const SeuRadar = lazy(() => import("./pages/SeuRadar"));
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
 const AdminHighlightPayments = lazy(() => import("./pages/AdminHighlightPayments"));
@@ -217,7 +218,8 @@ export const AppRoutes = () => {
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
           <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SectionErrorBoundary context="EventForm" title="O formulário do evento deu um tropeço." description="Seu rascunho fica salvo. Toca em tentar de novo."><SubmitEvent /></SectionErrorBoundary></PromotorRoute>} />
           <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
-          <Route path={ROUTES.MEUS_EVENTOS} element={<ProtectedRoute><MeusEventos /></ProtectedRoute>} />
+          <Route path={ROUTES.SEU_RADAR} element={<ProtectedRoute><SeuRadar /></ProtectedRoute>} />
+          <Route path={ROUTES.MEUS_EVENTOS} element={<PromotorRoute><MeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />
@@ -252,7 +254,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_PAGAMENTOS_DESTAQUE} element={<AdminHighlightPayments />} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
           <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
-          <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<AdminAprovarEventos />} />
+          <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<ProtectedRoute requiredPermission="events.approve"><AdminAprovarEventos /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />
           <Route path={ROUTES.ADMIN_ESTABELECIMENTOS} element={<AdminEstabelecimentos />} />
           <Route path={ROUTES.ADMIN_NEGOCIOS} element={<AdminNegocios />} />
@@ -263,7 +265,7 @@ export const AppRoutes = () => {
 
         {/* Promotor area — guarded by user_type=divulgador (admins/masters incluídos) */}
         <Route element={<PromotorRoute><AppShell maxWidth="lg"><Outlet /></AppShell></PromotorRoute>}>
-          <Route path={ROUTES.PROMOTOR_HOME} element={<Navigate to={ROUTES.PROMOTOR_ESTABELECIMENTOS} replace />} />
+          <Route path={ROUTES.PROMOTOR_HOME} element={<Navigate to={ROUTES.MEUS_EVENTOS} replace />} />
           <Route path={ROUTES.PROMOTOR_ESTABELECIMENTOS} element={<PromotorEstabelecimentos />} />
           <Route path={ROUTES.PROMOTOR_NEGOCIOS} element={<PromotorNegocios />} />
           <Route path={ROUTES.PROMOTOR_ATRATIVOS} element={<PromotorAtrativos />} />

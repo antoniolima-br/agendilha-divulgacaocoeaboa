@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/routes/config";
+import { useDivulgadorStatus } from "@/data/useDivulgadorStatus";
 
 const statusIcon = {
   master: Crown,
@@ -41,6 +43,7 @@ interface Props {
 
  export function HeaderUserMenu({ variant = "desktop", onNavigate, hideContext }: Props) {
   const { user, signOut } = useAuth();
+  const { isDivulgador } = useDivulgadorStatus();
   const { name, initials, status, label, loaded } = useUserBadge();
   const navigate = useNavigate();
 
@@ -179,9 +182,9 @@ interface Props {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
-          <Link to="/meus-eventos">
+          <Link to={isDivulgador ? ROUTES.MEUS_EVENTOS : ROUTES.SEU_RADAR}>
             <ListChecks className="h-4 w-4 mr-2" />
-            Meus eventos
+            {isDivulgador ? "Área do Divulgador" : "Seu Radar"}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
@@ -192,9 +195,9 @@ interface Props {
         </DropdownMenuItem>
         {(status === "admin" || status === "master") && (
           <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
-            <Link to="/admin/events">
+            <Link to={ROUTES.ADMIN_APROVAR_EVENTOS}>
               <Settings className="h-4 w-4 mr-2" />
-              Gestão de Eventos
+              Curadoria
             </Link>
           </DropdownMenuItem>
         )}

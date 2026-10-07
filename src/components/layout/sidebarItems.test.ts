@@ -59,6 +59,7 @@ describe("sidebarConfig", () => {
 
     expect(moderation?.children?.map((item) => item.id)).toEqual([
       "manage_events",
+      "curadoria",
       "published_events",
       "flyer_moderator",
     ]);

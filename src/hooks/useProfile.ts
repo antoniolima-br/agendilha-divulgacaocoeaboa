@@ -117,7 +117,7 @@ export function useProfile() {
   }, [queryClient, userId]);
 
   async function saveProfile(data: Partial<ProfileAddress>) {
-    if (!user) return;
+    if (!user) return false;
     const { error } = await supabase
       .from("profiles")
       .update({ ...data, updated_at: new Date().toISOString() })
@@ -125,6 +125,7 @@ export function useProfile() {
 
     if (error) {
       handleError(error, "Erro ao salvar perfil");
+      return false;
     } else {
       queryClient.setQueryData<ProfileAddress>(qk.profile.byUser(user.id), (previous) => ({
         ...(previous ?? emptyAddress),
@@ -132,6 +133,7 @@ export function useProfile() {
       }));
       window.dispatchEvent(new Event("agendilha:profile-updated"));
       toast.success("Perfil atualizado!");
+      return true;
     }
 
   }

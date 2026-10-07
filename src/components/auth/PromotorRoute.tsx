@@ -26,14 +26,14 @@ export function PromotorRoute({ children }: { children: ReactNode }) {
   if (!user) {
     return (
       <Navigate
-        to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
+         to={`${ROUTES.AUTH}?redirect=${encodeURIComponent(location.pathname)}`}
         replace
       />
     );
   }
 
   if (!isDivulgador) {
-    return <Navigate to={ROUTES.AGENDA} replace />;
+    return <Navigate to={ROUTES.SEU_RADAR} replace />;
   }
 
   return <>{children}</>;
