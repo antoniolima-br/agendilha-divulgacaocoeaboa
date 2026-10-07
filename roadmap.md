@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Separar Meus eventos da Curadoria no acesso híbrido admin/divulgador, mantendo somente leitura financeira para admin comum.
+- [x] Separar Meus eventos da Curadoria no acesso híbrido admin/divulgador, mantendo somente leitura financeira para admin comum; 29 testes aprovados e envio pessoal isolado relido com sessão real.
 
 - [x] Criar Financeiro centralizado para eventos patrocinados e publicidade, com relatórios e histórico.
 - [x] Proteger baixa/liberação para Financeiro, Sênior ou Master e leitura para demais administradores.

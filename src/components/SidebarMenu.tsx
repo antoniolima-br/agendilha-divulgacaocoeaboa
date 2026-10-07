@@ -30,7 +30,7 @@ export function SidebarMenu({ onClose }: Props) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { name, initials, loaded: badgeLoaded } = useUserBadge();
-  const { isMaster, isAdmin, isSenior, isFinanceiro, isPromoter } = useAppPermissions();
+  const { isMaster, isAdmin, isSenior, isFinanceiro, isPromoter, canSubmit } = useAppPermissions();
   const { savedCount } = useSubmissions();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const { data: pendingCount = 0 } = useSubmissionsCount(
@@ -60,11 +60,12 @@ export function SidebarMenu({ onClose }: Props) {
 
   const filterItemsByRoleAndRoute = useCallback((items: SidebarItem[]) => {
     return items.filter(item => {
-      const hasRole = item.roles.includes(currentRole);
+      const personalEventEntry = item.id === "my_submissions" || item.id === "send_event";
+      const hasRole = personalEventEntry ? canSubmit : item.roles.includes(currentRole);
       if (!hasRole) return false;
       return routeExists(item.path);
     });
-  }, [currentRole]);
+  }, [currentRole, canSubmit]);
 
   const filteredSections = useMemo(() => sidebarConfig.map(section => ({
       ...section,
