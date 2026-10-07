@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { useMyEventHistory } from "@/data/useMyEventHistory";
 import { isArchivedEvent } from "@/lib/eventArchive";
 import { ROUTES } from "@/routes/config";
@@ -85,11 +86,13 @@ export default function MeusEventos() {
   const { user } = useAuth();
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
+  const { canApprove } = useAppPermissions();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
   const [viewing, setViewing] = useState<Row | null>(null);
   const navigate = useNavigate();
 
-  const { data: rows = [], isLoading: loading, isError, refetch } = useMyEventHistory(user?.id);
+  const { data: history = [], isLoading: loading, isError, refetch } = useMyEventHistory(user?.id);
+  const rows = useMemo(() => history.filter((row) => !!user && row.user_id === user.id), [history, user]);
 
   const counts = useMemo(() => {
     const c = { todos: 0, pendente: 0, aprovado: 0, rejeitado: 0, arquivados: 0 } as Record<StatusKey, number>;
@@ -119,27 +122,30 @@ export default function MeusEventos() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-foreground/12 bg-foreground/[0.02] mb-3">
               <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-foreground/60">
-                Curadoria · Painel do divulgador
+                Painel pessoal · Divulgador
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
               Área do Divulgador
             </h1>
             <p className="text-foreground/65 mt-1 text-sm">
-              Acompanhe o status de tudo que você enviou para análise.
+              Meus eventos — somente os rolês que você cadastrou.
             </p>
           </div>
+          <div className="flex flex-col gap-2 sm:items-end">
+          {canApprove && <Button asChild variant="outline"><Link to={ROUTES.ADMIN_APROVAR_EVENTOS}><ShieldCheck className="mr-2 h-4 w-4" />Curadoria geral</Link></Button>}
           {isDivulgador && (
             <Button
               asChild
               className="w-full rounded-full bg-foreground px-5 font-semibold tracking-tight text-background shadow-none hover:bg-foreground/90 sm:w-auto"
             >
-              <Link to="/enviar-evento">
+              <Link to={ROUTES.ENVIAR_EVENTO}>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Divulgar evento
               </Link>
             </Button>
           )}
+          </div>
         </header>
 
         {/* Card removido daqui pois agora temos a página /divulgador/status dedicada e linkada nos botões principais */}
@@ -177,7 +183,7 @@ export default function MeusEventos() {
                 variant="outline"
                 className="rounded-full border-foreground/15 hover:bg-foreground/5"
               >
-                <Link to="/enviar-evento">Divulgar meu primeiro evento</Link>
+                <Link to={ROUTES.ENVIAR_EVENTO}>Divulgar meu primeiro evento</Link>
               </Button>
             ) : (
               <p className="text-xs text-foreground/55">

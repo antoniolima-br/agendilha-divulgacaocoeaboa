@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import { sidebarConfig } from "./sidebarItems";
 
 describe("sidebarConfig", () => {
+  it("admin tem Meus eventos separado da Curadoria e do Financeiro", () => {
+    const personal = sidebarConfig.find((section) => section.id === "divulgacao");
+    expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
+    expect(personal?.items.find((item) => item.id === "send_event")?.roles).toContain("admin");
+    expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
+    expect(sidebarConfig.find((section) => section.id === "operacao")?.items.find((item) => item.id === "financeiro")?.roles).toContain("admin");
+  });
   it("centraliza as ferramentas de WhatsApp no Relatório Diário", () => {
     const operation = sidebarConfig.find((section) => section.id === "operacao");
     const central = operation?.items.find((item) => item.id === "relatorio_diario");
