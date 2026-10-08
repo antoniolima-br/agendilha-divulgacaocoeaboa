@@ -20,6 +20,7 @@ import { addDaysToISO, eventDateISO, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } f
 import { getEventFallbackImage } from "@/lib/event-utils";
 import { getShareData } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
+import { REGIONS, regionOf } from "@/lib/regions";
 
 type DateFilter = "today" | "tomorrow" | "weekend" | "next7";
 
@@ -103,18 +104,15 @@ function CuradoriaHojeInner() {
     },
   });
 
-  const regions = useMemo(() => Array.from(new Set(events
-    .map((event) => event.address_neighborhood?.trim())
-    .filter((value): value is string => Boolean(value))))
-    .sort((a, b) => a.localeCompare(b, "pt-BR")), [events]);
+  const regions = REGIONS;
 
   const visibleEvents = useMemo(() => events.filter((event) => {
-    const matchesRegion = region === "all" || event.address_neighborhood === region;
+    const matchesRegion = region === "all" || regionOf(event) === region;
     return matchesRegion && matchesDate(event.date, dateFilter);
   }), [dateFilter, events, region]);
 
   const todayEvents = useMemo(() => events.filter((event) => {
-    const matchesRegion = region === "all" || event.address_neighborhood === region;
+    const matchesRegion = region === "all" || regionOf(event) === region;
     return matchesRegion && eventDateISO(event.date) === today;
   }), [events, region, today]);
 
@@ -123,7 +121,7 @@ function CuradoriaHojeInner() {
     const lastDay = addDaysToISO(today, 7);
     return events.filter((event) => {
       const eventDay = eventDateISO(event.date);
-      const matchesRegion = region === "all" || event.address_neighborhood === region;
+      const matchesRegion = region === "all" || regionOf(event) === region;
       return matchesRegion && eventDay > today && eventDay <= lastDay;
     }).slice(0, 8);
   }, [events, region]);

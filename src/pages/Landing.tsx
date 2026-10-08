@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
-import { activeRegions, regionOf } from "@/lib/regions";
+import { REGIONS, regionOf } from "@/lib/regions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -371,7 +371,7 @@ export default function Landing() {
   const [homeBairro, setHomeBairro] = useState("all");
   const [homeCat, setHomeCat] = useState("all");
   const [homeNbh, setHomeNbh] = useState("all");
-  const homeBairros = useMemo(() => activeRegions(allEvents), [allEvents]);
+  const homeBairros = REGIONS;
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
   const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
   const regionNbhs = useMemo(() => homeBairro === "all" ? [] :

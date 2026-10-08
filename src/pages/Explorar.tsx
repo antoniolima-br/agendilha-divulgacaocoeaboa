@@ -38,8 +38,7 @@ import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
-
-const NEIGHBORHOODS: string[] = [];
+import { REGIONS, regionOf } from "@/lib/regions";
 
 const CATEGORIES: { id: string; label: string }[] = [
   { id: "musica", label: "Música / Shows" },
@@ -101,6 +100,7 @@ function ExplorarInner() {
   const [datePreset, setDatePreset] = useState<DatePreset>("all");
   const [customDate, setCustomDate] = useState<Date | undefined>(datePreset === "today" ? new Date() : undefined);
   const [neighborhood, setNeighborhood] = useState<string>("all");
+  const [region, setRegion] = useState("all");
   const [category, setCategory] = useState<string>(initialCat);
   const [term, setTerm] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -173,6 +173,7 @@ function ExplorarInner() {
       if (datePreset === "free" && (ev.is_highlight || ev.highlight_active || !isFreeEventPrice(ev.sale_price))) return false;
       if (datePreset === "kids" && !ev.is_suitable_for_minors && ev.age_rating !== "Livre") return false;
       if (neighborhood !== "all" && ev.address_neighborhood !== neighborhood) return false;
+      if (region !== "all" && regionOf(ev) !== region) return false;
       if (category !== "all" && ev.category !== category) return false;
       if (q) {
         const haystack = [ev.event_title, ev.location, ev.address_neighborhood, ev.description]
@@ -205,11 +206,12 @@ function ExplorarInner() {
       if (a.date !== b.date) return (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31");
       return (a.start_time || "").localeCompare(b.start_time || "");
     });
-  }, [events, datePreset, customDate, neighborhood, category, term, isArchive]);
+  }, [events, datePreset, customDate, neighborhood, region, category, term, isArchive]);
 
   const activeFiltersCount =
     (datePreset !== "all" ? 1 : 0) +
     (neighborhood !== "all" ? 1 : 0) +
+    (region !== "all" ? 1 : 0) +
     (category !== "all" ? 1 : 0) +
     (term.trim() ? 1 : 0);
 
@@ -217,6 +219,7 @@ function ExplorarInner() {
     setDatePreset("all");
     setCustomDate(undefined);
     setNeighborhood("all");
+    setRegion("all");
     setCategory("all");
     setTerm("");
   };
@@ -333,6 +336,15 @@ function ExplorarInner() {
 
   const Selects = (
     <div className="grid grid-cols-1 gap-3">
+      <Select value={region} onValueChange={setRegion}>
+        <SelectTrigger aria-label="Filtrar por região" className="h-11 rounded-xl bg-background">
+          <SelectValue placeholder="Regiões" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todas as regiões</SelectItem>
+          {REGIONS.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}
+        </SelectContent>
+      </Select>
       <Select value={category} onValueChange={setCategory}>
         <SelectTrigger className="h-11 rounded-xl bg-background">
           <SelectValue placeholder="Categorias" />

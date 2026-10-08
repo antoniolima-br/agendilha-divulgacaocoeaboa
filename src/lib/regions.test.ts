@@ -13,6 +13,8 @@ describe("Rio macro-regions", () => {
     expect(regionOf({ address_neighborhood: "Freguesia de Jacarepaguá" })).toBe("Jacarepaguá");
   });
   it("does not classify other cities or unknown neighborhoods", () => {
+    expect(regionOf({ address_neighborhood: "Olaria" })).toBe("Zona Norte");
+    expect(regionOf({ address_neighborhood: " olaria ", address_city: "Rio de Janeiro" })).toBe("Zona Norte");
     expect(regionOf({ address_neighborhood: "Centro", address_city: "Niterói" })).toBeNull();
     expect(regionOf({ address_neighborhood: "Desconhecido" })).toBeNull();
   });
