@@ -1201,6 +1201,78 @@ export type Database = {
           },
         ]
       }
+      finance_contracts: {
+        Row: {
+          commercial_type: string
+          ends_on: string | null
+          id: string
+          item_id: string
+          item_type: string
+          notes: string | null
+          reference_amount_cents: number
+          starts_on: string | null
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          commercial_type: string
+          ends_on?: string | null
+          id?: string
+          item_id: string
+          item_type: string
+          notes?: string | null
+          reference_amount_cents?: number
+          starts_on?: string | null
+          updated_at?: string
+          updated_by: string
+        }
+        Update: {
+          commercial_type?: string
+          ends_on?: string | null
+          id?: string
+          item_id?: string
+          item_type?: string
+          notes?: string | null
+          reference_amount_cents?: number
+          starts_on?: string | null
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: []
+      }
+      finance_expenses: {
+        Row: {
+          amount_cents: number
+          category: string
+          created_at: string
+          created_by: string
+          description: string
+          expense_date: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          amount_cents: number
+          category: string
+          created_at?: string
+          created_by: string
+          description: string
+          expense_date: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          category?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
       finance_history: {
         Row: {
           action: string
@@ -2941,6 +3013,17 @@ export type Database = {
         }[]
       }
       event_day_sp: { Args: { p_date: string }; Returns: string }
+      finance_add_expense: {
+        Args: {
+          p_amount_cents: number
+          p_category: string
+          p_description: string
+          p_expense_date: string
+          p_notes?: string
+        }
+        Returns: Json
+      }
+      finance_dashboard: { Args: never; Returns: Json }
       finance_manage: {
         Args: {
           p_action: string
@@ -2954,6 +3037,18 @@ export type Database = {
         Returns: Json
       }
       finance_overview: { Args: never; Returns: Json }
+      finance_save_contract: {
+        Args: {
+          p_commercial_type: string
+          p_ends_on?: string
+          p_item_id: string
+          p_item_type: string
+          p_notes?: string
+          p_reference_amount_cents?: number
+          p_starts_on?: string
+        }
+        Returns: Json
+      }
       generate_slug: { Args: { title: string }; Returns: string }
       get_admin_dashboard_stats: {
         Args: {

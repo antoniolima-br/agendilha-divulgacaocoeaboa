@@ -1,6 +1,9 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Ampliar Financeiro: baixa com publicação automática, livro caixa com despesas, evolução e inventário de cortesias/permutas; 33 testes aprovados.
+- [ ] Validar nova baixa/publicação e despesa no Financeiro com sessão autorizada — a conta solicitante não tem sessão disponível; é necessário entrar na prévia e autorizar um lançamento de teste.
+
 - [x] Refatorar hierarquia de acessos, proteções de telas e menu lateral por perfil; 53 testes aprovados, agenda pública e bloqueio de visitantes verificados.
 - [ ] Validar leitura administrativa e ações exclusivas de Master com sessão real — é necessário entrar na prévia; não foi possível obter sessão da conta solicitante.
 

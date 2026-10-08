@@ -1,0 +1,17 @@
+import { useMemo, useState } from "react";
+import { Plus, ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { moneyBR, type FinanceOverview } from "@/lib/finance";
+import { cashbook, financeAnalytics } from "@/lib/financeAnalytics";
+const dayBR = (value: string) => value.split("-").reverse().join("/");
+export function FinanceBook({ data, canWrite, onExpense }: { data: FinanceOverview; canWrite: boolean; onExpense: () => void }) {
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [page, setPage] = useState(1);
+  const total = financeAnalytics(data);
+  const rows = useMemo(() => cashbook(data).filter((r) => (!from || r.date >= from) && (!to || r.date <= to)), [data, from, to]);
+  const period = financeAnalytics(data, from, to || undefined);
+  return <section className="space-y-5"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-xl font-bold">Livro Caixa</h2>{canWrite && <Button onClick={onExpense}><Plus className="mr-2 h-4 w-4" />Registrar despesa</Button>}</div><dl className="grid grid-cols-1 gap-4 border-y border-border py-5 sm:grid-cols-3">{[["Receitas totais", total.revenue], ["Despesas totais", total.expenses], ["Saldo consolidado", total.balance]].map(([title, amount]) => <div key={title}><dt className="text-xs text-muted-foreground">{title}</dt><dd className="text-2xl font-bold break-words">{moneyBR(Number(amount))}</dd></div>)}</dl><div className="flex flex-wrap gap-3"><div className="space-y-1"><Label htmlFor="book-from">De</Label><Input id="book-from" type="date" value={from} onChange={(e) => { setFrom(e.target.value); setPage(1); }} /></div><div className="space-y-1"><Label htmlFor="book-to">Até</Label><Input id="book-to" type="date" min={from || undefined} value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} /></div></div><p className="text-sm text-muted-foreground">No período: entradas {moneyBR(period.revenue)} · saídas {moneyBR(period.expenses)} · saldo {moneyBR(period.balance)}</p>{rows.length === 0 ? <p className="py-6 text-sm text-muted-foreground">Nenhum lançamento nesse período. Escolha outras datas.</p> : <ul className="divide-y divide-border">{rows.slice((page - 1) * 20, page * 20).map((r) => <li key={r.id} className="flex items-start justify-between gap-3 py-4"><div className="flex min-w-0 items-start gap-3">{r.direction === "in" ? <ArrowDownLeft className="mt-1 h-4 w-4 shrink-0 text-primary" /> : <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-destructive" />}<div className="min-w-0"><p className="break-words font-medium">{r.title}</p><p className="text-xs text-muted-foreground">{dayBR(r.date)} · {r.category}</p></div></div><strong className="shrink-0 text-sm">{r.direction === "in" ? "+" : "−"} {moneyBR(r.amount)}</strong></li>)}</ul>}{rows.length > 20 && <div className="flex justify-center items-center gap-3"><Button variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</Button><span>{page} / {Math.ceil(rows.length / 20)}</span><Button variant="outline" disabled={page * 20 >= rows.length} onClick={() => setPage(page + 1)}>Próxima</Button></div>}</section>;
+}

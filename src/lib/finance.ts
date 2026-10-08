@@ -7,9 +7,11 @@ export type FinanceItem = {
   receipt_path: string | null; settled_at: string | null; released_at: string | null; notes: string | null;
 };
 export type FinanceEntry = { id: string; item_type: string; item_id: string; title?: string; item_title?: string; action?: string; amount_cents: number | null; created_at: string; notes?: string | null; actor_id?: string };
-export type FinanceOverview = { items: FinanceItem[]; payments: FinanceEntry[]; history: FinanceEntry[] };
+export type FinanceExpense = { id: string; description: string; category: string; amount_cents: number; expense_date: string; notes: string | null; created_by: string; created_at: string };
+export type FinanceContract = { item_type: "evento" | "anuncio"; item_id: string; title: string; publication_status: string; commercial_type: "paid" | "courtesy" | "barter"; reference_amount_cents: number; starts_on: string | null; ends_on: string | null; highlight_until: string | null; workflow_status: FinanceStatus; notes: string | null; created_at: string };
+export type FinanceOverview = { items: FinanceItem[]; payments: FinanceEntry[]; history: FinanceEntry[]; expenses: FinanceExpense[]; inventory: FinanceContract[] };
 export const financeLabels: Record<FinanceStatus, string> = { pending: "Pendente", paid: "Pago", released: "Liberado", cancelled: "Cancelado" };
-export const financeActionLabels: Record<string, string> = { edit: "Cobrança atualizada", settle: "Baixa registrada", release: "Publicação liberada", cancel: "Cobrança cancelada" };
+export const financeActionLabels: Record<string, string> = { edit: "Cobrança atualizada", settle: "Baixa registrada", release: "Publicação liberada", cancel: "Cobrança cancelada", contract: "Contrato atualizado" };
 export const moneyBR = (cents: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 export function parseFinanceAmount(value: string): number | null {
   const normalized = value.trim().replace(/\s/g, "");
