@@ -14,10 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/routes/config";
 import { useDivulgadorStatus } from "@/data/useDivulgadorStatus";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 
 const statusIcon = {
   master: Crown,
   admin: Shield,
+  senior: Shield,
+  financeiro: Shield,
   collaborator: UserIcon,
   artist: UserIcon,
   user: UserIcon,
@@ -28,6 +31,8 @@ const statusStyles = {
     "bg-secondary/15 text-secondary border-secondary/30",
   admin:
     "bg-primary/10 text-primary border-primary/25",
+  senior: "bg-secondary/15 text-secondary border-secondary/30",
+  financeiro: "bg-primary/10 text-primary border-primary/25",
   collaborator:
     "bg-foreground/[0.06] text-foreground/75 border-foreground/15",
   artist:
@@ -44,6 +49,7 @@ interface Props {
  export function HeaderUserMenu({ variant = "desktop", onNavigate, hideContext }: Props) {
   const { user, signOut } = useAuth();
   const { isDivulgador } = useDivulgadorStatus();
+  const { canApprove, canViewFinance, isFinanceiro } = useAppPermissions();
   const { name, initials, status, label, loaded } = useUserBadge();
   const navigate = useNavigate();
 
@@ -182,9 +188,9 @@ interface Props {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
-          <Link to={isDivulgador ? ROUTES.MEUS_EVENTOS : ROUTES.SEU_RADAR}>
+          <Link to={isFinanceiro ? ROUTES.ADMIN_FINANCEIRO : isDivulgador ? ROUTES.MEUS_EVENTOS : ROUTES.SEU_RADAR}>
             <ListChecks className="h-4 w-4 mr-2" />
-            {isDivulgador ? "Meus eventos" : "Seu Radar"}
+            {isFinanceiro && canViewFinance ? "Financeiro" : isDivulgador ? "Meus eventos" : "Seu Radar"}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
@@ -193,7 +199,7 @@ interface Props {
             Senha e conta
           </Link>
         </DropdownMenuItem>
-        {(status === "admin" || status === "master") && (
+        {canApprove && (
           <DropdownMenuItem asChild className="rounded-xl cursor-pointer">
             <Link to={ROUTES.ADMIN_APROVAR_EVENTOS}>
               <Settings className="h-4 w-4 mr-2" />

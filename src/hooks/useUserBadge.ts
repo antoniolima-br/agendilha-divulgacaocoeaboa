@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 
-  export type UserStatus = "master" | "admin" | "collaborator" | "artist" | "user" | null;
+  export type UserStatus = "master" | "senior" | "financeiro" | "admin" | "collaborator" | "artist" | "user" | null;
 
 /** Campos que gravamos em user_metadata no cadastro/login. */
 interface UserMetadata {
@@ -31,12 +31,14 @@ function buildInitials(name: string): string {
 export function useUserBadge(): UserBadge {
   const { user, isAdmin } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
-  const { isMaster, isAdmin: hasAdminRole, isCollaborator, collaboratorName, loading } = useAppPermissions();
+  const { isMaster, isSenior, isFinanceiro, isAdmin: hasAdminRole, isCollaborator, collaboratorName, loading } = useAppPermissions();
   const safeProfile = profile && typeof profile === "object" ? profile : null;
   const status: UserStatus = !user
     ? null
     : isMaster
       ? "master"
+      : isSenior ? "senior"
+      : isFinanceiro ? "financeiro"
       : hasAdminRole || isAdmin
         ? "admin"
         : safeProfile?.role === "artist"
@@ -65,6 +67,8 @@ export function useUserBadge(): UserBadge {
   const initials = buildInitials(name);
   const labelMap: Record<NonNullable<UserStatus>, string> = {
     master: "Admin Master",
+    senior: "Administrador Sênior",
+    financeiro: "Administrador Financeiro",
     admin: "Admin",
     collaborator: "Divulgador",
     artist: "Artista",
