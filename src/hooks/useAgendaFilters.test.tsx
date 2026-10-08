@@ -37,7 +37,7 @@ describe("useAgendaFilters", () => {
 
   it("busca bairro e região sem acentos ou distinção de caixa", () => {
     const { result } = renderHook(() => useAgendaFilters({ events: [
-      { ...event("olaria-sabado", "2026-09-26"), address_neighborhood: " OLARIA " },
+      { ...event("olaria-sabado", "2026-09-26"), address_neighborhood: "Olaria (#) Rio de Janeiro, RJ, Brasil" },
       { ...event("ramos", "2026-09-26"), address_neighborhood: "rAmOs" },
       { ...event("bonsucesso", "2026-09-26"), address_neighborhood: "Bonsucesso" },
       { ...event("penha", "2026-09-26"), address_neighborhood: "PENHA" },

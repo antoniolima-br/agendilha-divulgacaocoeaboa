@@ -13,6 +13,8 @@ export const REGION_NEIGHBORHOODS: Record<Region, readonly string[]> = {
 };
 export const normalizeGeography = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
 const norm = normalizeGeography;
+// Legacy address suggestions sometimes stored the city suffix in the neighborhood field.
+export const normalizeNeighborhood = (value: string) => norm(value).replace(/\s*(?:\(#\)\s*|,\s*|-\s*)rio de janeiro(?:\s*,\s*(?:rj|brasil|brazil))*$/, "").trim();
 const lookup = new Map<string, Region>();
 for (const region of REGIONS) {
   lookup.set(norm(region), region);
@@ -23,7 +25,7 @@ for (const [alias, region] of Object.entries({ "Freguesia": "Ilha do Governador"
 export function regionOf(e: { address_neighborhood?: string | null; address_city?: string | null }): Region | null {
   const city = norm(e.address_city ?? "");
   if (city && !["rio de janeiro", "rio", "rj"].includes(city) && !REGIONS.some((r) => norm(r) === city)) return null;
-  return lookup.get(norm(e.address_neighborhood ?? "")) ?? lookup.get(city) ?? null;
+   return lookup.get(normalizeNeighborhood(e.address_neighborhood ?? "")) ?? lookup.get(city) ?? null;
 }
 export function activeRegions(events: { address_neighborhood?: string | null; address_city?: string | null }[]): Region[] {
   const found = new Set(events.map(regionOf));
@@ -31,7 +33,7 @@ export function activeRegions(events: { address_neighborhood?: string | null; ad
 }
 export function matchesEventGeography(event: { address_neighborhood?: string | null; address_city?: string | null }, region = "all", neighborhood = "all"): boolean {
   return (norm(region) === "all" || norm(regionOf(event) ?? "") === norm(region)) &&
-    (norm(neighborhood) === "all" || norm(event.address_neighborhood ?? "") === norm(neighborhood));
+    (norm(neighborhood) === "all" || normalizeNeighborhood(event.address_neighborhood ?? "") === normalizeNeighborhood(neighborhood));
 }
 export function matchesEventSearch(event: { event_title?: string | null; description?: string | null; location?: string | null; address_neighborhood?: string | null; address_city?: string | null }, search: string): boolean {
   const text = [event.event_title, event.description, event.location, event.address_neighborhood, regionOf(event)].filter(Boolean).join(" ");

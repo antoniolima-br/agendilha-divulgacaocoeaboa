@@ -12,6 +12,13 @@ describe("Rio macro-regions", () => {
     expect(matchesEventGeography({ address_neighborhood: "Penha Circular" }, "Zona Norte", "Penha")).toBe(false);
     expect(matchesEventGeography({ address_neighborhood: "Olaria", address_city: "Niterói" }, "Zona Norte")).toBe(false);
   });
+  it("recognizes the legacy Olaria address suggestion without changing its stored value", () => {
+    const event = { address_neighborhood: "Olaria (#) Rio de Janeiro, RJ, Brasil" };
+    expect(regionOf(event)).toBe("Zona Norte");
+    expect(matchesEventGeography(event, "Zona Norte", "OLARIA")).toBe(true);
+    expect(matchesEventSearch(event, "zona norte")).toBe(true);
+    expect(regionOf({ address_neighborhood: "Ramos, Rio de Janeiro, RJ, Brasil" })).toBe("Zona Norte");
+  });
   it("has eight regions without duplicate neighborhoods", () => {
     expect(REGIONS).toHaveLength(8);
     const neighborhoods = REGIONS.flatMap((r) => REGION_NEIGHBORHOODS[r]);
