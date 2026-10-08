@@ -25,4 +25,4 @@
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Personalized radar reads shared public event queries and owner-scoped profile preferences; organizer history and curatorial queries stay separate to prevent cross-experience state leakage.
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.
-- Central finance uses authenticated atomic RPCs for settlement and publication, with payment_records as evidence and append-only workflow history; this prevents partial releases and duplicate settlement.
+- Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
