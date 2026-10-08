@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { categoryLabels } from "@/components/agenda/types";
+import { REGIONS } from "@/lib/regions";
 import { cn } from "@/lib/utils";
 
 interface AgendaFiltersProps {
@@ -18,6 +19,8 @@ interface AgendaFiltersProps {
   onToggleSort: () => void;
   showFavoritesOnly: boolean;
   onToggleFavorites: () => void;
+  regionFilter: string;
+  onRegionChange: (value: string) => void;
   categoryFilter: string;
   onCategoryChange: (value: string) => void;
 }
@@ -30,6 +33,8 @@ export function AgendaFilters({
   onToggleSort,
   showFavoritesOnly,
   onToggleFavorites,
+  regionFilter,
+  onRegionChange,
   categoryFilter,
   onCategoryChange,
 }: AgendaFiltersProps) {
@@ -104,6 +109,7 @@ export function AgendaFilters({
                 </SelectContent>
               </Select>
             </div>
+            <div className="min-w-0 flex-1 w-full"><Select value={regionFilter} onValueChange={onRegionChange}><SelectTrigger aria-label="Região dos rolês" className="h-12 border-2 border-primary/10 bg-card font-semibold text-sm"><SelectValue placeholder="Regiões" /></SelectTrigger><SelectContent><SelectItem value="all">Todas as regiões</SelectItem>{REGIONS.map((region) => <SelectItem key={region} value={region}>{region}</SelectItem>)}</SelectContent></Select></div>
           </div>
         </div>
       </div>

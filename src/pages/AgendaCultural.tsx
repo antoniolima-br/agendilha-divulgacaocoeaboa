@@ -179,6 +179,8 @@ function AgendaCulturalInner() {
               }
               showFavoritesOnly={filters.showFavoritesOnly}
               onToggleFavorites={() => filters.setShowFavoritesOnly(!filters.showFavoritesOnly)}
+              regionFilter={filters.regionFilter}
+              onRegionChange={filters.setRegionFilter}
               categoryFilter={filters.categoryFilter}
               onCategoryChange={filters.setCategoryFilter}
             />

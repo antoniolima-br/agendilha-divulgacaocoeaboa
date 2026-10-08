@@ -16,6 +16,9 @@ import { AddressAiCheck } from "../AddressAiCheck";
 import { checkLocationAutofill, formatCep, cepDigits, validateCep } from "@/lib/autofillValidation";
 import { formatPhoneDisplay } from "@/lib/whatsapp";
 
+import { BAIRROS } from "@/lib/neighborhoods";
+import { regionOf } from "@/lib/regions";
+
 const LOCAL_TIPOS = [
   { v: "bar", l: "Bar" },
   { v: "restaurante", l: "Restaurante" },
@@ -42,6 +45,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
     "locationContact",
     "locationType",
   ]);
+  const macroRegion = regionOf({ address_neighborhood: watched[2], address_city: form.watch("addressCity") });
   const issues = checkLocationAutofill({
     locationName: watched[0],
     localTipo: watched[1],
@@ -237,7 +241,8 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
             <FormLabel>Bairro do local</FormLabel>
             <FormControl>
               <SuggestInput
-                placeholder="Ex.: Jardim Guanabara"
+                placeholder="Busque o bairro do local"
+                extraSuggestions={[...BAIRROS]}
                 className="h-12"
                 suggestFrom="estabelecimentos_public"
                 suggestColumn="bairro"
@@ -251,6 +256,8 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
           </FormItem>
         )}
       />
+
+      <div className="space-y-1" aria-live="polite"><p className="text-sm font-medium">Região do evento</p><p className="text-sm text-muted-foreground">{macroRegion ?? "Escolha um bairro do Rio para identificar a região."}</p></div>
 
       <AddressAiCheck form={form} />
 

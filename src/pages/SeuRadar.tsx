@@ -4,7 +4,7 @@ import { Radar, Save, CalendarDays, MapPin } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useEvents } from "@/data/events";
 import { radarEvents } from "@/lib/radar";
-import { BAIRROS } from "@/lib/neighborhoods";
+import { REGIONS, REGION_NEIGHBORHOODS } from "@/lib/regions";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ export default function SeuRadar() {
   const [categories, setCategories] = useState<string[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
+  const [regions, setRegions] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function SeuRadar() {
     setCategories(Array.isArray(profile.event_type_preferences) ? profile.event_type_preferences : []);
     setStyles(Array.isArray(profile.musical_preferences) ? profile.musical_preferences : []);
     setNeighborhoods(Array.isArray(profile.followed_neighborhoods) ? profile.followed_neighborhoods : []);
+    setRegions(Array.isArray(profile.followed_regions) ? profile.followed_regions : []);
   }, [loaded, profile]);
   const feed = useMemo(() => radarEvents(events, profile), [events, profile]);
   const toggle = (values: string[], value: string, setter: (values: string[]) => void) => setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]);
@@ -36,8 +38,9 @@ export default function SeuRadar() {
     {editing && <section className="space-y-6 border-y border-border py-6">
       {choices("Categorias", CATEGORIES, categories, setCategories)}
       {choices("Estilos musicais", STYLES, styles, setStyles)}
-      {choices("Bairros", BAIRROS, neighborhoods, setNeighborhoods)}
-      <Button disabled={saving} onClick={async () => { setSaving(true); try { const saved = await saveProfile({ event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods }); if (saved) setEditing(false); } finally { setSaving(false); } }}><Save className="mr-2 h-4 w-4" />{saving ? "Salvando…" : "Salvar meus gostos"}</Button>
+      {choices("Regiões", REGIONS, regions, setRegions)}
+      <details className="space-y-4"><summary className="cursor-pointer font-semibold">Bairros específicos{neighborhoods.length ? ` · ${neighborhoods.length}` : ""}</summary><div className="max-h-80 space-y-5 overflow-y-auto py-3">{REGIONS.map((region) => choices(region, REGION_NEIGHBORHOODS[region], neighborhoods, setNeighborhoods))}</div></details>
+      <Button disabled={saving} onClick={async () => { setSaving(true); try { const saved = await saveProfile({ event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods, followed_regions: regions }); if (saved) setEditing(false); } finally { setSaving(false); } }}><Save className="mr-2 h-4 w-4" />{saving ? "Salvando…" : "Salvar meus gostos"}</Button>
     </section>}
     {isError ? <div role="alert" className="space-y-3"><p>Não deu pra carregar seu radar agora.</p><Button variant="outline" onClick={() => void refetch()}>Tentar novamente</Button></div> : isLoading ? <LoadingState message="Buscando seus rolês…" /> : feed.length ? <ul className="space-y-3">{feed.map((event) => <li key={event.id} className="flex gap-4 rounded-lg border border-border p-4">
       {event.image_url && <img src={event.image_url} alt="" loading="lazy" className="hidden h-24 w-20 shrink-0 rounded-md object-cover sm:block" />}

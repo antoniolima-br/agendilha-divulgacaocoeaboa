@@ -29,6 +29,7 @@ import { qk } from "@/data/queryKeys";
     email_notifications_enabled?: boolean;
     notification_frequency?: string;
     followed_neighborhoods?: string[];
+    followed_regions?: string[];
     followed_styles?: string[];
     onboarding_completed?: boolean;
   }
@@ -55,6 +56,7 @@ import { qk } from "@/data/queryKeys";
     email_notifications_enabled: false,
     notification_frequency: "weekly",
     followed_neighborhoods: [],
+    followed_regions: [],
     followed_styles: [],
     onboarding_completed: false,
   };
@@ -74,7 +76,7 @@ export function useProfile() {
       if (!userId) return emptyAddress;
       const { data, error } = await supabase
         .from("profiles")
-        .select("company_name, responsible_name, email, phone, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, contact_social, nick_name, home_location, work_neighborhood, musical_preferences, event_type_preferences, role, push_notifications_enabled, email_notifications_enabled, notification_frequency, followed_neighborhoods, followed_styles, onboarding_completed")
+        .select("company_name, responsible_name, email, phone, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, contact_social, nick_name, home_location, work_neighborhood, musical_preferences, event_type_preferences, role, push_notifications_enabled, email_notifications_enabled, notification_frequency, followed_regions, followed_neighborhoods, followed_styles, onboarding_completed")
         .eq("user_id", userId)
         .maybeSingle();
       if (error) throw error;
@@ -101,6 +103,7 @@ export function useProfile() {
         email_notifications_enabled: data.email_notifications_enabled ?? false,
         notification_frequency: data.notification_frequency || "weekly",
         followed_neighborhoods: data.followed_neighborhoods || [],
+        followed_regions: data.followed_regions || [],
         followed_styles: data.followed_styles || [],
         onboarding_completed: data.onboarding_completed ?? false,
       };
