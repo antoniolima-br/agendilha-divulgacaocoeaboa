@@ -23,6 +23,6 @@
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.
 - Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
-- Radar uses shared public events and owner-scoped preferences, isolated from organizer history and curation. Central regions.ts derives geography from neighborhood/city; region and neighborhood preferences combine as a union to avoid duplicate event fields.
+- Radar uses public events and owner-scoped preferences, separate from organizer history and curation. regions.ts derives geography, unions Radar regions/bairros, and normalizes public geographic filters/search to prevent case/accent drift.
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.

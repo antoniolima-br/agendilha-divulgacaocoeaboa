@@ -11,7 +11,8 @@ export const REGION_NEIGHBORHOODS: Record<Region, readonly string[]> = {
   "Barra e Recreio": ["Barra da Tijuca", "Recreio dos Bandeirantes", "Joá", "Itanhangá", "Vargem Grande", "Vargem Pequena", "Camorim", "Grumari", "Barra Olímpica"],
   "Zona Oeste": ["Bangu", "Campo Grande", "Realengo", "Santa Cruz", "Guaratiba", "Barra de Guaratiba", "Pedra de Guaratiba", "Sepetiba", "Padre Miguel", "Senador Camará", "Senador Vasconcelos", "Santíssimo", "Cosmos", "Inhoaíba", "Paciência", "Campo dos Afonsos", "Deodoro", "Jardim Sulacap", "Magalhães Bastos", "Vila Militar", "Gericinó", "Jabour"],
 };
-const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+export const normalizeGeography = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
+const norm = normalizeGeography;
 const lookup = new Map<string, Region>();
 for (const region of REGIONS) {
   lookup.set(norm(region), region);
@@ -27,4 +28,12 @@ export function regionOf(e: { address_neighborhood?: string | null; address_city
 export function activeRegions(events: { address_neighborhood?: string | null; address_city?: string | null }[]): Region[] {
   const found = new Set(events.map(regionOf));
   return REGIONS.filter((r) => found.has(r));
+}
+export function matchesEventGeography(event: { address_neighborhood?: string | null; address_city?: string | null }, region = "all", neighborhood = "all"): boolean {
+  return (norm(region) === "all" || norm(regionOf(event) ?? "") === norm(region)) &&
+    (norm(neighborhood) === "all" || norm(event.address_neighborhood ?? "") === norm(neighborhood));
+}
+export function matchesEventSearch(event: { event_title?: string | null; description?: string | null; location?: string | null; address_neighborhood?: string | null; address_city?: string | null }, search: string): boolean {
+  const text = [event.event_title, event.description, event.location, event.address_neighborhood, regionOf(event)].filter(Boolean).join(" ");
+  return norm(text).includes(norm(search));
 }

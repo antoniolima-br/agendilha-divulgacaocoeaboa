@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
-import { REGIONS, regionOf } from "@/lib/regions";
+import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -377,9 +377,9 @@ export default function Landing() {
   const regionNbhs = useMemo(() => homeBairro === "all" ? [] :
     [...new Set(allEvents.filter((e: any) => regionOf(e) === homeBairro).map(nbhName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")),
     [allEvents, homeBairro]);
-  useEffect(() => { if (homeNbh !== "all" && !regionNbhs.includes(homeNbh)) setHomeNbh("all"); }, [regionNbhs, homeNbh]);
+   useEffect(() => { if (homeNbh !== "all" && !regionNbhs.some((name) => normalizeGeography(name) === normalizeGeography(homeNbh))) setHomeNbh("all"); }, [regionNbhs, homeNbh]);
   const homeFiltered = useMemo(() => allEvents.filter((e: any) =>
-    (homeBairro === "all" || regionOf(e) === homeBairro) && (homeNbh === "all" || nbhName(e) === homeNbh)),
+     matchesEventGeography(e, homeBairro, homeNbh)),
     [allEvents, homeBairro, homeNbh]);
   return (
     <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">

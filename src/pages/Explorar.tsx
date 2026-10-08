@@ -38,7 +38,8 @@ import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
-import { REGIONS, regionOf } from "@/lib/regions";
+import { REGIONS, matchesEventGeography, matchesEventSearch } from "@/lib/regions";
+import { BAIRROS } from "@/lib/neighborhoods";
 
 const CATEGORIES: { id: string; label: string }[] = [
   { id: "musica", label: "Música / Shows" },
@@ -164,7 +165,6 @@ function ExplorarInner() {
   }, [events]);
 
   const filtered = useMemo(() => {
-    const q = term.trim().toLowerCase();
     const today = saoPauloTodayISO();
     const list = events.filter(ev => {
       const isoDate = eventDateISO(ev.date);
@@ -172,14 +172,9 @@ function ExplorarInner() {
       if (datePreset !== "free" && datePreset !== "kids" && !presetMatches(ev.date, datePreset as any, customDate)) return false;
       if (datePreset === "free" && (ev.is_highlight || ev.highlight_active || !isFreeEventPrice(ev.sale_price))) return false;
       if (datePreset === "kids" && !ev.is_suitable_for_minors && ev.age_rating !== "Livre") return false;
-      if (neighborhood !== "all" && ev.address_neighborhood !== neighborhood) return false;
-      if (region !== "all" && regionOf(ev) !== region) return false;
+       if (!matchesEventGeography(ev, region, neighborhood)) return false;
       if (category !== "all" && ev.category !== category) return false;
-      if (q) {
-        const haystack = [ev.event_title, ev.location, ev.address_neighborhood, ev.description]
-          .filter(Boolean).join(" ").toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
+       if (!matchesEventSearch(ev, term)) return false;
       return true;
     });
 
@@ -343,6 +338,15 @@ function ExplorarInner() {
         <SelectContent>
           <SelectItem value="all">Todas as regiões</SelectItem>
           {REGIONS.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <Select value={neighborhood} onValueChange={setNeighborhood}>
+        <SelectTrigger aria-label="Filtrar por bairro" className="h-11 rounded-xl bg-background">
+          <SelectValue placeholder="Bairros" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todos os bairros</SelectItem>
+          {BAIRROS.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}
         </SelectContent>
       </Select>
       <Select value={category} onValueChange={setCategory}>
