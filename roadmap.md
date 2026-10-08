@@ -1,7 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Implementar oito macro-regiões, associação automática de bairros e filtros na Agenda/Seu Radar.
+- [x] Implementar oito macro-regiões, associação automática de bairros e filtros na Agenda/Seu Radar; 22 testes aprovados e seleção pública conferida no navegador.
+- [ ] Validar salvamento e releitura das regiões no Seu Radar — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão de teste.
 
 - [x] Ampliar Financeiro: baixa com publicação automática, livro caixa com despesas, evolução e inventário de cortesias/permutas; 33 testes aprovados.
 - [ ] Validar nova baixa/publicação e despesa no Financeiro com sessão autorizada — a conta solicitante não tem sessão disponível; é necessário entrar na prévia e autorizar um lançamento de teste.
