@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { BAIRROS } from "@/lib/neighborhoods";
 
 // Mask "DD NNNNN-NNNN" (aceita 10 ou 11 dígitos; até 11)
 function formatPhoneMask(raw: string): string {
@@ -55,11 +56,7 @@ function validateAdminPhone(raw: string): string | null {
   return null;
 }
 
-const NEIGHBORHOODS = [
-  "Bancários", "Cacuia", "Cidade Universitária", "Cocotá", "Freguesia",
-  "Galeão", "Jardim Carioca", "Jardim Guanabara", "Moneró", "Pitangueiras",
-  "Portuguesa", "Praia da Bandeira", "Ribeira", "Tauá", "Zumbi"
-].sort();
+const NEIGHBORHOODS = BAIRROS;
 
 const MUSICAL_INTERESTS = [
   { id: "samba", label: "Samba & Pagode" },
