@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Restaurar todas as oito regiões nos filtros públicos e na seleção de eventos por dia, incluindo Zona Norte/Olaria.
+- [x] Restaurar todas as oito regiões nos filtros públicos e na seleção de eventos por dia, incluindo Zona Norte/Olaria; 22 testes aprovados e opções conferidas no início, Agenda e sábado no navegador.
 
 - [x] Implementar oito macro-regiões, associação automática de bairros e filtros na Agenda/Seu Radar; 22 testes aprovados e seleção pública conferida no navegador.
 - [ ] Validar salvamento e releitura das regiões no Seu Radar — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão de teste.
