@@ -35,6 +35,25 @@ function event(id: string, date: string | null): AgendaEvent {
 describe("useAgendaFilters", () => {
   beforeEach(() => localStorage.clear());
 
+  it("busca bairro e região sem acentos ou distinção de caixa", () => {
+    const { result } = renderHook(() => useAgendaFilters({ events: [
+      { ...event("olaria-sabado", "2026-09-26"), address_neighborhood: "Olaria (#) Rio de Janeiro, RJ, Brasil" },
+      { ...event("ramos", "2026-09-26"), address_neighborhood: "rAmOs" },
+      { ...event("bonsucesso", "2026-09-26"), address_neighborhood: "Bonsucesso" },
+      { ...event("penha", "2026-09-26"), address_neighborhood: "PENHA" },
+      { ...event("bras", "2026-09-26"), address_neighborhood: "Brás de Pina" },
+      { ...event("tijuca", "2026-09-26"), address_neighborhood: "Tijuca" },
+    ], profile: null, isFavorite: () => false, favorites: [] }));
+    act(() => result.current.setRegionFilter("zona norte"));
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["olaria-sabado", "ramos", "bonsucesso", "penha", "bras"]);
+    act(() => result.current.setSearch("  olaria "));
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["olaria-sabado"]);
+    act(() => result.current.setSearch("BRAS DE PINA"));
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["bras"]);
+    act(() => result.current.setSearch("ZONA NORTE"));
+    expect(result.current.filteredEvents).toHaveLength(5);
+  });
+
   it("encontra Olaria na Zona Norte sem perder eventos de sábado", () => {
     const { result } = renderHook(() => useAgendaFilters({ events: [{ ...event("olaria-sabado", "2026-09-26"), address_neighborhood: "Olaria" }, { ...event("tijuca", "2026-09-26"), address_neighborhood: "Tijuca" }], profile: null, isFavorite: () => false, favorites: [] }));
     act(() => result.current.setRegionFilter("Zona Norte"));

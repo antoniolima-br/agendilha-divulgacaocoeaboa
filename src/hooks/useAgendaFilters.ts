@@ -3,7 +3,7 @@ import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { eventDateISO, isCurrentOrFutureEventDate } from "@/lib/eventDate";
-import { REGIONS, regionOf } from "@/lib/regions";
+import { REGIONS, normalizeGeography, matchesEventGeography, matchesEventSearch } from "@/lib/regions";
 import { isHighlightActive } from "@/lib/highlights";
 
 export interface AgendaProfileHints {
@@ -50,7 +50,8 @@ export function useAgendaFilters(params: {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("view") === "favorites") setShowFavoritesOnly(true);
     const region = urlParams.get("region");
-    if (REGIONS.some((value) => value === region)) setRegionFilter(region ?? "all");
+    const canonicalRegion = REGIONS.find((value) => normalizeGeography(value) === normalizeGeography(region ?? ""));
+    if (canonicalRegion) setRegionFilter(canonicalRegion);
     const category = urlParams.get("category");
     if (category) setCategoryFilter(category);
   }, []);
@@ -61,14 +62,11 @@ export function useAgendaFilters(params: {
   }, [events]);
 
   const filteredEvents = useMemo(() => {
-    const term = search.toLowerCase();
     return upcomingEvents.filter((ev) => {
-      const matchSearch =
-        (ev.event_title || "").toLowerCase().includes(term) ||
-        (ev.description || "").toLowerCase().includes(term);
+      const matchSearch = matchesEventSearch(ev, search);
       const matchCat = categoryFilter === "all" || ev.category === categoryFilter;
       const matchFav = !showFavoritesOnly || isFavorite(ev.id);
-      return matchSearch && matchCat && matchFav && (regionFilter === "all" || regionOf(ev) === regionFilter);
+      return matchSearch && matchCat && matchFav && matchesEventGeography(ev, regionFilter);
     });
   }, [
     upcomingEvents,

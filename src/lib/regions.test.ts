@@ -1,6 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { REGIONS, REGION_NEIGHBORHOODS, regionOf, activeRegions } from "./regions";
+import { REGIONS, REGION_NEIGHBORHOODS, regionOf, activeRegions, matchesEventGeography, matchesEventSearch } from "./regions";
 describe("Rio macro-regions", () => {
+  it.each(["Olaria", "Ramos", "Bonsucesso", "Penha", "Brás de Pina"])("matches %s regardless of case and accents", (bairro) => {
+    const event = { address_neighborhood: ` ${bairro.toUpperCase()} ` };
+    expect(regionOf(event)).toBe("Zona Norte");
+    expect(matchesEventGeography(event, " zona  NORTE ", bairro.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())).toBe(true);
+    expect(matchesEventSearch(event, "ZONA NORTE")).toBe(true);
+    expect(matchesEventSearch(event, bairro.toLowerCase())).toBe(true);
+  });
+  it("does not broaden geography to other neighborhoods or cities", () => {
+    expect(matchesEventGeography({ address_neighborhood: "Penha Circular" }, "Zona Norte", "Penha")).toBe(false);
+    expect(matchesEventGeography({ address_neighborhood: "Olaria", address_city: "Niterói" }, "Zona Norte")).toBe(false);
+  });
+  it("recognizes the legacy Olaria address suggestion without changing its stored value", () => {
+    const event = { address_neighborhood: "Olaria (#) Rio de Janeiro, RJ, Brasil" };
+    expect(regionOf(event)).toBe("Zona Norte");
+    expect(matchesEventGeography(event, "Zona Norte", "OLARIA")).toBe(true);
+    expect(matchesEventSearch(event, "zona norte")).toBe(true);
+    expect(regionOf({ address_neighborhood: "Ramos, Rio de Janeiro, RJ, Brasil" })).toBe("Zona Norte");
+  });
   it("has eight regions without duplicate neighborhoods", () => {
     expect(REGIONS).toHaveLength(8);
     const neighborhoods = REGIONS.flatMap((r) => REGION_NEIGHBORHOODS[r]);
