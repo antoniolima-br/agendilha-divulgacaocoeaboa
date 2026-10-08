@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN followed_regions text[] NOT NULL DEFAULT '{}'::text[];
+COMMENT ON COLUMN public.profiles.followed_regions IS 'Owner-selected Rio application macro-regions for personalized Radar; independent from neighborhood preferences.';
