@@ -1,7 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Refatorar hierarquia de acessos, proteções de telas e menu lateral por perfil; validar leitura administrativa e ações exclusivas de Master.
+- [x] Refatorar hierarquia de acessos, proteções de telas e menu lateral por perfil; 53 testes aprovados, agenda pública e bloqueio de visitantes verificados.
+- [ ] Validar leitura administrativa e ações exclusivas de Master com sessão real — é necessário entrar na prévia; não foi possível obter sessão da conta solicitante.
 
 - [x] Separar Meus eventos da Curadoria no acesso híbrido admin/divulgador, mantendo somente leitura financeira para admin comum; 29 testes aprovados e envio pessoal isolado relido com sessão real.
 
