@@ -148,7 +148,7 @@ describe('Admin/Master Route Protection Integration', () => {
   });
 
   it('allows master_admin to access /admin/master', async () => {
-    setupMocks({ id: '1', email: 'master@test.com' }, ['master_admin'], true, true, ['roles.manage']);
+    setupMocks({ id: '1', email: 'master@test.com' }, ['master'], true, true, ['roles.manage']);
 
     renderAt('/admin/master');
 

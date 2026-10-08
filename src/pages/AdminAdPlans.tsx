@@ -31,7 +31,8 @@ interface Plano {
 
 export default function AdminAdPlans() {
   const { user } = useAuth();
-  const { isAdmin, loading: permsLoading } = useAppPermissions();
+  const { hasPermission, loading: permsLoading } = useAppPermissions();
+  const isAdmin = hasPermission("ads.manage");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [planos, setPlanos] = useState<Plano[]>([]);

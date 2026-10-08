@@ -54,7 +54,7 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "explorar",
     title: "Explorar",
-    roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
+    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
       { id: "agenda", label: "Agenda", path: ROUTES.AGENDA, icon: CalendarDays, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] },
       { id: "seu_radar", label: "Seu Radar", path: ROUTES.SEU_RADAR, icon: Heart, roles: ["public_registered"] },
@@ -136,7 +136,7 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Cadastros",
         path: ROUTES.PROMOTOR_ATRATIVOS,
         icon: FolderKanban,
-        roles: ["promoter", "collaborator", "admin", "senior", "master"],
+        roles: ["promoter", "collaborator"],
         children: [
           {
             id: "artists",
@@ -377,7 +377,8 @@ export function filterSidebarSections(
   routeExists: (path: string) => boolean,
 ): SidebarSection[] {
   const filterItems = (items: SidebarItem[]): SidebarItem[] => items.flatMap((item) => {
-    if (!item.roles.includes(role)) return [];
+    if (!item.roles.includes(role) || !item.path) return [];
+    if ((item.id === "send_event" || item.id === "my_submissions") && !hasPermission("events.create")) return [];
     const children = item.children ? filterItems(item.children) : undefined;
     if (item.children && !children?.length) return [];
     const permission = ROUTE_PERMISSIONS[item.path.split("?")[0]];
