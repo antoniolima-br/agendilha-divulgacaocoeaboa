@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -78,23 +78,18 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<SubmissionEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  useEffect(() => { setSubmissions([]); }, [user?.id]);
 
   const fetchSubmissions = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     
-    const { data: userRoles } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
-    const isAdmin = userRoles?.some(({ role }) => role === 'admin' || role === 'master');
-    
-    let query = supabase
+    const query = supabase
       .from("submissions")
       .select("*")
+      .eq("user_id", user.id)
       .neq("status", "approved")
       .order("created_at", { ascending: false });
-
-    if (!isAdmin) {
-      query = query.eq("user_id", user.id);
-    }
 
     try {
       const { data, error } = await query;
