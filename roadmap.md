@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Ampliar Financeiro: baixa com publicação automática, livro caixa com despesas, evolução e inventário de cortesias/permutas.
+
 - [x] Refatorar hierarquia de acessos, proteções de telas e menu lateral por perfil; 53 testes aprovados, agenda pública e bloqueio de visitantes verificados.
 - [ ] Validar leitura administrativa e ações exclusivas de Master com sessão real — é necessário entrar na prévia; não foi possível obter sessão da conta solicitante.
 
