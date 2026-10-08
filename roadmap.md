@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Implementar oito macro-regiões, associação automática de bairros e filtros na Agenda/Seu Radar.
+
 - [x] Ampliar Financeiro: baixa com publicação automática, livro caixa com despesas, evolução e inventário de cortesias/permutas; 33 testes aprovados.
 - [ ] Validar nova baixa/publicação e despesa no Financeiro com sessão autorizada — a conta solicitante não tem sessão disponível; é necessário entrar na prévia e autorizar um lançamento de teste.
 
