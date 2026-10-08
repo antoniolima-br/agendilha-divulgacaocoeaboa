@@ -35,6 +35,16 @@ function event(id: string, date: string | null): AgendaEvent {
 describe("useAgendaFilters", () => {
   beforeEach(() => localStorage.clear());
 
+  it("filtra por macro-região e limpa a seleção", () => {
+    const { result } = renderHook(() => useAgendaFilters({ events: [{ ...event("tijuca", "2026-09-23"), address_neighborhood: "Tijuca" }, { ...event("taquara", "2026-09-23"), address_neighborhood: "Taquara" }], profile: null, isFavorite: () => false, favorites: [] }));
+    act(() => result.current.setRegionFilter("Grande Tijuca"));
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["tijuca"]);
+    expect(result.current.hasActiveFilters).toBe(true);
+    act(() => result.current.clearFilters());
+    expect(result.current.regionFilter).toBe("all");
+    expect(result.current.filteredEvents).toHaveLength(2);
+  });
+
   it("mantém hoje e o futuro, excluindo passado e datas inválidas", () => {
     const { result } = renderHook(() => useAgendaFilters({
       events: [

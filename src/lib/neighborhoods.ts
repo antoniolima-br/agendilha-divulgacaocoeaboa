@@ -1,29 +1,6 @@
-/**
- * Lista única e padronizada dos bairros atendidos pela plataforma
- * Coé a Boa? / Coé a Boa. Reutilizada em todos os formulários,
- * validações e filtros. Não duplicar esta lista em outros arquivos.
- */
-export const BAIRROS = [
-  "Bancários",
-  "Cacuia",
-  "Cidade Universitária",
-  "Cocotá",
-  "Freguesia",
-  "Galeão",
-  "Jardim Carioca",
-  "Jardim Guanabara",
-  "Moneró",
-  "Pitangueiras",
-  "Portuguesa",
-  "Praia da Bandeira",
-  "Ribeira",
-  "Tauá",
-  "Zumbi",
-] as const;
-
-export type Bairro = (typeof BAIRROS)[number];
-
-export const isBairroValido = (v: string): v is Bairro =>
-  (BAIRROS as readonly string[]).includes(v);
-
+import { REGIONS, REGION_NEIGHBORHOODS } from "./regions";
+/** Bairros centralizados; Freguesia sem qualificação permanece compatível com cadastros históricos. */
+export const BAIRROS: readonly string[] = [...new Set([...REGIONS.flatMap((region) => REGION_NEIGHBORHOODS[region]), "Freguesia"])].sort((a, b) => a.localeCompare(b, "pt-BR"));
+export type Bairro = string;
+export const isBairroValido = (value: string): value is Bairro => BAIRROS.includes(value);
 export const PLACEHOLDER_BAIRRO = "Selecione seu bairro";

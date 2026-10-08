@@ -1681,6 +1681,7 @@ export type Database = {
           email_notifications_enabled: boolean | null
           event_type_preferences: string[] | null
           followed_neighborhoods: string[] | null
+          followed_regions: string[]
           followed_styles: string[] | null
           home_location: string | null
           id: string
@@ -1720,6 +1721,7 @@ export type Database = {
           email_notifications_enabled?: boolean | null
           event_type_preferences?: string[] | null
           followed_neighborhoods?: string[] | null
+          followed_regions?: string[]
           followed_styles?: string[] | null
           home_location?: string | null
           id?: string
@@ -1759,6 +1761,7 @@ export type Database = {
           email_notifications_enabled?: boolean | null
           event_type_preferences?: string[] | null
           followed_neighborhoods?: string[] | null
+          followed_regions?: string[]
           followed_styles?: string[] | null
           home_location?: string | null
           id?: string

@@ -66,6 +66,8 @@ describe("LocationStep autocomplete", () => {
   it("preenche o local e preserva os valores ao avançar e voltar", () => {
     render(<Harness />);
     fireEvent.click(screen.getByRole("button", { name: "Selecionar local" }));
+    expect(screen.getByText("Região do evento")).toBeInTheDocument();
+    expect(screen.getByText("Ilha do Governador")).toBeInTheDocument();
 
     let values = JSON.parse(screen.getByTestId("location-values").textContent || "{}");
     expect(values).toMatchObject({

@@ -9,6 +9,11 @@ const events = [
   { id: "past", date: "2020-01-01", category: "Música", description: "Samba", address_neighborhood: "Galeão" },
 ] as AgendaEvent[];
 describe("personal radar", () => {
+  it("filters macro-regions and unions specific neighborhoods", () => {
+    const extended = [...events, { id: "tijuca", date: "2026-10-08", address_neighborhood: "Tijuca" }] as AgendaEvent[];
+    expect(radarEvents(extended, { followed_regions: ["Grande Tijuca"] }, now).map((e) => e.id)).toEqual(["tijuca"]);
+    expect(radarEvents(extended, { followed_regions: ["Grande Tijuca"], followed_neighborhoods: ["Ribeira"] }, now).map((e) => e.id)).toEqual(["tijuca", "rock"]);
+  });
   it("combines interests and neighborhoods with accent-insensitive matching", () => {
     expect(radarEvents(events, { musical_preferences: ["samba"], followed_neighborhoods: ["Galeao"] }, now).map((event) => event.id)).toEqual(["samba"]);
   });

@@ -3,6 +3,7 @@ import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { eventDateISO, isCurrentOrFutureEventDate } from "@/lib/eventDate";
+import { REGIONS, regionOf } from "@/lib/regions";
 import { isHighlightActive } from "@/lib/highlights";
 
 export interface AgendaProfileHints {
@@ -32,6 +33,7 @@ export function useAgendaFilters(params: {
   const { events, profile, isFavorite, favorites } = params;
 
   const [search, setSearch] = useState("");
+  const [regionFilter, setRegionFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -47,6 +49,8 @@ export function useAgendaFilters(params: {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("view") === "favorites") setShowFavoritesOnly(true);
+    const region = urlParams.get("region");
+    if (REGIONS.some((value) => value === region)) setRegionFilter(region ?? "all");
     const category = urlParams.get("category");
     if (category) setCategoryFilter(category);
   }, []);
@@ -64,12 +68,13 @@ export function useAgendaFilters(params: {
         (ev.description || "").toLowerCase().includes(term);
       const matchCat = categoryFilter === "all" || ev.category === categoryFilter;
       const matchFav = !showFavoritesOnly || isFavorite(ev.id);
-      return matchSearch && matchCat && matchFav;
+      return matchSearch && matchCat && matchFav && (regionFilter === "all" || regionOf(ev) === regionFilter);
     });
   }, [
     upcomingEvents,
     search,
     categoryFilter,
+    regionFilter,
     showFavoritesOnly,
     favorites,
     isFavorite,
@@ -142,11 +147,12 @@ export function useAgendaFilters(params: {
   );
 
   const hasActiveFilters =
-    !!search || categoryFilter !== "all";
+    !!search || categoryFilter !== "all" || regionFilter !== "all";
 
   const clearFilters = () => {
     setSearch("");
     setCategoryFilter("all");
+    setRegionFilter("all");
     
   };
 
@@ -155,6 +161,8 @@ export function useAgendaFilters(params: {
     setSearch,
     categoryFilter,
     setCategoryFilter,
+    regionFilter,
+    setRegionFilter,
     showFavoritesOnly,
     setShowFavoritesOnly,
     sortOrder,
