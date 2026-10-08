@@ -3,6 +3,10 @@
  * Keeps cache invalidation explicit and prevents typos in key arrays.
  */
 export const qk = {
+  permissions: {
+    all: ["app-permissions"] as const,
+    byUser: (userId: string | null) => [...qk.permissions.all, userId] as const,
+  },
   finance: {
     all: ["finance"] as const,
     overview: (userId: string | null) => [...qk.finance.all, userId] as const,

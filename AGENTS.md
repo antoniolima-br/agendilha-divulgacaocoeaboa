@@ -1,5 +1,6 @@
 
 - Administrative capabilities derive only from protected user_roles; finance read/write helpers enforce the same role access in SQL and the permission module, preventing profile-based escalation.
+- Effective administrative roles replace lower workspaces in master/senior/financeiro/admin order; shared route-capability gates and recursive sidebar pruning prevent mixed-role navigation leaks, while credential and account mutations require server-verified Master authority.
 - A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.

@@ -43,7 +43,7 @@ const TYPE_LABELS: Record<string, string> = {
   artist: "Músico / Artista",
 };
 
-export function UserDetailsDialog({ user, open, onOpenChange, canManage = true }: Props) {
+export function UserDetailsDialog({ user, open, onOpenChange, canManage = false }: Props) {
   const userId = user?.id;
 
   const { data, isLoading } = useUserDetails(userId, open);
@@ -69,7 +69,7 @@ export function UserDetailsDialog({ user, open, onOpenChange, canManage = true }
   );
 
   async function savePerms() {
-    if (!userId) return;
+    if (!userId || !canManage) return;
     try {
       await savePermissions.mutateAsync({
         userId,

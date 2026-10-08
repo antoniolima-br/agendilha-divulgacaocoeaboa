@@ -31,6 +31,7 @@ interface UserCardProps {
   u: UserWithRole;
   currentUserId: string | undefined;
   isMaster: boolean;
+  canManage?: boolean;
   // edit
   editingId: string | null;
   editName: string;
@@ -94,6 +95,7 @@ export function UserCard(props: UserCardProps) {
   // Admin/Master já tem todos os privilégios — não precisa (nem mostra) tipo Divulgador.
   const isAdminUser = u.status === "admin" || u.status === "master" || !!u.is_admin || !!u.is_master;
   const isEditing = editingId === u.id;
+  const canManage = props.canManage ?? false;
 
   // Tipos disponíveis na ficha administrativa
   const userTypes = [
@@ -207,7 +209,7 @@ export function UserCard(props: UserCardProps) {
             </div>
 
             {/* Bloco: Editar nome */}
-            <div className="space-y-2">
+            {canManage && <div className="space-y-2">
               <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Editar dados</p>
               {isEditing ? (
                 <div className="space-y-3">
@@ -268,10 +270,10 @@ export function UserCard(props: UserCardProps) {
                   Editar dados
                 </Button>
               )}
-            </div>
+            </div>}
 
             {/* Bloco: Tipo de usuário — escondido pra Admin/Master */}
-            {isAdminUser ? (
+            {canManage && (isAdminUser ? (
               <div className="space-y-2">
                 <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Tipo de usuário</p>
                 <p className="text-xs text-muted-foreground">
@@ -299,7 +301,7 @@ export function UserCard(props: UserCardProps) {
                 {updatingType === u.id && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
               </div>
             </div>
-            )}
+            ))}
 
             {/* Bloco: Papéis administrativos (somente master) */}
             {canEditRoles && (
@@ -345,24 +347,24 @@ export function UserCard(props: UserCardProps) {
                   variant="outline"
                   className="gap-2 text-emerald-700 border-emerald-200 hover:bg-emerald-50"
                   onClick={() =>
-                    window.open(buildWhatsappUrl(u.phone!, `Olá ${u.responsible_name || ""}!`), "_blank")
+                    window.open(buildWhatsappUrl(u.phone ?? "", `Olá ${u.responsible_name || ""}!`), "_blank")
                   }
                 >
                   <MessageSquare className="h-4 w-4" />
                   WhatsApp
                 </Button>
               )}
-              <Button
+              {canManage && <Button
                 size="sm"
                 variant="outline"
-                disabled={resetting === u.id || (!isMaster && (u.is_admin || u.status === "master"))}
+                disabled={resetting === u.id}
                 className="gap-2 text-amber-700 border-amber-200 hover:bg-amber-50"
                 onClick={() => onAskReset(u)}
               >
                 {resetting === u.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
                 Resetar senha
-              </Button>
-              <Button
+              </Button>}
+              {canManage && <Button
                 size="sm"
                 variant="outline"
                 disabled={!isMaster && (u.is_admin || u.status === "master")}
@@ -371,8 +373,8 @@ export function UserCard(props: UserCardProps) {
               >
                 <KeyRound className="h-4 w-4" />
                 Alterar senha
-              </Button>
-              <Button
+              </Button>}
+              {canManage && <Button
                 size="sm"
                 variant="ghost"
                 disabled={isSelf || deleting === u.id || (!isMaster && (u.is_admin || u.status === "master"))}
@@ -381,7 +383,7 @@ export function UserCard(props: UserCardProps) {
               >
                 {deleting === u.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                 Excluir usuário
-              </Button>
+              </Button>}
             </div>
             <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-border">
               <Button
@@ -443,7 +445,7 @@ export function UserCard(props: UserCardProps) {
           </div>
         )}
       </CardContent>
-      <UserDetailsDialog user={u} open={detailsOpen} onOpenChange={setDetailsOpen} />
+      <UserDetailsDialog user={u} open={detailsOpen} onOpenChange={setDetailsOpen} canManage={canManage} />
     </Card>
   );
 }

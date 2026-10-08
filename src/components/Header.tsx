@@ -34,7 +34,7 @@ import { useSubmissions } from "@/contexts/SubmissionContext";
  import { useTheme } from "@/hooks/useTheme";
 import { useProfile } from "@/hooks/useProfile";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
-import { useUserBadge } from "@/hooks/useUserBadge";
+import { useUserBadge, type UserStatus } from "@/hooks/useUserBadge";
  import { Badge } from "@/components/ui/badge";
   import { HeaderUserMenu } from "@/components/HeaderUserMenu";
  import { SidebarMenu } from "@/components/SidebarMenu";
@@ -91,7 +91,7 @@ function RoleBadge({
   isAdmin,
   perms,
 }: {
-   status: "master" | "admin" | "collaborator" | "artist" | "user" | null;
+   status: UserStatus;
   isAdmin: boolean;
   perms: { loaded: boolean; canApprove: boolean; isCollaborator: boolean };
 }) {
@@ -110,9 +110,12 @@ function RoleBadge({
     return (
       <Badge variant="outline" className="text-xs gap-1 text-accent border-accent">
         <Shield className="h-3 w-3" strokeWidth={2.5} />
-        Admin
+        {status === "senior" ? "Sênior" : "Admin"}
       </Badge>
     );
+  }
+  if (status === "financeiro") {
+    return <Badge variant="outline" className="text-xs gap-1 text-primary border-primary"><Shield className="h-3 w-3" />Financeiro</Badge>;
   }
   if (perms.loaded && perms.isCollaborator) {
     return (
@@ -279,7 +282,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
         </>
       );
     }
-  const showEventos = isAdmin || (perms.loaded && perms.isCollaborator);
+  const showEventos = perms.loaded && perms.canSubmit;
   const showCollaborators = isAdmin || (perms.loaded && perms.canApprove);
    const hasAdminLinks = showEventos || isAdmin || showCollaborators;
  
@@ -316,7 +319,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
             // Use centralized name resolution from useUserBadge (profile → company → collaborator → metadata → email/phone)
             const fullName = badgeName && badgeName !== "Usuário" ? badgeName : "Divulgador";
             const firstName = fullName.split(" ")[0];
-            const roleLabel = isMaster
+            const roleLabel = status === "financeiro" ? "Administrador Financeiro" : status === "senior" ? "Administrador Sênior" : isMaster
               ? "Admin Master"
               : isAdmin
               ? "Admin"
@@ -337,7 +340,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
               <UpdateAppButton compact />
               <NotificationBell />
               {/* Envios — desktop/tablet only */}
-              <Tooltip>
+              {perms.canSubmit && <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
                     <SubmissionsPanel>
@@ -359,10 +362,10 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>Meus envios e rascunhos</TooltipContent>
-              </Tooltip>
+              </Tooltip>}
 
                {/* Enviar Evento CTA — desktop/tablet only */}
-               {(isAdmin || perms.isCollaborator) && (
+               {perms.canSubmit && (
                  <Button 
                    size="sm" 
                    onClick={irParaDivulgar} 
@@ -411,10 +414,15 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   <DropdownMenuSeparator />
 
                   {/* Admin & Master: Eventos */}
-                  {(isAdmin || isMaster) && (
+                  {perms.hasPermission("events.read") && (
                     <DropdownMenuItem onClick={() => navigate("/admin/events")} className="cursor-pointer">
                       <CalendarDays className="h-4 w-4 mr-2 text-primary" />
                       Eventos
+                    </DropdownMenuItem>
+                  )}
+                  {perms.canViewFinance && (
+                    <DropdownMenuItem onClick={() => navigate("/admin/financeiro")} className="cursor-pointer">
+                      <ClipboardList className="h-4 w-4 mr-2 text-primary" />Financeiro
                     </DropdownMenuItem>
                   )}
 

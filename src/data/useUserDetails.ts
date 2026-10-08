@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
 import { qk } from "./queryKeys";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 
 export interface UserDetailsEvent {
   id: string;
@@ -76,8 +77,10 @@ export interface UserPermissionsInput {
 /** Grava as permissões finas do usuário na tabela `collaborators`. */
 export function useSaveUserPermissions() {
   const qc = useQueryClient();
+  const { hasPermission } = useAppPermissions();
   return useMutation({
     mutationFn: async ({ userId, name, email, ...perms }: UserPermissionsInput) => {
+      if (!hasPermission("users.update")) throw new Error("Somente Master pode alterar permissões.");
       const { error } = await supabase.from("collaborators").upsert(
         {
           user_id: userId,
@@ -93,6 +96,8 @@ export function useSaveUserPermissions() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: qk.userDetails.byId(vars.userId) });
       qc.invalidateQueries({ queryKey: qk.collaborators.all });
+      qc.invalidateQueries({ queryKey: qk.permissions.all });
+      qc.invalidateQueries({ queryKey: qk.divulgador.all });
     },
   });
 }

@@ -148,6 +148,13 @@
       "when": 1791380557378,
       "tag": "0020_enforce_finance_publication_and_sync",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791465208749,
+      "tag": "0021_effective_role_workspaces",
+      "breakpoints": true
     }
   ]
 }

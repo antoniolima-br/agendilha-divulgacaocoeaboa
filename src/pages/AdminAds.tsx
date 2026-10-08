@@ -39,7 +39,8 @@ const FILTROS: { valor: AdStatus | "todos"; label: string }[] = [
 
 export default function AdminAds() {
   const { user } = useAuth();
-  const { isAdmin, loading: permsLoading } = useAppPermissions();
+  const { hasPermission, loading: permsLoading } = useAppPermissions();
+  const isAdmin = hasPermission("ads.manage");
   const { data, isLoading } = useAllAds(isAdmin);
   const anuncios = useMemo(() => normalizeAds(data), [data]);
   const { data: planos = [] } = useAdPlans(true);

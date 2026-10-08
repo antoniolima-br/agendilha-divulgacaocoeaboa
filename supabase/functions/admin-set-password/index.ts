@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     const callerClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } });
     const { data: { user: caller } } = await callerClient.auth.getUser();
     if (!caller) return json({ error: "Sessão inválida" }, 401);
-    const { data: callerIsAdmin } = await callerClient.rpc("is_admin_or_master", { p_user_id: caller.id });
+    const { data: callerIsAdmin } = await callerClient.rpc("is_master", { _user_id: caller.id });
     if (!callerIsAdmin) return json({ error: "Acesso restrito a administradores" }, 403);
 
     const parsed = BodySchema.safeParse(await req.json());

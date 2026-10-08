@@ -19,11 +19,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-    // Verify caller is admin
-    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) throw new Error("Serviço indisponível");
+
+    // Verify caller is Master
+    const anonClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: { user } } = await anonClient.auth.getUser();
@@ -34,8 +37,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { data: isAdmin } = await anonClient.rpc("is_admin_or_master", {
-      p_user_id: user.id,
+    const { data: isAdmin } = await anonClient.rpc("is_master", {
+      _user_id: user.id,
     });
 
     if (!isAdmin) {

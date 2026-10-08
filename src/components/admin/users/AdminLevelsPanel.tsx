@@ -4,6 +4,8 @@ import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import type { UserWithRole } from "./types";
+import { useQueryClient } from "@tanstack/react-query";
+import { qk } from "@/data/queryKeys";
 
 type Level = "senior" | "financeiro";
 const LEVELS: { id: Level; label: string; hint: string }[] = [
@@ -14,6 +16,7 @@ const LEVELS: { id: Level; label: string; hint: string }[] = [
 /** Master define o nível de cada admin (Sênior / Financeiro). */
 export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
   const { isMaster } = useAppPermissions();
+  const queryClient = useQueryClient();
   const admins = users.filter((u) => u.is_admin && u.status !== "master");
   const [levels, setLevels] = useState<Record<string, Level[]>>({});
   const [busy, setBusy] = useState<string | null>(null);
@@ -37,6 +40,7 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
   if (!isMaster || admins.length === 0) return null;
 
   async function toggle(userId: string, level: Level, on: boolean) {
+    if (!isMaster) return;
     setBusy(`${userId}-${level}`);
     const q = on
       ? supabase.from("user_roles").insert({ user_id: userId, role: level as never })
@@ -51,6 +55,11 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
       const cur = prev[userId] ?? [];
       return { ...prev, [userId]: on ? [...cur, level] : cur.filter((l) => l !== level) };
     });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: qk.permissions.all }),
+      queryClient.invalidateQueries({ queryKey: qk.divulgador.all }),
+      queryClient.invalidateQueries({ queryKey: qk.adminUsers.all }),
+    ]);
     toast.success("Nível atualizado");
   }
 

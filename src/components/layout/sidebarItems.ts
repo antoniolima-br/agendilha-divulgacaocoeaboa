@@ -26,8 +26,11 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
+import { type AccessRole } from "@/lib/access";
+import { ROUTE_PERMISSIONS } from "@/routes/access";
+import type { PermissionName } from "@/hooks/useAppPermissions";
 
-export type Role = "public_guest" | "public_registered" | "promoter" | "admin" | "senior" | "financeiro" | "master";
+export type Role = AccessRole;
 
 export interface SidebarItem {
   id: string;
@@ -51,9 +54,10 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "explorar",
     title: "Explorar",
-    roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
+    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
-      { id: "seu_radar", label: "Seu Radar", path: ROUTES.SEU_RADAR, icon: Heart, roles: ["public_registered", "promoter", "admin", "senior", "financeiro", "master"] },
+      { id: "agenda", label: "Agenda", path: ROUTES.AGENDA, icon: CalendarDays, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] },
+      { id: "seu_radar", label: "Seu Radar", path: ROUTES.SEU_RADAR, icon: Heart, roles: ["public_registered"] },
       { 
         id: "favorites", 
         label: "Meus Favoritos", 
@@ -73,7 +77,7 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Anúncios e Destaques",
         path: ROUTES.ANUNCIOS,
         icon: ShoppingBag,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
+        roles: ["promoter", "admin", "senior", "financeiro", "master"],
         children: [
           {
             id: "ver_anuncios",
@@ -95,35 +99,35 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Meus Anúncios",
             path: ROUTES.MEUS_ANUNCIOS,
             icon: ShoppingBag,
-            roles: ["promoter", "admin", "master"]
+            roles: ["promoter", "collaborator", "admin", "senior", "master"]
           },
           {
             id: "planos_anuncio_admin",
             label: "Planos disponíveis",
             path: ROUTES.ADMIN_PLANOS_ANUNCIO,
             icon: LayoutDashboard,
-            roles: ["admin", "senior", "master"]
+            roles: ["admin", "senior", "financeiro", "master"]
           },
           {
             id: "destaques_admin",
             label: "Gestão de destaques",
             path: ROUTES.ADMIN_DESTAQUES,
             icon: Sparkles,
-            roles: ["admin", "master"]
+             roles: ["admin", "senior", "master"]
           },
           {
             id: "pagamentos_destaque_admin",
             label: "Pagamentos dos destaques",
             path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE,
             icon: CreditCard,
-            roles: ["admin", "master"]
+             roles: ["admin", "senior", "financeiro", "master"]
           },
           {
             id: "anuncios_admin",
             label: "Anúncios (Gestão)",
             path: ROUTES.ADMIN_ANUNCIOS,
             icon: LayoutDashboard,
-            roles: ["admin", "master"]
+             roles: ["admin", "senior", "financeiro", "master"]
           }
         ]
       },
@@ -132,14 +136,14 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Cadastros",
         path: ROUTES.PROMOTOR_ATRATIVOS,
         icon: FolderKanban,
-        roles: ["promoter", "admin", "master"],
+        roles: ["promoter", "collaborator"],
         children: [
           {
             id: "artists",
             label: "Atrativos",
             path: ROUTES.PROMOTOR_ATRATIVOS,
             icon: Users,
-            roles: ["promoter", "admin", "master"],
+            roles: ["promoter", "collaborator", "admin", "senior", "master"],
             exact: true
           },
           {
@@ -147,14 +151,14 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Locais de rolê",
             path: ROUTES.PROMOTOR_ESTABELECIMENTOS,
             icon: Building2,
-            roles: ["promoter", "admin", "master"]
+            roles: ["promoter", "collaborator", "admin", "senior", "master"]
           },
           {
             id: "negocios_explorar",
             label: "Negócios gerais",
             path: ROUTES.PROMOTOR_NEGOCIOS,
             icon: Building2,
-            roles: ["promoter", "admin", "master"]
+            roles: ["promoter", "collaborator", "admin", "senior", "master"]
           }
         ]
       },
@@ -163,21 +167,21 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "divulgacao",
     title: "Área do Divulgador",
-    roles: ["promoter", "admin", "senior", "master"],
+    roles: ["promoter", "collaborator", "admin", "senior", "master"],
     items: [
       { 
         id: "my_submissions", 
         label: "Meus eventos",
         path: ROUTES.MEUS_EVENTOS,
         icon: ClipboardList, 
-        roles: ["promoter", "admin", "senior", "master"] 
+        roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
       { 
         id: "send_event", 
         label: "Enviar Evento", 
         path: ROUTES.ENVIAR_EVENTO, 
         icon: PlusCircle, 
-        roles: ["promoter", "admin", "senior", "master"] 
+        roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
       {
         id: "promotor_perfil",
@@ -262,21 +266,21 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Configurações",
         path: ROUTES.ADMIN_CONFIGURACOES,
         icon: Settings2,
-        roles: ["admin", "master"]
+         roles: ["senior", "master"]
       },
       {
         id: "cadastros_admin",
         label: "Gerenciamento de Cadastros",
         path: ROUTES.ADMIN_ATRATIVOS,
         icon: FolderKanban,
-        roles: ["admin", "master"],
+        roles: ["admin", "senior", "master"],
         children: [
           {
             id: "atrativos_admin",
             label: "Gerenciar Atrativos",
             path: ROUTES.ADMIN_ATRATIVOS,
             icon: Users,
-            roles: ["admin", "master"],
+            roles: ["admin", "senior", "master"],
             exact: true
           },
           {
@@ -284,38 +288,31 @@ export const sidebarConfig: SidebarSection[] = [
             label: "Gerenciar Locais de Rolê",
             path: ROUTES.ADMIN_ESTABELECIMENTOS,
             icon: Building2,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           },
           {
             id: "negocios_admin",
             label: "Gerenciar Negócios Gerais",
             path: ROUTES.ADMIN_NEGOCIOS,
             icon: Building2,
-            roles: ["admin", "master"]
+            roles: ["admin", "senior", "master"]
           }
         ]
       },
       {
         id: "divulgadores_admin",
-        label: "Divulgadores",
+         label: "Usuários",
         path: ROUTES.ADMIN_USERS,
         icon: Megaphone,
-        roles: ["admin", "master"]
+         roles: ["admin", "senior", "master"]
       }
     ]
   },
   {
     id: "governanca",
     title: "Governança",
-    roles: ["admin", "master"],
+    roles: ["admin", "senior", "master"],
     items: [
-      { 
-        id: "admin_dashboard", 
-        label: "Dashboard Admin", 
-        path: ROUTES.ADMIN_EVENTS, 
-        icon: LayoutDashboard, 
-        roles: ["admin"] 
-      },
       { 
         id: "master_panel", 
         label: "Painel Master", 
@@ -339,7 +336,7 @@ export const sidebarConfig: SidebarSection[] = [
   {
     id: "conta",
     title: "Conta",
-    roles: ["public_guest", "public_registered", "promoter", "admin", "master"],
+    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
       {
         id: "divulgador_status",
@@ -353,7 +350,7 @@ export const sidebarConfig: SidebarSection[] = [
         label: "Meu Perfil", 
         path: ROUTES.PERFIL, 
         icon: User, 
-        roles: ["public_registered", "promoter", "admin", "master"] 
+        roles: ["public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] 
       },
       { 
         id: "login", 
@@ -372,3 +369,25 @@ export const sidebarConfig: SidebarSection[] = [
     ]
   }
 ];
+
+/** Prunes entire branches, including parents with no authorized children. */
+export function filterSidebarSections(
+  role: Role,
+  hasPermission: (permission: PermissionName) => boolean,
+  routeExists: (path: string) => boolean,
+): SidebarSection[] {
+  const filterItems = (items: SidebarItem[]): SidebarItem[] => items.flatMap((item) => {
+    if (!item.roles.includes(role) || !item.path) return [];
+    if ((item.id === "send_event" || item.id === "my_submissions") && !hasPermission("events.create")) return [];
+    const children = item.children ? filterItems(item.children) : undefined;
+    if (item.children && !children?.length) return [];
+    const permission = ROUTE_PERMISSIONS[item.path.split("?")[0]];
+    if (!children && permission && !hasPermission(permission)) return [];
+    if (!children && !routeExists(item.path)) return [];
+    return [{ ...item, path: children?.[0]?.path ?? item.path, children }];
+  });
+  return sidebarConfig.filter((section) => section.roles.includes(role)).flatMap((section) => {
+    const items = filterItems(section.items);
+    return items.length ? [{ ...section, items }] : [];
+  });
+}

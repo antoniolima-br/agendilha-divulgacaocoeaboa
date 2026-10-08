@@ -17,7 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import logoCoeABoa from "@/assets/coeaboa-logo.webp";
-import { sidebarConfig, SidebarItem, Role } from "./layout/sidebarItems";
+import { filterSidebarSections, SidebarItem, Role } from "./layout/sidebarItems";
+import { activeAccessRole } from "@/lib/access";
 import { routeExists } from "@/routes/config";
 
 interface Props {
@@ -30,47 +31,32 @@ export function SidebarMenu({ onClose }: Props) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { name, initials, loaded: badgeLoaded } = useUserBadge();
-  const { isMaster, isAdmin, isSenior, isFinanceiro, isPromoter, canSubmit } = useAppPermissions();
+  const { roles, canApprove, hasPermission, loading: permissionsLoading } = useAppPermissions();
   const { savedCount } = useSubmissions();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const { data: pendingCount = 0 } = useSubmissionsCount(
     { eq: { status: "pendente" }, select: "id" },
-    { enabled: isAdmin || isMaster, staleTime: 60_000 }
+    { enabled: canApprove, staleTime: 60_000 }
   );
 
   const currentRole = useMemo<Role>(() => {
-    if (!user) return "public_guest";
-    if (isMaster) return "master";
-    if (isFinanceiro) return "financeiro";
-    if (isSenior) return "senior";
-    if (isAdmin) return "admin";
-    if (isPromoter) return "promoter";
-    return "public_registered";
-  }, [isAdmin, isFinanceiro, isMaster, isPromoter, isSenior, user]);
+    return activeAccessRole(!!user, roles);
+  }, [roles, user]);
 
   const roleLabels: Record<Role, string> = {
     public_guest: "Visitante",
     public_registered: "Usuário",
     promoter: "Divulgador",
+    collaborator: "Colaborador",
     admin: "Administrador",
     senior: "Sênior",
     financeiro: "Financeiro",
     master: "Admin Master"
   };
 
-  const filterItemsByRoleAndRoute = useCallback((items: SidebarItem[]) => {
-    return items.filter(item => {
-      const personalEventEntry = item.id === "my_submissions" || item.id === "send_event";
-      const hasRole = personalEventEntry ? canSubmit : item.roles.includes(currentRole);
-      if (!hasRole) return false;
-      return routeExists(item.path);
-    });
-  }, [currentRole, canSubmit]);
-
-  const filteredSections = useMemo(() => sidebarConfig.map(section => ({
-      ...section,
-      items: filterItemsByRoleAndRoute(section.items)
-    })).filter(section => section.items.length > 0), [filterItemsByRoleAndRoute]);
+  const filteredSections = permissionsLoading && user ? [] : filterSidebarSections(currentRole, hasPermission, routeExists);
+  // Children are already recursively authorized by the shared filter.
+  const filterItemsByRoleAndRoute = useCallback((items: SidebarItem[]) => items, []);
 
   const toggleSubmenu = useCallback((id: string) => {
     setOpenSubmenus(prev => ({ ...prev, [id]: !prev[id] }));
@@ -228,7 +214,9 @@ function SidebarNavigationItem({
   return (
     <div className="w-full">
       {hasChildren ? (
-        <button
+        <Button
+          variant="ghost"
+          aria-expanded={!!openSubmenus[item.id]}
           onClick={() => toggleSubmenu(item.id)}
           className={cn(
              "group relative flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all",
@@ -240,7 +228,7 @@ function SidebarNavigationItem({
           <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-primary/70 group-hover:text-primary")} />
           <span className="text-sm flex-1 text-left tracking-tight font-medium">{item.label}</span>
           {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
+        </Button>
       ) : (
         <Link
           to={item.path}

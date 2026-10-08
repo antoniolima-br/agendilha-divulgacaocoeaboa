@@ -15,6 +15,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { queryClient } from "@/lib/queryClient";
 import { installGlobalErrorHandlers } from "@/lib/globalErrorHandlers";
 import { ROUTES } from "@/routes/config";
+import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { PromotorRoute } from "@/components/auth/PromotorRoute";
 import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 
@@ -173,7 +174,8 @@ export function ProtectedRoute({
     return <Navigate to={ROUTES.AGENDA} replace />;
   }
 
-  if (requiredPermission && !hasPermission(requiredPermission)) {
+  const routePermission = requiredPermission ?? ROUTE_PERMISSIONS[location.pathname];
+  if (routePermission && !hasPermission(routePermission)) {
     return <Navigate to={ROUTES.AGENDA} replace />;
   }
 
@@ -299,7 +301,7 @@ export const AppRoutes = () => {
         <Route path={ROUTES.MASTER_ROOT} element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
         <Route path={ROUTES.LEGACY_ADMIN_MASTER} element={<Navigate to={ROUTES.MASTER_DASHBOARD} replace />} />
         <Route path={ROUTES.ADMIN_ROOT} element={<Navigate to={ROUTES.ADMIN_EVENTS} replace />} />
-        <Route path={ROUTES.CARROSSEL} element={<Carrossel />} />
+        <Route path={ROUTES.CARROSSEL} element={<ProtectedRoute requiredPermission="reports.read"><Carrossel /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -30,17 +30,9 @@ vi.mock("@/contexts/SubmissionContext", () => ({
 }));
 
 // Mock routeExists 
-vi.mock("@/routes/config", () => ({
+vi.mock("@/routes/config", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/routes/config")>(),
   routeExists: vi.fn(),
-  ROUTES: {
-    LANDING: "/",
-    AGENDA: "/agenda",
-    ARTISTAS: "/artistas",
-    AUTH: "/auth",
-    PERFIL: "/perfil",
-    ADMIN_EVENTS: "/admin/events",
-    MASTER_DASHBOARD: "/master/dashboard",
-  }
 }));
 
 const renderSidebar = () => {

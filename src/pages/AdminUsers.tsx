@@ -2,6 +2,7 @@ import { AdminLevelsPanel } from "@/components/admin/users/AdminLevelsPanel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { Navigate } from "react-router-dom";
 import { DivulgadorRequestsPanel } from "@/components/admin/DivulgadorRequestsPanel";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,8 @@ const GROUP_ORDER = ["admin", "divulgador", "artist", "estabelecimento", "usuari
 
 export default function AdminUsers() {
   const { user, isAdmin, loading: authLoading } = useAuth();
+  const { hasPermission, loading: permissionsLoading } = useAppPermissions();
+  const canManageUsers = hasPermission("users.update");
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
@@ -173,6 +176,7 @@ export default function AdminUsers() {
   }, [filteredUsers]);
 
   async function updateUserType(targetUser: UserWithRole, newType: string) {
+    if (!canManageUsers) return;
     setUpdatingType(targetUser.id);
     try {
       const { error } = await supabase
@@ -197,6 +201,7 @@ export default function AdminUsers() {
   }, [user]);
 
   function startEdit(u: UserWithRole) {
+    if (!canManageUsers) return;
     setEditingId(u.id);
     setEditName(u.responsible_name || "");
     setEditPhone(u.phone || "");
@@ -211,6 +216,7 @@ export default function AdminUsers() {
   }
 
   async function saveEdit(targetUser: UserWithRole) {
+    if (!canManageUsers) return;
     const trimmed = editName.trim();
     if (trimmed.length < 2) {
       toast.error("Nome muito curto");
@@ -254,6 +260,7 @@ export default function AdminUsers() {
   }, [isAdmin]);
 
   async function toggleAdmin(targetUser: UserWithRole) {
+    if (!canManageUsers) return;
     if (targetUser.id === user?.id) {
       toast.error("Você não pode remover seu próprio papel de admin");
       return;
@@ -290,6 +297,7 @@ export default function AdminUsers() {
   }
 
   async function toggleMaster(targetUser: UserWithRole) {
+    if (!canManageUsers) return;
     if (targetUser.id === user?.id) {
       toast.error("Você não pode alterar seu próprio papel de Master");
       return;
@@ -333,6 +341,7 @@ export default function AdminUsers() {
   }
 
   async function deleteUser(targetUser: UserWithRole) {
+    if (!canManageUsers) return;
     if (targetUser.id === user?.id) {
       toast.error("Você não pode excluir a si mesmo");
       return;
@@ -349,6 +358,7 @@ export default function AdminUsers() {
   }
 
   async function resetPassword(targetUser: UserWithRole) {
+    if (!hasPermission("users.reset")) return;
     setResetting(targetUser.id);
     try {
       const data = await callEdge<{
@@ -381,7 +391,7 @@ export default function AdminUsers() {
     setResetting(null);
   }
 
-  if (authLoading) return <LoadingState fullPage message="Verificando permissões..." />;
+  if (authLoading || permissionsLoading) return <LoadingState fullPage message="Verificando permissões..." />;
   if (!user || !isAdmin) return <Navigate to="/" replace />;
 
   return (
@@ -391,14 +401,14 @@ export default function AdminUsers() {
         subtitle="Controle de acessos, papéis administrativos e moderação da comunidade."
         rightElement={
           <div className="flex items-center gap-2 flex-wrap">
-            <Button
+            {canManageUsers && <Button
               size="sm"
               className="rounded-full gap-2 px-3 sm:px-4"
               onClick={() => setCreateUserOpen(true)}
             >
               <UserPlus className="h-4 w-4" />
               <span>Novo Usuário</span>
-            </Button>
+            </Button>}
             <Button
               variant="outline"
               size="sm"
@@ -430,7 +440,7 @@ export default function AdminUsers() {
         }
       />
 
-      <DivulgadorRequestsPanel />
+      {canManageUsers && <DivulgadorRequestsPanel />}
 
       <UserFiltersBar
         isMaster={isMaster}
@@ -487,6 +497,7 @@ export default function AdminUsers() {
                 u={u}
                 currentUserId={user?.id}
                 isMaster={isMaster}
+                canManage={canManageUsers}
                 editingId={editingId}
                 editName={editName}
                 editPhone={editPhone}
