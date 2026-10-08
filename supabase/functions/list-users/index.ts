@@ -64,16 +64,6 @@ Deno.serve(async (req) => {
 
     const normalizeDigits = (value: string | null | undefined) => (value ?? "").replace(/\D/g, "");
 
-    // Determine the master user (formal master OR fallback: oldest admin)
-    const masterRow = roles?.find((r) => r.role === "master");
-    let masterUserId: string | null = masterRow?.user_id ?? null;
-    if (!masterUserId) {
-      const adminRoles = (roles ?? [])
-        .filter((r) => r.role === "admin")
-        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-      masterUserId = adminRoles[0]?.user_id ?? null;
-    }
-
     const usersWithRoles = users.map((u) => {
       const emailLocal = u.email?.split("@")[0] || "";
       const isPhonePlaceholder = u.email?.endsWith("@phone.agendilha.app");
@@ -94,9 +84,9 @@ Deno.serve(async (req) => {
         return normalizeDigits(c.email) === placeholderDigits;
       });
 
-      const isAdminRole = roles?.some((r) => r.user_id === u.id && r.role === "admin") ?? false;
+      const isAdminRole = roles?.some((r) => r.user_id === u.id && ["admin", "senior", "financeiro"].includes(r.role)) ?? false;
       const isMasterRole = roles?.some((r) => r.user_id === u.id && r.role === "master") ?? false;
-      const isMaster = isMasterRole || u.id === masterUserId;
+      const isMaster = isMasterRole;
 
       let status: "master" | "admin" | "collaborator" | "user";
       if (isMaster) status = "master";
