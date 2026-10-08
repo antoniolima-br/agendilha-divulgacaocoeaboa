@@ -35,6 +35,12 @@ function event(id: string, date: string | null): AgendaEvent {
 describe("useAgendaFilters", () => {
   beforeEach(() => localStorage.clear());
 
+  it("encontra Olaria na Zona Norte sem perder eventos de sábado", () => {
+    const { result } = renderHook(() => useAgendaFilters({ events: [{ ...event("olaria-sabado", "2026-09-26"), address_neighborhood: "Olaria" }, { ...event("tijuca", "2026-09-26"), address_neighborhood: "Tijuca" }], profile: null, isFavorite: () => false, favorites: [] }));
+    act(() => result.current.setRegionFilter("Zona Norte"));
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["olaria-sabado"]);
+  });
+
   it("filtra por macro-região e limpa a seleção", () => {
     const { result } = renderHook(() => useAgendaFilters({ events: [{ ...event("tijuca", "2026-09-23"), address_neighborhood: "Tijuca" }, { ...event("taquara", "2026-09-23"), address_neighborhood: "Taquara" }], profile: null, isFavorite: () => false, favorites: [] }));
     act(() => result.current.setRegionFilter("Grande Tijuca"));
