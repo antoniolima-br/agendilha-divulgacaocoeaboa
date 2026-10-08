@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
+import { administrativeRole } from "@/lib/access";
+import { qk } from "@/data/queryKeys";
 
 const ADMIN_PERMISSIONS: PermissionName[] = [
   "events.create",
@@ -11,13 +13,9 @@ const ADMIN_PERMISSIONS: PermissionName[] = [
   "events.cancel",
   "events.delete",
   "users.read",
-  "users.update",
-  "users.promote",
-  "users.demote",
-  "admins.invite",
-  "admins.remove",
-  "roles.manage",
   "audit_logs.read",
+  "ads.manage",
+  "reports.read",
 ];
 
 const SENIOR_PERMISSIONS: PermissionName[] = [
@@ -50,6 +48,10 @@ export type PermissionName =
   | "finance.read"
   | "finance.settle"
   | "finance.release"
+  | "ads.manage"
+  | "reports.read"
+  | "settings.manage"
+  | "users.reset"
   | "events.create"
   | "events.read"
   | "events.update"
@@ -78,14 +80,20 @@ export function computePermissions(input: {
 }): { roles: string[]; permissions: Set<PermissionName> } {
   const roleNames = [...input.roleNames];
   const permissions = new Set<PermissionName>();
-  const isAdminRole = roleNames.includes("admin") || roleNames.includes("master");
+  const staffRole = administrativeRole(roleNames);
+  const isAdminRole = staffRole === "admin" || staffRole === "senior" || staffRole === "master";
 
   if (isAdminRole) {
     ADMIN_PERMISSIONS.forEach((p) => permissions.add(p));
   }
-  if (roleNames.includes("senior")) {
+  if (staffRole === "senior") {
     SENIOR_PERMISSIONS.forEach((p) => permissions.add(p));
   }
+  if (staffRole === "senior" || staffRole === "master") permissions.add("settings.manage");
+  if (staffRole === "master") {
+    (["users.update", "users.promote", "users.demote", "users.reset", "admins.invite", "admins.remove", "roles.manage"] as PermissionName[]).forEach((p) => permissions.add(p));
+  }
+  if (staffRole === "financeiro") permissions.add("ads.manage");
   if (roleNames.some((role) => ["admin", "senior", "financeiro", "master"].includes(role))) permissions.add("finance.read");
   if (roleNames.some((role) => ["senior", "financeiro", "master"].includes(role))) {
     permissions.add("finance.settle");
@@ -93,7 +101,7 @@ export function computePermissions(input: {
   }
 
   const collaborator = input.collaborator;
-  if (collaborator?.is_active) {
+  if (collaborator?.is_active && staffRole !== "financeiro") {
     if (!roleNames.includes("collaborator")) roleNames.push("collaborator");
     permissions.add("events.read");
     collaboratorPermissionMap.forEach(([field, permission]) => {
@@ -105,10 +113,10 @@ export function computePermissions(input: {
   // senão quem é Divulgador ficava sem permissão de criar evento.
   const profileRole = (input.profileRole ?? "").toLowerCase();
   const normalizedRole = PROMOTER_ALIASES.includes(profileRole) ? "promoter" : profileRole;
-  if (normalizedRole && !["admin", "master", "senior", "financeiro"].includes(normalizedRole) && !roleNames.includes(normalizedRole)) {
+  if (normalizedRole && !["admin", "master", "senior", "financeiro"].includes(normalizedRole) && staffRole !== "financeiro" && !roleNames.includes(normalizedRole)) {
     roleNames.push(normalizedRole);
   }
-  if (normalizedRole === "promoter") {
+  if (normalizedRole === "promoter" && staffRole !== "financeiro") {
     permissions.add("events.create");
   }
 
@@ -120,7 +128,7 @@ export function useAppPermissions() {
   const userId = user?.id ?? null;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["app-permissions", userId],
+    queryKey: qk.permissions.byUser(userId),
     enabled: !!userId,
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,
@@ -186,11 +194,12 @@ export function useAppPermissions() {
   const hasRole = (role: string) => roles.includes(role);
 
   const isMaster = roles.includes("master");
-  const isAdmin = roles.includes("admin") || isMaster;
+   const staffRole = administrativeRole(roles);
+   const isAdmin = staffRole === "admin" || staffRole === "senior" || isMaster;
   const isPromoter = roles.includes("promoter");
   // Níveis administrativos: Sênior (moderação ampla) e Financeiro (único que dá baixa).
   const isSenior = roles.includes("senior") || isMaster;
-  const isFinanceiro = roles.includes("financeiro");
+   const isFinanceiro = staffRole === "financeiro";
   const canSettlePayments = hasPermission("finance.settle");
   const canViewFinance = hasPermission("finance.read");
   const isCollaborator = roles.includes("collaborator") || isAdmin;
@@ -212,10 +221,10 @@ export function useAppPermissions() {
     canSettlePayments,
     canViewFinance,
     // Explicit capability mappings from legacy usePermissions
-    canSubmit: isPromoter || isCollaborator || hasPermission("events.create"),
-    canApprove: isAdmin || hasPermission("events.approve"),
-    canEdit: isAdmin || isPromoter || hasPermission("events.update"),
-    canDelete: isAdmin || hasPermission("events.delete"),
+     canSubmit: hasPermission("events.create"),
+     canApprove: hasPermission("events.approve"),
+     canEdit: isPromoter || hasPermission("events.update"),
+     canDelete: hasPermission("events.delete"),
     loaded: !loading,
   };
 }

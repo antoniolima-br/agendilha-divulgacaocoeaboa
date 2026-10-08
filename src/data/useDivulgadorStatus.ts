@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
 import { handleError } from "@/lib/error-handler";
+import { administrativeRole, canOrganize } from "@/lib/access";
 
 export type DivulgadorRequestStatus = "pendente" | "aprovado" | "recusado";
 
@@ -58,11 +59,13 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
       if (requestRes.error) throw requestRes.error;
 
       const userType = ((profileRes.data as { user_type?: string | null } | null)?.user_type ?? "").toLowerCase();
-      const isAdmin = !!rolesRes.data?.some((r: { role: string }) => r.role === "admin" || r.role === "master");
+      const roles = rolesRes.data?.map((r) => r.role) ?? [];
+      const staffRole = administrativeRole(roles);
+      const isAdmin = staffRole !== null && staffRole !== "financeiro";
       const canSubmitAsCollaborator =
         (collabRes.data as { can_submit?: boolean | null } | null)?.can_submit === true;
       const isDivulgador =
-        isAdmin || userType === "divulgador" || userType === "promotor" || canSubmitAsCollaborator;
+        canOrganize(roles, userType, canSubmitAsCollaborator);
 
       return {
         isAdmin,
