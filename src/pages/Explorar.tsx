@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { InlineError } from "@/components/errors/InlineError";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
+import { eventDateISO, saoPauloTodayISO, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 import { REGIONS, matchesEventGeography, matchesEventSearch } from "@/lib/regions";
 import { BAIRROS } from "@/lib/neighborhoods";
 
@@ -112,8 +112,8 @@ function ExplorarInner() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("public_submissions")
-        .select("id, event_title, date, start_time, location, address_neighborhood, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug, is_highlight, highlight_active")
-        .eq("status", "aprovado")
+         .select("id, event_title, date, start_time, location, address_neighborhood, address_city, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug, is_highlight, highlight_active")
+         .in("status", [...PUBLIC_EVENT_STATUSES])
         .eq("is_archived", false)
         .order("date", { ascending: true });
       if (error) throw error;
