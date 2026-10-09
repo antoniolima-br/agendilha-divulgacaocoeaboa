@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Incluir Anunciante Master / Patrocínio Âncora no pitch: pacote de 90 dias, R$ 1.500–3.000, banner prioritário, contagem regressiva e fases Teaser/Aquecimento/Reta Final; manter proposta separada das funcionalidades públicas e projeções mensais.
+
 - [x] Incluir push patrocinado regional no pitch a R$ 150/disparo e pacote sugerido de 4 por R$ 600; projeções das três fases atualizadas, 41 testes aprovados e apresentação/bloqueio conferidos com sessão e resposta de teste, sem ativar envios.
 
 - [x] Ajustar posicionamento e monetização profissional do pitch, ampliando acesso com senha para Admin, Financeiro, Sênior e Master; 52 testes aprovados, senha incorreta recusada com sessão real, apresentação e bloqueio conferidos com resposta de teste.
