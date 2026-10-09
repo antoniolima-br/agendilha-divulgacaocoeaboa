@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Atualizar patrocínio âncora para 1 Master e 2 Sub-Masters, recorrência mensal de R$ 800–1.000 e R$ 400–500 por parceiro, mantendo divulgação antecipada e proteções do pitch.
+- [x] Atualizar patrocínio âncora para 1 Master e 2 Sub-Masters, recorrência mensal de R$ 800–1.000 e R$ 400–500 por parceiro; 52 testes aprovados, senha inválida recusada com sessão real e oferta/bloqueio conferidos com resposta de teste; divulgação antecipada mantida, sem ativar cobranças.
 
 - [x] Incluir Anunciante Master / Patrocínio Âncora no pitch: pacote de 90 dias, R$ 1.500–3.000, banner prioritário, contagem regressiva e fases Teaser/Aquecimento/Reta Final; 52 testes aprovados, senha inválida recusada com sessão real e apresentação/bloqueio conferidos com resposta de teste; proposta separada das funcionalidades públicas e projeções mensais.
 
