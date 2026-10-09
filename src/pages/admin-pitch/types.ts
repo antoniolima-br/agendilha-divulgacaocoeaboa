@@ -1,4 +1,5 @@
 export interface PitchContent {
+  inventoryImage?: string;
   brandPositioning: string;
   monetization: string;
   projectionBasis: string;

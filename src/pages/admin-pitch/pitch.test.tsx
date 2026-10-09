@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { HelmetProvider } from "react-helmet-async";
 import { buildPitchContent } from "../../../supabase/functions/commercial-pitch/content";
+import { inventoryImage } from "../../../supabase/functions/commercial-pitch/inventory-image";
 import AdminPitchComercial from "../AdminPitchComercial";
 
 const mocks = vi.hoisted(() => ({ call: vi.fn(), allowed: true, userId: "test-user" }));
@@ -38,13 +39,15 @@ describe("pitch comercial", () => {
     expect(content.scenarios.every((s) => s.placementRevenue > s.marketing)).toBe(true);
   });
   it("só exibe após conferência, permite bloquear e limpa o campo", async () => {
-    mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
+    mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     render(page());
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
+    expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByText("Projeção de receita mensal");
+    expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().monetization)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Notificações Push Regionais" })).toBeInTheDocument();
@@ -61,6 +64,7 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: /02\s*Aquecimento/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /03\s*Reta Final/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
+    expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");

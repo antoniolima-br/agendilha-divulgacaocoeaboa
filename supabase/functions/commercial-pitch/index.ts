@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 import { buildPitchContent } from "./content.ts";
+import { inventoryImage } from "./inventory-image.ts";
 
 const BodySchema = z.object({ password: z.string().min(1).max(256) }).strict();
 function json(body: unknown, status = 200) {
@@ -41,7 +42,7 @@ Deno.serve(async (req) => {
     const password = Deno.env.get("COMMERCIAL_PITCH_PASSWORD");
     if (!password) return json({ error: "A senha do pitch ainda não foi configurada. Fale com o responsável." }, 503);
     if (!await samePassword(parsed.data.password, password)) return json({ error: "Senha incorreta. Confira e tente novamente." }, 403);
-    return json({ content: buildPitchContent(), expiresInSeconds: 900 });
+    return json({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
   } catch {
     return json({ error: "Não deu para abrir o pitch. Tente novamente em instantes." }, 500);
   }

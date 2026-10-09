@@ -22,6 +22,20 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <h2 className="text-2xl font-semibold">Coé a Boa?</h2>
       <p className="max-w-3xl text-lg leading-relaxed">{content.brandPositioning}</p>
     </section>
+    {content.inventoryImage && <section className="space-y-4 border-b border-border pb-8" aria-labelledby="inventory-map-title">
+      <h2 id="inventory-map-title" className="flex items-start gap-2 text-xl font-semibold"><Megaphone className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> Mapa de Inventário Publicitário</h2>
+      <figure className="space-y-4">
+        <img src={content.inventoryImage} alt="Layout conceitual do Coé a Boa?: Master no topo, dois co-patrocinadores abaixo, carrossel regional, banners nativos na Agenda, eventos patrocinados e notificações regionais." width={1536} height={1024} loading="lazy" decoding="async" className="h-auto w-full rounded-lg border border-border" />
+        <figcaption className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <p>Ilustração conceitual com eventos e marcas fictícios. Os espaços representam a proposta comercial, não a confirmação de formatos já ativados.</p>
+          <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+            {content.anchor.tiers.map((tier) => <li key={tier.title}><span className="font-medium text-foreground">{tier.slots} {tier.title}:</span> {money(tier.min)} a {money(tier.max)}/mês{tier.slots > 1 ? " cada" : ""}.</li>)}
+            {content.formats.slice(0, 2).map((format) => <li key={format.title}><span className="font-medium text-foreground">{format.title}:</span> {money(format.min)} a {money(format.max)} · {format.cycle}.</li>)}
+            <li><span className="font-medium text-foreground">Push regional:</span> {money(content.pushTicket)} por disparo; {content.push.packageSends} disparos/mês por {money(content.push.packagePrice)}.</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </section>}
     <section className="space-y-4 border-b border-border pb-8">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><MapPin className="h-5 w-5 shrink-0 text-primary" /> O diferencial: hiperlocalidade</h2>
       <p className="max-w-3xl text-lg leading-relaxed">{content.differential}</p>
