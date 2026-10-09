@@ -9,7 +9,7 @@ import {
   type EstabelecimentoSuggestion,
 } from "@/components/estabelecimentos/EstabelecimentoAutocomplete";
 import { NovoEstabelecimentoDialog } from "@/components/estabelecimentos/NovoEstabelecimentoDialog";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AutofillIssues } from "../AutofillIssues";
 import { AddressAiCheck } from "../AddressAiCheck";
@@ -33,6 +33,9 @@ const LOCAL_TIPOS = [
 export function LocationStep({ form }: { form: UseFormReturn<any> }) {
   const [novoLocal, setNovoLocal] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+  const [cepMessage, setCepMessage] = useState("");
+  const cepRequest = useRef<AbortController | null>(null);
+  useEffect(() => () => cepRequest.current?.abort(), []);
   const [novoLocalOpen, setNovoLocalOpen] = useState(false);
   const [novoLocalNome, setNovoLocalNome] = useState("");
 
@@ -57,23 +60,35 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
   });
 
   const buscarCep = async (raw: string) => {
+    cepRequest.current?.abort();
+    setCepMessage("");
+    setCepLoading(false);
     const d = cepDigits(raw);
     if (d.length !== 8 || validateCep(d).valid === false) return;
+    const controller = new AbortController();
+    cepRequest.current = controller;
     setCepLoading(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${d}/json/`);
-      const data = await res.json();
-      if (data?.erro) return;
+      const res = await fetch(`https://viacep.com.br/ws/${d}/json/`, { signal: controller.signal });
+      if (!res.ok) throw new Error("CEP indisponível");
+      const data: { erro?: boolean; logradouro?: string; bairro?: string; localidade?: string; uf?: string } = await res.json();
+      if (controller.signal.aborted || cepDigits(form.getValues("locationCep")) !== d) return;
+      if (data.erro) {
+        setCepMessage("CEP não encontrado. Confira o CEP ou preencha o endereço manualmente.");
+        return;
+      }
       const endereco = (data.logradouro || "").trim();
       if (endereco) form.setValue("eventAddress", endereco, { shouldValidate: true });
-      if (data.bairro) form.setValue("addressNeighborhood", data.bairro, { shouldValidate: true });
-      if (data.localidade) form.setValue("addressCity", data.localidade);
-      if (data.uf) form.setValue("addressState", data.uf);
-
+      form.setValue("addressNeighborhood", data.bairro?.trim() || "", { shouldValidate: true });
+      form.setValue("addressCity", data.localidade?.trim() || "", { shouldValidate: true });
+      form.setValue("addressState", data.uf?.trim() || "");
+      setCepMessage("Endereço encontrado. Confira a rua, o bairro e a cidade e complete o número.");
     } catch {
-      /* silencioso — o usuário ainda pode digitar à mão */
+      if (!controller.signal.aborted && cepDigits(form.getValues("locationCep")) === d) {
+        setCepMessage("Não deu pra consultar o CEP agora. Tente de novo ou preencha o endereço manualmente.");
+      }
     } finally {
-      setCepLoading(false);
+      if (cepRequest.current === controller && !controller.signal.aborted) setCepLoading(false);
     }
   };
 
@@ -86,6 +101,9 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
   };
 
   const handleSelectEstab = (s: EstabelecimentoSuggestion) => {
+    cepRequest.current?.abort();
+    setCepLoading(false);
+    setCepMessage("");
     form.setValue("locationName", s.nome, { shouldValidate: true });
     form.setValue("estabelecimentoId", s.id);
     const enderecoCompleto = [s.endereco, s.numero].filter(Boolean).join(", ");
@@ -192,19 +210,23 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
                   onChange={(e) => {
                     const masked = formatCep(e.target.value);
                     field.onChange(masked);
-                    if (cepDigits(masked).length === 8) buscarCep(masked);
+                    void buscarCep(masked);
                   }}
                 />
               </FormControl>
+              <div aria-live="polite">
               {cepLoading ? (
                 <p className="text-xs text-muted-foreground">Buscando endereço...</p>
+              ) : cepMessage ? (
+                <p className="text-xs text-muted-foreground">{cepMessage}</p>
               ) : filled && v.valid ? (
-                <p className="text-xs text-emerald-600">✓ CEP válido.</p>
+                <p className="text-xs text-muted-foreground">CEP com 8 dígitos. Confira o endereço.</p>
               ) : filled && v.valid === false ? (
                 <p className="text-xs text-destructive">{v.reason}</p>
               ) : (
-                <p className="text-xs text-muted-foreground">Digitou o CEP? A gente preenche rua e bairro.</p>
+                <p className="text-xs text-muted-foreground">Informe o CEP do local.</p>
               )}
+              </div>
               <FormMessage />
             </FormItem>
           );
@@ -257,7 +279,30 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
         )}
       />
 
-      <div className="space-y-1" aria-live="polite"><p className="text-sm font-medium">Região do evento</p><p className="text-sm text-muted-foreground">{macroRegion ?? "Escolha um bairro do Rio para identificar a região."}</p></div>
+      <FormField
+        control={form.control}
+        name="addressCity"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Cidade do local</FormLabel>
+            <FormControl>
+              <Input {...field} value={field.value ?? ""} className="h-12" autoComplete="address-level2" placeholder="Ex.: Rio de Janeiro" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <div className="space-y-2" role="status" aria-label="Região do evento" aria-live="polite">
+        <p className="text-sm font-medium">Região do evento</p>
+        {macroRegion ? (
+          <Badge variant="secondary" className="max-w-full whitespace-normal">{macroRegion}</Badge>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {watched[2] ? "Não identificamos uma região para este endereço. Confira o bairro e a cidade." : "Informe um bairro do Rio para identificar a região."}
+          </p>
+        )}
+      </div>
 
       <AddressAiCheck form={form} />
 
