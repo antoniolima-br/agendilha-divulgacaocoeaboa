@@ -12,6 +12,7 @@ describe("sidebarConfig", () => {
     expect(items[index + 1]?.roles).toEqual(items[index]?.roles);
     expect(items[index + 1]?.roles).not.toContain("public_registered");
     expect(routeExists(ROUTES.COMPARTILHAR_MEUS_EVENTOS)).toBe(true);
+    expect(filterSidebarSections("collaborator", () => false, routeExists).flatMap(s => s.items).some(i => i.id === "share_my_events")).toBe(false);
   });
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
