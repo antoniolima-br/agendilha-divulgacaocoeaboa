@@ -1,3 +1,6 @@
+import { usePublicEvents } from "@/data/usePublicEvents";
+import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -127,29 +130,11 @@ export default function Landing() {
     }, 6000);
     return () => window.clearInterval(timer);
   }, []);
-   const { data: eventsData } = useQuery({
-    queryKey: qk.home.events(),
-     queryFn: async () => {
-      const today = saoPauloTodayISO();
-      const { data, error } = await supabase
-         .from("public_submissions")
-        .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, image_url, is_highlight, highlight_active, highlight_hidden, highlight_until, atrativo_style, description, age_rating, is_suitable_for_minors, views_count, sale_price")
-        .in("status", [...PUBLIC_EVENT_STATUSES])
-        .eq("is_archived", false)
-        .order('highlight_active', { ascending: false, nullsFirst: false })
-        .order('date', { ascending: true })
-         .order('start_time', { ascending: true, nullsFirst: false })
-         .limit(150);
-       
-       if (error) throw error;
-       const rows = Array.isArray(data) ? data : [];
-       return rows.filter((event) => eventDateISO(event.date) >= today);
-     },
-     staleTime: 2 * 60_000,
-   });
-    const allEvents = useMemo(() => Array.isArray(eventsData) ? eventsData : [], [eventsData]);
+  const { data: eventsData } = usePublicEvents();
+  const { filters: globalFilters, setFilters: setGlobalFilters } = useGlobalEventFilters();
+  const allEvents = useMemo(() => (eventsData ?? []).filter((event) => matchesPublicEventFilters(event, globalFilters)), [eventsData, globalFilters]);
     const freeEvents = useMemo(
-      () => allEvents.filter((event) => !isHighlightActive(event) && isFreeEventPrice(event.sale_price)).slice(0, 8),
+      () => allEvents.filter((event) => !isHighlightActive(event) && event.is_free === true).slice(0, 8),
       [allEvents],
     );
     const promotionalFlyerEvents = useMemo(
@@ -161,7 +146,7 @@ export default function Landing() {
       return allEvents.filter((event) => eventDateISO(event.date) === today).length;
     }, [allEvents]);
     const visualEvents = useMemo(
-      () => allEvents.filter((event) => isHighlightActive(event) || !isFreeEventPrice(event.sale_price)),
+      () => allEvents.filter((event) => isHighlightActive(event) || event.is_free !== true),
       [allEvents],
     );
     const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
@@ -173,7 +158,7 @@ export default function Landing() {
     });
     const { data: flyerUrlsData } = useAdPhotoUrls(flyerPhotoPaths);
     const flyerUrls = flyerUrlsData && typeof flyerUrlsData === "object" ? flyerUrlsData : {};
-    const homeFlyerEvents = useMemo(() => {
+    const unfilteredHomeFlyerEvents = useMemo(() => {
       const spParts = (iso: string) => {
         const parts = new Intl.DateTimeFormat("en-CA", {
           timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit",
@@ -368,9 +353,12 @@ export default function Landing() {
      return (matchingUpcoming.length > 0 ? matchingUpcoming : allEvents).slice(0, 5);
    }, [allEvents, profile?.event_type_preferences, profile?.followed_styles, profile?.musical_preferences, profileLoaded, todayEvents, user]);
 
-  const [homeBairro, setHomeBairro] = useState("all");
-  const [homeCat, setHomeCat] = useState("all");
-  const [homeNbh, setHomeNbh] = useState("all");
+  const homeBairro = globalFilters.region;
+  const homeCat = globalFilters.category;
+  const homeNbh = globalFilters.neighborhood;
+  const setHomeBairro = (region: string) => setGlobalFilters({ region });
+  const setHomeCat = (category: string) => setGlobalFilters({ category });
+  const setHomeNbh = (neighborhood: string) => setGlobalFilters({ neighborhood });
   const homeBairros = REGIONS;
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
   const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
@@ -396,7 +384,7 @@ export default function Landing() {
                const dayStr = format(day, "yyyy-MM-dd");
                const isSel = format(customDate || new Date(), "yyyy-MM-dd") === dayStr;
                return (
-                 <button key={dayStr} onClick={() => { setCustomDate(day); navigate(`/explorar?view=custom&date=${dayStr}`); }}
+                 <button key={dayStr} onClick={() => { setCustomDate(day); setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
                    className={cn("flex min-h-11 flex-col items-center justify-center rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
                    <span className="text-[8px] font-bold uppercase leading-none tracking-wide sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
                    <span className="mt-0.5 text-[11px] font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
@@ -409,7 +397,7 @@ export default function Landing() {
            </Button>
          </div>
          <HomeMixedHeroCarousel
-           events={homeFlyerEvents}
+           events={unfilteredHomeFlyerEvents.filter((event) => matchesPublicEventFilters(event, globalFilters))}
            onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
          />
        </div>
@@ -448,6 +436,12 @@ export default function Landing() {
            </Select>
          </div>
 
+         <div className="mb-6 flex flex-wrap items-center gap-3">
+           <Select value={globalFilters.period} onValueChange={(period) => setGlobalFilters({ period: period as typeof globalFilters.period, date: "" })}>
+             <SelectTrigger aria-label="Período dos rolês" className="w-full sm:w-56"><SelectValue /></SelectTrigger>
+             <SelectContent><SelectItem value="all">Todas as datas</SelectItem><SelectItem value="today">Hoje</SelectItem><SelectItem value="tomorrow">Amanhã</SelectItem><SelectItem value="weekend">Fim de semana</SelectItem><SelectItem value="next7">Próximos 7 dias</SelectItem><SelectItem value="custom">Data escolhida</SelectItem><SelectItem value="free">Gratuitos</SelectItem><SelectItem value="kids">Para crianças</SelectItem></SelectContent>
+           </Select>
+         </div>
          {/* Seções por categoria */}
          <div className="mb-10 space-y-8" aria-label="Categorias">
            {HOME_CATEGORIES.filter((c) => homeCat === "all" || c.key === homeCat).map((c) => {
@@ -459,7 +453,7 @@ export default function Landing() {
                      {c.label} <span className="font-medium normal-case tracking-normal text-muted-foreground">/ {c.hint}</span>
                    </h2>
                    {evs.length > 2 && (
-                     <Link to={`/agenda?categoria=${encodeURIComponent(c.match[0])}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3.5 w-3.5" /></Link>
+                     <Link to={`/agenda?category=${encodeURIComponent(c.key)}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3.5 w-3.5" /></Link>
                    )}
                  </div>
                  {evs.length > 0 ? (

@@ -1,3 +1,4 @@
+import { usePublicEvents } from "./usePublicEvents";
 import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,63 +32,7 @@ export function useEvents(options: {
 } = {}) {
   const qc = useQueryClient();
 
-  const eventsQuery = useQuery({
-    queryKey: qk.agenda.events(),
-    queryFn: async (): Promise<AgendaEvent[]> => {
-      const { data, error } = await supabase
-        .from("public_submissions")
-        .select(`
-          id, 
-          event_title, 
-          date, 
-          start_time, 
-          location, 
-          address_neighborhood, address_city, 
-          category, 
-          image_url, 
-          age_rating, 
-          is_suitable_for_minors, 
-          description, 
-          views_count,
-          is_highlight,
-          is_free,
-          status,
-          moderation_status,
-          slug
-        `)
-        .in("status", [...PUBLIC_EVENT_STATUSES])
-        .or("moderation_status.is.null,moderation_status.neq.blocked")
-        .eq("is_archived", false)
-        .gte("event_day", saoPauloTodayISO())
-        .order("date", { ascending: true })
-        .limit(1000);
-      
-      if (error) throw error;
-      const events = normalizeEvents(data);
-
-      if (import.meta.env.DEV) {
-        if (events.length === 0) {
-          console.info("[agenda] Nenhum evento público retornado pela consulta.");
-        }
-
-        const invalidDates = events
-          .filter((event) => !eventDateISO(event.date))
-          .map((event) => ({ id: event.id, date: event.date, status: event.status }));
-
-        if (invalidDates.length > 0) {
-          console.warn("[agenda] Eventos ignorados por data ausente ou inválida:", invalidDates);
-        }
-      }
-
-      return events;
-    },
-    enabled: options.enabled,
-    staleTime: options.staleTime ?? 60_000,
-    meta: {
-      onError: (error: unknown) =>
-        handleError(error, "Não rolou carregar a agenda agora."),
-    },
-  });
+  const eventsQuery = usePublicEvents(options);
 
   const events = normalizeEvents(eventsQuery.data);
 

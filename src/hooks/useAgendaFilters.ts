@@ -1,3 +1,5 @@
+import { useGlobalEventFilters } from "./useGlobalEventFilters";
+import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { useEffect, useMemo, useState } from "react";
 import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
@@ -33,8 +35,11 @@ export function useAgendaFilters(params: {
   const { events, profile, isFavorite, favorites } = params;
 
   const [search, setSearch] = useState("");
-  const [regionFilter, setRegionFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const { filters: globalFilters, setFilters, clearFilters: clearGlobalFilters } = useGlobalEventFilters();
+  const regionFilter = globalFilters.region;
+  const categoryFilter = globalFilters.category;
+  const setRegionFilter = (region: string) => setFilters({ region });
+  const setCategoryFilter = (category: string) => setFilters({ category });
   
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() =>
@@ -52,7 +57,7 @@ export function useAgendaFilters(params: {
     const region = urlParams.get("region");
     const canonicalRegion = REGIONS.find((value) => normalizeGeography(value) === normalizeGeography(region ?? ""));
     if (canonicalRegion) setRegionFilter(canonicalRegion);
-    const category = urlParams.get("category");
+    const category = urlParams.get("category") || urlParams.get("categoria");
     if (category) setCategoryFilter(category);
   }, []);
 
@@ -64,7 +69,7 @@ export function useAgendaFilters(params: {
   const filteredEvents = useMemo(() => {
     return upcomingEvents.filter((ev) => {
       const matchSearch = matchesEventSearch(ev, search);
-      const matchCat = categoryFilter === "all" || ev.category === categoryFilter;
+      const matchCat = matchesPublicEventFilters(ev, globalFilters, search);
       const matchFav = !showFavoritesOnly || isFavorite(ev.id);
       return matchSearch && matchCat && matchFav && matchesEventGeography(ev, regionFilter);
     });
@@ -73,6 +78,7 @@ export function useAgendaFilters(params: {
     search,
     categoryFilter,
     regionFilter,
+    globalFilters,
     showFavoritesOnly,
     favorites,
     isFavorite,
@@ -83,7 +89,7 @@ export function useAgendaFilters(params: {
   const recommendedEvents = useMemo(() => {
     const prefs = profile?.musical_preferences || [];
     if (prefs.length === 0) return [];
-    return upcomingEvents
+    return filteredEvents
       .filter((ev) =>
         prefs.some(
           (p) =>
@@ -92,14 +98,14 @@ export function useAgendaFilters(params: {
         ),
       )
       .slice(0, 4);
-  }, [upcomingEvents, profile]);
+  }, [filteredEvents, profile]);
 
   const trendingEvents = useMemo(
     () =>
-      [...upcomingEvents]
+      [...filteredEvents]
         .sort((a, b) => (b.views_count || 0) - (a.views_count || 0))
         .slice(0, 4),
-    [upcomingEvents],
+    [filteredEvents],
   );
 
   const grouped = useMemo(() => {
@@ -145,16 +151,19 @@ export function useAgendaFilters(params: {
   );
 
   const hasActiveFilters =
-    !!search || categoryFilter !== "all" || regionFilter !== "all";
+    !!search || categoryFilter !== "all" || regionFilter !== "all" || globalFilters.period !== "all" || globalFilters.neighborhood !== "all";
 
   const clearFilters = () => {
     setSearch("");
-    setCategoryFilter("all");
-    setRegionFilter("all");
+    clearGlobalFilters();
     
   };
 
   return {
+    period: globalFilters.period,
+    date: globalFilters.date,
+    setPeriod: (period: typeof globalFilters.period) => setFilters({ period, date: "" }),
+    setDate: (date: string) => setFilters({ date, period: date ? "custom" : "all" }),
     search,
     setSearch,
     categoryFilter,

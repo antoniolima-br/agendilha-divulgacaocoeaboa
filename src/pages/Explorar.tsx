@@ -1,3 +1,7 @@
+import { usePublicEvents } from "@/data/usePublicEvents";
+import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
+import { isHighlightActive } from "@/lib/highlights";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -98,30 +102,26 @@ function ExplorarInner() {
   const initialCat = params.get("category") || "all";
   const isArchive = params.get("view") === "archive";
 
-  const [datePreset, setDatePreset] = useState<DatePreset>("all");
-  const [customDate, setCustomDate] = useState<Date | undefined>(datePreset === "today" ? new Date() : undefined);
-  const [neighborhood, setNeighborhood] = useState<string>("all");
-  const [region, setRegion] = useState("all");
-  const [category, setCategory] = useState<string>(initialCat);
+  const { filters: globalFilters, setFilters } = useGlobalEventFilters();
+  const datePreset = globalFilters.period;
+  const customDate = globalFilters.date ? parseISO(globalFilters.date) : undefined;
+  const neighborhood = globalFilters.neighborhood, region = globalFilters.region, category = globalFilters.category;
+  const setDatePreset = (period: DatePreset) => setFilters({ period });
+  const setCustomDate = (date?: Date) => setFilters({ date: date ? format(date, "yyyy-MM-dd") : "" });
+  const setNeighborhood = (neighborhood: string) => setFilters({ neighborhood });
+  const setRegion = (region: string) => setFilters({ region });
+  const setCategory = (category: string) => setFilters({ category });
   const [term, setTerm] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
 
-  const { data: events = [], isLoading, error, refetch } = useQuery({
-    queryKey: ["explorar-events"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("public_submissions")
-         .select("id, event_title, date, start_time, location, address_neighborhood, address_city, category, image_url, description, age_rating, sale_price, is_suitable_for_minors, slug, is_highlight, highlight_active")
-         .in("status", [...PUBLIC_EVENT_STATUSES])
-        .eq("is_archived", false)
-        .order("date", { ascending: true });
-      if (error) throw error;
-      return data || [];
-    },
-  });
+  const { data: events = [], isLoading, error, refetch } = usePublicEvents();
 
   useEffect(() => {
+    const categoryParam = params.get("category");
+    const regionParam = params.get("region");
+    if (categoryParam) setCategory(categoryParam);
+    if (regionParam) setRegion(regionParam);
     const view = params.get("view");
     if (view === "today") {
       setDatePreset("today");
@@ -169,12 +169,7 @@ function ExplorarInner() {
     const list = events.filter(ev => {
       const isoDate = eventDateISO(ev.date);
       if (isArchive ? (!isoDate || isoDate >= today) : (isoDate && isoDate < today)) return false;
-      if (datePreset !== "free" && datePreset !== "kids" && !presetMatches(ev.date, datePreset as any, customDate)) return false;
-      if (datePreset === "free" && (ev.is_highlight || ev.highlight_active || !isFreeEventPrice(ev.sale_price))) return false;
-      if (datePreset === "kids" && !ev.is_suitable_for_minors && ev.age_rating !== "Livre") return false;
-       if (!matchesEventGeography(ev, region, neighborhood)) return false;
-      if (category !== "all" && ev.category !== category) return false;
-       if (!matchesEventSearch(ev, term)) return false;
+      if (!matchesPublicEventFilters(ev, globalFilters, term)) return false;
       return true;
     });
 
@@ -198,10 +193,12 @@ function ExplorarInner() {
     return [...list].sort((a, b) => {
       const ra = rank(a), rb = rank(b);
       if (ra !== rb) return ra - rb;
+      const priority = Number(isHighlightActive(b)) - Number(isHighlightActive(a));
+      if (priority) return priority;
       if (a.date !== b.date) return (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31");
       return (a.start_time || "").localeCompare(b.start_time || "");
     });
-  }, [events, datePreset, customDate, neighborhood, region, category, term, isArchive]);
+  }, [events, datePreset, customDate, neighborhood, region, category, term, isArchive, globalFilters]);
 
   const activeFiltersCount =
     (datePreset !== "all" ? 1 : 0) +
