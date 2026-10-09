@@ -40,6 +40,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import logo from "@/assets/coeaboa-logo.webp";
+import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
+import { notificationGeography } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
@@ -260,7 +262,8 @@ export default function Landing() {
  
   const [subscriberPhone, setSubscriberPhone] = useState("");
   const [subscriberName, setSubscriberName] = useState("");
-  const [subscriberNeighborhood, setSubscriberNeighborhood] = useState("");
+  const [subscriberGeography, setSubscriberGeography] = useState("all");
+  const [subscriberInterests, setSubscriberInterests] = useState<string[]>([]);
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
@@ -271,7 +274,8 @@ export default function Landing() {
     const parsed = newsletterSubscribeSchema.safeParse({
       phone: subscriberPhone,
       name: subscriberName,
-      neighborhood: subscriberNeighborhood,
+      geography: subscriberGeography,
+      interests: subscriberInterests,
       whatsappConsent,
     });
 
@@ -280,7 +284,8 @@ export default function Landing() {
       return;
     }
 
-    const { phone, name, neighborhood } = parsed.data;
+    const { phone, name, geography, interests } = parsed.data;
+    const audience = notificationGeography(geography);
     setIsSubmitting(true);
     try {
       const { error } = await supabase
@@ -288,7 +293,10 @@ export default function Landing() {
         .insert({
           email: `${phone}@whatsapp.agendilha.app`,
           name: name || null,
-          neighborhood: neighborhood || null,
+          neighborhood: audience.preferred_neighborhood,
+          ...audience,
+          interests,
+          whatsapp_consent: parsed.data.whatsappConsent,
         });
 
       if (error) {
@@ -299,11 +307,12 @@ export default function Landing() {
         }
       } else {
         toast.success("Cadastro realizado!", {
-          description: "Você receberá as novidades da Ilha no seu WhatsApp."
+          description: "Suas preferências foram salvas para as novidades no WhatsApp."
         });
         setSubscriberPhone("");
         setSubscriberName("");
-        setSubscriberNeighborhood("");
+        setSubscriberGeography("all");
+        setSubscriberInterests([]);
       }
      } catch (err) {
        handleError(err, "Erro ao realizar cadastro.");
@@ -647,6 +656,7 @@ export default function Landing() {
                     />
                   </div>
                 </div>
+                <NotificationPreferences geography={subscriberGeography} onGeographyChange={setSubscriberGeography} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col justify-end px-1 sm:px-4">
                     <div className="flex items-start gap-2 rounded-xl border border-border bg-background p-3 sm:border-0 sm:bg-transparent sm:p-0">

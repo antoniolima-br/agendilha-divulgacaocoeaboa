@@ -15,13 +15,12 @@ import { NeighborhoodSelect } from "@/components/registration/NeighborhoodSelect
 import { isBairroValido } from "@/lib/neighborhoods";
 import {
   FREQUENCIAS,
-  INTERESSES,
   isWhatsappValido,
   maskPhone,
   saveUsuarioPublico,
 } from "@/lib/registration";
 import { handleError } from "@/lib/error-handler";
-import { cn } from "@/lib/utils";
+import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
 
 const TOTAL = 2;
 
@@ -35,6 +34,7 @@ export default function CadastroPublico() {
   const [whatsapp, setWhatsapp] = useState("");
   const [bairro, setBairro] = useState("");
   const [interesses, setInteresses] = useState<string[]>([]);
+  const [geography, setGeography] = useState("all");
   const [aceita, setAceita] = useState(true);
   const [frequencia, setFrequencia] = useState("semanal");
 
@@ -60,6 +60,7 @@ export default function CadastroPublico() {
         whatsapp,
         bairro,
         interesses,
+        geography,
         aceita_notificacoes: aceita,
         frequencia_notificacao: frequencia,
       });
@@ -70,11 +71,6 @@ export default function CadastroPublico() {
       setLoading(false);
     }
   };
-
-  const toggleInteresse = (i: string) =>
-    setInteresses((prev) =>
-      prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i],
-    );
 
   return (
     <WizardShell
@@ -130,29 +126,7 @@ export default function CadastroPublico() {
 
       {step === 2 && (
         <>
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Interesses</Label>
-            <div className="flex flex-wrap gap-2">
-              {INTERESSES.map((i) => {
-                const ativo = interesses.includes(i);
-                return (
-                  <button
-                    type="button"
-                    key={i}
-                    onClick={() => toggleInteresse(i)}
-                    className={cn(
-                      "px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all",
-                      ativo
-                        ? "bg-primary text-primary-foreground border-primary shadow"
-                        : "bg-background text-foreground border-border hover:border-primary/40",
-                    )}
-                  >
-                    {i}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <NotificationPreferences geography={geography} onGeographyChange={setGeography} interests={interesses} onInterestsChange={setInteresses} />
 
           <div className="flex items-start gap-3 rounded-2xl border-2 border-border p-4 bg-card">
             <Checkbox

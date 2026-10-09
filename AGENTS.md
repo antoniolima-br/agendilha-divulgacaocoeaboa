@@ -10,8 +10,7 @@
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
 - Large flows colocate validation and modals; pages orchestrate them to preserve behavior and testability.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.
-- Multi-event submissions share establishment/contact data but store separate rows to preserve moderation/publication.
-- Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
+- Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
 - Public event lists use the São Paulo calendar day as their cutoff: today's events remain visible all day and become past events only on the following day.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
@@ -28,4 +27,5 @@
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
 
-- Pitch content and illustration stay server-only until role and secret-password checks pass; embed the image in the guarded response, never public assets. Expiring account-scoped memory prevents persistent exposure.
+- Pitch text/images remain server-only behind role/password checks; guarded responses and expiring account-scoped memory prevent exposure.
+- Notification forms share geography normalization; save audience apart from home address and channel consent to prevent targeting drift.
