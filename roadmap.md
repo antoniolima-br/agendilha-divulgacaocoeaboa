@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Ajustar posicionamento e monetização profissional do pitch, ampliando acesso com senha para Admin, Financeiro, Sênior e Master.
+
 - [x] Criar Pitch Comercial e Projeção para Master/Sênior com senha adicional, preços sugeridos, projeção e aquisição hiperlocal; 51 testes aprovados, sessão Master real, recusa de senha incorreta e bloqueio de visitantes conferidos; apresentação validada com resposta de teste.
 - [ ] Confirmar abertura do pitch com a senha escolhida — senha privada salva pelo usuário não é acessível ao agente; requer confirmação na página.
 
