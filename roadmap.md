@@ -1,7 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Consultar CEP automaticamente no cadastro de eventos, exibir cidade e região correspondente e validar preenchimento, falhas e troca de CEP.
+- [x] Consultar CEP automaticamente no cadastro de eventos e exibir cidade/região; 44 testes aprovados, incluindo oito regiões, falhas e respostas atrasadas; ViaCEP real conferido.
+- [ ] Conferir CEP e região no formulário com sessão do divulgador — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão de teste.
 
 - [x] Ajustar busca por bairros/regiões sem distinção de acentos ou caixa e validar Olaria/Ramos/Bonsucesso/Penha na Zona Norte; 30 testes aprovados e evento real de sábado encontrado por Olaria + Zona Norte no navegador.
 
