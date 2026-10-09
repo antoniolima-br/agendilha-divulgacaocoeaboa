@@ -262,7 +262,7 @@ export default function Landing() {
  
   const [subscriberPhone, setSubscriberPhone] = useState("");
   const [subscriberName, setSubscriberName] = useState("");
-  const [subscriberGeography, setSubscriberGeography] = useState<string[]>(["all"]);
+  const [subscriberGeographies, setSubscriberGeographies] = useState<string[]>(["all"]);
   const [subscriberInterests, setSubscriberInterests] = useState<string[]>([]);
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
@@ -293,7 +293,7 @@ export default function Landing() {
         .insert({
           email: `${phone}@whatsapp.agendilha.app`,
           name: name || null,
-          neighborhood: audience.preferred_neighborhood, ...audience,
+          neighborhood: audience.preferred_neighborhood,
           ...audience,
           interests,
           whatsapp_consent: parsed.data.whatsappConsent,
@@ -311,7 +311,7 @@ export default function Landing() {
         });
         setSubscriberPhone("");
         setSubscriberName("");
-        setSubscriberGeography(["all"]);
+        setSubscriberGeographies(["all"]);
         setSubscriberInterests([]);
       }
      } catch (err) {
