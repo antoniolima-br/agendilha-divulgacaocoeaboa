@@ -262,7 +262,7 @@ export default function Landing() {
  
   const [subscriberPhone, setSubscriberPhone] = useState("");
   const [subscriberName, setSubscriberName] = useState("");
-  const [subscriberGeography, setSubscriberGeography] = useState("all");
+  const [subscriberGeography, setSubscriberGeography] = useState<string[]>(["all"]);
   const [subscriberInterests, setSubscriberInterests] = useState<string[]>([]);
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
@@ -311,7 +311,7 @@ export default function Landing() {
         });
         setSubscriberPhone("");
         setSubscriberName("");
-        setSubscriberGeography("all");
+        setSubscriberGeography(["all"]);
         setSubscriberInterests([]);
       }
      } catch (err) {

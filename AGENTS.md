@@ -28,4 +28,4 @@
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
 
 - Pitch text/images remain server-only behind role/password checks; guarded responses and expiring account-scoped memory prevent exposure.
-- Notification forms share geography normalization; save audience apart from home address and channel consent to prevent targeting drift.
+- Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.

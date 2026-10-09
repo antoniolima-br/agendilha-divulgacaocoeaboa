@@ -34,7 +34,7 @@ export default function CadastroPublico() {
   const [whatsapp, setWhatsapp] = useState("");
   const [bairro, setBairro] = useState("");
   const [interesses, setInteresses] = useState<string[]>([]);
-  const [geography, setGeography] = useState("all");
+  const [geography, setGeography] = useState<string[]>(["all"]);
   const [aceita, setAceita] = useState(true);
   const [frequencia, setFrequencia] = useState("semanal");
 
