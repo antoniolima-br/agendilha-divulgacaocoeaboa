@@ -1,6 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { normalizePhone } from "@/lib/validations";
 
+import { notificationGeography } from "@/lib/notificationPreferences";
+
 export type TipoPerfil = "publico" | "divulgador" | "artista";
 
 interface ContatoBase {
@@ -36,9 +38,11 @@ export interface PublicoPayload {
   interesses: string[];
   aceita_notificacoes: boolean;
   frequencia_notificacao: string;
+  geography: string;
 }
 
 export async function saveUsuarioPublico(p: PublicoPayload) {
+  const geography = notificationGeography(p.geography);
   const contato_id = await insertContato({
     tipo_perfil: "publico",
     nome: p.nome,
@@ -51,6 +55,7 @@ export async function saveUsuarioPublico(p: PublicoPayload) {
     aceita_notificacoes: p.aceita_notificacoes,
     frequencia_notificacao: p.frequencia_notificacao,
     origem_cadastro: "web",
+    ...geography,
   });
   if (error) throw error;
   return contato_id;
