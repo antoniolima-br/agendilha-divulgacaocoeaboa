@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { clearGlobalEventFilters } from "./useGlobalEventFilters";
 import { useAgendaFilters } from "@/hooks/useAgendaFilters";
 import type { AgendaEvent } from "@/components/agenda/types";
 
@@ -33,7 +34,7 @@ function event(id: string, date: string | null): AgendaEvent {
 }
 
 describe("useAgendaFilters", () => {
-  beforeEach(() => localStorage.clear());
+  beforeEach(() => { localStorage.clear(); clearGlobalEventFilters(); });
 
   it("busca bairro e região sem acentos ou distinção de caixa", () => {
     const { result } = renderHook(() => useAgendaFilters({ events: [
@@ -117,6 +118,19 @@ describe("useAgendaFilters", () => {
     expect(result.current.filteredEvents.filter((item) => Boolean(item.image_url)).map((item) => item.id)).toEqual(["com-flyer"]);
     expect(result.current.freeEvents.map((item) => item.id)).toEqual(["sem-flyer"]);
     expect(Object.values(result.current.grouped).flatMap((group) => group.items.map((item) => item.id))).toEqual([]);
+  });
+
+  it("destaques e recomendações respeitam região, categoria e data juntas", () => {
+    const { result } = renderHook(() => useAgendaFilters({ events: [
+      { ...event("sul", "2026-09-26"), address_neighborhood: "Copacabana", category: "musica", is_highlight: true, views_count: 100 },
+      { ...event("norte", "2026-09-26"), address_neighborhood: "Olaria", category: "musica", is_highlight: true },
+      { ...event("outra-data", "2026-09-27"), address_neighborhood: "Olaria", category: "musica", is_highlight: true },
+      { ...event("outra-categoria", "2026-09-26"), address_neighborhood: "Olaria", category: "cultura", is_highlight: true },
+    ], profile: { musical_preferences: ["musica"] }, isFavorite: () => false, favorites: [] }));
+    act(() => { result.current.setRegionFilter("Zona Norte"); result.current.setCategoryFilter("musica"); result.current.setDate("2026-09-26"); });
+    expect(result.current.filteredEvents.map((e) => e.id)).toEqual(["norte"]);
+    expect(result.current.trendingEvents.map((e) => e.id)).toEqual(["norte"]);
+    expect(result.current.recommendedEvents.map((e) => e.id)).toEqual(["norte"]);
   });
 
   it("não trava quando a lista de eventos ou itens vêm nulos", () => {

@@ -1,5 +1,5 @@
-import { matchesPublicEventFilters, DEFAULT_EVENT_FILTERS, type PublicEventFilters } from "../../../src/lib/publicEventFilters.ts";
-import { isHighlightActive } from "../../../src/lib/highlights.ts";
+import { matchesPublicEventFilters, DEFAULT_EVENT_FILTERS, type PublicEventFilters } from "../_shared/publicEventFilters.ts";
+import { isHighlightActive } from "../_shared/highlights.ts";
 export type GuideEvent = {
   id: string | null;
   event_title: string | null;
