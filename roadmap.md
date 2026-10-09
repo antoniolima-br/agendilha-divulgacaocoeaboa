@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Incluir push patrocinado regional no pitch a R$ 150/disparo e pacote sugerido de 4 por R$ 600; projeções das três fases atualizadas, 41 testes aprovados e apresentação/bloqueio conferidos com sessão e resposta de teste, sem ativar envios.
+
 - [x] Ajustar posicionamento e monetização profissional do pitch, ampliando acesso com senha para Admin, Financeiro, Sênior e Master; 52 testes aprovados, senha incorreta recusada com sessão real, apresentação e bloqueio conferidos com resposta de teste.
 
 - [x] Criar Pitch Comercial e Projeção para Master/Sênior com senha adicional, preços sugeridos, projeção e aquisição hiperlocal; 51 testes aprovados, sessão Master real, recusa de senha incorreta e bloqueio de visitantes conferidos; apresentação validada com resposta de teste.
