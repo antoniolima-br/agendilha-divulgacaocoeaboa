@@ -1,5 +1,6 @@
 import { usePublicEvents } from "@/data/usePublicEvents";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { EventDateFilter } from "@/components/agenda/EventDateFilter";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
@@ -437,11 +438,7 @@ export default function Landing() {
          </div>
 
          <div className="mb-6 flex flex-wrap items-center gap-3">
-           <Select value={globalFilters.period} onValueChange={(period) => setGlobalFilters({ period: period as typeof globalFilters.period, date: "" })}>
-             <SelectTrigger aria-label="Período dos rolês" className="w-full sm:w-56"><SelectValue /></SelectTrigger>
-             <SelectContent><SelectItem value="all">Todas as datas</SelectItem><SelectItem value="today">Hoje</SelectItem><SelectItem value="tomorrow">Amanhã</SelectItem><SelectItem value="weekend">Fim de semana</SelectItem><SelectItem value="next7">Próximos 7 dias</SelectItem><SelectItem value="custom">Data escolhida</SelectItem><SelectItem value="free">Gratuitos</SelectItem><SelectItem value="kids">Para crianças</SelectItem></SelectContent>
-           </Select>
-           <Input type="date" aria-label="Data dos rolês" value={globalFilters.date} onChange={(e) => setGlobalFilters({ date: e.target.value, period: e.target.value ? "custom" : "all" })} className="w-full sm:w-48" />
+            <EventDateFilter value={globalFilters.date} onChange={(date) => setGlobalFilters({ date, period: date ? "custom" : "all" })} />
          </div>
          {/* Seções por categoria */}
          <div className="mb-10 space-y-8" aria-label="Categorias">

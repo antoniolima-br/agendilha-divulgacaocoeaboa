@@ -12,6 +12,7 @@ import {
 import { categoryLabels } from "@/components/agenda/types";
 import { REGIONS } from "@/lib/regions";
 import { cn } from "@/lib/utils";
+import { EventDateFilter } from "@/components/agenda/EventDateFilter";
 
 interface AgendaFiltersProps {
   period: EventPeriod;
@@ -32,7 +33,7 @@ interface AgendaFiltersProps {
 
 /** Barra de busca, ordenação e filtros da lista de eventos. */
 export function AgendaFilters({
-  period, onPeriodChange, date, onDateChange,
+   date, onDateChange,
   search,
   onSearchChange,
   sortOrder,
@@ -84,8 +85,7 @@ export function AgendaFilters({
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Select value={period} onValueChange={(value) => onPeriodChange(value as EventPeriod)}><SelectTrigger aria-label="Período dos rolês" className="w-full sm:w-52"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todas as datas</SelectItem><SelectItem value="today">Hoje</SelectItem><SelectItem value="tomorrow">Amanhã</SelectItem><SelectItem value="weekend">Fim de semana</SelectItem><SelectItem value="next7">Próximos 7 dias</SelectItem><SelectItem value="custom">Data escolhida</SelectItem><SelectItem value="free">Gratuitos</SelectItem><SelectItem value="kids">Para crianças</SelectItem></SelectContent></Select>
-            <Input type="date" aria-label="Data dos rolês" value={date} onChange={(e) => onDateChange(e.target.value)} className="w-full sm:w-48" />
+            <EventDateFilter value={date} onChange={onDateChange} />
           </div>
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <Button
