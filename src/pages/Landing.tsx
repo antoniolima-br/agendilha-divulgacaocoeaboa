@@ -364,7 +364,7 @@ export default function Landing() {
      matchesEventGeography(e, homeBairro, homeNbh)),
     [visualEvents, homeBairro, homeNbh]);
   return (
-    <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
+    <div className="theme-coeaboa home-action-clarity min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
 
        {/* ── Faixa de dias ── */}
