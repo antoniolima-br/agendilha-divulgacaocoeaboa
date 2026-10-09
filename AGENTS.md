@@ -12,7 +12,7 @@
 - All establishment creation forms share address-by-CEP search to prevent drift.
 - Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
-- Public lists use São Paulo calendar days: today remains visible all day; past events leave the next day. Home collections share splitHomeEventPresentation to avoid media/text overlap.
+- Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - During the launch promotion, Home rotates multiple current and future flyers together, prioritizing today's events; Agenda keeps its existing promotional behavior.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
