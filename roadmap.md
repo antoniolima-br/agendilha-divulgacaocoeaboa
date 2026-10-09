@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Compactar região/bairros e interesses com seleção múltipla pesquisável e tags, preservando todas as escolhas salvas.
+- [x] Compactar região/bairros e interesses com seleção múltipla pesquisável e tags; 60 testes aprovados, busca/remoção e ausência de overflow conferidas, cadastro fictício salvo e relido com arrays corretos, depois removido.
 
 - [x] Adicionar região/bairro de preferência e Todas as Regiões ao cadastro de notificações da Home e do público, preservando interesses e salvando a segmentação; 24 testes aprovados, cadastro fictício enviado e relido com região/interesses/consentimento corretos, depois removido; sem ativar push.
 
