@@ -26,7 +26,7 @@ export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
           className={cn("h-11 w-full justify-start gap-2 text-left font-normal sm:w-48", !selected && "text-muted-foreground")}
         >
           <CalendarIcon className="h-4 w-4 shrink-0" />
-          <span>{selected ? format(selected, "dd/MM/yyyy") : "dd/mm/aaaa"}</span>
+          <span>{selected ? format(selected, "dd/MM/yyyy") : "Calendário"}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="theme-coeaboa w-auto p-0" align="start">
