@@ -45,6 +45,7 @@ type CollaboratorPermissions = {
 };
 
 export type PermissionName =
+  | "pitch.read"
   | "finance.read"
   | "finance.settle"
   | "finance.release"
@@ -89,7 +90,10 @@ export function computePermissions(input: {
   if (staffRole === "senior") {
     SENIOR_PERMISSIONS.forEach((p) => permissions.add(p));
   }
-  if (staffRole === "senior" || staffRole === "master") permissions.add("settings.manage");
+  if (staffRole === "senior" || staffRole === "master") {
+    permissions.add("settings.manage");
+    permissions.add("pitch.read");
+  }
   if (staffRole === "master") {
     (["users.update", "users.promote", "users.demote", "users.reset", "admins.invite", "admins.remove", "roles.manage"] as PermissionName[]).forEach((p) => permissions.add(p));
   }

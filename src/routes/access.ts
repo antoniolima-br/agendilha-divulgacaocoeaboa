@@ -18,6 +18,7 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionName> = {
   [ROUTES.ADMIN_PAGAMENTOS_DESTAQUE]: "finance.read",
   [ROUTES.ADMIN_FINANCEIRO]: "finance.read",
   [ROUTES.ADMIN_CONFIGURACOES]: "settings.manage",
+  [ROUTES.ADMIN_PITCH_COMERCIAL]: "pitch.read",
   [ROUTES.ADMIN_ROLANDO_AGORA]: "events.read",
   [ROUTES.ADMIN_REPORTS]: "reports.read",
   [ROUTES.ADMIN_ESTABELECIMENTOS]: "events.update",

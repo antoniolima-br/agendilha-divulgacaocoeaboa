@@ -1,6 +1,6 @@
 
-- Administrative capabilities derive only from protected user_roles; finance read/write helpers enforce the same role access in SQL and the permission module, preventing profile-based escalation.
-- Effective roles replace lower workspaces in master/senior/financeiro/admin order; shared route gates and sidebar pruning prevent mixed-role leaks. Account mutations require server-verified Master authority.
+- Administrative authority comes only from protected user_roles; SQL and client checks match to prevent escalation.
+- Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
@@ -8,7 +8,7 @@
 - Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
-- Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.
+- Large flows colocate validation and modals; pages orchestrate them to preserve behavior and testability.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.
 - Multi-event submissions share establishment/contact data but store separate rows to preserve moderation/publication.
 - Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
@@ -27,3 +27,5 @@
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
+
+- Pitch content stays server-only until authenticated senior/master and secret-password checks pass; expiring account-scoped memory prevents public bundle and persistent-cache exposure.

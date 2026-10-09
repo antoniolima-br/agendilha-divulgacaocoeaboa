@@ -51,6 +51,7 @@ export const ROUTES = {
   ADMIN_PAGAMENTOS_DESTAQUE: "/admin/destaques/pagamentos",
   ADMIN_FINANCEIRO: "/admin/financeiro",
   ADMIN_CONFIGURACOES: "/admin/configuracoes",
+  ADMIN_PITCH_COMERCIAL: "/admin/pitch-comercial",
   CADASTRO_PROMOTOR: "/cadastro-promotor",
   PROMOTOR_HOME: "/promotor",
   PROMOTOR_ESTABELECIMENTOS: "/promotor/estabelecimentos",

@@ -2,6 +2,10 @@ import { describe, it, expect } from "vitest";
 import { computePermissions } from "./useAppPermissions";
 
 describe("computePermissions", () => {
+  it.each(["user", "promoter", "collaborator", "admin", "financeiro", "senior", "master"])("restringe pitch ao cargo protegido %s", (role) => {
+    const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: "senior" });
+    expect(permissions.has("pitch.read")).toBe(["senior", "master"].includes(role));
+  });
   it("admin e divulgador pode enviar e moderar, mas não alterar o financeiro", () => {
     const { permissions } = computePermissions({ roleNames: ["admin"], collaborator: null, profileRole: "divulgador" });
     expect(permissions.has("events.create")).toBe(true);

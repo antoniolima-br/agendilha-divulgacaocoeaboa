@@ -1,7 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Criar Pitch Comercial e Projeção para Master/Sênior com senha adicional, preços sugeridos, projeção de receita e estratégia de aquisição hiperlocal.
+- [x] Criar Pitch Comercial e Projeção para Master/Sênior com senha adicional, preços sugeridos, projeção e aquisição hiperlocal; 51 testes aprovados, sessão Master real, recusa de senha incorreta e bloqueio de visitantes conferidos; apresentação validada com resposta de teste.
+- [ ] Confirmar abertura do pitch com a senha escolhida — senha privada salva pelo usuário não é acessível ao agente; requer confirmação na página.
 
 - [x] Cadastrar banner regional e card da Agenda como produtos ativos; adicionar configuração de destino seguro e público regional, mantendo contratos financeiros separados; 40 testes aprovados, consulta pública e oito opções conferidas.
 - [ ] Validar configuração e releitura de uma campanha na gestão com sessão administrativa — a conta solicitante não possui sessão disponível; requer entrar na prévia.

@@ -313,6 +313,7 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Governança",
     roles: ["admin", "senior", "master"],
     items: [
+      { id: "pitch_comercial", label: "Pitch Comercial e Projeção", path: ROUTES.ADMIN_PITCH_COMERCIAL, icon: ClipboardList, roles: ["senior", "master"] },
       { 
         id: "master_panel", 
         label: "Painel Master", 
