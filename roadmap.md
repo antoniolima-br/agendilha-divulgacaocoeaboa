@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Integrar destaques publicados em Home, Guia, Agenda e vitrines regionais, aplicando os mesmos filtros de região, categoria e data sem criar prioridades por preço ou intenção de pagamento.
+- [x] Integrar destaques publicados em Home, Guia, Agenda e vitrines regionais com filtros compartilhados; 70 testes aprovados, evento real conferido na Home/Agenda/Guia e exclusão por data na busca, sem alterar pagamentos ou ativar cotas Master.
 
 - [x] Inserir mapa conceitual publicitário no início do pitch, com legenda de valores/períodos e imagem protegida pelo mesmo acesso do conteúdo; 52 testes aprovados, recusa real de senha inválida e imagem/legenda/bloqueio conferidos com resposta de teste.
 
