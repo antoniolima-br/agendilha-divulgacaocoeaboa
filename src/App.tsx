@@ -70,6 +70,7 @@ const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
 const AdminHighlightPayments = lazy(() => import("./pages/AdminHighlightPayments"));
 const AdminFinanceiro = lazy(() => import("./pages/AdminFinanceiro"));
 const AdminSettings = lazy(() => import("./pages/AdminSettings"));
+const AdminPitchComercial = lazy(() => import("./pages/AdminPitchComercial"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
 const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
 const AdminAdPlans = lazy(() => import("./pages/AdminAdPlans"));
@@ -257,6 +258,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_PAGAMENTOS_DESTAQUE} element={<AdminHighlightPayments />} />
           <Route path={ROUTES.ADMIN_FINANCEIRO} element={<ProtectedRoute requiredPermission="finance.read"><AdminFinanceiro /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
+          <Route path={ROUTES.ADMIN_PITCH_COMERCIAL} element={<ProtectedRoute requiredPermission="pitch.read"><AdminPitchComercial /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
           <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<ProtectedRoute requiredPermission="events.approve"><AdminAprovarEventos /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />

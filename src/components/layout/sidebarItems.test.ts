@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { sidebarConfig } from "./sidebarItems";
+import { sidebarConfig, filterSidebarSections } from "./sidebarItems";
+import { ROUTES, routeExists } from "@/routes/config";
+import { ROUTE_PERMISSIONS } from "@/routes/access";
+import { computePermissions } from "@/hooks/useAppPermissions";
 
 describe("sidebarConfig", () => {
+  it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
+    const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
+    const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
+    expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["senior", "master"].includes(role));
+    expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_PITCH_COMERCIAL]).toBe("pitch.read");
+  });
   it("admin tem Meus eventos separado da Curadoria e do Financeiro", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
