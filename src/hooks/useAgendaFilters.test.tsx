@@ -4,8 +4,8 @@ import { clearGlobalEventFilters } from "./useGlobalEventFilters";
 import { useAgendaFilters } from "@/hooks/useAgendaFilters";
 import type { AgendaEvent } from "@/components/agenda/types";
 
-vi.mock("@/lib/eventDate", async () => {
-  const actual = await vi.importActual<typeof import("@/lib/eventDate")>("@/lib/eventDate");
+vi.mock("../../supabase/functions/_shared/eventDate", async () => {
+  const actual = await vi.importActual<typeof import("../../supabase/functions/_shared/eventDate")>("../../supabase/functions/_shared/eventDate");
   return {
     ...actual,
     saoPauloTodayISO: () => "2026-09-22",
