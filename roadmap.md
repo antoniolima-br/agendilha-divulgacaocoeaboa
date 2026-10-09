@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [ ] Finalizar produtos publicitários ativos, destinos seguros e segmentação pelas oito regiões na Home e Agenda.
+
 - [x] Consultar CEP automaticamente no cadastro de eventos e exibir cidade/região; 44 testes aprovados, incluindo oito regiões, falhas e respostas atrasadas; ViaCEP real conferido.
 - [ ] Conferir CEP e região no formulário com sessão do divulgador — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão de teste.
 
