@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Posicionar eventos sem flyer exclusivamente na lista textual inferior da Home, com título, local/bairro e horário; preservar filtros e vitrines com imagens.
 - [x] Adicionar Compartilhar meus eventos ao menu do divulgador com lista própria publicada e mensagem exclusiva; acesso/filtros e ações cobertos por testes, atalho conferido com sessão real.
 - [ ] Conferir geração e cópia com evento próprio publicado no navegador — a sessão atual não possui eventos publicados ativos; requer evento próprio disponível, sem criar ou alterar eventos reais para teste.
 
