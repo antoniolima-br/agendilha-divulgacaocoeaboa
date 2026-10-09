@@ -1,6 +1,6 @@
 
 - Administrative capabilities derive only from protected user_roles; finance read/write helpers enforce the same role access in SQL and the permission module, preventing profile-based escalation.
-- Effective administrative roles replace lower workspaces in master/senior/financeiro/admin order; shared route-capability gates and recursive sidebar pruning prevent mixed-role navigation leaks, while credential and account mutations require server-verified Master authority.
+- Effective roles replace lower workspaces in master/senior/financeiro/admin order; shared route gates and sidebar pruning prevent mixed-role leaks. Account mutations require server-verified Master authority.
 - A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
 - A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
 - A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
@@ -10,7 +10,7 @@
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
 - Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.
-- Multi-event submissions keep establishment and contact data shared while each event is stored as its own submission row; this preserves moderation and publication behavior.
+- Multi-event submissions share establishment/contact data but store separate rows to preserve moderation/publication.
 - Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
 - Public event lists use the São Paulo calendar day as their cutoff: today's events remain visible all day and become past events only on the following day.
@@ -26,3 +26,4 @@
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
 - Curatorial decisions verify the authenticated actor and read back the guarded status update before invalidating public and organizer caches, preventing false success and stale listings.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
+- ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.

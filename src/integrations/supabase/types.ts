@@ -56,6 +56,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ad_products: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          placement: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          placement: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          placement?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       admin_configs: {
         Row: {
           created_at: string | null
@@ -154,6 +187,7 @@ export type Database = {
           contact_whatsapp: string
           created_at: string
           description: string
+          destination_url: string | null
           event_date: string | null
           event_location: string | null
           highlight_plan_id: string | null
@@ -163,9 +197,11 @@ export type Database = {
           neighborhood: string | null
           photos: string[]
           price_cents: number | null
+          product_id: string | null
           published_at: string | null
           rejection_reason: string | null
           status: string
+          target_regions: string[]
           title: string
           updated_at: string
           user_id: string
@@ -178,6 +214,7 @@ export type Database = {
           contact_whatsapp: string
           created_at?: string
           description: string
+          destination_url?: string | null
           event_date?: string | null
           event_location?: string | null
           highlight_plan_id?: string | null
@@ -187,9 +224,11 @@ export type Database = {
           neighborhood?: string | null
           photos?: string[]
           price_cents?: number | null
+          product_id?: string | null
           published_at?: string | null
           rejection_reason?: string | null
           status?: string
+          target_regions?: string[]
           title: string
           updated_at?: string
           user_id: string
@@ -202,6 +241,7 @@ export type Database = {
           contact_whatsapp?: string
           created_at?: string
           description?: string
+          destination_url?: string | null
           event_date?: string | null
           event_location?: string | null
           highlight_plan_id?: string | null
@@ -211,9 +251,11 @@ export type Database = {
           neighborhood?: string | null
           photos?: string[]
           price_cents?: number | null
+          product_id?: string | null
           published_at?: string | null
           rejection_reason?: string | null
           status?: string
+          target_regions?: string[]
           title?: string
           updated_at?: string
           user_id?: string
@@ -225,6 +267,13 @@ export type Database = {
             columns: ["highlight_plan_id"]
             isOneToOne: false
             referencedRelation: "ad_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "ad_products"
             referencedColumns: ["id"]
           },
         ]

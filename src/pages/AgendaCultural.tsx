@@ -29,6 +29,7 @@ import type { AgendaEvent } from "@/components/agenda/types";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
 import { isHighlightActive } from "@/lib/highlights";
+import { AgendaSponsoredCards } from "@/components/anuncios/AgendaSponsoredCards";
 
 export default function AgendaCultural() {
   return (
@@ -184,6 +185,8 @@ function AgendaCulturalInner() {
               categoryFilter={filters.categoryFilter}
               onCategoryChange={filters.setCategoryFilter}
             />
+
+            <AgendaSponsoredCards region={filters.regionFilter} />
 
             {loading ? (
               <AgendaListSkeleton />

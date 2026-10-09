@@ -10,9 +10,12 @@ import { AD_CATEGORIES, normalizeAds, usePublishedAds } from "@/data/useAds";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { ROUTES } from "@/routes/config";
+import { REGIONS } from "@/lib/regions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Anuncios() {
-  const { data, isLoading } = usePublishedAds();
+  const [region, setRegion] = useState("all");
+  const { data, isLoading } = usePublishedAds(region);
   const anuncios = useMemo(() => normalizeAds(data), [data]);
   const { isPromoter, isAdmin } = useAppPermissions();
   const [busca, setBusca] = useState("");
@@ -67,6 +70,7 @@ export default function Anuncios() {
         </header>
 
         <div className="space-y-3">
+          <Select value={region} onValueChange={setRegion}><SelectTrigger aria-label="Região dos anúncios"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todas as regiões</SelectItem>{REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent></Select>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input

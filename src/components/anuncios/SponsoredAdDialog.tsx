@@ -14,6 +14,7 @@ import { formatPriceBRL } from "@/data/useAdPlans";
 import type { Ad } from "@/data/useAds";
 import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { safeAdDestination } from "@/lib/advertising";
 
 interface SponsoredAdDialogProps {
   ad: Ad | null;
@@ -27,6 +28,7 @@ export function SponsoredAdDialog({ ad, open, onOpenChange }: SponsoredAdDialogP
   const displayImage = getSponsoredAdCreative(ad.title) || cover;
 
   const location = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
+  const destination = safeAdDestination(ad.destination_url);
   const mapUrl = location
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
     : null;
@@ -72,6 +74,7 @@ export function SponsoredAdDialog({ ad, open, onOpenChange }: SponsoredAdDialogP
           <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">{ad.description}</p>
 
           <div className="grid gap-2 sm:grid-cols-2">
+            {destination && <Button asChild className="sm:col-span-2"><a href={destination} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2 h-4 w-4" /> Visitar anunciante</a></Button>}
             {whatsappUrl && (
               <Button asChild className="font-bold">
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">

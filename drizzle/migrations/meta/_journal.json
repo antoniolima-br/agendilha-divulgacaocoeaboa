@@ -169,6 +169,13 @@
       "when": 1791467575107,
       "tag": "0023_radar_macro_region_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791548111959,
+      "tag": "0024_advertising_products_destinations_regions",
+      "breakpoints": true
     }
   ]
 }

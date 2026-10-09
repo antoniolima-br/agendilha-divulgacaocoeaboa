@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { qk } from "@/data/queryKeys";
+import { canonicalAdRegions, matchesAdAudience, safeAdDestination, type AdPlacement } from "@/lib/advertising";
 
 export type AdStatus = "pendente" | "publicado" | "recusado";
 
@@ -26,6 +27,11 @@ export interface Ad {
   ad_type: string;
   event_date: string | null;
   event_location: string | null;
+  product_id: string | null;
+  destination_url: string | null;
+  target_regions: string[];
+  placement: AdPlacement | null;
+  product_active: boolean;
 }
 
 export const AD_CATEGORIES = [
@@ -40,12 +46,12 @@ export const AD_CATEGORIES = [
 ] as const;
 
 const AD_COLUMNS =
-  "id, user_id, title, description, category, price_cents, contact_whatsapp, city, neighborhood, photos, status, rejection_reason, is_highlight, highlight_plan_id, highlight_until, views_count, created_at, ad_type, event_date, event_location";
+  "id, user_id, title, description, category, price_cents, contact_whatsapp, city, neighborhood, photos, status, rejection_reason, is_highlight, highlight_plan_id, highlight_until, views_count, created_at, ad_type, event_date, event_location, product_id, destination_url, target_regions, ad_products(placement,is_active)";
 
 export const ADS_KEY = qk.ads.all;
 
 /** Anúncios publicados (vitrine pública). */
-export function usePublishedAds() {
+export function usePublishedAds(region = "all", placement?: AdPlacement) {
   return useQuery({
     queryKey: qk.ads.published(),
     queryFn: async (): Promise<Ad[]> => {
@@ -56,11 +62,13 @@ export function usePublishedAds() {
         .or(`highlight_until.is.null,highlight_until.gt.${new Date().toISOString()}`)
         .order("is_highlight", { ascending: false })
         .order("created_at", { ascending: false })
-        .limit(6);
+        .limit(1000);
       if (error) throw error;
       return normalizeAds(data);
     },
     staleTime: 60 * 1000,
+    refetchInterval: 60 * 1000,
+    select: (ads) => ads.filter((ad) => matchesAdAudience(ad, region, placement)),
   });
 }
 
@@ -153,6 +161,9 @@ export interface AdInput {
   ad_type?: string;
   event_date?: string | null;
   event_location?: string | null;
+  product_id?: string | null;
+  destination_url?: string | null;
+  target_regions?: string[];
 }
 
 /** Cria um anúncio (entra em análise). */
@@ -202,10 +213,21 @@ export function useModerateAd() {
         highlight_plan_id?: string | null;
         highlight_until?: string | null;
         published_at?: string | null;
+        product_id?: string | null;
+        destination_url?: string | null;
+        target_regions?: string[];
       };
     }) => {
-      const { error } = await supabase.from("ads").update(patch).eq("id", id);
+      const { data, error } = await supabase.from("ads").update(patch).eq("id", id).select(AD_COLUMNS).single();
       if (error) throw error;
+      const saved = normalizeAds([data])[0];
+      if (!saved || Object.entries(patch).some(([key, value]) => {
+        if (!(key in saved)) return false;
+        const actual = saved[key as keyof Ad];
+        if (key === "highlight_until" && typeof value === "string" && typeof actual === "string") return Date.parse(value) !== Date.parse(actual);
+        if (Array.isArray(value) && Array.isArray(actual)) return [...value].sort().join("|") !== [...actual].sort().join("|");
+        return JSON.stringify(actual) !== JSON.stringify(value);
+      })) throw new Error("A alteração não foi confirmada. Confira seu acesso e tente de novo.");
     },
     onSuccess: () => void qc.invalidateQueries({ queryKey: ADS_KEY }),
   });
@@ -269,6 +291,11 @@ export function normalizeAds(rows: unknown): Ad[] {
       ad_type: typeof row.ad_type === "string" ? row.ad_type : "gratuito",
       event_date: typeof row.event_date === "string" ? row.event_date : null,
       event_location: typeof row.event_location === "string" ? row.event_location : null,
+      product_id: typeof row.product_id === "string" ? row.product_id : null,
+      destination_url: safeAdDestination(row.destination_url as string | null),
+      target_regions: canonicalAdRegions(row.target_regions),
+      placement: isRecord(row.ad_products) && (row.ad_products.placement === "carousel" || row.ad_products.placement === "agenda_card") ? row.ad_products.placement : (row.placement === "carousel" || row.placement === "agenda_card" ? row.placement : null),
+      product_active: isRecord(row.ad_products) ? row.ad_products.is_active === true : row.product_active === true,
     }));
 }
 
@@ -283,6 +310,7 @@ export function usePublishedFlyerAds() {
         .select(AD_COLUMNS)
         .eq("status", "publicado")
         .eq("ad_type", "flyer")
+        .is("product_id", null)
         .gte("event_date", since)
         .order("event_date", { ascending: true })
         .limit(6);

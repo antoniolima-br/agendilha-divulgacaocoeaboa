@@ -491,7 +491,7 @@ export default function Landing() {
 
          {/* Publicidade geral */}
          <div className="mb-10">
-           <HomeAdsCarousel variant="banner" />
+           <HomeAdsCarousel variant="banner" region={homeBairro} />
          </div>
 
           <section className="mb-16 border-t border-border/60 pt-10">

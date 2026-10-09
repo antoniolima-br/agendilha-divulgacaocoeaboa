@@ -10,6 +10,7 @@ import type { Ad } from "@/data/useAds";
 import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { safeAdDestination } from "@/lib/advertising";
 
 const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
@@ -50,8 +51,8 @@ function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () =>
   );
 }
 
-export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase" | "banner" }) {
-  const { data, isLoading } = usePublishedAds();
+export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { variant?: "showcase" | "banner"; region?: string }) {
+  const { data, isLoading } = usePublishedAds(region, "carousel");
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
@@ -99,6 +100,12 @@ export function HomeAdsCarousel({ variant = "showcase" }: { variant?: "showcase"
   if (!currentAd) return null;
 
   const openDetails = (ad: Ad) => {
+    const destination = safeAdDestination(ad.destination_url);
+    if (destination) {
+      window.open(destination, "_blank", "noopener,noreferrer");
+      void supabase.rpc("increment_ad_views", { target_ad_id: ad.id });
+      return;
+    }
     setPaused(true);
     setSelectedAd(ad);
     void supabase.rpc("increment_ad_views", { target_ad_id: ad.id });
