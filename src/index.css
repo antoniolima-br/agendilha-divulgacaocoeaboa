@@ -244,6 +244,27 @@
   color: hsl(var(--primary-foreground));
   box-shadow: var(--shadow-gold);
 }
+.home-action-clarity header .btn-gold:nth-last-child(3),
+.home-action-clarity header .btn-gold:nth-last-child(2) {
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+.home-action-clarity header .btn-gold:nth-last-child(3)::after,
+.home-action-clarity header .btn-gold:nth-last-child(2)::after {
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: none;
+  white-space: normal;
+  text-align: center;
+}
+.home-action-clarity header .btn-gold:nth-last-child(3)::after {
+  content: "Cadastrar evento";
+}
+.home-action-clarity header .btn-gold:nth-last-child(2)::after {
+  content: "Espaço publicitário";
+}
 /* Rolagem limpa em todo o app: sem barras visíveis, toque e mouse seguem funcionando */
 html, body, * { scrollbar-width: none; -ms-overflow-style: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none; width: 0; height: 0; }
