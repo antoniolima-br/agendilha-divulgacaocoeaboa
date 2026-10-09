@@ -1,4 +1,7 @@
 export interface PitchContent {
+  brandPositioning: string;
+  monetization: string;
+  projectionBasis: string;
   differential: string;
   regionalExample: string;
   formats: { title: string; cycle: string; min: number; max: number; description: string }[];

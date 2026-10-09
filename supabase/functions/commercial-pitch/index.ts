@@ -31,8 +31,8 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await caller.auth.getUser();
     if (authError || !user) return json({ error: "Entre novamente para continuar." }, 401);
     const { data: roles, error: roleError } = await caller.from("user_roles").select("role").eq("user_id", user.id);
-    if (roleError || !roles?.some(({ role }) => role === "master" || role === "senior"))
-      return json({ error: "Acesso exclusivo de Master e Sênior." }, 403);
+    if (roleError || !roles?.some(({ role }) => ["admin", "financeiro", "master", "senior"].includes(role)))
+      return json({ error: "Acesso exclusivo de Admin, Financeiro, Master e Sênior." }, 403);
     const { data: profile, error: profileError } = await caller.from("profiles").select("must_change_password").eq("user_id", user.id).maybeSingle();
     if (profileError || !profile || profile.must_change_password)
       return json({ error: "Conclua a troca de senha da sua conta antes de continuar." }, 403);
