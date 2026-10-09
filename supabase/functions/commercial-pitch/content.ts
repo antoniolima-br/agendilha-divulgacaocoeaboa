@@ -24,9 +24,23 @@ export function buildPitchContent() {
       { title: "Destaque de Evento Patrocinado", cycle: "Ciclo de 7 dias", min: 80, max: 150, description: "Pacote profissional de destaque para o rolê, conforme região e demanda. Complementa a receita dos espaços; taxas simbólicas de lançamento são ações pontuais, não a base da projeção." },
       { title: "Espaço Publicitário em Carrossel/Agenda", cycle: "Ciclo de 30 dias", min: 200, max: 400, description: "Base da sustentabilidade: carrosséis, banners e cards da Agenda por macro-região, com destino para site, Instagram ou WhatsApp. Precificação profissional para financiar operação e tráfego pago." },
       { title: "Push Patrocinado Regional", cycle: "Por disparo regional", min: pushTicket, max: pushTicket, description: "Preço sugerido por envio a uma macro-região. Pacote recomendado: 4 disparos mensais por R$ 600,00, sem desconto presumido. Proposta sujeita à implantação do canal e à formação de público autorizado." },
+      { title: "Anunciante Master / Patrocínio Âncora de Longo Prazo", cycle: "Pacote trimestral · 90 dias", min: 1500, max: 3000, description: "Pacote sugerido para grandes marcas e eventos de grande porte, com três meses de divulgação antecipada. Propõe banner âncora prioritário na Home, contagem regressiva para o evento e campanhas em três fases: Teaser, Aquecimento e Reta Final." },
     ],
     capacity: "Limite ideal: 3 a 4 anúncios por região no carrossel. Menos concorrência visual, mais atenção para cada anunciante. A projeção usa 3 espaços vendidos por região; cards da Agenda não são somados como uma segunda venda do mesmo pacote.",
     placementTicket, eventTicket, pushTicket, scenarios,
+    anchor: {
+      title: "Anunciante Master / Patrocínio Âncora de Longo Prazo",
+      description: "Uma frente de captação para grandes marcas e eventos de grande porte, além do comércio de bairro. O planejamento começa com três meses de antecedência para construir presença, despertar interesse e acompanhar o público até a data do evento.",
+      durationDays: 90, min: 1500, max: 3000,
+      banner: "Banner âncora prioritário na Home durante o período contratado, com presença de marca e destino para a campanha.",
+      countdown: "Contagem regressiva para o evento, reforçando a proximidade da data ao longo da divulgação.",
+      phases: [
+        { title: "Teaser", description: "Apresentar a marca ou o evento com antecedência e despertar a curiosidade do público." },
+        { title: "Aquecimento", description: "Revelar a programação e os diferenciais, fortalecer o interesse e ampliar a divulgação." },
+        { title: "Reta Final", description: "Intensificar os convites perto da data, com contagem regressiva e foco em ingressos, reservas ou participação." },
+      ],
+      disclaimer: "Formato comercial proposto, sujeito à definição das entregas e implantação do banner prioritário, da contagem regressiva e das campanhas por fase. O valor é do pacote completo de 90 dias, não uma mensalidade. Não está somado à projeção mensal abaixo e não representa receita realizada ou resultado garantido.",
+    },
     push: {
       title: "Notificações Push Regionais",
       example: "Alerta de Fim de Semana: um convite patrocinado para o rolê chega diretamente ao celular de quem escolheu receber notificações daquela macro-região.",

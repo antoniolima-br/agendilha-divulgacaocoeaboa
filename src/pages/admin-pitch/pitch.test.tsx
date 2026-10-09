@@ -21,6 +21,11 @@ describe("pitch comercial", () => {
     expect(content.scenarios.every((s) => s.pushes === s.regions * content.push.packageSends)).toBe(true);
     expect(content.push.packagePrice).toBe(content.pushTicket * content.push.packageSends);
     expect(content.push.requirements).toContain("ainda sem disparos ativados");
+    expect(content.anchor.durationDays).toBe(90);
+    expect([content.anchor.min, content.anchor.max]).toEqual([1500, 3000]);
+    expect(content.anchor.phases.map((phase) => phase.title)).toEqual(["Teaser", "Aquecimento", "Reta Final"]);
+    expect(content.formats.find((format) => format.title === content.anchor.title)).toMatchObject({ min: 1500, max: 3000 });
+    expect(content.anchor.disclaimer).toContain("Não está somado à projeção mensal");
     expect(content.scenarios.every((s) => s.placements / s.regions === 3)).toBe(true);
     expect(content.disclaimer).toContain("não é lucro líquido");
     expect(content.brandPositioning).toContain("produto oficial");
@@ -33,6 +38,7 @@ describe("pitch comercial", () => {
     mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
     render(page());
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByText("Projeção de receita mensal");
@@ -41,7 +47,14 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: "Notificações Push Regionais" })).toBeInTheDocument();
     expect(screen.getByRole("columnheader", { name: /Fase de Expansão/ })).toBeInTheDocument();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: buildPitchContent().anchor.title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Banner âncora prioritário na Home" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Contagem regressiva para o evento" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /01Teaser/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /02Aquecimento/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /03Reta Final/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
+    expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
   });

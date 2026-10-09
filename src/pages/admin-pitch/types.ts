@@ -10,6 +10,7 @@ export interface PitchContent {
   eventTicket: number;
   pushTicket: number;
   push: { title: string; example: string; value: string; requirements: string; packageSends: number; packagePrice: number };
+  anchor: { title: string; description: string; durationDays: number; min: number; max: number; banner: string; countdown: string; phases: { title: string; description: string }[]; disclaimer: string };
   scenarios: { month: number; phase: string; regions: number; placements: number; events: number; pushes: number; marketing: number; placementRevenue: number; eventRevenue: number; pushRevenue: number; revenue: number; afterMarketing: number }[];
   disclaimer: string;
   marketingMin: number;

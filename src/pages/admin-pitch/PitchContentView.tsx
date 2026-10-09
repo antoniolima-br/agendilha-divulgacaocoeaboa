@@ -1,4 +1,4 @@
-import { BellRing, MapPin, Megaphone, Target, TrendingUp } from "lucide-react";
+import { BellRing, Crown, MapPin, Megaphone, Target, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PitchContent } from "./types";
 
@@ -42,6 +42,17 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <p className="max-w-3xl text-sm leading-relaxed">{content.push.value}</p>
       <p className="text-lg font-medium">{money(content.pushTicket)} por disparo regional <span className="text-muted-foreground">·</span> {content.push.packageSends} disparos/mês por {money(content.push.packagePrice)}</p>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.push.requirements}</p>
+    </section>
+    <section className="space-y-5 border-t border-border pt-8">
+      <h2 className="flex items-start gap-2 text-xl font-semibold"><Crown className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.anchor.title}</h2>
+      <p className="max-w-3xl text-lg leading-relaxed">{content.anchor.description}</p>
+      <p className="text-lg font-medium">Pacote trimestral · {content.anchor.durationDays} dias <span className="text-muted-foreground">·</span> <span className="text-primary">{money(content.anchor.min)} a {money(content.anchor.max)}</span></p>
+      <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
+        <div className="space-y-2"><h3 className="font-semibold">Banner âncora prioritário na Home</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.anchor.banner}</p></div>
+        <div className="space-y-2"><h3 className="font-semibold">Contagem regressiva para o evento</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.anchor.countdown}</p></div>
+      </div>
+      <div className="grid gap-x-8 gap-y-5 md:grid-cols-3">{content.anchor.phases.map((phase, i) => <div key={phase.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{phase.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{phase.description}</p></div>)}</div>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.anchor.disclaimer}</p>
     </section>
     <section className="min-w-0 space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><TrendingUp className="h-5 w-5 shrink-0 text-primary" /> Projeção de receita mensal</h2>
