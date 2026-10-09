@@ -1552,25 +1552,40 @@ export type Database = {
       }
       newsletter_subscribers: {
         Row: {
+          all_regions: boolean
           created_at: string | null
           email: string
           id: string
+          interests: string[]
           name: string | null
           neighborhood: string | null
+          preferred_neighborhood: string | null
+          preferred_region: string | null
+          whatsapp_consent: boolean
         }
         Insert: {
+          all_regions?: boolean
           created_at?: string | null
           email: string
           id?: string
+          interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          preferred_neighborhood?: string | null
+          preferred_region?: string | null
+          whatsapp_consent?: boolean
         }
         Update: {
+          all_regions?: boolean
           created_at?: string | null
           email?: string
           id?: string
+          interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          preferred_neighborhood?: string | null
+          preferred_region?: string | null
+          whatsapp_consent?: boolean
         }
         Relationships: []
       }
@@ -2499,32 +2514,41 @@ export type Database = {
       usuarios_publicos: {
         Row: {
           aceita_notificacoes: boolean
+          all_regions: boolean
           contato_id: string
           created_at: string
           frequencia_notificacao: string
           id: string
           interesses: string[]
           origem_cadastro: string | null
+          preferred_neighborhood: string | null
+          preferred_region: string | null
           updated_at: string
         }
         Insert: {
           aceita_notificacoes?: boolean
+          all_regions?: boolean
           contato_id: string
           created_at?: string
           frequencia_notificacao?: string
           id?: string
           interesses?: string[]
           origem_cadastro?: string | null
+          preferred_neighborhood?: string | null
+          preferred_region?: string | null
           updated_at?: string
         }
         Update: {
           aceita_notificacoes?: boolean
+          all_regions?: boolean
           contato_id?: string
           created_at?: string
           frequencia_notificacao?: string
           id?: string
           interesses?: string[]
           origem_cadastro?: string | null
+          preferred_neighborhood?: string | null
+          preferred_region?: string | null
           updated_at?: string
         }
         Relationships: [

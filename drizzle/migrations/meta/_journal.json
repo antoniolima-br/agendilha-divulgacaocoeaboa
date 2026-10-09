@@ -176,6 +176,13 @@
       "when": 1791548111959,
       "tag": "0024_advertising_products_destinations_regions",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1791557144121,
+      "tag": "0025_notification_geographic_preferences",
+      "breakpoints": true
     }
   ]
 }
