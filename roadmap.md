@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Compactar região/bairros e interesses com seleção múltipla pesquisável e tags; 60 testes aprovados, busca/remoção e ausência de overflow conferidas, cadastro fictício salvo e relido com arrays corretos, depois removido.
+
 - [x] Adicionar região/bairro de preferência e Todas as Regiões ao cadastro de notificações da Home e do público, preservando interesses e salvando a segmentação; 24 testes aprovados, cadastro fictício enviado e relido com região/interesses/consentimento corretos, depois removido; sem ativar push.
 
 - [x] Incluir Automação e Autoatendimento no pitch como próximo passo: criação e pagamento pelo anunciante/divulgador, pagamento prévio, validação, moderação e auditoria, sem ativar funcionalidades; 52 testes aprovados, senha inválida recusada com sessão real e seção/bloqueio conferidos com resposta de apresentação.

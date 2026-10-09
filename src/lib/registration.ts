@@ -38,7 +38,7 @@ export interface PublicoPayload {
   interesses: string[];
   aceita_notificacoes: boolean;
   frequencia_notificacao: string;
-  geography: string;
+  geography: string[];
 }
 
 export async function saveUsuarioPublico(p: PublicoPayload) {

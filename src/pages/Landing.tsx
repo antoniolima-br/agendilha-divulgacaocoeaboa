@@ -41,7 +41,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import logo from "@/assets/coeaboa-logo.webp";
 import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
-import { notificationGeography } from "@/lib/notificationPreferences";
+import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
@@ -262,7 +262,7 @@ export default function Landing() {
  
   const [subscriberPhone, setSubscriberPhone] = useState("");
   const [subscriberName, setSubscriberName] = useState("");
-  const [subscriberGeography, setSubscriberGeography] = useState("all");
+  const [subscriberGeographies, setSubscriberGeographies] = useState<string[]>(["all"]);
   const [subscriberInterests, setSubscriberInterests] = useState<string[]>([]);
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
@@ -274,7 +274,7 @@ export default function Landing() {
     const parsed = newsletterSubscribeSchema.safeParse({
       phone: subscriberPhone,
       name: subscriberName,
-      geography: subscriberGeography,
+      geographies: subscriberGeographies,
       interests: subscriberInterests,
       whatsappConsent,
     });
@@ -284,8 +284,8 @@ export default function Landing() {
       return;
     }
 
-    const { phone, name, geography, interests } = parsed.data;
-    const audience = notificationGeography(geography);
+    const { phone, name, geographies, interests } = parsed.data;
+    const audience = processGeographies(geographies);
     setIsSubmitting(true);
     try {
       const { error } = await supabase
@@ -311,7 +311,7 @@ export default function Landing() {
         });
         setSubscriberPhone("");
         setSubscriberName("");
-        setSubscriberGeography("all");
+        setSubscriberGeographies(["all"]);
         setSubscriberInterests([]);
       }
      } catch (err) {
@@ -656,7 +656,7 @@ export default function Landing() {
                     />
                   </div>
                 </div>
-                <NotificationPreferences geography={subscriberGeography} onGeographyChange={setSubscriberGeography} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
+                <NotificationPreferences geographies={subscriberGeographies} onGeographiesChange={setSubscriberGeographies} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col justify-end px-1 sm:px-4">
                     <div className="flex items-start gap-2 rounded-xl border border-border bg-background p-3 sm:border-0 sm:bg-transparent sm:p-0">

@@ -34,7 +34,7 @@ export default function CadastroPublico() {
   const [whatsapp, setWhatsapp] = useState("");
   const [bairro, setBairro] = useState("");
   const [interesses, setInteresses] = useState<string[]>([]);
-  const [geography, setGeography] = useState("all");
+  const [geography, setGeography] = useState<string[]>(["all"]);
   const [aceita, setAceita] = useState(true);
   const [frequencia, setFrequencia] = useState("semanal");
 
@@ -126,7 +126,7 @@ export default function CadastroPublico() {
 
       {step === 2 && (
         <>
-          <NotificationPreferences geography={geography} onGeographyChange={setGeography} interests={interesses} onInterestsChange={setInteresses} />
+          <NotificationPreferences geographies={geography} onGeographiesChange={setGeography} interests={interesses} onInterestsChange={setInteresses} />
 
           <div className="flex items-start gap-3 rounded-2xl border-2 border-border p-4 bg-card">
             <Checkbox

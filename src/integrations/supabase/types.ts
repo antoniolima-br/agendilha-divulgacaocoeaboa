@@ -1560,7 +1560,9 @@ export type Database = {
           name: string | null
           neighborhood: string | null
           preferred_neighborhood: string | null
+          preferred_neighborhoods: string[]
           preferred_region: string | null
+          preferred_regions: string[]
           whatsapp_consent: boolean
         }
         Insert: {
@@ -1572,7 +1574,9 @@ export type Database = {
           name?: string | null
           neighborhood?: string | null
           preferred_neighborhood?: string | null
+          preferred_neighborhoods?: string[]
           preferred_region?: string | null
+          preferred_regions?: string[]
           whatsapp_consent?: boolean
         }
         Update: {
@@ -1584,7 +1588,9 @@ export type Database = {
           name?: string | null
           neighborhood?: string | null
           preferred_neighborhood?: string | null
+          preferred_neighborhoods?: string[]
           preferred_region?: string | null
+          preferred_regions?: string[]
           whatsapp_consent?: boolean
         }
         Relationships: []
@@ -2522,7 +2528,9 @@ export type Database = {
           interesses: string[]
           origem_cadastro: string | null
           preferred_neighborhood: string | null
+          preferred_neighborhoods: string[]
           preferred_region: string | null
+          preferred_regions: string[]
           updated_at: string
         }
         Insert: {
@@ -2535,7 +2543,9 @@ export type Database = {
           interesses?: string[]
           origem_cadastro?: string | null
           preferred_neighborhood?: string | null
+          preferred_neighborhoods?: string[]
           preferred_region?: string | null
+          preferred_regions?: string[]
           updated_at?: string
         }
         Update: {
@@ -2548,7 +2558,9 @@ export type Database = {
           interesses?: string[]
           origem_cadastro?: string | null
           preferred_neighborhood?: string | null
+          preferred_neighborhoods?: string[]
           preferred_region?: string | null
+          preferred_regions?: string[]
           updated_at?: string
         }
         Relationships: [
