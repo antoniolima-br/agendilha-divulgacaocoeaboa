@@ -17,5 +17,11 @@ describe("campaign audience", () => {
     expect(matchesAdAudience({ ...ad, product_active: false }, "Zona Norte")).toBe(false);
     expect(matchesAdAudience(ad, "Desconhecido")).toBe(false);
   });
+  it("keeps legacy banners within their neighborhood region", () => {
+    const legacy = { ...ad, product_id: null, neighborhood: "Olaria", city: "Rio de Janeiro" };
+    expect(matchesAdAudience(legacy, "Zona Norte", "carousel")).toBe(true);
+    expect(matchesAdAudience(legacy, "Zona Sul", "carousel")).toBe(false);
+    expect(matchesAdAudience(legacy, "all", "carousel")).toBe(false);
+  });
   it("normalizes only official regions", () => expect(canonicalAdRegions(["jacarepagua", "ZONA NORTE", "Zona Norte", "fake"])).toEqual(["Zona Norte", "Jacarepaguá"]));
 });

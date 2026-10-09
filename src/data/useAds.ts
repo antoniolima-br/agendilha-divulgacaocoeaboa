@@ -221,7 +221,13 @@ export function useModerateAd() {
       const { data, error } = await supabase.from("ads").update(patch).eq("id", id).select(AD_COLUMNS).single();
       if (error) throw error;
       const saved = normalizeAds([data])[0];
-      if (!saved || Object.entries(patch).some(([key, value]) => key in saved && JSON.stringify(saved[key as keyof Ad]) !== JSON.stringify(value))) throw new Error("A alteração não foi confirmada. Confira seu acesso e tente de novo.");
+      if (!saved || Object.entries(patch).some(([key, value]) => {
+        if (!(key in saved)) return false;
+        const actual = saved[key as keyof Ad];
+        if (key === "highlight_until" && typeof value === "string" && typeof actual === "string") return Date.parse(value) !== Date.parse(actual);
+        if (Array.isArray(value) && Array.isArray(actual)) return [...value].sort().join("|") !== [...actual].sort().join("|");
+        return JSON.stringify(actual) !== JSON.stringify(value);
+      })) throw new Error("A alteração não foi confirmada. Confira seu acesso e tente de novo.");
     },
     onSuccess: () => void qc.invalidateQueries({ queryKey: ADS_KEY }),
   });
@@ -304,6 +310,7 @@ export function usePublishedFlyerAds() {
         .select(AD_COLUMNS)
         .eq("status", "publicado")
         .eq("ad_type", "flyer")
+        .is("product_id", null)
         .gte("event_date", since)
         .order("event_date", { ascending: true })
         .limit(6);
