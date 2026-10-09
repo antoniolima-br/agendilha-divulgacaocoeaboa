@@ -28,6 +28,7 @@ export const qk = {
       [...qk.submissions.all, "count", filters ?? {}] as const,
     byId: (id: string) => [...qk.submissions.all, "byId", id] as const,
     mine: (userId: string | undefined) => [...qk.submissions.all, "mine", userId ?? "anon"] as const,
+    minePublished: (userId: string | undefined, day: string) => [...qk.submissions.all, "mine-published", userId ?? "anon", day] as const,
   },
   adminStats: {
     all: ["admin-stats"] as const,

@@ -64,6 +64,7 @@ const Carrossel = lazy(() => import("./pages/Carrossel"));
 const EventoEnviado = lazy(() => import("./pages/EventoEnviado"));
 const ContratarDestaqueEvento = lazy(() => import("./pages/ContratarDestaqueEvento"));
 const MeusEventos = lazy(() => import("./pages/MeusEventos"));
+const CompartilharMeusEventos = lazy(() => import("./pages/CompartilharMeusEventos"));
 const SeuRadar = lazy(() => import("./pages/SeuRadar"));
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
@@ -224,6 +225,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
           <Route path={ROUTES.SEU_RADAR} element={<ProtectedRoute><SeuRadar /></ProtectedRoute>} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<PromotorRoute><MeusEventos /></PromotorRoute>} />
+          <Route path={ROUTES.COMPARTILHAR_MEUS_EVENTOS} element={<PromotorRoute><CompartilharMeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />

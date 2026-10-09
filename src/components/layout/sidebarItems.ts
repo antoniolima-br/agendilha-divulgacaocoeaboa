@@ -23,6 +23,7 @@ import {
   ShoppingBag,
   Settings2,
   CreditCard,
+  Share2,
   CheckCircle2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
@@ -175,6 +176,13 @@ export const sidebarConfig: SidebarSection[] = [
         path: ROUTES.MEUS_EVENTOS,
         icon: ClipboardList, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
+      },
+      {
+        id: "share_my_events",
+        label: "Compartilhar meus eventos",
+        path: ROUTES.COMPARTILHAR_MEUS_EVENTOS,
+        icon: Share2,
+        roles: ["promoter", "collaborator", "admin", "senior", "master"]
       },
       { 
         id: "send_event", 
@@ -379,7 +387,7 @@ export function filterSidebarSections(
 ): SidebarSection[] {
   const filterItems = (items: SidebarItem[]): SidebarItem[] => items.flatMap((item) => {
     if (!item.roles.includes(role) || !item.path) return [];
-    if ((item.id === "send_event" || item.id === "my_submissions") && !hasPermission("events.create")) return [];
+    if (["send_event", "my_submissions", "share_my_events"].includes(item.id) && !hasPermission("events.create")) return [];
     const children = item.children ? filterItems(item.children) : undefined;
     if (item.children && !children?.length) return [];
     const permission = ROUTE_PERMISSIONS[item.path.split("?")[0]];
