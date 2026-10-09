@@ -46,6 +46,7 @@ export const ROUTES = {
   EVENTO_ENVIADO: "/evento-enviado/:id",
   EVENTO_CONTRATAR_DESTAQUE: "/evento-enviado/:id/contratar-destaque",
   MEUS_EVENTOS: "/meus-eventos",
+  COMPARTILHAR_MEUS_EVENTOS: "/meus-eventos/compartilhar",
   ADMIN_WHATSAPP_TEMPLATES: "/admin/whatsapp-templates",
   ADMIN_DESTAQUES: "/admin/destaques",
   ADMIN_PAGAMENTOS_DESTAQUE: "/admin/destaques/pagamentos",

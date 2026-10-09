@@ -1,4 +1,4 @@
-import { eventDateISO, isCurrentOrFutureEventDate, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
+import { eventDateISO, saoPauloTodayISO, isPublicEventStatus } from "@/lib/eventDate";
 import { formatBrazilianDate } from "@/lib/date-utils";
 
 export interface PromoterShareEvent {
@@ -16,9 +16,9 @@ export interface PromoterShareEvent {
   status: string | null;
 }
 
-export function eligiblePromoterEvents(events: PromoterShareEvent[], ownerId: string | undefined, today?: string) {
+export function eligiblePromoterEvents(events: PromoterShareEvent[], ownerId: string | undefined, today = saoPauloTodayISO()) {
   if (!ownerId) return [];
-  return events.filter(event => event.user_id === ownerId && PUBLIC_EVENT_STATUSES.includes(event.status as typeof PUBLIC_EVENT_STATUSES[number]) && isCurrentOrFutureEventDate(event.date, today));
+  return events.filter(event => event.user_id === ownerId && isPublicEventStatus(event.status) && eventDateISO(event.date) >= today);
 }
 
 export function buildPromoterEventShare(event: PromoterShareEvent, origin: string) {

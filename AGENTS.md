@@ -8,7 +8,7 @@
 - Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
-- Large flows colocate validation and modals; pages orchestrate them to preserve behavior and testability.
+- Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - All establishment creation forms share address-by-CEP search to prevent drift.
 - Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
@@ -29,4 +29,4 @@
 
 - Pitch text/images remain server-only behind role/password checks; guarded responses and expiring account-scoped memory prevent exposure.
 - Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.
-- Home and Agenda share EventDateFilter to keep calendar selection and ISO filter values consistent.
+- Home/Agenda share EventDateFilter for consistent calendar/ISO values.

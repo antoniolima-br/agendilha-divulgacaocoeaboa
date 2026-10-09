@@ -23,6 +23,7 @@ import {
   ShoppingBag,
   Settings2,
   CreditCard,
+  Share2,
   CheckCircle2
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
@@ -175,6 +176,13 @@ export const sidebarConfig: SidebarSection[] = [
         path: ROUTES.MEUS_EVENTOS,
         icon: ClipboardList, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
+      },
+      {
+        id: "share_my_events",
+        label: "Compartilhar meus eventos",
+        path: ROUTES.COMPARTILHAR_MEUS_EVENTOS,
+        icon: Share2,
+        roles: ["promoter", "collaborator", "admin", "senior", "master"]
       },
       { 
         id: "send_event", 
