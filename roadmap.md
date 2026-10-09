@@ -1,7 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Substituir o seletor de período por campo dd/mm/aaaa com calendário interativo na Home e Agenda; conferir seleção e filtro no navegador.
+- [x] Substituir o seletor de período por campo dd/mm/aaaa com calendário interativo na Home e Agenda; abertura, escolha, fechamento e eventos da data conferidos no navegador; 22 testes aprovados.
 
 - [x] Compactar região/bairros e interesses com seleção múltipla pesquisável e tags; 60 testes aprovados, busca/remoção e ausência de overflow conferidas, cadastro fictício salvo e relido com arrays corretos, depois removido.
 
