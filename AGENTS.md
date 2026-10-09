@@ -8,7 +8,7 @@
 - Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
-- Large business flows keep validation and modal presentation in colocated modules while page components remain orchestration layers; this preserves behavior and keeps rules testable.
+- Large flows colocate validation and modals; pages orchestrate them to preserve behavior and testability.
 - All establishment creation flows reuse the shared address-by-CEP search; keeping one implementation prevents public, promoter, admin, and quick-create forms from drifting.
 - Multi-event submissions share establishment/contact data but store separate rows to preserve moderation/publication.
 - Multi-event submissions may share a date at one establishment, but each event must use a distinct start time; enforce this in the form and database.
