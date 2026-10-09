@@ -63,6 +63,7 @@ export const qk = {
   ads: {
     all: ["ads"] as const,
     published: () => [...qk.ads.all, "publicados"] as const,
+    products: () => [...qk.ads.all, "products"] as const,
     mine: (userId: string | null | undefined) => [...qk.ads.all, "meus", userId ?? "anon"] as const,
     list: () => [...qk.ads.all, "todos"] as const,
     byId: (id: string | null | undefined) => [...qk.ads.all, "detalhe", id ?? "none"] as const,
