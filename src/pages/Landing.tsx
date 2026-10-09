@@ -1,6 +1,7 @@
 import { usePublicEvents } from "@/data/usePublicEvents";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
+import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
@@ -127,22 +128,14 @@ export default function Landing() {
   const { data: eventsData } = usePublicEvents();
   const { filters: globalFilters, setFilters: setGlobalFilters } = useGlobalEventFilters();
   const allEvents = useMemo(() => (eventsData ?? []).filter((event) => matchesPublicEventFilters(event, globalFilters)), [eventsData, globalFilters]);
-    const freeEvents = useMemo(
-      () => allEvents.filter((event) => !isHighlightActive(event) && event.is_free === true).slice(0, 8),
-      [allEvents],
+    const { visual: visualEvents, textOnly: freeEvents } = useMemo(
+      () => splitHomeEventPresentation(allEvents), [allEvents],
     );
-    const promotionalFlyerEvents = useMemo(
-      () => allEvents.filter((event) => typeof event.image_url === "string" && event.image_url.trim().length > 0),
-      [allEvents],
-    );
+    const promotionalFlyerEvents = visualEvents;
     const todayEventsCount = useMemo(() => {
       const today = saoPauloTodayISO();
       return allEvents.filter((event) => eventDateISO(event.date) === today).length;
     }, [allEvents]);
-    const visualEvents = useMemo(
-      () => allEvents.filter((event) => isHighlightActive(event) || event.is_free !== true),
-      [allEvents],
-    );
     const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
     const { data: flyerAdsData } = usePublishedFlyerAds();
     const flyerAds = Array.isArray(flyerAdsData) ? flyerAdsData : [];
@@ -189,7 +182,7 @@ export default function Landing() {
          today,
        );
        const pool = Array.from(new Map(
-          [...eligiblePromotionalFlyers, ...flyers, ...allEvents.filter((event) => !event.image_url)].map((event) => [event.id, event]),
+          [...eligiblePromotionalFlyers, ...flyers].map((event) => [event.id, event]),
        ).values());
       const todays = pool.filter((ev) => eventDateISO(ev.date) === today);
         const activeHighlights = pool.filter((event) =>
@@ -237,8 +230,8 @@ export default function Landing() {
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
     const todayEvents = useMemo(
-       () => allEvents.filter((event) => eventDateISO(event.date) === todayStr),
-      [allEvents, todayStr],
+       () => visualEvents.filter((event) => eventDateISO(event.date) === todayStr),
+      [visualEvents, todayStr],
     );
 
     const weekDays = useMemo(() => {
@@ -350,9 +343,9 @@ export default function Landing() {
 
      if (todayEvents.length > 0) return todayEvents.slice(0, 5);
 
-     const matchingUpcoming = allEvents.filter(matchesPreferences);
-     return (matchingUpcoming.length > 0 ? matchingUpcoming : allEvents).slice(0, 5);
-   }, [allEvents, profile?.event_type_preferences, profile?.followed_styles, profile?.musical_preferences, profileLoaded, todayEvents, user]);
+     const matchingUpcoming = visualEvents.filter(matchesPreferences);
+     return (matchingUpcoming.length > 0 ? matchingUpcoming : visualEvents).slice(0, 5);
+   }, [visualEvents, profile?.event_type_preferences, profile?.followed_styles, profile?.musical_preferences, profileLoaded, todayEvents, user]);
 
   const homeBairro = globalFilters.region;
   const homeCat = globalFilters.category;
@@ -367,9 +360,9 @@ export default function Landing() {
     [...new Set((eventsData ?? []).filter((e: any) => regionOf(e) === homeBairro).map(nbhName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")),
     [eventsData, homeBairro]);
 
-  const homeFiltered = useMemo(() => allEvents.filter((e: any) =>
+  const homeFiltered = useMemo(() => visualEvents.filter((e: any) =>
      matchesEventGeography(e, homeBairro, homeNbh)),
-    [allEvents, homeBairro, homeNbh]);
+    [visualEvents, homeBairro, homeNbh]);
   return (
     <div className="theme-coeaboa min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
@@ -481,62 +474,6 @@ export default function Landing() {
            <HomeAdsCarousel variant="banner" region={homeBairro} />
          </div>
 
-          <section className="mb-16 border-t border-border/60 pt-10">
-            <div className="flex items-end justify-between gap-4 mb-5">
-              <div>
-                <h2 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">Veja mais eventos pra hoje</h2>
-              </div>
-              <Link to="/explorar?view=free" className="text-primary text-sm font-bold flex items-center shrink-0">
-                Ver tudo <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            {freeEvents.length > 0 ? (
-              <ul
-                className={cn(
-                  "divide-y divide-border border-y border-border",
-                  freeEvents.length >= 4 && "max-h-[13.5rem] overflow-y-auto overscroll-contain pr-1",
-                )}
-                aria-label="Outras programações"
-              >
-                {freeEvents.map((event) => {
-                  const dateIso = eventDateISO(event.date);
-                  const [year, month, day] = dateIso.split("-").map(Number);
-                  const dateLabel = year && month && day
-                    ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(year, month - 1, day))
-                    : "Data a confirmar";
-                  const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
-                  const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
-
-                  return (
-                    <li key={event.id}>
-                      <Link
-                        to={`/agenda?event=${event.id}`}
-                        className="group grid min-h-[4.5rem] grid-cols-[4.75rem_minmax(0,1fr)_auto] sm:grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-3 py-3 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
-                      >
-                        <div className="text-xs sm:text-sm text-muted-foreground pl-1 sm:pl-3">
-                          <span className="block font-semibold text-foreground capitalize">{dateLabel}</span>
-                          <span>{timeLabel}</span>
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-semibold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
-                            {event.event_title || "Evento"}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground truncate">{locationLabel}</p>
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground mr-1 sm:mr-3" aria-hidden="true" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <div className="border-y border-border py-8 text-center">
-                <p className="text-muted-foreground text-sm">Nenhuma outra programação disponível agora. Confira novamente em breve.</p>
-              </div>
-            )}
-          </section>
-
          <section id="radar" className="mb-12 scroll-mt-40">
            <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
@@ -612,6 +549,54 @@ export default function Landing() {
          </section>
 
          {/* "Recomendado para você" removido: já coberto por "No seu radar" para evitar duplicação */}
+
+          <section className="mb-16 border-t border-border/60 pt-10">
+            <div className="flex items-end justify-between gap-4 mb-5">
+              <div>
+                <h2 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">Outras programações</h2>
+              </div>
+              <Link to="/agenda" className="text-primary text-sm font-bold flex items-center shrink-0">
+                Ver tudo <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {freeEvents.length > 0 ? (
+              <ul
+                className={cn(
+                  "divide-y divide-border border-y border-border",
+                  freeEvents.length >= 4 && "max-h-[13.5rem] overflow-y-auto overscroll-contain pr-1",
+                )}
+                aria-label="Outras programações"
+              >
+                {freeEvents.map((event) => {
+                  const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
+                  const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
+
+                  return (
+                    <li key={event.id}>
+                      <Link
+                        to={`/agenda?event=${event.id}`}
+                        className="group grid min-h-[4.5rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-3 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
+                      >
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-sm sm:text-base text-foreground break-words group-hover:text-primary transition-colors">
+                            {event.event_title || "Evento"}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground break-words">{locationLabel}</p>
+                        </div>
+                        <span className="shrink-0 text-xs font-medium text-primary sm:text-sm">{timeLabel}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div className="border-y border-border py-8 text-center">
+                <p className="text-muted-foreground text-sm">Nenhuma outra programação disponível agora. Confira novamente em breve.</p>
+              </div>
+            )}
+          </section>
+
 
         {/* Newsletter / Public Registration */}
         <section className="mb-12">
