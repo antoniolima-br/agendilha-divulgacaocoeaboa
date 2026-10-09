@@ -32,7 +32,7 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.monetization}</p>
       <div className="grid gap-4 md:grid-cols-2">{content.formats.map((format) => <Card key={format.title} className="rounded-lg shadow-none">
         <CardHeader><p className="text-sm text-muted-foreground">{format.cycle}</p><CardTitle className="text-lg leading-snug">{format.title}</CardTitle></CardHeader>
-        <CardContent className="space-y-3"><p className="text-2xl font-semibold text-primary">{money(format.min)}{format.min !== format.max && <> <span className="text-base font-normal text-muted-foreground">a</span> {money(format.max)}</>}</p><p className="text-sm leading-relaxed text-muted-foreground">{format.description}</p></CardContent>
+        <CardContent className="space-y-3"><p className="text-2xl font-semibold text-primary">{money(format.min)}{format.min !== format.max && <> <span className="text-base font-normal text-muted-foreground">a</span> {money(format.max)}</>}{format.priceSuffix && <span className="text-sm font-normal text-muted-foreground"> {format.priceSuffix}</span>}</p><p className="text-sm leading-relaxed text-muted-foreground">{format.description}</p></CardContent>
       </Card>)}</div>
       <p className="border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.capacity}</p>
     </section>
@@ -46,7 +46,9 @@ export function PitchContentView({ content }: { content: PitchContent }) {
     <section className="space-y-5 border-t border-border pt-8">
       <h2 className="flex items-start gap-2 text-xl font-semibold"><Crown className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.anchor.title}</h2>
       <p className="max-w-3xl text-lg leading-relaxed">{content.anchor.description}</p>
-      <p className="text-lg font-medium">Pacote trimestral · {content.anchor.durationDays} dias <span className="text-muted-foreground">·</span> <span className="text-primary">{money(content.anchor.min)} a {money(content.anchor.max)}</span></p>
+      <p className="max-w-3xl text-sm leading-relaxed">{content.anchor.billing}</p>
+      <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">{content.anchor.tiers.map((tier) => <div key={tier.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold">{tier.slots} {tier.title}</h3><p className="text-lg font-medium text-primary">{money(tier.min)} a {money(tier.max)}<span className="text-sm font-normal text-muted-foreground"> /mês{tier.slots > 1 ? " cada" : ""}</span></p><p className="text-sm leading-relaxed text-muted-foreground">{tier.description}</p></div>)}</div>
+      <p className="text-sm font-medium">Potencial com os 3 espaços contratados: <span className="text-primary">{money(content.anchor.monthlyMin)} a {money(content.anchor.monthlyMax)}/mês</span></p>
       <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
         <div className="space-y-2"><h3 className="font-semibold">Banner âncora prioritário na Home</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.anchor.banner}</p></div>
         <div className="space-y-2"><h3 className="font-semibold">Contagem regressiva para o evento</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.anchor.countdown}</p></div>

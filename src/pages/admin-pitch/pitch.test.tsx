@@ -21,10 +21,13 @@ describe("pitch comercial", () => {
     expect(content.scenarios.every((s) => s.pushes === s.regions * content.push.packageSends)).toBe(true);
     expect(content.push.packagePrice).toBe(content.pushTicket * content.push.packageSends);
     expect(content.push.requirements).toContain("ainda sem disparos ativados");
-    expect(content.anchor.durationDays).toBe(90);
-    expect([content.anchor.min, content.anchor.max]).toEqual([1500, 3000]);
+    expect(content.anchor.tiers.map(({ slots, min, max }) => ({ slots, min, max }))).toEqual([{ slots: 1, min: 800, max: 1000 }, { slots: 2, min: 400, max: 500 }]);
+    expect([content.anchor.monthlyMin, content.anchor.monthlyMax]).toEqual([1600, 2000]);
+    expect(content.anchor.billing).toContain("Recorrência mensal");
     expect(content.anchor.phases.map((phase) => phase.title)).toEqual(["Teaser", "Aquecimento", "Reta Final"]);
-    expect(content.formats.find((format) => format.title === content.anchor.title)).toMatchObject({ min: 1500, max: 3000 });
+    expect(content.formats.find((format) => format.title === "Anunciante Master")).toMatchObject({ min: 800, max: 1000, priceSuffix: "/mês" });
+    expect(content.formats.find((format) => format.title === "Sub-Masters / Co-Patrocinadores")).toMatchObject({ min: 400, max: 500, priceSuffix: "/mês cada" });
+    expect(content.formats.some((format) => format.cycle.includes("trimestral"))).toBe(false);
     expect(content.anchor.disclaimer).toContain("Não está somado à projeção mensal");
     expect(content.scenarios.every((s) => s.placements / s.regions === 3)).toBe(true);
     expect(content.disclaimer).toContain("não é lucro líquido");
@@ -48,6 +51,10 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("columnheader", { name: /Fase de Expansão/ })).toBeInTheDocument();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: buildPitchContent().anchor.title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "1 Anunciante Master" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "2 Sub-Masters / Co-Patrocinadores" })).toBeInTheDocument();
+    expect(screen.getByText(buildPitchContent().anchor.billing)).toBeInTheDocument();
+    expect(screen.queryByText(/Pacote trimestral/)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Banner âncora prioritário na Home" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Contagem regressiva para o evento" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /01\s*Teaser/ })).toBeInTheDocument();
