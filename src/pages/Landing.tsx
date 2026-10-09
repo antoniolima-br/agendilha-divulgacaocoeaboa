@@ -444,6 +444,7 @@ export default function Landing() {
          <div className="mb-10 space-y-8" aria-label="Categorias">
            {HOME_CATEGORIES.filter((c) => homeCat === "all" || c.key === homeCat).map((c) => {
              const evs = homeFiltered.filter((ev: any) => c.match.includes(String(ev?.category || "").toLowerCase().trim()));
+              if (evs.length === 0) return null;
              return (
                <section key={c.key}>
                  <div className="mb-3 flex items-end justify-between gap-3 border-b border-primary/25 pb-1.5">
@@ -454,7 +455,6 @@ export default function Landing() {
                      <Link to={`/agenda?category=${encodeURIComponent(c.key)}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3.5 w-3.5" /></Link>
                    )}
                  </div>
-                 {evs.length > 0 ? (
                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
                      {evs.slice(0, 4).map((ev: any) => (
                        <button key={ev.id} type="button" onClick={() => navigate(`/agenda?event=${ev.id}`)} className="group min-w-0 text-left">
@@ -471,11 +471,6 @@ export default function Landing() {
                        </button>
                      ))}
                    </div>
-                 ) : (
-                   <p className="rounded-xl border border-dashed border-border px-4 py-4 text-center text-xs text-muted-foreground">
-                     Nada por aqui ainda{homeBairro !== "all" ? " nesse local" : ""}. Tem um rolê assim? <Link to="/anuncios/novo" className="font-bold text-primary">Divulgue</Link>.
-                   </p>
-                 )}
                </section>
              );
            })}
