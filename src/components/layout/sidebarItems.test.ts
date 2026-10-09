@@ -5,6 +5,14 @@ import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { computePermissions } from "@/hooks/useAppPermissions";
 
 describe("sidebarConfig", () => {
+  it("compartilhamento pessoal segue o acesso do painel do divulgador", () => {
+    const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
+    const index = items.findIndex(i => i.id === "my_submissions");
+    expect(items[index + 1]?.path).toBe(ROUTES.COMPARTILHAR_MEUS_EVENTOS);
+    expect(items[index + 1]?.roles).toEqual(items[index]?.roles);
+    expect(items[index + 1]?.roles).not.toContain("public_registered");
+    expect(routeExists(ROUTES.COMPARTILHAR_MEUS_EVENTOS)).toBe(true);
+  });
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
     const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
