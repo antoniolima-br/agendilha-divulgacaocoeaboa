@@ -1,3 +1,7 @@
+import { usePublicEvents } from "@/data/usePublicEvents";
+import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
+import { isHighlightActive } from "@/lib/highlights";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
@@ -68,8 +72,11 @@ function matchesDate(date: string | null, filter: DateFilter): boolean {
 function CuradoriaHojeInner() {
   const navigate = useNavigate();
   const today = saoPauloTodayISO();
-  const [dateFilter, setDateFilter] = useState<DateFilter>("today");
-  const [region, setRegion] = useState("all");
+  const { filters: globalFilters, setFilters } = useGlobalEventFilters();
+  const dateFilter = globalFilters.period;
+  const region = globalFilters.region;
+  const setRegion = (region: string) => setFilters({ region });
+  const setDateFilter = (period: DateFilter) => setFilters({ period, date: "" });
   const [activeSlide, setActiveSlide] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
   const [shareData, setShareData] = useState<{
@@ -88,51 +95,14 @@ function CuradoriaHojeInner() {
     }
   });
 
-  const { data: events = [], isLoading, error, refetch } = useQuery({
-    queryKey: ["curadoria-hoje-events", today],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("public_submissions")
-        .select("id, event_title, date, start_time, end_time, location, address_street, address_neighborhood, category, description, image_url, age_rating, is_suitable_for_minors, slug, is_highlight, highlight_active")
-        .in("status", [...PUBLIC_EVENT_STATUSES])
-        .eq("is_archived", false)
-        .order("date", { ascending: true })
-        .order("start_time", { ascending: true });
-
-      if (error) throw error;
-      return (data ?? []).filter((event) => eventDateISO(event.date) >= today) as CuratedEvent[];
-    },
-  });
-
+  const { data: events = [], isLoading, error, refetch } = usePublicEvents();
   const regions = REGIONS;
+  const visibleEvents = useMemo(() => events.filter((event) => matchesPublicEventFilters(event, globalFilters)), [events, globalFilters]);
+  const todayEvents = useMemo(() => visibleEvents.filter((event) => eventDateISO(event.date) === today), [visibleEvents, today]);
+  const upcomingEvents = useMemo(() => visibleEvents.filter((event) => eventDateISO(event.date) > today).slice(0, 8), [visibleEvents, today]);
+  const featuredEvents = useMemo(() => [...visibleEvents].sort((a, b) => Number(isHighlightActive(b)) - Number(isHighlightActive(a))).slice(0, 6), [visibleEvents]);
 
-  const visibleEvents = useMemo(() => events.filter((event) => {
-    const matchesRegion = region === "all" || regionOf(event) === region;
-    return matchesRegion && matchesDate(event.date, dateFilter);
-  }), [dateFilter, events, region]);
-
-  const todayEvents = useMemo(() => events.filter((event) => {
-    const matchesRegion = region === "all" || regionOf(event) === region;
-    return matchesRegion && eventDateISO(event.date) === today;
-  }), [events, region, today]);
-
-  const upcomingEvents = useMemo(() => {
-    const today = saoPauloTodayISO();
-    const lastDay = addDaysToISO(today, 7);
-    return events.filter((event) => {
-      const eventDay = eventDateISO(event.date);
-      const matchesRegion = region === "all" || regionOf(event) === region;
-      return matchesRegion && eventDay > today && eventDay <= lastDay;
-    }).slice(0, 8);
-  }, [events, region]);
-
-  const featuredEvents = useMemo(() => {
-    return [...todayEvents]
-      .sort((a, b) => Number(Boolean(b.highlight_active || b.is_highlight)) - Number(Boolean(a.highlight_active || a.is_highlight)))
-      .slice(0, 6);
-  }, [todayEvents]);
-
-  useEffect(() => setActiveSlide(0), [region]);
+  useEffect(() => setActiveSlide(0), [globalFilters]);
 
   useEffect(() => {
     if (heroPaused || featuredEvents.length < 2) return;
@@ -142,10 +112,10 @@ function CuradoriaHojeInner() {
     return () => window.clearInterval(timer);
   }, [featuredEvents.length, heroPaused]);
 
-  const currentFeature = featuredEvents[activeSlide];
+  const currentFeature = featuredEvents[activeSlide] ?? featuredEvents[0];
   const selectedLabel = filters.find((item) => item.id === dateFilter)?.label ?? "Hoje";
 
-  const openEvent = (event: CuratedEvent) => navigate(`/evento/${event.slug || event.id}`);
+  const openEvent = (event: { id: string; slug?: string | null }) => navigate(`/evento/${event.slug || event.id}`);
 
   const toggleFavorite = (id: string) => {
     setFavorites((current) => {
@@ -216,6 +186,7 @@ function CuradoriaHojeInner() {
             ))}
            </div>
           </nav>
+          <Select value={globalFilters.category} onValueChange={(category) => setFilters({ category })}><SelectTrigger aria-label="Categoria dos rolês" className="w-full sm:w-52"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todas as categorias</SelectItem><SelectItem value="musica">Música / Shows</SelectItem><SelectItem value="gastronomia">Gastronomia</SelectItem><SelectItem value="cultura">Cultura</SelectItem><SelectItem value="esporte">Esporte</SelectItem><SelectItem value="turismo">Turismo</SelectItem><SelectItem value="outros">Outros</SelectItem></SelectContent></Select>
           <Select value={region} onValueChange={setRegion}>
             <SelectTrigger className="h-11 w-full rounded-full border-foreground/15 bg-card px-4 shadow-sm sm:w-[240px]" aria-label="Selecionar região">
               <MapPin className="mr-2 h-4 w-4 shrink-0 text-secondary" />
@@ -285,7 +256,7 @@ function CuradoriaHojeInner() {
             </Button>
 
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Eventos aprovados de hoje">
-              {todayEvents.map((event) => (
+              {visibleEvents.map((event) => (
                 <DiscoveryEventCard
                   key={event.id}
                   event={event}
@@ -387,7 +358,7 @@ function CuradoriaHojeInner() {
 
         {!error && !isLoading && (
           <>
-            <HomeAdsCarousel />
+            <HomeAdsCarousel region={region} />
 
             <aside className="relative mb-9 overflow-hidden rounded-lg border border-accent/40 bg-muted p-4 shadow-card sm:p-5" aria-label="Publicidade da Mercearia do Tio João">
               <span className="absolute right-3 top-2 text-[9px] font-bold uppercase text-muted-foreground">Publicidade</span>

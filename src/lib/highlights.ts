@@ -1,4 +1,4 @@
-import { eventDateISO } from "@/lib/eventDate";
+import { eventDateISO } from "./eventDate.ts";
 
 export type HighlightStatus = "ativo" | "expirado" | "escondido" | "sem_destaque";
 

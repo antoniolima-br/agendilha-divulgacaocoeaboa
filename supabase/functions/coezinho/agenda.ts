@@ -1,3 +1,5 @@
+import { matchesPublicEventFilters, DEFAULT_EVENT_FILTERS, type PublicEventFilters } from "../../../src/lib/publicEventFilters.ts";
+import { isHighlightActive } from "../../../src/lib/highlights.ts";
 export type GuideEvent = {
   id: string | null;
   event_title: string | null;
@@ -17,6 +19,13 @@ export type GuideEvent = {
   description: string | null;
   slug: string | null;
   is_highlight: boolean | null;
+  highlight_active?: boolean | null;
+  highlight_hidden?: boolean | null;
+  highlight_until?: string | null;
+  image_url?: string | null;
+  is_free?: boolean | null;
+  age_rating?: string | null;
+  is_suitable_for_minors?: boolean | null;
 };
 
 export type GuideEstablishment = {
@@ -72,7 +81,7 @@ export function buildGuideAgenda(events: GuideEvent[], establishments: GuideEsta
       const timeLabel = [time, endTime].filter(Boolean).join("–");
 
       return [
-        event.is_highlight ? "⭐ DESTAQUE" : "",
+        isHighlightActive(event) ? "⭐ DESTAQUE" : "",
         clean(event.event_title) || "Rolê sem título",
         [clean(event.date).slice(0, 10), timeLabel].filter(Boolean).join(" "),
         placeName,
@@ -83,4 +92,9 @@ export function buildGuideAgenda(events: GuideEvent[], establishments: GuideEsta
       ].filter(Boolean).join(" | ");
     })
     .join("\n");
+}
+export function filterGuideEvents(events: GuideEvent[], filters: Partial<PublicEventFilters> = {}, today?: string): GuideEvent[] {
+  const safe = { ...DEFAULT_EVENT_FILTERS, ...filters };
+  return events.filter((event) => matchesPublicEventFilters(event, safe, "", today))
+    .sort((a, b) => Number(isHighlightActive(b)) - Number(isHighlightActive(a)) || (a.date ?? "").localeCompare(b.date ?? ""));
 }
