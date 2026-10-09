@@ -13,6 +13,7 @@ import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { useAuth } from "@/contexts/AuthContext";
 import { DestaqueAnuncioModal } from "@/components/anuncios/DestaqueAnuncioModal";
 import { ROUTES } from "@/routes/config";
+import { safeAdDestination } from "@/lib/advertising";
 
 export default function AnuncioDetalhe() {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +47,7 @@ export default function AnuncioDetalhe() {
   const mensagem = `Oi! Vi seu anúncio "${ad.title}" no Coé a Boa e queria saber mais.`;
   const linkWhats = buildWhatsappUrl(ad.contact_whatsapp, mensagem);
   const souDono = user?.id === ad.user_id;
+  const destination = safeAdDestination(ad.destination_url);
 
   return (
     <PageContainer>
@@ -109,6 +111,7 @@ export default function AnuncioDetalhe() {
         <p className="text-sm leading-relaxed whitespace-pre-line">{ad.description}</p>
 
         <div className="flex flex-wrap gap-2">
+          {destination && <Button asChild><a href={destination} target="_blank" rel="noopener noreferrer">Visitar anunciante</a></Button>}
           {linkWhats && (
             <Button asChild className="font-bold">
               <a href={linkWhats} target="_blank" rel="noopener noreferrer">

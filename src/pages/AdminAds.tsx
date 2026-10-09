@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Check, Loader2, Plus, ShoppingBag, Sparkles, Trash2, X } from "lucide-react";
+import { Check, Loader2, Pencil, Plus, ShoppingBag, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
@@ -29,6 +29,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { AdPhotoUploader } from "@/components/anuncios/AdPhotoUploader";
 import { inputToCents } from "@/data/useAdPlans";
 import { formatPhoneDisplay, validateBrazilianMobile } from "@/lib/whatsapp";
+import { useAdProducts } from "@/data/useAdProducts";
+import { CampaignFields } from "@/components/anuncios/CampaignFields";
+import { AdProductInventory } from "@/components/anuncios/AdProductInventory";
+import { safeAdDestination } from "@/lib/advertising";
+import { regionOf } from "@/lib/regions";
 
 const FILTROS: { valor: AdStatus | "todos"; label: string }[] = [
   { valor: "pendente", label: "Em análise" },
@@ -47,6 +52,11 @@ export default function AdminAds() {
   const moderar = useModerateAd();
   const criar = useCreateAd();
   const excluir = useDeleteAd();
+  const { data: products = [] } = useAdProducts(isAdmin);
+  const [productId, setProductId] = useState("");
+  const [destination, setDestination] = useState("");
+  const [regions, setRegions] = useState<string[]>([]);
+  const [editingCampaign, setEditingCampaign] = useState<Ad | null>(null);
 
   const [filtro, setFiltro] = useState<AdStatus | "todos">("pendente");
   const [motivos, setMotivos] = useState<Record<string, string>>({});
@@ -119,6 +129,7 @@ export default function AdminAds() {
   }
 
   function resetForm() {
+    setProductId(""); setDestination(""); setRegions([]); setEditingCampaign(null);
     setTitle("");
     setDescription("");
     setCategory("");
@@ -133,6 +144,11 @@ export default function AdminAds() {
   async function cadastrar(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
+    const destinationUrl = safeAdDestination(destination);
+    if (!productId || regions.length === 0 || (destination.trim() && !destinationUrl)) {
+      toast.error("Escolha um produto, ao menos uma região e confira o link de destino.");
+      return;
+    }
     if (title.trim().length < 4 || description.trim().length < 20 || !category) {
       toast.error("Preencha nome, categoria e uma descrição com pelo menos 20 letras.");
       return;
@@ -164,6 +180,9 @@ export default function AdminAds() {
           city: city.trim() || null,
           neighborhood: neighborhood.trim() || null,
           photos,
+          product_id: productId,
+          destination_url: destinationUrl,
+          target_regions: regions,
         },
       });
       const until = new Date();
@@ -178,7 +197,7 @@ export default function AdminAds() {
           published_at: new Date().toISOString(),
         },
       });
-      toast.success("Patrocinador publicado nos carrosséis.");
+      toast.success("Patrocinador publicado nas regiões escolhidas.");
       setFormOpen(false);
       resetForm();
     } catch (error) {
@@ -195,6 +214,24 @@ export default function AdminAds() {
     } catch (error) {
       handleError(error, "Não deu pra excluir o anúncio");
     }
+  }
+
+  function editCampaign(ad: Ad) {
+    setEditingCampaign(ad);
+    setProductId(ad.product_id ?? products.find((p) => p.placement === "carousel" && p.is_active)?.id ?? "");
+    setDestination(ad.destination_url ?? "");
+    const inferred = regionOf({ address_neighborhood: ad.neighborhood, address_city: ad.city });
+    setRegions(ad.target_regions.length ? ad.target_regions : inferred ? [inferred] : []);
+  }
+  async function saveCampaign(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingCampaign) return;
+    const url = safeAdDestination(destination);
+    if (!productId || !regions.length || (destination.trim() && !url)) { toast.error("Escolha o produto, as regiões e um link válido."); return; }
+    try {
+      await moderar.mutateAsync({ id: editingCampaign.id, patch: { product_id: productId, destination_url: url, target_regions: regions } });
+      toast.success("Campanha atualizada."); resetForm();
+    } catch (e) { handleError(e, "Não deu pra atualizar a campanha"); }
   }
 
   if (permsLoading) return <LoadingState message="Verificando seu acesso…" fullPage />;
@@ -217,6 +254,8 @@ export default function AdminAds() {
             <Plus className="h-4 w-4" /> Novo patrocinador
           </Button>
         </header>
+
+        <AdProductInventory products={products} />
 
         <div className="flex gap-2 overflow-x-auto pb-1">
           {FILTROS.map((f) => (
@@ -250,6 +289,8 @@ export default function AdminAds() {
                   </p>
 
                   <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => editCampaign(ad)}><Pencil className="mr-1.5 h-4 w-4" /> Configurar campanha</Button>
+                    {ad.target_regions.map((r) => <Badge key={r} variant="outline">{r}</Badge>)}
                     {ad.status !== "publicado" && (
                       <Button size="sm" onClick={() => publicar(ad)} className="font-semibold">
                         <Check className="h-4 w-4 mr-1.5" />
@@ -348,9 +389,10 @@ export default function AdminAds() {
         <DialogContent className="max-h-[92vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Novo patrocinador</DialogTitle>
-            <DialogDescription>Ao salvar, o anúncio entra publicado nos carrosséis da Home.</DialogDescription>
+            <DialogDescription>Publicação nas regiões e no espaço escolhidos.</DialogDescription>
           </DialogHeader>
           <form onSubmit={(e) => void cadastrar(e)} className="space-y-4">
+            <CampaignFields products={products} productId={productId} onProduct={setProductId} destination={destination} onDestination={setDestination} regions={regions} onRegions={setRegions} />
             <div className="space-y-1.5"><Label htmlFor="sponsor-title">Nome</Label><Input id="sponsor-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nome do anunciante ou oferta" /></div>
             <div className="space-y-1.5"><Label htmlFor="sponsor-description">Descrição</Label><Textarea id="sponsor-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} placeholder="Conte o que está sendo divulgado" /></div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -366,6 +408,8 @@ export default function AdminAds() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={Boolean(editingCampaign)} onOpenChange={(open) => { if (!open) resetForm(); }}><DialogContent className="max-h-[92vh] overflow-y-auto"><DialogHeader><DialogTitle>Configurar campanha</DialogTitle><DialogDescription>{editingCampaign?.title}</DialogDescription></DialogHeader><form onSubmit={(e) => void saveCampaign(e)} className="space-y-4"><CampaignFields products={products} productId={productId} onProduct={setProductId} destination={destination} onDestination={setDestination} regions={regions} onRegions={setRegions} /><Button type="submit" disabled={moderar.isPending}>Salvar campanha</Button></form></DialogContent></Dialog>
 
       <AlertDialog open={Boolean(deleteTarget)} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
         <AlertDialogContent>

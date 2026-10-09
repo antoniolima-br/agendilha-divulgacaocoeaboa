@@ -29,6 +29,7 @@ import type { AgendaEvent } from "@/components/agenda/types";
 import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
 import { isHighlightActive } from "@/lib/highlights";
+import { AgendaSponsoredCards } from "@/components/anuncios/AgendaSponsoredCards";
 
 export default function AgendaCultural() {
   return (
@@ -195,6 +196,7 @@ function AgendaCulturalInner() {
               />
             ) : (
               <div className="space-y-12">
+                <AgendaSponsoredCards region={filters.regionFilter} />
                 {filters.filteredEvents.some((event) => isHighlightActive(event)) && (
                   <section>
                     <div className="flex items-center gap-3 mb-6">
