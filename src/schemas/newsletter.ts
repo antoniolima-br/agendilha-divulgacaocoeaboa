@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { isValidBrazilianMobile, normalizePhone } from "@/lib/whatsapp";
-import { NOTIFICATION_INTERESTS } from "@/lib/notificationPreferences";
+import { processGeographies, NOTIFICATION_INTERESTS } from "@/lib/notificationPreferences";
 
 export const newsletterSubscribeSchema = z.object({
   phone: z
@@ -10,7 +10,7 @@ export const newsletterSubscribeSchema = z.object({
     .transform((v) => normalizePhone(v)),
   name: z.string().trim().min(2, "Nome muito curto").max(120).optional().or(z.literal("")),
   neighborhood: z.string().trim().max(80).optional().or(z.literal("")),
-  geographies: z.array(z.string()).min(1, "Escolha pelo menos uma região ou bairro").default(["all"]),
+  geographies: z.array(z.string()).default(["all"]).refine(values => { try { processGeographies(values); return true; } catch { return false; } }, "Escolha uma região ou bairro válido."),
   interests: z.array(z.enum(NOTIFICATION_INTERESTS)).default([]),
   whatsappConsent: z
     .boolean()
