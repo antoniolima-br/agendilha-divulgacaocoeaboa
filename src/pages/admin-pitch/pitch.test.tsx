@@ -50,9 +50,9 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { level: 2, name: buildPitchContent().anchor.title })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Banner âncora prioritário na Home" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Contagem regressiva para o evento" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /01Teaser/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /02Aquecimento/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /03Reta Final/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /01\s*Teaser/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /02\s*Aquecimento/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /03\s*Reta Final/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
