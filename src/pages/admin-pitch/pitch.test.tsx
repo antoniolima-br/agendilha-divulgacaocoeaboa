@@ -31,7 +31,7 @@ describe("pitch comercial", () => {
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByText("Projeção de receita mensal");
-    expect(screen.getByRole("heading", { name: "Coé a Boa?", exact: true })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().monetization)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
