@@ -3,7 +3,7 @@ import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -57,15 +57,6 @@ const HOME_CATEGORIES = [
   { key: "promocoes", label: "Promoções", hint: "Ofertas da região", match: ["promocoes", "promoções"] },
   { key: "outros", label: "Outros", hint: "Tudo o que não cabe acima", match: ["outros"] },
 ];
-
-function isFreeEventPrice(price?: string | null): boolean {
-  const value = (price ?? "").trim().toLowerCase();
-  if (!value) return true;
-  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
-  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
-  return Number.isFinite(amount) && amount === 0;
-}
 
 function normalizePreferenceText(value?: string | null): string {
   return (value ?? "")
@@ -225,7 +216,7 @@ export default function Landing() {
            .on(
              "postgres_changes",
              { event: "UPDATE", schema: "public", table: "submissions" },
-             () => void queryClient.invalidateQueries({ queryKey: qk.home.events() }),
+             () => { void queryClient.invalidateQueries({ queryKey: qk.agenda.events() }); void queryClient.invalidateQueries({ queryKey: qk.home.events() }); },
            )
            .subscribe();
        };
@@ -363,9 +354,9 @@ export default function Landing() {
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
   const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
   const regionNbhs = useMemo(() => homeBairro === "all" ? [] :
-    [...new Set(allEvents.filter((e: any) => regionOf(e) === homeBairro).map(nbhName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")),
-    [allEvents, homeBairro]);
-   useEffect(() => { if (homeNbh !== "all" && !regionNbhs.some((name) => normalizeGeography(name) === normalizeGeography(homeNbh))) setHomeNbh("all"); }, [regionNbhs, homeNbh]);
+    [...new Set((eventsData ?? []).filter((e: any) => regionOf(e) === homeBairro).map(nbhName).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR")),
+    [eventsData, homeBairro]);
+
   const homeFiltered = useMemo(() => allEvents.filter((e: any) =>
      matchesEventGeography(e, homeBairro, homeNbh)),
     [allEvents, homeBairro, homeNbh]);
@@ -441,6 +432,7 @@ export default function Landing() {
              <SelectTrigger aria-label="Período dos rolês" className="w-full sm:w-56"><SelectValue /></SelectTrigger>
              <SelectContent><SelectItem value="all">Todas as datas</SelectItem><SelectItem value="today">Hoje</SelectItem><SelectItem value="tomorrow">Amanhã</SelectItem><SelectItem value="weekend">Fim de semana</SelectItem><SelectItem value="next7">Próximos 7 dias</SelectItem><SelectItem value="custom">Data escolhida</SelectItem><SelectItem value="free">Gratuitos</SelectItem><SelectItem value="kids">Para crianças</SelectItem></SelectContent>
            </Select>
+           <Input type="date" aria-label="Data dos rolês" value={globalFilters.date} onChange={(e) => setGlobalFilters({ date: e.target.value, period: e.target.value ? "custom" : "all" })} className="w-full sm:w-48" />
          </div>
          {/* Seções por categoria */}
          <div className="mb-10 space-y-8" aria-label="Categorias">

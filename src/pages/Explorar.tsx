@@ -59,35 +59,6 @@ const CATEGORIES: { id: string; label: string }[] = [
 
 type DatePreset = "all" | "today" | "tomorrow" | "weekend" | "next7" | "custom" | "free" | "kids";
 
-function isFreeEventPrice(price?: string | null): boolean {
-  const value = (price ?? "").trim().toLowerCase();
-  if (!value) return true;
-  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (["0", "0,00", "0.00", "r$ 0", "r$ 0,00", "gratuito", "gratis", "free"].includes(normalized)) return true;
-  const amount = Number(normalized.replace(/[^\d,.-]/g, "").replace(",", "."));
-  return Number.isFinite(amount) && amount === 0;
-}
-
-function presetMatches(eventDate: string | null, preset: DatePreset, customDate?: Date): boolean {
-  if (preset === "all") return true;
-  if (!eventDate) return false;
-  let d: Date;
-  try { d = parseISO(eventDate); if (isNaN(d.getTime())) return false; } catch { return false; }
-  const now = new Date();
-  switch (preset) {
-    case "today": return isToday(d);
-    case "tomorrow": return isTomorrow(d);
-    case "weekend": {
-      const sat = startOfDay(nextSaturday(now));
-      const sun = endOfDay(nextSunday(now));
-      return isWithinInterval(d, { start: sat, end: sun });
-    }
-    case "next7": return isWithinInterval(d, { start: startOfDay(now), end: endOfDay(addDays(now, 7)) });
-    case "custom": return customDate ? format(d, "yyyy-MM-dd") === format(customDate, "yyyy-MM-dd") : true;
-    default: return true;
-  }
-}
-
 export default function Explorar() {
   return (
     <SectionErrorBoundary context="Explorar">
