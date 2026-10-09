@@ -14,8 +14,13 @@ describe("pitch comercial", () => {
   beforeEach(() => { mocks.allowed = true; mocks.userId = "test-user"; mocks.call.mockReset(); });
   it("calcula projeções sem dupla contagem ou confundir saldo com lucro", () => {
     const content = buildPitchContent();
-    expect(content.scenarios.map((s) => s.revenue)).toEqual([1360, 4080, 8160]);
-    expect(content.scenarios.map((s) => s.afterMarketing)).toEqual([860, 3330, 7160]);
+    expect(content.scenarios.map((s) => s.revenue)).toEqual([1960, 5880, 11760]);
+    expect(content.scenarios.map((s) => s.afterMarketing)).toEqual([1460, 5130, 10760]);
+    expect(content.scenarios.map((s) => s.pushRevenue)).toEqual([600, 1800, 3600]);
+    expect(content.scenarios.map((s) => s.phase)).toEqual(["Fase Inicial", "Fase de Expansão", "Fase Consolidada"]);
+    expect(content.scenarios.every((s) => s.pushes === s.regions * content.push.packageSends)).toBe(true);
+    expect(content.push.packagePrice).toBe(content.pushTicket * content.push.packageSends);
+    expect(content.push.requirements).toContain("ainda sem disparos ativados");
     expect(content.scenarios.every((s) => s.placements / s.regions === 3)).toBe(true);
     expect(content.disclaimer).toContain("não é lucro líquido");
     expect(content.brandPositioning).toContain("produto oficial");
@@ -33,6 +38,9 @@ describe("pitch comercial", () => {
     await screen.findByText("Projeção de receita mensal");
     expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().monetization)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Notificações Push Regionais" })).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: /Fase de Expansão/ })).toBeInTheDocument();
+    expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
