@@ -183,6 +183,13 @@
       "when": 1791557144121,
       "tag": "0025_notification_geographic_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1791558268910,
+      "tag": "0026_notification_multi_geography",
+      "breakpoints": true
     }
   ]
 }
