@@ -1,4 +1,4 @@
-import { BellRing, Crown, MapPin, Megaphone, Target, TrendingUp } from "lucide-react";
+import { BellRing, Crown, MapPin, Megaphone, Target, TrendingUp, Workflow } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PitchContent } from "./types";
 
@@ -70,6 +70,14 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <div className="grid gap-x-8 gap-y-5 md:grid-cols-3">{content.anchor.phases.map((phase, i) => <div key={phase.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{phase.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{phase.description}</p></div>)}</div>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.anchor.disclaimer}</p>
     </section>
+    {content.selfService && <section className="space-y-5 border-t border-border pt-8" aria-labelledby="self-service-title">
+      <h2 id="self-service-title" className="flex items-start gap-2 text-xl font-semibold"><Workflow className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.selfService.title}</h2>
+      <p className="text-xs font-medium uppercase text-muted-foreground">Próximo passo · Escala com controle</p>
+      <p className="max-w-3xl text-lg leading-relaxed">{content.selfService.description}</p>
+      <ol className="grid gap-x-8 gap-y-5 md:grid-cols-2">{content.selfService.steps.map((step, i) => <li key={step.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{step.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-base leading-relaxed">{content.selfService.strategy}</p>
+      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p>
+    </section>}
     <section className="min-w-0 space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><TrendingUp className="h-5 w-5 shrink-0 text-primary" /> Projeção de receita mensal</h2>
       <p className="text-sm text-muted-foreground">Premissas: {money(content.placementTicket)} por espaço de 30 dias, {money(content.eventTicket)} por patrocínio de 7 dias e {money(content.pushTicket)} por disparo regional vendido no mês.</p>
