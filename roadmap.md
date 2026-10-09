@@ -1,7 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
-- [ ] Finalizar produtos publicitários ativos, destinos seguros e segmentação pelas oito regiões na Home e Agenda.
+- [x] Cadastrar banner regional e card da Agenda como produtos ativos; adicionar configuração de destino seguro e público regional, mantendo contratos financeiros separados; 40 testes aprovados, consulta pública e oito opções conferidas.
+- [ ] Validar configuração e releitura de uma campanha na gestão com sessão administrativa — a conta solicitante não possui sessão disponível; requer entrar na prévia.
 
 - [x] Consultar CEP automaticamente no cadastro de eventos e exibir cidade/região; 44 testes aprovados, incluindo oito regiões, falhas e respostas atrasadas; ViaCEP real conferido.
 - [ ] Conferir CEP e região no formulário com sessão do divulgador — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão de teste.

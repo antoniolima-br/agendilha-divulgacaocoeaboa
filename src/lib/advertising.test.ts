@@ -22,6 +22,8 @@ describe("campaign audience", () => {
     expect(matchesAdAudience(legacy, "Zona Norte", "carousel")).toBe(true);
     expect(matchesAdAudience(legacy, "Zona Sul", "carousel")).toBe(false);
     expect(matchesAdAudience(legacy, "all", "carousel")).toBe(false);
+    expect(matchesAdAudience(legacy, "Zona Norte")).toBe(true);
+    expect(matchesAdAudience(legacy, "Zona Sul")).toBe(false);
   });
   it("normalizes only official regions", () => expect(canonicalAdRegions(["jacarepagua", "ZONA NORTE", "Zona Norte", "fake"])).toEqual(["Zona Norte", "Jacarepaguá"]));
 });

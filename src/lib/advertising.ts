@@ -15,7 +15,7 @@ export function canonicalAdRegions(value: unknown): Region[] {
 }
 export function matchesAdAudience(ad: { product_id: string | null; target_regions: readonly string[]; product_active?: boolean; placement?: AdPlacement | null; neighborhood?: string | null; city?: string | null }, region: string, placement?: AdPlacement): boolean {
   if (!ad.product_id) {
-    if (!placement) return true;
+    if (!placement && normalizeGeography(region) === "all") return true;
     if (placement === "agenda_card") return false;
     const legacyRegion = regionOf({ address_neighborhood: ad.neighborhood, address_city: ad.city });
     return Boolean(legacyRegion && normalizeGeography(legacyRegion) === normalizeGeography(region));

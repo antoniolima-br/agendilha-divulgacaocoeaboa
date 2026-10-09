@@ -186,6 +186,8 @@ function AgendaCulturalInner() {
               onCategoryChange={filters.setCategoryFilter}
             />
 
+            <AgendaSponsoredCards region={filters.regionFilter} />
+
             {loading ? (
               <AgendaListSkeleton />
             ) : filters.sortedDays.length === 0 && filters.freeEvents.length === 0 ? (
@@ -196,7 +198,6 @@ function AgendaCulturalInner() {
               />
             ) : (
               <div className="space-y-12">
-                <AgendaSponsoredCards region={filters.regionFilter} />
                 {filters.filteredEvents.some((event) => isHighlightActive(event)) && (
                   <section>
                     <div className="flex items-center gap-3 mb-6">
