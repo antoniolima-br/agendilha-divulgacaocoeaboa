@@ -92,8 +92,8 @@ export function computePermissions(input: {
   }
   if (staffRole === "senior" || staffRole === "master") {
     permissions.add("settings.manage");
-    permissions.add("pitch.read");
   }
+  if (staffRole) permissions.add("pitch.read");
   if (staffRole === "master") {
     (["users.update", "users.promote", "users.demote", "users.reset", "admins.invite", "admins.remove", "roles.manage"] as PermissionName[]).forEach((p) => permissions.add(p));
   }

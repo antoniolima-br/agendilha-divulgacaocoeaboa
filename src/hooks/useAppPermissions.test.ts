@@ -4,7 +4,7 @@ import { computePermissions } from "./useAppPermissions";
 describe("computePermissions", () => {
   it.each(["user", "promoter", "collaborator", "admin", "financeiro", "senior", "master"])("restringe pitch ao cargo protegido %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: "senior" });
-    expect(permissions.has("pitch.read")).toBe(["senior", "master"].includes(role));
+    expect(permissions.has("pitch.read")).toBe(["admin", "financeiro", "senior", "master"].includes(role));
   });
   it("admin e divulgador pode enviar e moderar, mas não alterar o financeiro", () => {
     const { permissions } = computePermissions({ roleNames: ["admin"], collaborator: null, profileRole: "divulgador" });
@@ -30,6 +30,7 @@ describe("computePermissions", () => {
     expect(roles).not.toContain(profileRole);
     expect(permissions.has("finance.read")).toBe(false);
     expect(permissions.has("events.approve")).toBe(false);
+    expect(permissions.has("pitch.read")).toBe(false);
   });
   it("dá todas as permissões de admin quando role = admin", () => {
     const { roles, permissions } = computePermissions({

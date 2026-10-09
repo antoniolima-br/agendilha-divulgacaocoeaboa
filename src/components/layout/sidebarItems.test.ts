@@ -8,7 +8,7 @@ describe("sidebarConfig", () => {
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
     const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
-    expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["senior", "master"].includes(role));
+    expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["admin", "financeiro", "senior", "master"].includes(role));
     expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_PITCH_COMERCIAL]).toBe("pitch.read");
   });
   it("admin tem Meus eventos separado da Curadoria e do Financeiro", () => {

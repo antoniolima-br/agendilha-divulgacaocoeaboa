@@ -12,11 +12,14 @@ export function buildPitchContent() {
       afterMarketing: placementRevenue + eventRevenue - scenario.marketing };
   });
   return {
+    brandPositioning: "Coé a Boa? é a plataforma e o produto oficial criado e gerido para resolver a curadoria de eventos e a publicidade hiperlocal no Rio de Janeiro. Conecta quem procura um rolê aos eventos selecionados e aproxima negócios do público de cada macro-região.",
+    monetization: "Taxas simbólicas para eventos podem ajudar no lançamento e na adesão inicial, mas não sustentam a operação. A base financeira é a venda profissional de espaços publicitários: carrosséis, banners e cards da Agenda segmentados por macro-região, com pacotes de 30 dias. Essa receita dá suporte ao custeio da operação e das campanhas de tráfego pago; patrocínios de eventos em ciclos de 7 dias complementam o faturamento.",
+    projectionBasis: "A projeção usa os pacotes profissionais recomendados, não taxas simbólicas de lançamento. A receita de espaços publicitários é a base recorrente estimada; os patrocínios de 7 dias são vendas adicionais no mês. Nos cenários abaixo, os espaços cobrem o orçamento de marketing previsto, mas isso não garante cobertura dos demais custos nem lucro.",
     differential: "O comerciante não precisa falar com a cidade inteira. Precisa chegar a quem pode visitar seu negócio. A segmentação por macro-região concentra a divulgação perto do público certo e reduz a dispersão da verba.",
     regionalExample: "Uma campanha na Zona Sul fala com aquele público; outra em Jacarepaguá alcança sua própria região. Cada anunciante escolhe onde quer aparecer, sem misturar audiências de regiões diferentes.",
     formats: [
-      { title: "Destaque de Evento Patrocinado", cycle: "Ciclo de 7 dias", min: 80, max: 150, description: "Presença de destaque para o rolê, com valor sugerido conforme a região e a demanda." },
-      { title: "Espaço Publicitário em Carrossel/Agenda", cycle: "Ciclo de 30 dias", min: 200, max: 400, description: "Visibilidade regional para o negócio, com destino para site, Instagram ou WhatsApp do anunciante." },
+      { title: "Destaque de Evento Patrocinado", cycle: "Ciclo de 7 dias", min: 80, max: 150, description: "Pacote profissional de destaque para o rolê, conforme região e demanda. Complementa a receita dos espaços; taxas simbólicas de lançamento são ações pontuais, não a base da projeção." },
+      { title: "Espaço Publicitário em Carrossel/Agenda", cycle: "Ciclo de 30 dias", min: 200, max: 400, description: "Base da sustentabilidade: carrosséis, banners e cards da Agenda por macro-região, com destino para site, Instagram ou WhatsApp. Precificação profissional para financiar operação e tráfego pago." },
     ],
     capacity: "Limite ideal: 3 a 4 anúncios por região no carrossel. Menos concorrência visual, mais atenção para cada anunciante. A projeção usa 3 espaços vendidos por região; cards da Agenda não são somados como uma segunda venda do mesmo pacote.",
     placementTicket, eventTicket, scenarios,
