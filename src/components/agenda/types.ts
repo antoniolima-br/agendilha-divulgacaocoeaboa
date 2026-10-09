@@ -6,11 +6,17 @@ export interface AgendaEvent {
   end_time: string | null;
   location: string | null;
   address_neighborhood: string | null;
+  address_city?: string | null;
   address_street: string | null;
   description: string | null;
   category: string | null;
-  company_name: string | null;
+  company_name?: string | null;
   is_highlight: boolean;
+  highlight_active?: boolean | null;
+  highlight_hidden?: boolean | null;
+  highlight_until?: string | null;
+  slug?: string | null;
+  atrativo_style?: string | null;
   is_free?: boolean | null;
   status?: string;
   image_url?: string | null;

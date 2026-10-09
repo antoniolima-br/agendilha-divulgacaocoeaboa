@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildGuideAddress, buildGuideAgenda, resolveEstablishment, type GuideEvent } from "../../supabase/functions/coezinho/agenda";
+import { filterGuideEvents, buildGuideAddress, buildGuideAgenda, resolveEstablishment, type GuideEvent } from "../../supabase/functions/coezinho/agenda";
 
 const event: GuideEvent = {
   id: "event-1",
@@ -35,6 +35,12 @@ describe("agenda do Guia do Coé", () => {
   it("relaciona o local ignorando acentos e monta o endereço cadastrado", () => {
     expect(resolveEstablishment(event, [establishment])).toEqual(establishment);
     expect(buildGuideAddress(event, establishment)).toContain("Rua da Praia, 10 - Ribeira");
+  });
+
+  it("não deixa o patrocínio ultrapassar região, categoria ou data", () => {
+    const base = { ...event, date: "2026-10-10", category: "Música", address_neighborhood: "Olaria", is_highlight: true };
+    const filtered = filterGuideEvents([base, { ...base, id: "sul", address_neighborhood: "Copacabana" }, { ...base, id: "outra-data", date: "2026-10-11" }, { ...base, id: "cultura", category: "cultura" }], { region: "Zona Norte", category: "musica", period: "custom", date: "2026-10-10" }, "2026-10-09");
+    expect(filtered.map((e) => e.id)).toEqual(["event-1"]);
   });
 
   it("inclui somente o link de detalhes na agenda enviada ao Guia", () => {

@@ -172,6 +172,10 @@ function AgendaCulturalInner() {
         {activeTab === "events" && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <AgendaFilters
+              period={filters.period}
+              onPeriodChange={filters.setPeriod}
+              date={filters.date}
+              onDateChange={filters.setDate}
               search={filters.search}
               onSearchChange={filters.setSearch}
               sortOrder={filters.sortOrder}
@@ -190,7 +194,7 @@ function AgendaCulturalInner() {
 
             {loading ? (
               <AgendaListSkeleton />
-            ) : filters.sortedDays.length === 0 && filters.freeEvents.length === 0 ? (
+            ) : filters.filteredEvents.length === 0 ? (
               <AgendaEmptyState
                 hasFilters={filters.hasActiveFilters}
                 onClearFilters={filters.clearFilters}

@@ -17,7 +17,7 @@
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - During the launch promotion, Home rotates multiple current and future flyers together, prioritizing today's events; Agenda keeps its existing promotional behavior.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
-- Heavy global features and export libraries load only on idle time or explicit interaction; public event data uses shared cached queries to keep initial navigation light.
+- Heavy features load on idle. Public pages share usePublicEvents and memory filters. Shared function modules filter region/category/São Paulo dates before client/Guide ranking; src/lib re-exports preserve imports.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.

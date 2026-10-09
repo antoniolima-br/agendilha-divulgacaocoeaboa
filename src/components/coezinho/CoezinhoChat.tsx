@@ -1,3 +1,4 @@
+import { getGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
@@ -42,7 +43,7 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
   const send = (text: string) => {
     const t = text.trim();
     if (!t || busy) return;
-    sendMessage({ text: t });
+    sendMessage({ text: t }, { body: { eventFilters: getGlobalEventFilters() } });
     setInput("");
   };
 

@@ -1,6 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
 
+- [x] Integrar destaques publicados em Home, Guia, Agenda e vitrines regionais com filtros compartilhados; 70 testes aprovados, evento real conferido na Home/Agenda/Guia e exclusão por data na busca, sem alterar pagamentos ou ativar cotas Master.
+
 - [x] Inserir mapa conceitual publicitário no início do pitch, com legenda de valores/períodos e imagem protegida pelo mesmo acesso do conteúdo; 52 testes aprovados, recusa real de senha inválida e imagem/legenda/bloqueio conferidos com resposta de teste.
 
 - [x] Atualizar patrocínio âncora para 1 Master e 2 Sub-Masters, recorrência mensal de R$ 800–1.000 e R$ 400–500 por parceiro; 52 testes aprovados, senha inválida recusada com sessão real e oferta/bloqueio conferidos com resposta de teste; divulgação antecipada mantida, sem ativar cobranças.

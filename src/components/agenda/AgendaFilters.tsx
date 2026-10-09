@@ -1,3 +1,4 @@
+import type { EventPeriod } from "@/lib/publicEventFilters";
 import { ArrowUpDown, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,10 @@ import { REGIONS } from "@/lib/regions";
 import { cn } from "@/lib/utils";
 
 interface AgendaFiltersProps {
+  period: EventPeriod;
+  onPeriodChange: (period: EventPeriod) => void;
+  date: string;
+  onDateChange: (date: string) => void;
   search: string;
   onSearchChange: (value: string) => void;
   sortOrder: "asc" | "desc";
@@ -27,6 +32,7 @@ interface AgendaFiltersProps {
 
 /** Barra de busca, ordenação e filtros da lista de eventos. */
 export function AgendaFilters({
+  period, onPeriodChange, date, onDateChange,
   search,
   onSearchChange,
   sortOrder,
@@ -77,6 +83,10 @@ export function AgendaFilters({
             </div>
           </div>
 
+          <div className="flex flex-wrap gap-3">
+            <Select value={period} onValueChange={(value) => onPeriodChange(value as EventPeriod)}><SelectTrigger aria-label="Período dos rolês" className="w-full sm:w-52"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Todas as datas</SelectItem><SelectItem value="today">Hoje</SelectItem><SelectItem value="tomorrow">Amanhã</SelectItem><SelectItem value="weekend">Fim de semana</SelectItem><SelectItem value="next7">Próximos 7 dias</SelectItem><SelectItem value="custom">Data escolhida</SelectItem><SelectItem value="free">Gratuitos</SelectItem><SelectItem value="kids">Para crianças</SelectItem></SelectContent></Select>
+            <Input type="date" aria-label="Data dos rolês" value={date} onChange={(e) => onDateChange(e.target.value)} className="w-full sm:w-48" />
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <Button
               variant={showFavoritesOnly ? "default" : "outline"}
