@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Adicionar Compartilhar meus eventos ao menu do divulgador com lista própria publicada e mensagem exclusiva; testar acesso, filtros e compartilhamento.
 
 - [x] Substituir o seletor de período por campo dd/mm/aaaa com calendário interativo na Home e Agenda; abertura, escolha, fechamento e eventos da data conferidos no navegador; 22 testes aprovados.
 
