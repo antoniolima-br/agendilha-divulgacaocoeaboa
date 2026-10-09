@@ -57,6 +57,18 @@ export function buildPitchContent() {
     },
     disclaimer: "Cenário ilustrativo, não receita realizada nem promessa de resultado. Os volumes representam vendas por mês, com ocupação integral dos espaços considerados e venda dos disparos projetados. Não inclui impostos, operação, tecnologia (inclusive implantação e envio de push), comissões ou inadimplência. O saldo após marketing não é lucro líquido.",
     marketingMin: 500, marketingMax: 1000,
+    selfService: {
+      title: "Automação e Autoatendimento (Self-Service)",
+      description: "O próximo passo é permitir que anunciantes e divulgadores criem e paguem por seus próprios anúncios diretamente no Coé a Boa?. Cada parceiro poderá escolher o formato, a macro-região e o período de veiculação, enviar o conteúdo e acompanhar a análise na plataforma.",
+      strategy: "O ecossistema foi pensado para crescer com autonomia dos parceiros e controle da equipe. Automatizar cadastro, conferências e acompanhamento reduz tarefas repetitivas e abre caminho para ampliar receitas sem inflar o custo operacional na mesma proporção. A equipe concentra seu tempo na qualidade dos anúncios e nas decisões de aprovação, não no preenchimento manual de cada pedido.",
+      steps: [
+        { title: "Criação e validação de dados", description: "O parceiro prepara o anúncio. Antes do envio, o fluxo valida dados, mídia, destino do anúncio, região escolhida e período, sinalizando o que precisa ser corrigido." },
+        { title: "Pagamento prévio obrigatório", description: "O parceiro paga antes da veiculação. A confirmação segura do pagamento é obrigatória; comprovante enviado ou indicação do próprio anunciante não substituem a confirmação financeira." },
+        { title: "Fila de aprovação e moderação", description: "O pedido segue para análise do administrador. Pagamento confirmado não significa publicação automática: conteúdo e dados precisam ser aprovados antes de o anúncio aparecer para o público." },
+        { title: "Auditoria e veiculação controlada", description: "O fluxo prevê histórico de alterações, confirmação de pagamento e registro de quem aprovou e quando. Somente anúncios com dados válidos, pagamento confirmado e aprovação administrativa poderão ser veiculados, respeitando a região e o período contratados." },
+      ],
+      disclaimer: "Próxima etapa proposta, ainda não ativada. Esta apresentação não habilita criação autônoma, checkout, cobrança ou publicação automática. A implantação depende de confirmação segura dos pagamentos, validações e controles de acesso e auditoria, com regras claras para correção, rejeição e eventual reembolso. O ganho de escala é uma hipótese estratégica, não uma garantia de receita ou redução de custos.",
+    },
     acquisition: [
       { title: "Começar perto", description: "Testar uma macro-região por vez, com conjuntos de anúncios no Meta Ads por bairro ou raio disponível. A localização do Meta é aproximada: acompanhar a origem real do público antes de expandir." },
       { title: "Criativos com contexto", description: "Usar rolês e negócios reais da região, com convite direto para consultar a agenda. Comparar duas mensagens e priorizar a que gera visitas qualificadas e conversas comerciais." },

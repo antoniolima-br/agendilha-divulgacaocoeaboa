@@ -16,5 +16,6 @@ export interface PitchContent {
   disclaimer: string;
   marketingMin: number;
   marketingMax: number;
+  selfService: { title: string; description: string; strategy: string; steps: { title: string; description: string }[]; disclaimer: string };
   acquisition: { title: string; description: string }[];
 }
