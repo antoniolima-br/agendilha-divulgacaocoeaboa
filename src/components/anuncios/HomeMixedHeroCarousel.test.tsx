@@ -8,7 +8,6 @@ const engine = vi.hoisted(() => {
   const api = {
     selectedScrollSnap: () => index,
     scrollTo: vi.fn((next: number) => { index = next; listeners.get("select")?.forEach(fn => fn()); }),
-    clickAllowed: vi.fn(() => true),
     on: (name: string, fn: () => void) => {
       if (!listeners.has(name)) listeners.set(name, new Set());
       listeners.get(name)?.add(fn);
@@ -23,7 +22,7 @@ vi.mock("embla-carousel-react", () => ({ default: () => [vi.fn(), engine.api] })
 const event = (id: string) => ({ id, event_title: `Rolê ${id}`, date: "2026-10-10", start_time: "19:00", location: "Local", address_neighborhood: "Ramos", category: "Shows" });
 
 describe("Home event carousel interactions", () => {
-  beforeEach(() => { vi.useFakeTimers(); engine.reset(); vi.clearAllMocks(); engine.api.clickAllowed.mockReturnValue(true); });
+  beforeEach(() => { vi.useFakeTimers(); engine.reset(); vi.clearAllMocks(); });
   afterEach(() => { cleanup(); vi.useRealTimers(); });
 
   it("wraps next and previous arrows through the same slide state", () => {
@@ -60,9 +59,10 @@ describe("Home event carousel interactions", () => {
   });
 
   it("does not open event details after dragging", () => {
-    engine.api.clickAllowed.mockReturnValue(false);
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Abrir evento Rolê 1" }));
+    const suppressedClick = new MouseEvent("click", { bubbles: true, cancelable: true });
+    suppressedClick.preventDefault();
+    fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 1" }), suppressedClick);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

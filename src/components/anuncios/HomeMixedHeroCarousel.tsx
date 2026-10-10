@@ -117,7 +117,7 @@ export function HomeMixedHeroCarousel({
               key={slide.id}
               type="button"
               variant="ghost"
-              onClick={() => { if (carousel?.clickAllowed()) setSelectedEvent(slide); }}
+              onClick={(event) => { if (!event.defaultPrevented) setSelectedEvent(slide); }}
               tabIndex={active ? 0 : -1}
               aria-hidden={!active}
               aria-label={`Abrir evento ${slideTitle}`}
