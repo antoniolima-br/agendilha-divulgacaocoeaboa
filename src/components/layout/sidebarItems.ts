@@ -174,6 +174,7 @@ export const sidebarConfig: SidebarSection[] = [
         id: "my_submissions", 
         label: "Meus eventos",
         path: ROUTES.MEUS_EVENTOS,
+        exact: true,
         icon: ClipboardList, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
@@ -399,4 +400,10 @@ export function filterSidebarSections(
     const items = filterItems(section.items);
     return items.length ? [{ ...section, items }] : [];
   });
+}
+/** Match complete segments and query links, not sibling prefixes. */
+export function isSidebarItemActive(item: SidebarItem, pathname: string, fullPath: string): boolean {
+  if (item.path.includes("?")) return fullPath === item.path;
+  if (item.exact) return pathname === item.path;
+  return pathname === item.path || pathname.startsWith(`${item.path}/`);
 }

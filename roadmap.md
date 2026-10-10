@@ -1,5 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Auditoria técnica: acesso, dados e interface revisados; privacidade de três buscas, favoritos, respostas atrasadas e menu corrigidos; 349 testes aprovados, 15 verificações de páginas sem overflow e relatório em audit-report.md.
+- [ ] Auditoria: validar login/logout, persistência, favoritos, uploads e CRUDs protegidos com sessão real — conta solicitante sem sessão disponível; requer entrar na prévia.
 - [x] Remover indicadores da Home, garantir autoplay de cinco segundos com retomada após interação e preencher banners sem cortar flyers; cinco testes aprovados e rotação/pausa/retomada conferidas com eventos reais no computador e celular.
 - [x] Corrigir navegação, arraste e exibição responsiva do carrossel de eventos da Home; 28 testes aprovados, setas e toque/arraste conferidos com oito eventos reais, informações abertas por toque e celular sem overflow.
 - [x] Destacar no calendário somente dias com eventos públicos ativos e desativar dias vazios; 17 testes aprovados, sete dias habilitados na base pública, seleção de 10/10/2026 filtrou oito eventos e calendário conferido sem overflow em 390 px.

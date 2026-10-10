@@ -54,15 +54,15 @@ export function AtrativoAutocomplete({
 
   const fetchPage = useCallback(
     async (q: string, from: number, to: number, signal: AbortSignal) => {
-      // Todos os atrativos cadastrados (aprovados ou não) aparecem para quem
-      // está logado, sem expor dados pessoais do responsável.
-      const { data } = await supabase
+      // A busca respeita aprovação, propriedade e permissões da conta.
+      const { data, error } = await supabase
         .rpc("search_atrativos_autocomplete_v2", {
           _q: q || null,
           _limit: to - from + 1,
           _offset: from,
         })
         .abortSignal(signal);
+      if (error) throw error;
       return (data ?? []) as AtrativoSuggestion[];
     },
     [],
@@ -73,7 +73,7 @@ export function AtrativoAutocomplete({
     loading,
     loadingMore,
     hasMore,
-    loadMore,
+    loadMore, error,
   } = useAutocompleteSearch<AtrativoSuggestion>({
     term: value,
     fetchPage,
@@ -89,7 +89,7 @@ export function AtrativoAutocomplete({
   );
   const duplicateWarning = !selected && exactMatch && value.trim().length >= 2;
   const showNewHint = !exactMatch && value.trim().length >= 2;
-  const showDropdown = open && (suggestions.length > 0 || loading || showNewHint);
+  const showDropdown = open && (suggestions.length > 0 || loading || showNewHint || !!error);
 
   return (
     <div className="relative">
@@ -135,7 +135,13 @@ export function AtrativoAutocomplete({
           {loading && suggestions.length === 0 && (
             <div className="px-3 py-2 text-xs text-muted-foreground">Buscando atrativos...</div>
           )}
-          {!loading && suggestions.length === 0 && showNewHint && (
+          {error && (
+            <div role="alert" className="px-3 py-2 text-xs text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Não deu pra buscar atrativos. Tente de novo em instantes.
+            </div>
+          )}
+          {!loading && !error && suggestions.length === 0 && showNewHint && (
             <div className="px-3 py-2 text-xs text-muted-foreground">
               Nenhum atrativo com esse nome ainda.
             </div>

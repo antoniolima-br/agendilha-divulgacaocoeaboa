@@ -43,7 +43,7 @@ export function useFieldSuggestions({
         .range(0, Math.max(end, 249))
         .abortSignal(signal);
       const { data, error } = await query;
-      if (error) return [];
+      if (error) throw error;
       const normalizedQuery = normalizeSearch(q);
       return ((data ?? []) as Record<string, unknown>[])
         .filter((row) => {

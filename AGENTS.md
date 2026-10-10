@@ -1,17 +1,17 @@
 
 - Administrative authority comes only from protected user_roles; SQL and client checks match to prevent escalation.
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
-- A escolha `promotion_choice` registra anúncio gratuito ou intenção de destaque; administradores ativam a prioridade como cortesia promocional imediata ou como paga após baixa em `payment_records`, e gratuitos ficam sem flyer automático.
-- A agenda do atrativo é validada no cliente e no banco; intervalos conhecidos menores que 2h bloqueiam o cadastro, enquanto horários sem término apenas geram aviso.
-- A confirmação de envio ao organizador usa link seguro do WhatsApp com mensagem pronta; não simular disparo automático sem um provedor autenticado no servidor.
-- O horário de funcionamento do atrativo fica em `atrativos.opening_hours` como texto livre e é exibido ao selecioná-lo no formulário; a agenda de apresentações continua sendo validada separadamente.
-- Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
+- promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
+- Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
+- Organizer confirmation uses safe prepared WhatsApp links; automatic sending requires a server-authenticated provider.
+- Attraction opening_hours is editable free text shown on selection; performance schedules validate separately.
+- Establishments use one category; ViaCEP suggests editable street/neighborhood.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
+- Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - All establishment creation forms share address-by-CEP search to prevent drift.
 - Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
-- The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
+- Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - Home rotates current/future flyers, today first; Embla unifies gestures/arrows/state and stable media bounds prevent shifts. Agenda promotion stays unchanged.
@@ -30,3 +30,7 @@
 - Pitch expires per account; independent accordions preserve access and navigation.
 - Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.
 - Home/Agenda share EventDateFilter and public events; availability ignores selected dates to prevent calendar lock-in.
+
+- Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
+- Attraction/venue RPCs enforce approved/owner/editor visibility before search; autocomplete cancels obsolete requests and exposes failures, preventing leaks and stale selections.
+- Sidebar active state uses a centralized segment-aware helper and exact sibling links, avoiding unrelated active indicators.
