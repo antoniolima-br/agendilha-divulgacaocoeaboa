@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Refatoração segura: revisar arquitetura, priorizar duplicações comprovadas, consolidar responsabilidades e validar comportamento sem mudanças visuais.
 - [x] Auditoria técnica: acesso, dados e interface revisados; privacidade de três buscas, favoritos, respostas atrasadas e menu corrigidos; 349 testes aprovados, 15 verificações de páginas sem overflow e relatório em audit-report.md.
 - [ ] Auditoria: validar login/logout, persistência, favoritos, uploads e CRUDs protegidos com sessão real — conta solicitante sem sessão disponível; requer entrar na prévia.
 - [x] Remover indicadores da Home, garantir autoplay de cinco segundos com retomada após interação e preencher banners sem cortar flyers; cinco testes aprovados e rotação/pausa/retomada conferidas com eventos reais no computador e celular.
