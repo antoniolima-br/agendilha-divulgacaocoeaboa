@@ -14,7 +14,7 @@
 - The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
-- During the launch promotion, Home rotates multiple current and future flyers together, prioritizing today's events; Agenda keeps its existing promotional behavior.
+- Home rotates current/future flyers, today first; Embla unifies gestures/arrows/state and stable media bounds prevent shifts. Agenda promotion stays unchanged.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
 - Heavy features load on idle. Public pages share usePublicEvents and memory filters. Shared function modules filter region/category/São Paulo dates before client/Guide ranking; src/lib re-exports preserve imports.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
