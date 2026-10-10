@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Converter os três blocos do pitch em janelas colapsáveis e destacar Próximo Passo fora delas; preservar senha, tema e projeções.
 - [x] Enxugar o pitch em três janelas: monetização unificada, atração B2C e abordagem B2B; tema escuro, valores e senha preservados, cinco testes aprovados, detalhes expansíveis e apresentação isolada sem overflow em 390/1920 px. Abertura com senha privada continua dependente de confirmação do usuário.
 - [x] Organizar o pitch restrito em três janelas executivas claras: produto/projeção, marketing B2C e vendas B2B; conteúdo implantado, cinco testes aprovados e apresentação isolada sem overflow em 390/1920 px; senha, preços e tabela preservados, sem ativar campanhas. Abertura real segue dependente da conta autorizada e senha privada.
 - [x] Posicionar eventos sem flyer exclusivamente na lista textual inferior da Home, com título, local/bairro e horário; filtros e vitrines preservados, 12 testes aprovados e posição inferior conferida; base pública atual sem evento sem flyer para conferir uma linha real.
