@@ -5,13 +5,13 @@
 - Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
 - Organizer confirmation uses safe prepared WhatsApp links; automatic sending requires a server-authenticated provider.
 - Attraction opening_hours is editable free text shown on selection; performance schedules validate separately.
-- Cadastros de estabelecimento usam uma categoria única e ViaCEP apenas para sugerir rua e bairro, que permanecem editáveis.
+- Establishments use one category; ViaCEP suggests editable street/neighborhood.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Shared route paths, React Query keys/defaults, and permission access must use their centralized modules so cache invalidation and access checks cannot drift.
+- Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - All establishment creation forms share address-by-CEP search to prevent drift.
 - Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
-- The Guia do Coé refreshes approved public events and establishments for every message and only exposes event-detail links in chat; ride actions remain inside the event details to keep recommendations focused.
+- Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
 - Home rotates current/future flyers, today first; Embla unifies gestures/arrows/state and stable media bounds prevent shifts. Agenda promotion stays unchanged.
