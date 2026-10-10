@@ -1,9 +1,12 @@
  import { useEffect, useRef } from "react";
- import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+ import { useQuery, useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
  import { supabase } from "@/integrations/supabase/client";
  import { useAuth } from "@/contexts/AuthContext";
  import { toast } from "sonner";
  import { qk } from "@/data/queryKeys";
+
+ const pendingUsers = new WeakMap<QueryClient, Set<string>>();
+ type FavoriteChange = { eventId: string; userId: string; remove: boolean };
 
  export function useFavorites() {
    const { user } = useAuth();
@@ -42,7 +45,7 @@
        } else {
          const { error } = await supabase
            .from("user_favorites")
-           .insert({ user_id: user.id, event_id: eventId });
+           .insert({ user_id: userId, event_id: eventId });
          if (error) throw error;
          return { eventId, action: "added" };
        }
@@ -52,18 +55,18 @@
        await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(user?.id) });
        const previousFavorites = queryClient.getQueryData<string[]>(qk.favorites.byUser(user?.id));
 
-       queryClient.setQueryData<string[]>(qk.favorites.byUser(user?.id), (old = []) => {
-         if (old.includes(eventId)) {
+       queryClient.setQueryData<string[]>(qk.favorites.byUser(userId), (old = []) => {
+         if (remove) {
            return old.filter((id) => id !== eventId);
          }
-         return [...old, eventId];
+         return old.includes(eventId) ? old : [...old, eventId];
        });
 
-       return { previousFavorites, skipped: false };
+       return { previousFavorites };
      },
-     onError: (error, _eventId, context) => {
+     onError: (error, { userId }, context) => {
        if (context?.previousFavorites !== undefined) {
-         queryClient.setQueryData(qk.favorites.byUser(user?.id), context.previousFavorites);
+         queryClient.setQueryData(qk.favorites.byUser(userId), context.previousFavorites);
        }
        toast.error(error instanceof Error && error.message === "AUTH_REQUIRED"
          ? "Você precisa entrar para favoritar eventos."
@@ -108,7 +111,19 @@
      favorites,
      isLoading,
      isFavorite,
-     toggleFavorite: (eventId: string) => toggleFavoriteMutation.mutate(eventId),
+     toggleFavorite: (eventId: string) => {
+        if (!user) {
+          toast.error("Você precisa entrar para favoritar eventos.");
+          return;
+        }
+        if (isLoading) return;
+        const pending = pendingUsers.get(queryClient) ?? new Set<string>();
+        if (pending.has(user.id)) return;
+        pendingUsers.set(queryClient, pending);
+        pending.add(user.id);
+        const latest = queryClient.getQueryData<string[]>(qk.favorites.byUser(user.id)) ?? [];
+        toggleFavoriteMutation.mutate({ eventId, userId: user.id, remove: latest.includes(eventId) });
+      },
      isToggling: toggleFavoriteMutation.isPending,
    };
  }

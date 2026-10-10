@@ -1,10 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { sidebarConfig, filterSidebarSections } from "./sidebarItems";
+import { sidebarConfig, filterSidebarSections, isSidebarItemActive } from "./sidebarItems";
 import { ROUTES, routeExists } from "@/routes/config";
 import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { computePermissions } from "@/hooks/useAppPermissions";
 
 describe("sidebarConfig", () => {
+  it("indica somente a página pessoal selecionada", () => {
+    const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
+    expect(items.filter(item => isSidebarItemActive(item, ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.COMPARTILHAR_MEUS_EVENTOS)).map(item => item.id)).toEqual(["share_my_events"]);
+  });
+  it("não confunde prefixos de irmãos ou links com consulta", () => {
+    const item = sidebarConfig[0].items[0];
+    expect(isSidebarItemActive(item, `${item.path}-extra`, `${item.path}-extra`)).toBe(false);
+    const favorite = sidebarConfig[0].items.find(i => i.id === "favorites");
+    if (!favorite) throw new Error("missing favorites link");
+    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, `${ROUTES.AGENDA}?view=favorites`)).toBe(true);
+    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, ROUTES.AGENDA)).toBe(false);
+  });
   it("compartilhamento pessoal segue o acesso do painel do divulgador", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
     const index = items.findIndex(i => i.id === "my_submissions");

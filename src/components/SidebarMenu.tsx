@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import logoCoeABoa from "@/assets/coeaboa-logo.webp";
-import { filterSidebarSections, SidebarItem, Role } from "./layout/sidebarItems";
+import { filterSidebarSections, isSidebarItemActive, SidebarItem, Role } from "./layout/sidebarItems";
 import { activeAccessRole } from "@/lib/access";
 import { routeExists } from "@/routes/config";
 
@@ -189,8 +189,7 @@ function SidebarNavigationItem({
   filterFn: (items: SidebarItem[]) => SidebarItem[];
 }) {
   const isItemActive = (it: SidebarItem) => {
-    if (it.exact) return pathname === it.path;
-    return fullPath === it.path || pathname.startsWith(it.path);
+    return isSidebarItemActive(it, pathname, fullPath);
   };
 
   const Icon = item.icon;
@@ -232,6 +231,7 @@ function SidebarNavigationItem({
       ) : (
         <Link
           to={item.path}
+          aria-current={isActive ? "page" : undefined}
           className={cn(
              "group relative flex min-h-11 items-center gap-3 rounded-xl px-3 py-3 transition-all",
             isActive 
