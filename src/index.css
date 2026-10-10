@@ -305,6 +305,7 @@ html { scroll-behavior: smooth; }
   background: hsl(var(--muted) / 0.5);
 }
 .pitch-window-body { padding: 1.5rem; }
+.pitch-window-header > span { flex-shrink: 0; white-space: nowrap; }
 .pitch-window-body > * + * { margin-top: 2rem; }
 @media (max-width: 639px) {
   .pitch-window-header, .pitch-window-body { padding: 1rem; }
