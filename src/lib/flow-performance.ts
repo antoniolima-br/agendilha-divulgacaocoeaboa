@@ -54,9 +54,9 @@ function publish(detail: FlowMetricDetail) {
 }
 
 function trimPerformanceEntries() {
-  if (typeof performance === "undefined" || sequence % MAX_MARKS !== 0) return;
-  recordedMarks.splice(0).forEach((name) => performance.clearMarks(name));
-  recordedMeasures.splice(0).forEach((name) => performance.clearMeasures(name));
+  if (typeof performance === "undefined") return;
+  recordedMarks.splice(0, Math.max(0, recordedMarks.length - MAX_MARKS)).forEach((name) => performance.clearMarks(name));
+  recordedMeasures.splice(0, Math.max(0, recordedMeasures.length - MAX_MARKS)).forEach((name) => performance.clearMeasures(name));
 }
 
 /**

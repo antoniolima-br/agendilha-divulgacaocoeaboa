@@ -110,6 +110,8 @@ export function HomeMixedHeroCarousel({
         <div className="flex items-stretch">
         {items.map((slide, slideIndex) => {
           const active = slideIndex === index;
+          const distance = Math.abs(slideIndex - index);
+          const near = distance <= 1 || distance === total - 1;
           const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
           const slideImage = slide.image_url || getEventFallbackImage(slide.category);
           const slideLocation = [slide.location, slide.address_neighborhood].filter(Boolean).join(" · ");
@@ -126,9 +128,9 @@ export function HomeMixedHeroCarousel({
               className="block h-auto min-w-0 flex-[0_0_100%] select-none whitespace-normal rounded-none p-0 text-left hover:bg-background md:h-auto"
             >
               <div className="relative h-[min(60vh,42rem)] w-full overflow-hidden bg-muted">
-                <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />
+                {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
-                <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />
+                {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
               </div>
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl break-words font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>

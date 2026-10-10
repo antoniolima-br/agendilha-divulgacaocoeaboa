@@ -5,7 +5,9 @@ const listeners = new Set<() => void>();
 const subscribe = (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; };
 export const getGlobalEventFilters = () => current;
 export function setGlobalEventFilters(patch: Partial<PublicEventFilters>) {
-  current = { ...current, ...patch, ...(patch.region !== undefined && patch.region !== current.region && patch.neighborhood === undefined ? { neighborhood: "all" } : {}) };
+  const next = { ...current, ...patch, ...(patch.region !== undefined && patch.region !== current.region && patch.neighborhood === undefined ? { neighborhood: "all" } : {}) };
+  if ((Object.keys(next) as (keyof PublicEventFilters)[]).every((key) => next[key] === current[key])) return;
+  current = next;
   listeners.forEach((listener) => listener());
 }
 export function clearGlobalEventFilters() { setGlobalEventFilters(DEFAULT_EVENT_FILTERS); }

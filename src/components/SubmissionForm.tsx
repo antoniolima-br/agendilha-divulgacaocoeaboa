@@ -36,6 +36,7 @@ import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNo
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
 import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
+import { prepareUploadImage } from "@/lib/uploadImage";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
@@ -436,14 +437,15 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       let imageUrl = values.eventImageUrl;
       
       if (eventImage instanceof File) {
-        const fileExt = eventImage.name.split('.').pop();
+        const optimizedImage = await prepareUploadImage(eventImage);
+        const fileExt = optimizedImage.name.split('.').pop();
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         const filePath = `${user?.id}/${fileName}`;
 
         const { error: uploadError } = await measureFlowOperation(
           "event-submission",
           "flyer-upload",
-          () => supabaseClient.storage.from('event-flyers').upload(filePath, eventImage),
+          () => supabaseClient.storage.from('event-flyers').upload(filePath, optimizedImage, { contentType: optimizedImage.type }),
           currentStep,
         );
 

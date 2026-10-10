@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { prepareUploadImage } from "@/lib/uploadImage";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ export function AgendaFlyerUpload({ events, userId }: { events: AgendaEvent[]; u
     [events],
   );
   const preview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
   const pick = (f: File | null) => {
     if (f && !f.type.startsWith("image/")) return toast.error("Escolhe uma imagem (JPG, PNG ou WEBP).");
@@ -33,9 +35,10 @@ export function AgendaFlyerUpload({ events, userId }: { events: AgendaEvent[]; u
     if (!eventId || !file) return;
     setSaving(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const optimized = await prepareUploadImage(file);
+      const ext = optimized.name.split(".").pop() || "jpg";
       const path = `${userId}/flyer-${eventId}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("event-flyers").upload(path, file, { contentType: file.type });
+      const { error: upErr } = await supabase.storage.from("event-flyers").upload(path, optimized, { contentType: optimized.type });
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("event-flyers").getPublicUrl(path);
       const { error } = await supabase.from("submissions").update({ image_url: data.publicUrl }).eq("id", eventId);

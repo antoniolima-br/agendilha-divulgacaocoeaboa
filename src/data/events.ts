@@ -27,6 +27,7 @@ export function normalizeEvents(value: unknown): AgendaEvent[] {
 export function useEvents(options: { 
   enabled?: boolean; 
   staleTime?: number;
+  includeRatings?: boolean;
 } = {}) {
   const eventsQuery = usePublicEvents(options);
 
@@ -35,7 +36,7 @@ export function useEvents(options: {
   const ratingIds = useMemo(() => events.map((event) => event.id).sort(), [events]);
   const ratingsQuery = useQuery({
     queryKey: [...qk.agenda.ratings(), ratingIds.join(",")],
-    enabled: (options.enabled ?? true) && ratingIds.length > 0,
+    enabled: (options.enabled ?? true) && (options.includeRatings ?? true) && ratingIds.length > 0,
     queryFn: async (): Promise<Record<string, Rating>> => {
       const { data, error } = await supabase
         .from("event_ratings_summary")

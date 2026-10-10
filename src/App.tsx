@@ -5,8 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SubmissionProvider } from "@/contexts/SubmissionContext";
-import Header from "@/components/Header";
 import { Suspense, lazy, useEffect, useState } from "react";
+import { GuideLauncher } from "@/components/coezinho/GuideLauncher";
+import { installIntentPreload } from "@/routes/intentPreload";
+import { loadAgenda, loadEventDetail, loadExplorar, loadHighlights, loadToday } from "@/routes/publicLoaders";
 import { Loader2 } from "lucide-react";
 import { useAppPermissions, type PermissionName } from "@/hooks/useAppPermissions";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
@@ -30,10 +32,10 @@ const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AdminPublishedEvents = lazy(() => import("./pages/AdminPublishedEvents"));
-const AgendaCultural = lazy(() => import("./pages/AgendaCultural"));
-const EventosEmDestaque = lazy(() => import("./pages/EventosEmDestaque"));
-const Explorar = lazy(() => import("./pages/Explorar"));
-const CuradoriaHoje = lazy(() => import("./pages/CuradoriaHoje"));
+const AgendaCultural = lazy(loadAgenda);
+const EventosEmDestaque = lazy(loadHighlights);
+const Explorar = lazy(loadExplorar);
+const CuradoriaHoje = lazy(loadToday);
 const AdminCollaborators = lazy(() => import("./pages/AdminCollaborators"));
 const AdminMaster = lazy(() => import("./pages/AdminMaster"));
 const Ranking = lazy(() => import("./pages/Ranking"));
@@ -47,7 +49,7 @@ const AdminMedia = lazy(() => import("./pages/AdminMedia"));
 const AdminAuditLogs = lazy(() => import("./pages/AdminAuditLogs"));
 const AdminAgendaInforma = lazy(() => import("./pages/AdminAgendaInforma"));
 const CompartilharAgendaInforma = lazy(() => import("./pages/CompartilharAgendaInforma"));
-const EventDetail = lazy(() => import("./pages/EventDetail"));
+const EventDetail = lazy(loadEventDetail);
 const PrintEvent = lazy(() => import("./pages/PrintEvent"));
 const EstabelecimentoDetail = lazy(() => import("./pages/EstabelecimentoDetail"));
 const Settings = lazy(() => import("./pages/Settings"));
@@ -93,7 +95,6 @@ const PrivacidadePage = lazy(() => import("./pages/PlaceholderInfo").then(m => (
 const ImpulsionamentoPage = lazy(() => import("./pages/PlaceholderInfo").then(m => ({ default: m.ImpulsionamentoPage })));
 const StatusDivulgador = lazy(() => import("./pages/divulgador/StatusDivulgador"));
 const PublicProfile = lazy(() => import("./pages/divulgador/PublicProfile"));
-const CoezinhoChat = lazy(() => import("@/components/coezinho/CoezinhoChat").then((module) => ({ default: module.CoezinhoChat })));
 const InstallBanner = lazy(() => import("@/components/system/InstallBanner").then((module) => ({ default: module.InstallBanner })));
 
 installGlobalErrorHandlers();
@@ -109,6 +110,14 @@ function DeferredAppFeatures() {
   const { loading, mustChangePassword } = useAuth();
   const [ready, setReady] = useState(false);
   const [chatRequested, setChatRequested] = useState(false);
+
+  useEffect(() => installIntentPreload({
+    [ROUTES.AGENDA]: loadAgenda,
+    [ROUTES.EVENTO_DETAIL]: loadEventDetail,
+    [ROUTES.EXPLORAR]: loadExplorar,
+    [ROUTES.EVENTOS_DESTAQUE]: loadHighlights,
+    [ROUTES.CURADORIA_HOJE]: loadToday,
+  }), []);
 
   useEffect(() => {
     const openChat = () => {
@@ -130,10 +139,10 @@ function DeferredAppFeatures() {
 
   if (!ready || loading || mustChangePassword) return null;
   return (
-    <Suspense fallback={null}>
-      <CoezinhoChat initiallyOpen={chatRequested} />
-      <InstallBanner />
-    </Suspense>
+    <>
+      <GuideLauncher initiallyOpen={chatRequested} />
+      <Suspense fallback={null}><InstallBanner /></Suspense>
+    </>
   );
 }
 

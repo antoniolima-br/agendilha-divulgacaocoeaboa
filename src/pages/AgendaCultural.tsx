@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, Users } from "lucide-react";
 import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
@@ -12,17 +12,17 @@ import { useAgendaData } from "@/hooks/useAgendaData";
 import { useAgendaFilters } from "@/hooks/useAgendaFilters";
 import { useAgendaArtists } from "@/data/useAgendaArtists";
 
-import { PersonalizationDialog } from "@/components/PersonalizationDialog";
-import { ShareDialog } from "@/components/ShareDialog";
+const PersonalizationDialog = lazy(() => import("@/components/PersonalizationDialog").then((m) => ({ default: m.PersonalizationDialog })));
+const ShareDialog = lazy(() => import("@/components/ShareDialog").then((m) => ({ default: m.ShareDialog })));
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { AgendaHero } from "@/components/agenda/AgendaHero";
 import { AgendaLoginBanner } from "@/components/agenda/AgendaLoginBanner";
 import { AgendaFilters } from "@/components/agenda/AgendaFilters";
-import { AgendaArtistsTab } from "@/components/agenda/AgendaArtistsTab";
+const AgendaArtistsTab = lazy(() => import("@/components/agenda/AgendaArtistsTab").then((m) => ({ default: m.AgendaArtistsTab })));
 import { AgendaListSkeleton } from "@/components/agenda/AgendaListSkeleton";
 import { AgendaEmptyState } from "@/components/agenda/AgendaEmptyState";
 import { DayEventCard } from "@/components/agenda/DayEventCard";
-import { EventDetailDialog } from "@/components/agenda/EventDetailDialog";
+const EventDetailDialog = lazy(() => import("@/components/agenda/EventDetailDialog").then((m) => ({ default: m.EventDetailDialog })));
 import { buildWhatsAppShare } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 
@@ -55,7 +55,8 @@ function AgendaCulturalInner() {
     clearInitialEventId,
   } = useAgendaData();
 
-  const { artists, shortVideos } = useAgendaArtists();
+  const [activeTab, setActiveTab] = useState<"events" | "artists">("events");
+  const { artists, shortVideos } = useAgendaArtists(activeTab === "artists");
 
   const filters = useAgendaFilters({ events, profile, isFavorite, favorites });
 
@@ -67,10 +68,9 @@ function AgendaCulturalInner() {
   } | null>(null);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
-  const [activeTab, setActiveTab] = useState<"events" | "artists">("events");
 
-  const handleShare = (title: string, text: string, url: string, eventId?: string) =>
-    setShareData({ title, text, url, eventId });
+  const handleShare = useCallback((title: string, text: string, url: string, eventId?: string) =>
+    setShareData({ title, text, url, eventId }), []);
 
   const handleCopyLink = (url: string) => {
     navigator.clipboard.writeText(url);
@@ -163,10 +163,12 @@ function AgendaCulturalInner() {
         </div>
 
         {activeTab === "artists" && (
+          <Suspense fallback={<AgendaListSkeleton />}>
           <AgendaArtistsTab
             artists={artists}
             shortVideos={shortVideos}
           />
+          </Suspense>
         )}
 
         {activeTab === "events" && (
@@ -294,7 +296,8 @@ function AgendaCulturalInner() {
       </main>
 
       
-      <PersonalizationDialog open={personalizationOpen} onOpenChange={setPersonalizationOpen} />
+      <Suspense fallback={null}>
+      {personalizationOpen && <PersonalizationDialog open={personalizationOpen} onOpenChange={setPersonalizationOpen} />}
       {shareData && (
         <ShareDialog
           open={!!shareData}
@@ -306,11 +309,12 @@ function AgendaCulturalInner() {
         />
       )}
 
-      <EventDetailDialog
+      {selectedEvent && <EventDetailDialog
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
         trackShare={trackShare}
-      />
+      />}
+      </Suspense>
     </div>
   );
 }

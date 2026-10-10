@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { prepareUploadImage } from "@/lib/uploadImage";
 
 const BUCKET = "event-flyers"; // bucket público único reaproveitado
 const MAX_MB = 5;
@@ -98,13 +99,14 @@ export function PhotoGallery({
           continue;
         }
 
-        const ext = file.name.split(".").pop() || "jpg";
+        const optimized = await prepareUploadImage(file);
+        const ext = optimized.name.split(".").pop() || "jpg";
         const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const path = `${ownerUserId}/${kind}/${targetId ?? "novo"}/${safeName}`;
 
         const { error } = await supabase.storage
           .from(BUCKET)
-          .upload(path, file, { upsert: false, contentType: file.type });
+          .upload(path, optimized, { upsert: false, contentType: optimized.type });
 
         if (error) {
           failed++;
