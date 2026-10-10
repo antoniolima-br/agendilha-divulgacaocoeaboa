@@ -4,24 +4,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "./queryKeys";
 import { PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 import type { Tables } from "@/integrations/supabase/types";
+import { fetchAllPages } from "./pagination";
 
 export type CurationEvent = Pick<Tables<"submissions">, "id" | "event_title" | "date" | "start_time" | "end_time" | "location" | "status" | "image_url" | "category" | "responsible_name" | "description">;
 export function useCuration(enabled: boolean, status: "pending" | "approved") {
   const { user } = useAuth();
   return useQuery({
     queryKey: qk.curation.list(user?.id, status), enabled: enabled && !!user,
-    queryFn: async () => {
-      const rows: CurationEvent[] = [];
-      for (let offset = 0; ; offset += 500) {
+    queryFn: () => fetchAllPages<CurationEvent>((from, to) => {
         let query = supabase.from("submissions").select("id,event_title,date,start_time,end_time,location,status,image_url,category,responsible_name,description")
           .is("deleted_at", null).order("created_at", { ascending: false }).order("id");
         query = status === "pending" ? query.eq("status", "pendente") : query.in("status", [...PUBLIC_EVENT_STATUSES]);
-        const { data, error } = await query.range(offset, offset + 499);
-        if (error) throw error;
-        rows.push(...(data ?? []));
-        if (!data || data.length < 500) return rows;
-      }
-    },
+        return query.range(from, to);
+    }),
   });
 }
 export function useCurationDecision() {

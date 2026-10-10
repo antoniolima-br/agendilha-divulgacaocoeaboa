@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { AlertTriangle, Info } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { AlertTriangle } from "lucide-react";
+import { fetchAttractionSuggestions } from "@/data/autocomplete";
 import { onEntityCreated } from "@/lib/entityEvents";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
 import { AutocompleteField } from "@/components/ui/AutocompleteField";
@@ -48,21 +48,6 @@ export function AtrativoAutocomplete({
 
   useEffect(() => onEntityCreated("atrativo", () => setRefreshKey((k) => k + 1)), []);
 
-  const fetchPage = useCallback(
-    async (q: string, from: number, to: number, signal: AbortSignal) => {
-      const { data, error } = await supabase
-        .rpc("search_atrativos_autocomplete_v2", {
-          _q: q || null,
-          _limit: to - from + 1,
-          _offset: from,
-        })
-        .abortSignal(signal);
-      if (error) throw error;
-      return (data ?? []) as AtrativoSuggestion[];
-    },
-    [],
-  );
-
   const {
     items: suggestions,
     loading,
@@ -72,7 +57,7 @@ export function AtrativoAutocomplete({
     error,
   } = useAutocompleteSearch<AtrativoSuggestion>({
     term: value,
-    fetchPage,
+    fetchPage: fetchAttractionSuggestions,
     pageSize: 12,
     debounceMs: 150,
     refreshKey,
@@ -134,7 +119,6 @@ export function AtrativoAutocomplete({
           <span>Já existe um atrativo com esse nome — selecione da lista pra reaproveitar.</span>
         </div>
       ) : null}
-      onCreateNew={onCreateNew}
     />
   );
 }

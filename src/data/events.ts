@@ -1,12 +1,10 @@
 import { usePublicEvents } from "./usePublicEvents";
-import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
 import type { AgendaEvent } from "@/components/agenda/types";
 import { qk } from "./queryKeys";
 import { useCallback, useMemo } from "react";
-import { eventDateISO, PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 
 export type Rating = { average: number; total: number };
 
@@ -30,8 +28,6 @@ export function useEvents(options: {
   enabled?: boolean; 
   staleTime?: number;
 } = {}) {
-  const qc = useQueryClient();
-
   const eventsQuery = usePublicEvents(options);
 
   const events = normalizeEvents(eventsQuery.data);

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { MapPin, AlertTriangle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { MapPin } from "lucide-react";
+import { fetchVenueSuggestions } from "@/data/autocomplete";
 import { onEntityCreated } from "@/lib/entityEvents";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
 import { AutocompleteField } from "@/components/ui/AutocompleteField";
@@ -39,21 +39,6 @@ export function EstabelecimentoAutocomplete({
 
   useEffect(() => onEntityCreated("estabelecimento", () => setRefreshKey((k) => k + 1)), []);
 
-  const fetchPage = useCallback(
-    async (q: string, from: number, to: number, signal: AbortSignal) => {
-      const { data, error } = await supabase
-        .rpc("search_estabelecimentos_autocomplete", {
-          _q: q || null,
-          _limit: to - from + 1,
-          _offset: from,
-        })
-        .abortSignal(signal);
-      if (error) throw error;
-      return (data ?? []) as EstabelecimentoSuggestion[];
-    },
-    [],
-  );
-
   const {
     items: suggestions,
     loading,
@@ -63,7 +48,7 @@ export function EstabelecimentoAutocomplete({
     error,
   } = useAutocompleteSearch<EstabelecimentoSuggestion>({
     term: value,
-    fetchPage,
+    fetchPage: fetchVenueSuggestions,
     pageSize: 12,
     debounceMs: 150,
     refreshKey,

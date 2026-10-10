@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { Search, AlertTriangle, Plus, Info, LucideIcon } from "lucide-react";
+import { Search, AlertTriangle, Plus, LucideIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -62,12 +62,6 @@ export function AutocompleteField<T>({
 }: AutocompleteFieldProps<T>) {
   const [open, setOpen] = useState(false);
 
-  const showNewHint = onCreateNew && value.trim().length >= 2 && !items.some(item => {
-      // This is a bit tricky as we don't know the property name for 'name'
-      // We'll rely on the caller to provide duplicateWarning logic if needed
-      return false; 
-  });
-
   const showDropdown = open && (items.length > 0 || loading || (value.trim().length >= 2) || !!error);
 
   return (
@@ -97,7 +91,7 @@ export function AutocompleteField<T>({
             </div>
           )}
           
-          {items.map((item, idx) => renderItem(item, () => setOpen(false)))}
+          {items.map((item) => renderItem(item, () => setOpen(false)))}
           
           {loading && items.length === 0 && (
             <div className="px-3 py-2 text-xs text-muted-foreground">{loadingText}</div>
