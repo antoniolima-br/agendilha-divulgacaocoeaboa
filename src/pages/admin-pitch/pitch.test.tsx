@@ -53,7 +53,7 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: "Notificações Push Regionais" })).toBeInTheDocument();
     expect(screen.getByRole("columnheader", { name: /Fase de Expansão/ })).toBeInTheDocument();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 2, name: buildPitchContent().anchor.title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: buildPitchContent().anchor.title })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "1 Anunciante Master" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "2 Sub-Masters / Co-Patrocinadores" })).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().anchor.billing)).toBeInTheDocument();

@@ -19,6 +19,30 @@ export function buildPitchContent() {
       afterMarketing: revenue - scenario.marketing };
   });
   return {
+    technology: { title: "Conceito Tecnológico · PWA", description: "Um aplicativo web leve, acessado direto pelo navegador e com opção de fixar na tela inicial, sem passar por lojas de aplicativos. Usa armazenamento local para arquivos em cache; não significa consumo zero de memória. O conteúdo já armazenado pode abrir offline, mas agenda atualizada, login e envios precisam de conexão." },
+    b2c: {
+      title: "Plano de Marketing — Atração e Engajamento de Usuários",
+      organic: { title: "Estratégia Orgânica · Zero Barreiras", items: [
+        { title: "Acesso sem fricção", description: "Um link abre o Coé a Boa? no navegador. Fixar na tela inicial é uma opção, não uma condição para descobrir a programação." },
+        { title: "Vozes do bairro", description: "Criar parcerias com micro-influenciadores e páginas de bairro, usando programação real e convites próximos ao público local." },
+        { title: "Efeito rede pelo WhatsApp", description: "Divulgadores compartilham os próprios rolês e levam sua audiência à agenda, ampliando a descoberta entre contatos e grupos locais." },
+        { title: "QR codes no território", description: "Propor QR codes em pontos parceiros, cartazes e materiais físicos autorizados, conectando a circulação do bairro à agenda digital." },
+      ] },
+      paid: { title: "Estratégia Paga · Aceleração e Escala", items: [
+        { title: "Meta Ads e TikTok por bairro", description: "Testar segmentação geográfica por bairro ou raio disponível em cada plataforma. A localização é aproximada: conferir a origem do público antes de ampliar a verba." },
+        { title: "Criativos sobre leveza", description: "Mostrar o acesso direto pelo navegador e a opção de fixar na tela inicial, sem prometer consumo zero de armazenamento ou agenda atualizada sem internet." },
+        { title: "Co-marketing local", description: "Planejar campanhas conjuntas com produtores locais, conectando eventos cadastrados a convites e públicos da mesma praça." },
+      ] },
+    },
+    b2b: {
+      title: "Plano Comercial & Marketing de Vendas",
+      exclusivity: { title: "Argumento de Venda por Exclusividade", description: "Propor ao lojista e patrocinador atenção visual exclusiva para sua cota na abertura ou atualização do app, sem rotação automática dos espaços Master e Sub-Master. A presença sem disputa simultânea valoriza o investimento corporativo e mantém a experiência limpa; não garante atenção integral ou conversão." },
+      anchors: { title: "Captação de Parceiros Âncora", description: "Uma abordagem enxuta por praça para converter a cota Master e as duas cotas Sub-Master, buscando previsibilidade de caixa inicial com contratos mensais — nunca tratando negociação como receita já recebida.", steps: [
+        { title: "Selecionar parceiros locais", description: "Mapear negócios e produtores com afinidade com a audiência da praça e um responsável por cada contato comercial." },
+        { title: "Apresentar uma proposta objetiva", description: "Mostrar região atendida, hierarquia das cotas, entregas propostas, período e valores mensais, com limites e condições transparentes." },
+        { title: "Fechar e acompanhar", description: "Registrar o acordo e acompanhar confirmação financeira, aprovação e entregas. Rever renovação com resultados medidos, sem promessas de retorno garantido." },
+      ] },
+    },
     brandPositioning: "Coé a Boa? é a plataforma e o produto oficial criado e gerido para resolver a curadoria de eventos e a publicidade hiperlocal no Rio de Janeiro. Conecta quem procura um rolê aos eventos selecionados e aproxima negócios do público de cada macro-região.",
     monetization: "Taxas simbólicas para eventos podem ajudar no lançamento e na adesão inicial, mas não sustentam a operação. A base financeira é a venda profissional de espaços publicitários: carrosséis, banners e cards da Agenda segmentados por macro-região, com pacotes de 30 dias. Essa receita dá suporte ao custeio da operação e das campanhas de tráfego pago; patrocínios de eventos em ciclos de 7 dias complementam o faturamento.",
     projectionBasis: "Nota: Os valores apresentados refletem projeções financeiras conservadoras calculadas individualmente por cada região/praça atendida, com pacotes profissionais, não taxas simbólicas de lançamento.",
@@ -27,7 +51,7 @@ export function buildPitchContent() {
       title: "Diferencial de Exclusividade e Performance Publicitária",
       description: "Para concentrar a atenção do usuário e eliminar a poluição visual de carrosséis tradicionais, o Coé a Boa? propõe um modelo sofisticado e de alto impacto para os espaços Master e Sub-Master.",
       items: [
-        { title: "Exclusividade por Sessão (Abertura/Atualização)", description: "A proposta é apresentar os parceiros com foco único a cada abertura do aplicativo ou atualização da tela, sem a distração de banners piscando ou animações automáticas." },
+        { title: "Exclusividade por Sessão (Abertura/Atualização)", description: "A proposta é apresentar os parceiros com foco único a cada abertura do aplicativo ou atualização da tela, sem carrosséis automáticos nos espaços Master e Sub-Master, banners piscando ou disputa simultânea entre cotas." },
         { title: "Valor Percebido Superior", description: "Para o lojista e o patrocinador, o espaço sem disputa visual favorece a atenção do leitor no momento do impacto e eleva o valor percebido da presença de marca." },
         { title: "Experiência Limpa", description: "A interface permanece elegante, rápida e focada na descoberta de conteúdo local." },
       ],

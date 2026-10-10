@@ -43,10 +43,10 @@ export default function AdminPitchComercial() {
     } finally { setPassword(""); setPending(false); }
   }
 
-  return <div className="mx-auto w-full min-w-0 max-w-5xl space-y-8 pb-12">
-    <Helmet><title>Pitch Comercial e Projeção | Coé a Boa?</title><meta name="robots" content="noindex, nofollow, noarchive" /><meta name="description" content="Área comercial interna e restrita do Coé a Boa?." /></Helmet>
+  return <div className="theme-pitch mx-auto w-full min-w-0 max-w-5xl space-y-6 rounded-lg bg-background p-4 text-foreground sm:p-8">
+    <Helmet><title>Pitch Comercial & Estratégia | Coé a Boa?</title><meta name="robots" content="noindex, nofollow, noarchive" /><meta name="description" content="Área comercial interna e restrita do Coé a Boa?." /></Helmet>
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
-      <div className="min-w-0 space-y-2"><p className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Uso interno · Admin, Financeiro, Master e Sênior</p><h1 className="break-words text-2xl font-semibold sm:text-3xl">Pitch Comercial e Projeção</h1><p className="text-sm text-muted-foreground">Coé a Boa? · Estratégia comercial</p></div>
+      <div className="min-w-0 space-y-2"><p className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Uso interno · Admin, Financeiro, Master e Sênior</p><h1 className="break-words text-2xl font-semibold sm:text-3xl">Pitch Comercial & Estratégia</h1><p className="text-sm text-muted-foreground">Coé a Boa? · Estratégia comercial</p></div>
       {content && <Button variant="outline" size="sm" onClick={() => setUnlocked(null)} className="gap-2"><LockKeyhole className="h-4 w-4" /> Bloquear</Button>}
     </header>
     {content ? <PitchContentView content={content} /> : <section className="mx-auto max-w-sm space-y-5 py-10">

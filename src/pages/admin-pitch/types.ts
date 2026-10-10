@@ -1,5 +1,8 @@
 export interface PitchContent {
   inventoryImage?: string;
+  technology?: { title: string; description: string };
+  b2c?: { title: string; organic: { title: string; items: { title: string; description: string }[] }; paid: { title: string; items: { title: string; description: string }[] } };
+  b2b?: { title: string; exclusivity: { title: string; description: string }; anchors: { title: string; description: string; steps: { title: string; description: string }[] } };
   brandPositioning: string;
   monetization: string;
   projectionBasis: string;

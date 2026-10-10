@@ -270,3 +270,42 @@ html, body, * { scrollbar-width: none; -ms-overflow-style: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none; width: 0; height: 0; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Scoped executive pitch: public branding stays unchanged. */
+.theme-pitch {
+  --background: 210 20% 98%;
+  --foreground: 215 18% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 18% 18%;
+  --primary: 211 65% 35%;
+  --primary-foreground: 0 0% 100%;
+  --success: 158 45% 30%;
+  --muted: 210 18% 95%;
+  --muted-foreground: 215 12% 40%;
+  --border: 210 16% 86%;
+  --input: 210 16% 86%;
+  --ring: 211 65% 35%;
+  --destructive: 0 65% 42%;
+  --shadow-card: 0 2px 10px hsl(215 18% 18% / 0.04);
+}
+.pitch-window {
+  min-width: 0;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  box-shadow: var(--shadow-card);
+  overflow-wrap: anywhere;
+}
+.pitch-window-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.5);
+}
+.pitch-window-body { padding: 1.5rem; }
+.pitch-window-body > * + * { margin-top: 2rem; }
+@media (max-width: 639px) {
+  .pitch-window-header, .pitch-window-body { padding: 1rem; }
+}
