@@ -80,8 +80,9 @@ export function PitchContentView({ content }: { content: PitchContent }) {
     </section>}
     <section className="min-w-0 space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><TrendingUp className="h-5 w-5 shrink-0 text-primary" /> Projeção de receita mensal</h2>
-      <p className="text-sm text-muted-foreground">Premissas: {money(content.placementTicket)} por espaço de 30 dias, {money(content.eventTicket)} por patrocínio de 7 dias e {money(content.pushTicket)} por disparo regional vendido no mês.</p>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.projectionBasis}</p>
+      {content.projectionRegional && <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground"><strong className="font-medium text-foreground">Por Região Atendida:</strong> {content.projectionRegional}</p>}
+      {content.projectionGlobal && <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground"><strong className="font-medium text-foreground">Potencial Global (Rio de Janeiro):</strong> {content.projectionGlobal}</p>}
       <div className="w-full overflow-x-auto rounded-lg border border-border" tabIndex={0} aria-label="Projeção mensal por período">
         <table className="w-full min-w-[620px] text-left text-sm">
           <caption className="sr-only">Cenário ilustrativo de vendas e receita dos meses 1, 6 e 12</caption>

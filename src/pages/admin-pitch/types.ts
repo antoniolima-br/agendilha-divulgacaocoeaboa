@@ -3,6 +3,8 @@ export interface PitchContent {
   brandPositioning: string;
   monetization: string;
   projectionBasis: string;
+  projectionRegional?: string;
+  projectionGlobal?: string;
   differential: string;
   regionalExample: string;
   formats: { title: string; cycle: string; min: number; max: number; description: string; priceSuffix?: string }[];
