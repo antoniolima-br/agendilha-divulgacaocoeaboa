@@ -1,1 +1,1 @@
-- Group the protected pitch payload into three windows under a scoped semantic theme so executive styling never changes public pages.
+- Group the protected pitch payload into three windows using the app's shared semantic theme so presentation colors cannot drift from public pages.
