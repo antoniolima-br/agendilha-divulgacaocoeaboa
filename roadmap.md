@@ -1,5 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Refatoração segura por evidência: paginação de três consultas centralizada, buscas extraídas da apresentação, revisão de entidades compartilhada e código morto removido; 376 testes aprovados, lint limpo e Agenda/calendário conferidos. Escopo e limites em refactor-report.md.
+- [ ] Refatoração: conferir equivalência das telas privadas com conta autorizada — requer sessão real do solicitante; testes cobrem seleção, filtros e paginação sem alterar registros reais.
 - [x] Auditoria técnica: acesso, dados e interface revisados; privacidade de três buscas, favoritos, respostas atrasadas e menu corrigidos; 349 testes aprovados, 15 verificações de páginas sem overflow e relatório em audit-report.md.
 - [ ] Auditoria: validar login/logout, persistência, favoritos, uploads e CRUDs protegidos com sessão real — conta solicitante sem sessão disponível; requer entrar na prévia.
 - [x] Remover indicadores da Home, garantir autoplay de cinco segundos com retomada após interação e preencher banners sem cortar flyers; cinco testes aprovados e rotação/pausa/retomada conferidas com eventos reais no computador e celular.

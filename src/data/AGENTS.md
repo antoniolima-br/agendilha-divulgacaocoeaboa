@@ -1,0 +1,2 @@
+- Keep autocomplete RPC adapters in autocomplete.ts; components render results without duplicating transport logic, preserving abort signals and server errors.
+- Use fetchAllPages with fresh per-page queries for full-list reads; retain caller filters, ordering, page size and visibility boundaries to prevent pagination drift.
