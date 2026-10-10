@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Remover indicadores da Home, garantir autoplay de cinco segundos com retomada após interação e preencher banners sem cortar flyers.
 - [x] Corrigir navegação, arraste e exibição responsiva do carrossel de eventos da Home; 28 testes aprovados, setas e toque/arraste conferidos com oito eventos reais, informações abertas por toque e celular sem overflow.
 - [x] Destacar no calendário somente dias com eventos públicos ativos e desativar dias vazios; 17 testes aprovados, sete dias habilitados na base pública, seleção de 10/10/2026 filtrou oito eventos e calendário conferido sem overflow em 390 px.
 - [x] Atualizar o pitch com Próximos Passos colapsável e encerramento Singularidade também colapsável; tema, projeções e acesso preservados, cinco testes aprovados e clique/teclado conferidos em apresentação isolada, sem overflow em 390/1920 px. Abertura com senha privada segue dependente de confirmação do usuário.

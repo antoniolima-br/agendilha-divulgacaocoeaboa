@@ -29,7 +29,8 @@ describe("Home event carousel interactions", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: "Destaque anterior" }));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
-    expect(screen.getByRole("button", { name: "Ver destaque 2" })).toHaveAttribute("aria-current", "true");
+    expect(screen.getByRole("button", { name: "Abrir evento Rolê 2" })).toHaveAttribute("aria-hidden", "false");
+    expect(screen.queryByLabelText("Escolher destaque")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Próximo destaque" }));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(0);
   });
@@ -52,10 +53,20 @@ describe("Home event carousel interactions", () => {
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
     act(() => vi.advanceTimersByTime(1));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
-    fireEvent.mouseEnter(screen.getByRole("region"));
+    fireEvent.pointerEnter(screen.getByRole("region"), { pointerType: "mouse" });
     engine.api.scrollTo.mockClear();
     act(() => vi.advanceTimersByTime(10000));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it("resumes five seconds after touch ends", () => {
+    render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
+    fireEvent.touchStart(screen.getByRole("region"));
+    act(() => vi.advanceTimersByTime(10000));
+    expect(engine.api.scrollTo).not.toHaveBeenCalled();
+    fireEvent.touchEnd(screen.getByRole("region"));
+    act(() => vi.advanceTimersByTime(5000));
+    expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
   });
 
   it("does not open event details after dragging", () => {
