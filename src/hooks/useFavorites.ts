@@ -29,16 +29,12 @@
    });
 
    const toggleFavoriteMutation = useMutation({
-     mutationFn: async (eventId: string) => {
-       if (!user) throw new Error("AUTH_REQUIRED");
-
-       const isFavorite = favorites.includes(eventId);
-
-       if (isFavorite) {
+      mutationFn: async ({ eventId, userId, remove }: FavoriteChange) => {
+        if (remove) {
          const { error } = await supabase
            .from("user_favorites")
            .delete()
-           .eq("user_id", user.id)
+            .eq("user_id", userId)
            .eq("event_id", eventId);
          if (error) throw error;
          return { eventId, action: "removed" };
@@ -50,10 +46,9 @@
          return { eventId, action: "added" };
        }
      },
-     onMutate: async (eventId) => {
-       if (!user) return { previousFavorites: favorites, skipped: true };
-       await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(user?.id) });
-       const previousFavorites = queryClient.getQueryData<string[]>(qk.favorites.byUser(user?.id));
+      onMutate: async ({ eventId, userId, remove }) => {
+        await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(userId) });
+        const previousFavorites = queryClient.getQueryData<string[]>(qk.favorites.byUser(userId)) ?? [];
 
        queryClient.setQueryData<string[]>(qk.favorites.byUser(userId), (old = []) => {
          if (remove) {
@@ -76,8 +71,12 @@
        if (!result) return;
        toast.success(result.action === "removed" ? "Removido dos favoritos" : "Adicionado aos favoritos");
      },
-     onSettled: () => {
-       queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(user?.id) });
+      onSettled: async (_result, _error, { userId }) => {
+        try {
+          await queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) });
+        } finally {
+          pendingUsers.get(queryClient)?.delete(userId);
+        }
      },
    });
 
