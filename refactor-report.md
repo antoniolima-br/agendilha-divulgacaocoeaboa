@@ -6,7 +6,7 @@ Revisão por áreas de dados, hooks, utilitários, componentes, navegação, aut
 
 1. **Paginação repetida (prioridade alta):** histórico pessoal, compartilhamento pessoal e Curadoria repetiam acumulação, cálculo de intervalos, tratamento de falhas e parada. Centralizados em `src/data/pagination.ts`, mantendo consultas novas por página, filtros, ordenação e tamanho original.
 2. **Transporte misturado à apresentação (prioridade alta):** buscas de atrativos/estabelecimentos executavam chamadas diretamente nos componentes. Adaptadores tipados foram extraídos para `src/data/autocomplete.ts`, sem alterar contratos públicos dos componentes, cancelamento, mensagens ou critérios de busca.
-3. **Código morto (prioridade média):** removidos cálculo nunca consumido, callback sempre falso, imports sem uso, índice sem uso e propriedade duplicada do autocomplete. Removidos imports e variável não utilizados nos módulos de eventos/perfis.
+3. **Código morto e efeitos duplicados (prioridade média):** removidos cálculo nunca consumido, callback sempre falso, imports sem uso, índice sem uso e propriedade duplicada do autocomplete. As duas buscas reutilizam `useEntityRevision` para atualização de entidades, substituindo efeitos locais equivalentes. Removidos imports e variável não utilizados nos módulos de eventos/perfis.
 
 ## Limites de segurança e compatibilidade
 

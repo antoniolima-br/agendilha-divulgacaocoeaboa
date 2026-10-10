@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import { fetchVenueSuggestions } from "@/data/autocomplete";
-import { onEntityCreated } from "@/lib/entityEvents";
+import { useEntityRevision } from "@/lib/entityEvents";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
 import { AutocompleteField } from "@/components/ui/AutocompleteField";
 
@@ -35,9 +34,7 @@ export function EstabelecimentoAutocomplete({
   className,
   onCreateNew,
 }: Props) {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  useEffect(() => onEntityCreated("estabelecimento", () => setRefreshKey((k) => k + 1)), []);
+  const refreshKey = useEntityRevision(["estabelecimento"]);
 
   const {
     items: suggestions,

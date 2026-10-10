@@ -4,7 +4,7 @@ import { AtrativoAutocomplete } from "./AtrativoAutocomplete";
 import { EstabelecimentoAutocomplete } from "@/components/estabelecimentos/EstabelecimentoAutocomplete";
 const mocks = vi.hoisted(() => ({ rpc: vi.fn() }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { rpc: mocks.rpc } }));
-vi.mock("@/lib/entityEvents", () => ({ onEntityCreated: () => () => {} }));
+vi.mock("@/lib/entityEvents", () => ({ useEntityRevision: () => 0 }));
 beforeEach(() => { mocks.rpc.mockReturnValue({ abortSignal: () => Promise.resolve({ data: null, error: new Error("failed") }) }); });
 describe("autocomplete failures", () => {
   it("shows an actionable attraction search failure, not an empty result", async () => {

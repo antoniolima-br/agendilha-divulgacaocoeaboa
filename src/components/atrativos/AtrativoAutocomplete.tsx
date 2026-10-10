@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { fetchAttractionSuggestions } from "@/data/autocomplete";
-import { onEntityCreated } from "@/lib/entityEvents";
+import { useEntityRevision } from "@/lib/entityEvents";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
 import { AutocompleteField } from "@/components/ui/AutocompleteField";
 
@@ -44,9 +43,7 @@ export function AtrativoAutocomplete({
   onCreateNew,
   disabled,
 }: Props) {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  useEffect(() => onEntityCreated("atrativo", () => setRefreshKey((k) => k + 1)), []);
+  const refreshKey = useEntityRevision(["atrativo"]);
 
   const {
     items: suggestions,
