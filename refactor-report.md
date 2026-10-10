@@ -21,7 +21,9 @@ Revisão por áreas de dados, hooks, utilitários, componentes, navegação, aut
 
 - Antes da refatoração: 66 arquivos / 349 testes aprovados.
 - Regressões acrescentadas: limites inclusivos, múltiplas páginas, resultado vazio, falha sem retorno parcial, parâmetros de busca, cancelamento, erros do servidor e filtros da Curadoria em cada página.
-- Resultado final da suíte e conferência visual: a registrar após validação.
+- Resultado final: 72 arquivos / 376 testes aprovados; lint dos módulos alterados sem apontamentos e compilação automática confirmada.
+- Seleção de atrativo/local e fechamento da lista cobertos por testes de interação; atualização por entidade e isolamento entre tipos cobertos por regressões.
+- Agenda real conferida com eventos cadastrados e calendário aberto em 1280 px, sem mudança de aparência; isso não valida telas privadas.
 
 ## Continuidade
 
