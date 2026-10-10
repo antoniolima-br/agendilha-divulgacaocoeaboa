@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Plus } from "lucide-react";
+import { Search, MapPin, Plus, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { onEntityCreated } from "@/lib/entityEvents";
 import { useAutocompleteSearch } from "@/hooks/useAutocompleteSearch";
@@ -69,7 +69,7 @@ export function EstabelecimentoAutocomplete({
     loading,
     loadingMore,
     hasMore,
-    loadMore,
+    loadMore, error,
   } = useAutocompleteSearch<EstabelecimentoSuggestion>({
     term: value,
     fetchPage,
@@ -110,7 +110,7 @@ export function EstabelecimentoAutocomplete({
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/80" />
       </div>
 
-      {open && (suggestions.length > 0 || (value.trim().length >= 2 && !loading)) && (
+      {open && (suggestions.length > 0 || (value.trim().length >= 2 && !loading || !!error)) && (
         <div className="absolute z-50 w-full mt-1 bg-popover border rounded-lg shadow-lg overflow-hidden max-h-72 overflow-y-auto">
           {value.trim().length < 1 && suggestions.length > 0 && (
             <div className="px-4 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground bg-muted/40">
@@ -141,6 +141,12 @@ export function EstabelecimentoAutocomplete({
           ))}
           {loading && suggestions.length === 0 && (
             <div className="px-4 py-2 text-xs text-muted-foreground">Buscando locais...</div>
+          {error && (
+            <div className="px-4 py-2 text-xs text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Erro ao buscar locais
+            </div>
+          )}
           )}
           {hasMore && (
             <button
