@@ -1,4 +1,4 @@
-import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, Target } from "lucide-react";
+import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, Target, Sparkles } from "lucide-react";
 import { Accordion } from "@/components/ui/accordion";
 import { PitchWindow } from "./PitchWindow";
 import type { PitchContent } from "./types";
@@ -60,16 +60,20 @@ export function PitchContentView({ content }: { content: PitchContent }) {
 {content.b2b && <><section className="space-y-3"><h3 className="text-lg font-semibold">{content.b2b.exclusivity.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.exclusivity.description}</p></section><section className="space-y-5 border-t border-border pt-6"><h3 className="text-lg font-semibold">Metodologia de Captação</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.anchors.description}</p><ol className="grid gap-6 md:grid-cols-3">{content.b2b.anchors.steps.map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol></section></>}
         {content.selfService && <details className="group border-t border-border pt-5"><summary className="cursor-pointer text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Evolução futura · Autoatendimento com controle</summary><section className="mt-5 space-y-4"><h3 className="flex items-center gap-2 text-lg font-semibold"><Workflow className="h-4 w-4 shrink-0 text-primary" /> {content.selfService.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.description}</p><ol className="grid gap-5 md:grid-cols-2">{content.selfService.steps.map((step) => <li key={step.title} className="space-y-2"><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.strategy}</p><p className="text-xs leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p></section></details>}
     </PitchWindow>
-    </Accordion>
-    <section aria-labelledby="pitch-next-step" className="space-y-5 border-t-2 border-primary py-6 sm:py-8">
-      <div className="flex items-center gap-3"><ArrowRight aria-hidden="true" className="h-5 w-5 shrink-0 text-primary" /><h2 id="pitch-next-step" className="text-xl font-semibold sm:text-2xl">Próximo Passo</h2></div>
-      <p className="max-w-3xl leading-relaxed text-muted-foreground">Alinhamento final com os sócios, definição de metas da primeira praça-piloto — Ilha do Governador — e início imediato da validação técnica e comercial do PWA.</p>
+    <PitchWindow value="next-steps" number="04" title="Próximos Passos" eyebrow="Estratégia · Praça-piloto" icon={ArrowRight}>
+      <p className="max-w-3xl leading-relaxed text-muted-foreground">Alinhamento estratégico com os sócios, definição das metas operacionais da primeira praça-piloto — Ilha do Governador — e início imediato da validação técnica do PWA e comercial das primeiras cotas.</p>
       <ol className="grid gap-6 md:grid-cols-3">{[
         { title: "Alinhar com os sócios", description: "Confirmar a proposta, as entregas e os responsáveis pela primeira etapa." },
         { title: "Definir metas do piloto", description: "Acordar objetivos de público, parceiros, cotas e orçamento para a primeira praça." },
         { title: "Iniciar a validação", description: "Testar acesso, instalação e limites offline do PWA; validar a proposta com negócios e produtores locais." },
       ].map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h3 className="font-semibold">{step.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol>
       <p className="flex items-start gap-2 text-xs text-muted-foreground"><Target aria-hidden="true" className="h-4 w-4 shrink-0 text-primary" /> Etapa proposta para decisão dos sócios. Metas e resultados ainda precisam ser validados.</p>
-    </section>
+    </PitchWindow>
+    <PitchWindow value="singularity" number="05" title="Por que Investir no Coé a Boa? (Singularidade)" eyebrow="Encerramento · Resumo executivo" icon={Sparkles}>
+      <p className="max-w-3xl text-lg font-medium leading-relaxed">Tecnologia sem atrito, publicidade com foco e descoberta cultural hiperlocal em um único produto.</p>
+      <p className="max-w-3xl leading-relaxed text-muted-foreground">O Coé a Boa? combina acesso leve pelo navegador, conteúdo salvo disponível offline e uma proposta de monetização por exclusividade visual, sem carrosséis automáticos nos espaços Master e Sub-Master. Um ecossistema que pode crescer praça a praça no Rio de Janeiro, aproximando público, produtores e negócios locais.</p>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">A oportunidade é resolver a dificuldade de descobrir programas locais com uma operação enxuta e potencial de conversão comercial. Custos, adesão e resultados dependem da validação do piloto; não representam retorno garantido.</p>
+    </PitchWindow>
+    </Accordion>
   </div>;
 }

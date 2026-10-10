@@ -1,1 +1,1 @@
-- Use shared Accordion primitives for three independently collapsible pitch windows and keep next steps outside; this preserves keyboard access, consistent motion and unduplicated offers.
+- Use shared Accordion primitives for independently collapsible pitch windows, including next steps and the closing highlight; this preserves keyboard access, consistent motion and unduplicated offers.
