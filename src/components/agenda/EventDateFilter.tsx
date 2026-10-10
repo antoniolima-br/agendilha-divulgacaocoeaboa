@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { usePublicEvents } from "@/data/usePublicEvents";
+import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { availableEventDays } from "@/lib/eventCalendar";
 
 interface EventDateFilterProps {
   value: string;
@@ -14,6 +17,11 @@ interface EventDateFilterProps {
 
 export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
   const [open, setOpen] = useState(false);
+  const { data: events = [] } = usePublicEvents();
+  const { filters } = useGlobalEventFilters();
+  const availableDays = useMemo(() => availableEventDays(events, filters), [events, filters]);
+  const hasEvent = (day: Date) => availableDays.has(format(day, "yyyy-MM-dd"));
+  const firstAvailable = [...availableDays].sort()[0];
   const parsed = value ? parseISO(value) : undefined;
   const selected = parsed && isValid(parsed) ? parsed : undefined;
 
@@ -34,8 +42,12 @@ export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
           mode="single"
           locale={ptBR}
           selected={selected}
-          defaultMonth={selected}
+           defaultMonth={selected ?? (firstAvailable ? parseISO(firstAvailable) : undefined)}
+           disabled={(day) => !hasEvent(day)}
+           modifiers={{ event: hasEvent }}
+           modifiersClassNames={{ event: "relative font-semibold after:absolute after:bottom-1 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-primary aria-selected:after:bg-primary-foreground" }}
           onSelect={(day) => {
+             if (day && !hasEvent(day)) return;
             onChange(day ? format(day, "yyyy-MM-dd") : "");
             setOpen(false);
           }}
