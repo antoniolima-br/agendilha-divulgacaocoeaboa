@@ -40,6 +40,7 @@ export function useAutocompleteSearch<T>({
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const cache = useRef(new Map<string, AutocompletePage<T>>());
   const abortRef = useRef<AbortController | null>(null);
@@ -63,34 +64,45 @@ export function useAutocompleteSearch<T>({
   useEffect(() => {
     if (!enabled) return;
 
+    // Incrementamos a sequência sempre para invalidar qualquer busca anterior
+    // (inclusive se vamos servir do cache agora).
+    const seq = ++seqRef.current;
+
     const cached = cache.current.get(effectiveTerm);
     if (cached) {
       setItems(cached.rows);
       setHasMore(cached.hasMore);
       pageRef.current = Math.max(0, Math.ceil(cached.rows.length / pageSize) - 1);
       setLoading(false);
+      setError(null);
       return;
     }
 
     const delay = normalized.length ? debounceMs : 0;
-    const seq = ++seqRef.current;
     setLoading(true);
+    setError(null);
 
     const timer = window.setTimeout(async () => {
-      abortRef.current?.abort();
+      // Abortamos apenas quando o timer dispara para evitar abortar
+      // requisições que ainda estão sendo debounced se possível, 
+      // mas na prática o cleanup do useEffect já faz isso.
       const controller = new AbortController();
       abortRef.current = controller;
+      
       try {
         const rows = await fetchRef.current(effectiveTerm, 0, pageSize, controller.signal);
         if (seq !== seqRef.current) return; // resposta obsoleta
+        
         const more = rows.length > pageSize;
         const page = { rows: more ? rows.slice(0, pageSize) : rows, hasMore: more };
         cache.current.set(effectiveTerm, page);
         pageRef.current = 0;
         setItems(page.rows);
         setHasMore(page.hasMore);
-      } catch {
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
         if (seq === seqRef.current) {
+          setError(err);
           setItems([]);
           setHasMore(false);
         }
@@ -99,16 +111,23 @@ export function useAutocompleteSearch<T>({
       }
     }, delay);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      abortRef.current?.abort();
+    };
   }, [effectiveTerm, normalized, enabled, pageSize, debounceMs, refreshKey]);
 
   const loadMore = useCallback(async () => {
     if (!hasMore || loadingMore) return;
     setLoadingMore(true);
+    setError(null);
     const seq = seqRef.current;
     const nextPage = pageRef.current + 1;
+    
     try {
       const controller = new AbortController();
+      // Em loadMore não cancelamos requisições anteriores globalmente 
+      // para não quebrar a busca principal, mas checamos a sequência.
       const rows = await fetchRef.current(
         effectiveTerm,
         nextPage * pageSize,
@@ -122,12 +141,13 @@ export function useAutocompleteSearch<T>({
       cache.current.set(effectiveTerm, { rows: merged, hasMore: more });
       setItems(merged);
       setHasMore(more);
-    } catch {
-      /* mantém o que já está na tela */
+    } catch (err: any) {
+      if (err.name === 'AbortError') return;
+      setError(err);
     } finally {
       setLoadingMore(false);
     }
   }, [effectiveTerm, hasMore, items, loadingMore, pageSize]);
 
-  return { items, loading, loadingMore, hasMore, loadMore };
+  return { items, loading, loadingMore, hasMore, loadMore, error };
 }
