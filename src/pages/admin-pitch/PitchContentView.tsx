@@ -1,5 +1,5 @@
-import { BellRing, Crown, MapPin, Megaphone, Target, TrendingUp, Workflow } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, Target, TrendingUp, Users, Workflow } from "lucide-react";
+
 import type { PitchContent } from "./types";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -17,11 +17,15 @@ const rows: { label: string; value: (s: Scenario) => string | number; emphasis?:
   { label: "Receita após marketing*", value: (s) => money(s.afterMarketing) },
 ];
 export function PitchContentView({ content }: { content: PitchContent }) {
-  return <div className="space-y-10">
+  return <div className="space-y-6">
+    <article className="pitch-window" aria-labelledby="pitch-product-title">
+      <header className="pitch-window-header"><span className="text-sm font-semibold text-primary">01</span><div className="min-w-0"><p className="text-xs font-medium uppercase text-muted-foreground">Produto & receita</p><h2 id="pitch-product-title" className="text-xl font-semibold sm:text-2xl">O Produto, Formatos e Projeção Financeira</h2></div><BriefcaseBusiness className="ml-auto h-5 w-5 shrink-0 text-primary" /></header>
+      <div className="pitch-window-body">
     <section className="space-y-4 border-b border-border pb-8">
       <h2 className="text-2xl font-semibold">Coé a Boa?</h2>
       <p className="max-w-3xl text-lg leading-relaxed">{content.brandPositioning}</p>
     </section>
+    {content.technology && <section className="space-y-3 border-b border-border pb-8"><h3 className="text-lg font-semibold">{content.technology.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.technology.description}</p></section>}
     {content.inventoryImage && <section className="space-y-4 border-b border-border pb-8" aria-labelledby="inventory-map-title">
       <h2 id="inventory-map-title" className="flex items-start gap-2 text-xl font-semibold"><Megaphone className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> Mapa de Inventário Publicitário</h2>
       <figure className="space-y-4">
@@ -44,10 +48,10 @@ export function PitchContentView({ content }: { content: PitchContent }) {
     <section className="space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><Megaphone className="h-5 w-5 shrink-0 text-primary" /> Formatos e valores sugeridos</h2>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.monetization}</p>
-      <div className="grid gap-4 md:grid-cols-2">{content.formats.map((format) => <Card key={format.title} className="rounded-lg shadow-none">
-        <CardHeader><p className="text-sm text-muted-foreground">{format.cycle}</p><CardTitle className="text-lg leading-snug">{format.title}</CardTitle></CardHeader>
-        <CardContent className="space-y-3"><p className="text-2xl font-semibold text-primary">{money(format.min)}{format.min !== format.max && <> <span className="text-base font-normal text-muted-foreground">a</span> {money(format.max)}</>}{format.priceSuffix && <span className="text-sm font-normal text-muted-foreground"> {format.priceSuffix}</span>}</p><p className="text-sm leading-relaxed text-muted-foreground">{format.description}</p></CardContent>
-      </Card>)}</div>
+      <div className="grid gap-4 md:grid-cols-2">{content.formats.map((format) => <div key={format.title} className="space-y-3 border-t border-border pt-4">
+        <div><p className="text-sm text-muted-foreground">{format.cycle}</p><h3 className="text-lg font-semibold leading-snug">{format.title}</h3></div>
+        <div className="space-y-3"><p className="text-2xl font-semibold text-primary">{money(format.min)}{format.min !== format.max && <> <span className="text-base font-normal text-muted-foreground">a</span> {money(format.max)}</>}{format.priceSuffix && <span className="text-sm font-normal text-muted-foreground"> {format.priceSuffix}</span>}</p><p className="text-sm leading-relaxed text-muted-foreground">{format.description}</p></div>
+      </div>)}</div>
       <p className="border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.capacity}</p>
     </section>
     <section className="space-y-4 border-t border-border pt-8">
@@ -70,14 +74,6 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <div className="grid gap-x-8 gap-y-5 md:grid-cols-3">{content.anchor.phases.map((phase, i) => <div key={phase.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{phase.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{phase.description}</p></div>)}</div>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.anchor.disclaimer}</p>
     </section>
-    {content.selfService && <section className="space-y-5 border-t border-border pt-8" aria-labelledby="self-service-title">
-      <h2 id="self-service-title" className="flex items-start gap-2 text-xl font-semibold"><Workflow className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.selfService.title}</h2>
-      <p className="text-xs font-medium uppercase text-muted-foreground">Próximo passo · Escala com controle</p>
-      <p className="max-w-3xl text-lg leading-relaxed">{content.selfService.description}</p>
-      <ol className="grid gap-x-8 gap-y-5 md:grid-cols-2">{content.selfService.steps.map((step, i) => <li key={step.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{step.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol>
-      <p className="max-w-3xl border-l-2 border-primary pl-4 text-base leading-relaxed">{content.selfService.strategy}</p>
-      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p>
-    </section>}
     <section className="min-w-0 space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><TrendingUp className="h-5 w-5 shrink-0 text-primary" /> Projeção de receita mensal</h2>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.projectionBasis}</p>
@@ -98,10 +94,32 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <ul className="max-w-3xl space-y-4">{content.advertisingExclusivity.items.map((item) => <li key={item.title} className="text-sm leading-relaxed text-muted-foreground"><strong className="font-medium text-foreground">{item.title}:</strong> {item.description}</li>)}</ul>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.advertisingExclusivity.disclaimer}</p>
     </section>}
+      </div>
+    </article>
+    <article className="pitch-window" aria-labelledby="pitch-b2c-title">
+      <header className="pitch-window-header"><span className="text-sm font-semibold text-success">02</span><div className="min-w-0"><p className="text-xs font-medium uppercase text-muted-foreground">B2C · Público</p><h2 id="pitch-b2c-title" className="text-xl font-semibold sm:text-2xl">{content.b2c?.title ?? "Plano de Marketing — Atração e Engajamento de Usuários"}</h2></div><Users className="ml-auto h-5 w-5 shrink-0 text-success" /></header>
+      <div className="pitch-window-body">
+        {content.b2c && <div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy) => <section key={strategy.title} className="space-y-5"><h3 className="text-lg font-semibold">{strategy.title}</h3><ul className="space-y-5">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul></section>)}</div>}
     <section className="space-y-5 border-t border-border pt-8">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><Target className="h-5 w-5 shrink-0 text-primary" /> Aquisição: tráfego pago hiperlocal</h2>
       <p className="text-lg font-medium">Orçamento inicial: <span className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</span></p>
       <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">{content.acquisition.map((item, i) => <div key={item.title} className="space-y-2"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{item.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></div>)}</div>
     </section>
+      </div>
+    </article>
+    <article className="pitch-window" aria-labelledby="pitch-b2b-title">
+      <header className="pitch-window-header"><span className="text-sm font-semibold text-primary">03</span><div className="min-w-0"><p className="text-xs font-medium uppercase text-muted-foreground">B2B · Anunciantes</p><h2 id="pitch-b2b-title" className="text-xl font-semibold sm:text-2xl">{content.b2b?.title ?? "Plano Comercial & Marketing de Vendas"}</h2></div><BriefcaseBusiness className="ml-auto h-5 w-5 shrink-0 text-primary" /></header>
+      <div className="pitch-window-body">
+        {content.b2b && <><section className="space-y-3"><h3 className="text-lg font-semibold">{content.b2b.exclusivity.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.exclusivity.description}</p></section><section className="space-y-5 border-t border-border pt-8"><h3 className="text-lg font-semibold">{content.b2b.anchors.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.anchors.description}</p><ol className="grid gap-6 md:grid-cols-3">{content.b2b.anchors.steps.map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol></section></>}
+    {content.selfService && <section className="space-y-5 border-t border-border pt-8" aria-labelledby="self-service-title">
+      <h2 id="self-service-title" className="flex items-start gap-2 text-xl font-semibold"><Workflow className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.selfService.title}</h2>
+      <p className="text-xs font-medium uppercase text-muted-foreground">Próximo passo · Escala com controle</p>
+      <p className="max-w-3xl text-lg leading-relaxed">{content.selfService.description}</p>
+      <ol className="grid gap-x-8 gap-y-5 md:grid-cols-2">{content.selfService.steps.map((step, i) => <li key={step.title} className="space-y-2 border-t border-border pt-4"><h3 className="font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{step.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-base leading-relaxed">{content.selfService.strategy}</p>
+      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p>
+    </section>}
+      </div>
+    </article>
   </div>;
 }
