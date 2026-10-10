@@ -1,1 +1,1 @@
-- Group the protected pitch payload into three windows using the app's shared semantic theme so presentation colors cannot drift from public pages.
+- Group the protected payload into three shared-theme windows; show each offer once and collapse supplemental details to prevent duplicated pricing and visual drift.
