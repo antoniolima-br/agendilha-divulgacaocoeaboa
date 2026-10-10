@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
-import { cn } from "@/lib/utils";
 
 const AUTOPLAY_MS = 5_000;
 
@@ -75,11 +74,11 @@ export function HomeMixedHeroCarousel({
 
   useEffect(() => {
     if (!carousel || hovered || focused || dragging || selectedEvent || reduceMotion || total < 2) return;
-    const timer = window.setTimeout(() => {
+    const timer = window.setInterval(() => {
       if (document.hidden) return;
-      goTo(index + 1);
+      goTo(carousel.selectedScrollSnap() + 1);
     }, AUTOPLAY_MS);
-    return () => window.clearTimeout(timer);
+    return () => window.clearInterval(timer);
   }, [carousel, hovered, focused, dragging, selectedEvent, reduceMotion, total, index, goTo]);
 
   if (total === 0) return null;
@@ -91,9 +90,12 @@ export function HomeMixedHeroCarousel({
       className="mb-2 min-w-0 w-full max-w-full"
       aria-label="Eventos em destaque"
       aria-roledescription="carrossel"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocused(true)}
+      onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={(event) => { if (event.pointerType === "mouse") setHovered(false); }}
+      onTouchStart={() => { setDragging(true); setFocused(false); }}
+      onTouchEnd={() => setDragging(false)}
+      onTouchCancel={() => setDragging(false)}
+      onFocusCapture={(event) => setFocused(event.target.matches(":focus-visible"))}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
       }}
@@ -123,7 +125,11 @@ export function HomeMixedHeroCarousel({
               aria-label={`Abrir evento ${slideTitle}`}
               className="block h-auto min-w-0 flex-[0_0_100%] select-none whitespace-normal rounded-none p-0 text-left hover:bg-background md:h-auto"
             >
-              <div className="h-[min(60vh,42rem)] w-full overflow-hidden"><img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="h-full w-full object-contain" /></div>
+              <div className="relative h-[min(60vh,42rem)] w-full overflow-hidden bg-muted">
+                <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />
+                <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
+                <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />
+              </div>
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl break-words font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-foreground/85">
@@ -149,13 +155,6 @@ export function HomeMixedHeroCarousel({
             <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <div className="flex max-w-full items-center gap-1 overflow-x-auto px-3 py-1" aria-label="Escolher destaque">
-              {items.map((entry, dotIndex) => (
-                <Button key={entry.id} type="button" variant="ghost" size="icon" className={cn("h-11 w-11 shrink-0 p-0", dotIndex === 0 && "ml-auto", dotIndex === total - 1 && "mr-auto")} onClick={() => goTo(dotIndex)} aria-label={`Ver destaque ${dotIndex + 1}`} aria-current={dotIndex === index ? "true" : undefined}>
-                  <span className={cn("h-1.5 rounded-full bg-muted-foreground/50 transition-all motion-reduce:transition-none", dotIndex === index ? "w-5 bg-primary" : "w-1.5")} />
-                </Button>
-              ))}
-            </div>
           </>
         )}
       </div>
