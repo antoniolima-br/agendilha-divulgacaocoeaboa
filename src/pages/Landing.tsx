@@ -5,7 +5,6 @@ import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
-import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -33,7 +32,6 @@ import {
 import { format, addDays, eachDayOfInterval, subWeeks } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
-import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
  import { handleError } from "@/lib/error-handler";
  import { toast } from "sonner";
@@ -114,7 +112,6 @@ export default function Landing() {
   const { user } = useAuth();
   const { profile, loaded: profileLoaded } = useProfile();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const todayRowRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -127,7 +124,10 @@ export default function Landing() {
   }, []);
   const { data: eventsData } = usePublicEvents();
   const { filters: globalFilters, setFilters: setGlobalFilters } = useGlobalEventFilters();
-  const allEvents = useMemo(() => (eventsData ?? []).filter((event) => matchesPublicEventFilters(event, globalFilters)), [eventsData, globalFilters]);
+   const allEvents = useMemo(() => {
+     const today = saoPauloTodayISO();
+     return (eventsData ?? []).filter((event) => matchesPublicEventFilters(event, globalFilters, "", today));
+   }, [eventsData, globalFilters]);
     const { visual: visualEvents, textOnly: freeEvents } = useMemo(
       () => splitHomeEventPresentation(allEvents), [allEvents],
     );
@@ -204,26 +204,6 @@ export default function Landing() {
          return limitHomeCarouselEvents(ordered, today);
     }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
-     useEffect(() => {
-       let channel: ReturnType<typeof supabase.channel> | undefined;
-       const subscribe = () => {
-         channel = supabase
-           .channel("home-highlight-updates")
-           .on(
-             "postgres_changes",
-             { event: "UPDATE", schema: "public", table: "submissions" },
-             () => { void queryClient.invalidateQueries({ queryKey: qk.agenda.events() }); void queryClient.invalidateQueries({ queryKey: qk.home.events() }); },
-           )
-           .subscribe();
-       };
-       const idleId = window.requestIdleCallback?.(subscribe, { timeout: 2000 });
-       const timerId = idleId === undefined ? window.setTimeout(subscribe, 1200) : undefined;
-       return () => {
-         if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
-         if (timerId !== undefined) window.clearTimeout(timerId);
-         if (channel) void supabase.removeChannel(channel);
-       };
-    }, [queryClient]);
     const todayStart = useMemo(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); }, []);
     const [weekStart, setWeekStart] = useState(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); });
     const [customDate, setCustomDate] = useState<Date | undefined>(new Date());

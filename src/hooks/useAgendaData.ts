@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { qk } from "@/data/queryKeys";
 import { useEvents } from "@/data/events";
 import { useCallback } from "react";
 

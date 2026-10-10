@@ -1,2 +1,4 @@
 - Keep autocomplete RPC adapters in autocomplete.ts; components render results without duplicating transport logic, preserving abort signals and server errors.
 - Use fetchAllPages with fresh per-page queries for full-list reads; retain caller filters, ordering, page size and visibility boundaries to prevent pagination drift.
+- Profile-record and administrative user-detail keys stay distinct because their response shapes differ; callers opt out of ratings when not displayed.
+- Public-event consumers share one reference-counted, debounced subscription per QueryClient, preventing duplicate channels and lost invalidations.

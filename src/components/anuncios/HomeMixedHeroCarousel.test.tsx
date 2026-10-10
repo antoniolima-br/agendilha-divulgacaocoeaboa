@@ -78,4 +78,14 @@ describe("Home event carousel interactions", () => {
     fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 1" }), suppressedClick);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+  it("keeps slide bounds but mounts images only for active and neighboring flyers", () => {
+    const { container } = render(<HomeMixedHeroCarousel events={[1, 2, 3, 4, 5, 6].map((id) => ({ ...event(String(id)), image_url: `/flyer-${id}.webp` }))} onOpenEvent={vi.fn()} />);
+    expect(container.querySelectorAll('button[aria-label^="Abrir evento"]')).toHaveLength(6);
+    expect(container.querySelectorAll("img")).toHaveLength(6);
+    expect(container.querySelectorAll('img[fetchpriority="high"]')).toHaveLength(1);
+    expect(container.querySelector('img[src="/flyer-3.webp"]')).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Próximo destaque" }));
+    expect(container.querySelector('img[src="/flyer-3.webp"]')).toBeInTheDocument();
+    expect(container.querySelector('img[src="/flyer-6.webp"]')).toBeNull();
+  });
 });
