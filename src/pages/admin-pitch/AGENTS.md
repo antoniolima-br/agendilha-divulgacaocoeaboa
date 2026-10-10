@@ -1,0 +1,1 @@
+- Group the protected pitch payload into three windows under a scoped semantic theme so executive styling never changes public pages.
