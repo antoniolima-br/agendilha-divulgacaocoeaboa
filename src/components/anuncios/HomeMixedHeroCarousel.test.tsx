@@ -53,7 +53,9 @@ describe("Home event carousel interactions", () => {
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
     act(() => vi.advanceTimersByTime(1));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
-    fireEvent.pointerEnter(screen.getByRole("region"), { pointerType: "mouse" });
+    const hover = new Event("pointerover", { bubbles: true });
+    Object.defineProperty(hover, "pointerType", { value: "mouse" });
+    fireEvent(screen.getByRole("region"), hover);
     engine.api.scrollTo.mockClear();
     act(() => vi.advanceTimersByTime(10000));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
