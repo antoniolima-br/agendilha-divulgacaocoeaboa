@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { AlertCircle, Clock3 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { AlertCircle, Clock3, CalendarDays, CheckCircle, XCircle } from "lucide-react";
+import { StatCard } from "@/components/ui/StatCard";
 import type { AdminEventsKpiData } from "./adminEventsHelpers";
 
 interface AdminEventsKpisProps {
@@ -16,67 +15,55 @@ export function AdminEventsKpis({ kpis, activeStatus, onSelectStatus }: AdminEve
       status: "pendente",
       label: "Pendentes",
       value: kpis.pending,
-      valueClass: "text-primary",
-      labelClass: "text-primary",
+      tone: "text-primary",
       activeClass: "border-amber-400 ring-2 ring-amber-200",
-      icon: kpis.pending > 0 ? <AlertCircle className="h-3.5 w-3.5" /> : null,
-      detail: kpis.pending > 0 ? "Aguardando curadoria" : null,
+      icon: AlertCircle,
+      description: kpis.pending > 0 ? "Aguardando curadoria" : undefined,
+      iconRight: <Clock3 className="mt-1 h-5 w-5 text-amber-500" />
     },
     {
       status: "aprovado",
       label: "Aprovados",
       value: kpis.approved,
-      valueClass: "text-emerald-600",
-      labelClass: "text-muted-foreground",
+      tone: "text-emerald-600",
       activeClass: "border-emerald-400 ring-2 ring-emerald-200",
+      icon: CheckCircle,
     },
     {
       status: "rejeitado",
       label: "Rejeitados",
       value: kpis.rejected,
-      valueClass: "text-rose-600",
-      labelClass: "text-muted-foreground",
+      tone: "text-rose-600",
       activeClass: "border-rose-400 ring-2 ring-rose-200",
+      icon: XCircle,
     },
     {
       status: "all",
       label: "Total",
       value: kpis.total,
-      valueClass: "text-foreground",
-      labelClass: "text-muted-foreground",
+      tone: "text-foreground",
       activeClass: "border-primary ring-2 ring-primary/20",
+      icon: CalendarDays,
     },
   ];
 
   return (
     <div className="mb-3 grid grid-cols-2 gap-2 md:grid-cols-4" aria-label="Filtrar eventos por status">
-      {metrics.map((metric) => {
-        const selected = activeStatus === metric.status;
-        return (
-          <Button
-            key={metric.status}
-            type="button"
-            variant="outline"
-            aria-pressed={selected}
-            onClick={() => onSelectStatus(metric.status)}
-            className={cn(
-              "h-auto min-h-20 justify-start border-2 bg-card p-3 text-left shadow-sm transition-all hover:bg-card hover:shadow-md",
-              selected ? metric.activeClass : "border-transparent",
-            )}
-          >
-            <div className="flex w-full items-start justify-between gap-2">
-              <div>
-                <p className={cn("flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider", metric.labelClass)}>
-                  {metric.icon}{metric.label}
-                </p>
-                 <p className={cn("mt-0.5 text-2xl font-black", metric.valueClass)}>{metric.value}</p>
-                 {metric.detail && <p className="mt-0.5 hidden text-[10px] font-bold text-primary sm:block">{metric.detail}</p>}
-              </div>
-              {metric.status === "pendente" && <Clock3 className="mt-1 h-5 w-5 text-amber-500" />}
-            </div>
-          </Button>
-        );
-      })}
+      {metrics.map((metric) => (
+        <StatCard
+          key={metric.status}
+          variant="selectable"
+          label={metric.label}
+          value={metric.value}
+          icon={metric.icon}
+          tone={metric.tone}
+          selected={activeStatus === metric.status}
+          selectedClassName={metric.activeClass}
+          description={metric.description}
+          iconRight={metric.iconRight}
+          onClick={() => onSelectStatus(metric.status)}
+        />
+      ))}
     </div>
   );
 }

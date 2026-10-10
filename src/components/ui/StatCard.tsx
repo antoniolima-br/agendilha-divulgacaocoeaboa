@@ -12,7 +12,10 @@ interface StatCardProps {
   description?: string;
   onClick?: () => void;
   className?: string;
-  variant?: "default" | "compact" | "minimal";
+  variant?: "default" | "compact" | "minimal" | "selectable";
+  selected?: boolean;
+  selectedClassName?: string;
+  iconRight?: React.ReactNode;
 }
 
 export function StatCard({
@@ -24,7 +27,10 @@ export function StatCard({
   description,
   onClick,
   className,
-  variant = "default"
+  variant = "default",
+  selected,
+  selectedClassName,
+  iconRight
 }: StatCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -62,6 +68,33 @@ export function StatCard({
           {description && <div className="text-[10px] text-muted-foreground mt-0.5">{description}</div>}
         </div>
       </div>
+    );
+  }
+
+  if (variant === "selectable") {
+    return (
+      <Card 
+        role="button"
+        aria-pressed={selected}
+        className={cn(
+          "h-auto min-h-[5rem] cursor-pointer border-2 bg-card p-3 shadow-sm transition-all hover:shadow-md",
+          selected ? selectedClassName : "border-transparent",
+          className
+        )}
+        onClick={handleInteraction}
+      >
+        <div className="flex w-full items-start justify-between gap-2">
+          <div>
+            <p className={cn("flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider", tone)}>
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </p>
+            <p className={cn("mt-0.5 text-2xl font-black", tone)}>{value}</p>
+            {description && <p className="mt-0.5 hidden text-[10px] font-bold text-primary sm:block">{description}</p>}
+          </div>
+          {iconRight}
+        </div>
+      </Card>
     );
   }
 
