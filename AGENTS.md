@@ -32,5 +32,5 @@
 - Home/Agenda share EventDateFilter and public events; availability ignores selected dates to prevent calendar lock-in.
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
-- Both attraction autocomplete RPCs enforce approved/owner/authorized-editor visibility before search, preventing private-row leaks.
+- Attraction/venue RPCs enforce approved/owner/editor visibility before search; autocomplete cancels obsolete requests and exposes failures, preventing leaks and stale selections.
 - Sidebar active state uses a centralized segment-aware helper and exact sibling links, avoiding unrelated active indicators.

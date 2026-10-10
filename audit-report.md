@@ -29,11 +29,11 @@ Não é uma certificação de ausência de todos os bugs nem uma garantia de pro
 
 ## Segurança e verificações
 
-- Todas as 52 tabelas públicas consultadas têm RLS ativo. Duas tabelas legadas sem política permanecem bloqueadas, não foram abertas.
+- Todas as tabelas públicas consultadas têm RLS ativo. Duas tabelas legadas sem política permanecem bloqueadas, não foram abertas.
 - Os 51 alertas do verificador foram classificados, não tratados como 51 vulnerabilidades: views públicas de campos permitidos e RPCs privilegiados exigem inspeção de sua proteção interna. Não foram removidas permissões necessárias à operação.
 - Permissões administrativas vêm de `user_roles`; colaboradores usam suas permissões protegidas. Consultas pessoais continuam restritas ao usuário autenticado.
 - Home/Agenda e redirecionamentos de Radar, Meus eventos e Administração foram exercitados sem sessão; calendário abre com dias disponíveis. Esses testes não validam operações autenticadas.
-- Primeira suíte: 60 arquivos e 330 testes aprovados. Novos testes cobrem os problemas confirmados; resultado final registrado após a nova varredura.
+- Primeira suíte: 60 arquivos e 330 testes aprovados. Novos testes cobrem os problemas confirmados; nova suíte completa: 66 arquivos, 349 testes aprovados (19 novos), sem falhas.
 
 ## Pendências de verificação, não garantias
 
@@ -41,3 +41,10 @@ Não é uma certificação de ausência de todos os bugs nem uma garantia de pro
 - Abertura do pitch exige confirmação com a senha privada escolhida; ela não está disponível ao agente.
 - Compartilhamento pessoal completo depende de um evento próprio publicado ativo; nenhum evento foi criado para suprir isso.
 - Fluxos de produção, falhas de provedores externos, concorrência em carga e auditoria de penetração não estão certificados por esta revisão.
+## Nova varredura final
+
+- 349 testes aprovados; compilação automática do projeto confirmada sem erros após correções.
+- 15 verificações reais de Home, Agenda, autenticação, escolha de perfil e cadastro público em larguras 390, 1280 e 1920 px: páginas visíveis e sem transbordamento horizontal. Calendário abriu nos três tamanhos; a seleção de uma data não foi afirmada por esta rodada.
+- Releitura no banco confirmou os três RPCs com filtro por proprietário e sem permissão de execução anônima.
+- Permanecem avisos de teste existentes (act/avisos de futura versão do roteador em harnesses), não ocultados nem tomados como falhas de produção.
+- Os fluxos autenticados e os itens antigos bloqueados do roadmap continuam explicitamente pendentes; nenhuma operação sensível foi declarada verificada sem sessão.
