@@ -8,26 +8,7 @@ import {
   Zap,
   MousePointer2
 } from "lucide-react";
-
-interface MetricProps {
-  label: string;
-  value: string | number;
-  icon: any;
-  description: string;
-}
-
-const Metric = ({ label, value, icon: Icon, description }: MetricProps) => (
-  <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-4">
-    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-background text-primary shadow-sm">
-      <Icon className="h-5 w-5" />
-    </div>
-    <div>
-      <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className="text-xl font-black text-foreground">{value}</div>
-      <div className="text-[10px] text-muted-foreground mt-0.5">{description}</div>
-    </div>
-  </div>
-);
+import { StatCard } from "@/components/ui/StatCard";
 
 interface OperationalMetricsProps {
   metrics: {
@@ -52,41 +33,47 @@ export function OperationalMetrics({ metrics }: OperationalMetricsProps) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          <Metric 
+          <StatCard 
             label="Taxa de Aprovação" 
             value={`${metrics.approvalRate}%`} 
             icon={CheckCircle} 
             description="Eventos aprovados vs total"
+            variant="compact"
           />
-          <Metric 
+          <StatCard 
             label="Taxa de Rejeição" 
             value={`${metrics.rejectionRate}%`} 
             icon={XCircle} 
             description="Eventos rejeitados vs total"
+            variant="compact"
           />
-          <Metric 
+          <StatCard 
             label="Tempo de Moderação" 
             value={metrics.avgModerationTime} 
             icon={Clock} 
             description="Média entre cadastro e status"
+            variant="compact"
           />
-          <Metric 
+          <StatCard 
             label="Aguardando Análise" 
             value={metrics.awaitingAnalysis} 
             icon={Search} 
             description="Status pending/analysis"
+            variant="compact"
           />
-          <Metric 
+          <StatCard 
             label="Sem Engajamento" 
             value={metrics.eventsWithZeroFavs} 
             icon={AlertCircle} 
             description="Eventos com 0 favoritos"
+            variant="compact"
           />
-          <Metric 
+          <StatCard 
             label="Novos Usuários" 
             value={metrics.newUsersInPeriod} 
             icon={MousePointer2} 
             description="Cadastrados no período"
+            variant="compact"
           />
         </div>
       </CardContent>
