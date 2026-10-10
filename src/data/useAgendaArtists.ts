@@ -8,9 +8,10 @@ import type {
 } from "@/components/agenda/AgendaArtistsTab";
 
 /** Artistas aprovados (view pública) + vídeos curtos embaralhados para descoberta. */
-export function useAgendaArtists() {
+export function useAgendaArtists(enabled = true) {
   const { data, isLoading } = useQuery({
     queryKey: ["artists-approved"],
+    enabled,
     staleTime: 60_000,
     queryFn: async (): Promise<AgendaArtist[]> => {
       const { data, error } = await supabase

@@ -15,7 +15,7 @@ const STYLES = ["Samba", "Pagode", "Rock", "MPB", "Funk", "Jazz", "Pop", "Sertan
 const CATEGORIES = ["Música", "Gastronomia", "Cultura", "Esporte", "Promoções"];
 export default function SeuRadar() {
   const { profile, loaded, saveProfile } = useProfile();
-  const { events, isLoading, isError, refetch } = useEvents();
+  const { events, isLoading, isError, refetch } = useEvents({ includeRatings: false });
   const [categories, setCategories] = useState<string[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);

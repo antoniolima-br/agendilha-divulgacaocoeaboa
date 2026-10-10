@@ -42,4 +42,19 @@ describe("flow-performance", () => {
     expect(timer.finish()).not.toBeNull();
     expect(timer.finish()).toBeNull();
   });
+  it("releases completed marks while retaining concurrent starts and bounding measures", () => {
+    const pending = startFlowMeasure("memory-test", "pending");
+    const mark = vi.spyOn(performance, "mark");
+    const clear = vi.spyOn(performance, "clearMarks");
+    const measures = vi.spyOn(performance, "clearMeasures");
+    const measure = vi.spyOn(performance, "measure");
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    for (let i = 0; i < 125; i++) startFlowMeasure("memory-test", `operation-${i}`).finish();
+    expect(clear).toHaveBeenCalledTimes(250);
+    expect(measures).toHaveBeenCalled();
+    expect(clear.mock.calls.some(([name]) => String(name).includes("pending"))).toBe(false);
+    expect(pending.finish()).not.toBeNull();
+    expect(measure).toHaveBeenLastCalledWith("agendilha-flow:memory-test:pending", expect.stringContaining(":start"), expect.stringContaining(":end"));
+    expect(mark).toHaveBeenCalled();
+  });
 });

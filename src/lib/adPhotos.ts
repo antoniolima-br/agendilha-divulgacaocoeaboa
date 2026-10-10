@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { prepareUploadImage } from "./uploadImage";
 
 export const AD_PHOTOS_BUCKET = "ad-photos";
 export const AD_PHOTOS_MAX = 5;
@@ -16,12 +17,13 @@ export async function uploadAdPhoto(file: File, userId: string): Promise<string>
     throw new Error("A imagem passou de 10 MB. Manda uma versão mais leve.");
   }
 
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const optimized = await prepareUploadImage(file);
+  const ext = (optimized.name.split(".").pop() || "jpg").toLowerCase();
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage
     .from(AD_PHOTOS_BUCKET)
-    .upload(path, file, { cacheControl: "3600", upsert: false });
+    .upload(path, optimized, { cacheControl: "3600", upsert: false, contentType: optimized.type });
   if (error) throw error;
 
   return path;

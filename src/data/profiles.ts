@@ -16,7 +16,7 @@ export interface UserProfile {
  */
 export function useProfileById(id: string | null | undefined, options: { enabled?: boolean } = {}) {
   return useQuery({
-    queryKey: id ? qk.userDetails.byId(id) : ["profiles", "byId", "none"],
+    queryKey: qk.profileRecord.byId(id),
     enabled: (options.enabled ?? true) && !!id,
     queryFn: async (): Promise<UserProfile | null> => {
       const { data, error } = await supabase

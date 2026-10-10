@@ -1,4 +1,9 @@
 const SAO_PAULO_TIME_ZONE = "America/Sao_Paulo";
+const dayFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: SAO_PAULO_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit",
+});
+const weekdayFormatter = new Intl.DateTimeFormat("pt-BR", { weekday: "short", timeZone: "UTC" });
+const monthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" });
 
 export const PUBLIC_EVENT_STATUSES = ["aprovado", "publicado", "divulgado"] as const;
 
@@ -10,12 +15,7 @@ function isCalendarDate(year: number, month: number, day: number): boolean {
 }
 
 export function saoPauloTodayISO(now = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: SAO_PAULO_TIME_ZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(now);
+  return dayFormatter.format(now);
 }
 
 export function eventDateISO(value?: string | null): string {
@@ -67,8 +67,8 @@ export function formatEventDateTimeBR(date?: string | null, time?: string | null
   const iso = eventDateISO(date);
   if (!iso) return "";
   const d = new Date(`${iso}T12:00:00Z`);
-  const wd = new Intl.DateTimeFormat("pt-BR", { weekday: "short", timeZone: "UTC" }).format(d).replace(".", "");
-  const mo = new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }).format(d).replace(".", "");
+  const wd = weekdayFormatter.format(d).replace(".", "");
+  const mo = monthFormatter.format(d).replace(".", "");
   const label = `${wd.charAt(0).toUpperCase()}${wd.slice(1)}., ${iso.slice(8, 10)} de ${mo.charAt(0).toUpperCase()}${mo.slice(1)}.`;
   const t = time?.match(/(\d{2}):(\d{2})/);
   return t ? `${label} às ${t[1]}:${t[2]}` : label;

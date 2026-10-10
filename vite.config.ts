@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => ({
         // Don't precache HTML — always fetch fresh navigations so mobile clients
         // see new builds immediately instead of being stuck on an old shell.
         globPatterns: ['**/*.{js,css,ico,svg}'],
-        globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js'],
+        globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js', '**/guide-*.js'],
         cleanupOutdatedCaches: true,
         // Prompt mode: don't auto-skip — wait for the user to click "Atualizar".
         clientsClaim: false,

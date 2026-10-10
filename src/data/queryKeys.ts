@@ -61,6 +61,9 @@ export const qk = {
     byUser: (userId: string | null | undefined) =>
       [...qk.profile.all, userId ?? "anon"] as const,
   },
+  profileRecord: {
+    byId: (id: string | null | undefined) => ["profiles", "byId", id ?? "none"] as const,
+  },
   ads: {
     all: ["ads"] as const,
     published: () => [...qk.ads.all, "publicados"] as const,

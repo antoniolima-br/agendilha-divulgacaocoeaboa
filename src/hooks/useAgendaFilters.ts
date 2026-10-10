@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { formatBrazilianDate } from "@/lib/date-utils";
 import { formatDayLabel, parseDateToObj } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
-import { eventDateISO, isCurrentOrFutureEventDate } from "@/lib/eventDate";
-import { REGIONS, normalizeGeography, matchesEventGeography, matchesEventSearch } from "@/lib/regions";
+import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
+import { REGIONS, normalizeGeography } from "@/lib/regions";
 import { isHighlightActive } from "@/lib/highlights";
 
 export interface AgendaProfileHints {
@@ -32,7 +32,7 @@ export function useAgendaFilters(params: {
   isFavorite: (id: string) => boolean;
   favorites: unknown;
 }) {
-  const { events, profile, isFavorite, favorites } = params;
+  const { events, profile, isFavorite } = params;
 
   const [search, setSearch] = useState("");
   const { filters: globalFilters, setFilters, clearFilters: clearGlobalFilters } = useGlobalEventFilters();
@@ -56,31 +56,33 @@ export function useAgendaFilters(params: {
     if (urlParams.get("view") === "favorites") setShowFavoritesOnly(true);
     const region = urlParams.get("region");
     const canonicalRegion = REGIONS.find((value) => normalizeGeography(value) === normalizeGeography(region ?? ""));
-    if (canonicalRegion) setRegionFilter(canonicalRegion);
+    if (canonicalRegion) setFilters({ region: canonicalRegion });
     const category = urlParams.get("category") || urlParams.get("categoria");
-    if (category) setCategoryFilter(category);
-  }, []);
+    if (category) setFilters({ category });
+  }, [setFilters]);
 
 
   const upcomingEvents = useMemo(() => {
-    return (Array.isArray(events) ? events : []).filter((event) => Boolean(event) && isCurrentOrFutureEventDate(event.date));
+    const today = saoPauloTodayISO();
+    return (Array.isArray(events) ? events : []).filter((event) => {
+      if (!event) return false;
+      const day = eventDateISO(event.date);
+      return day !== "" && day >= today;
+    });
   }, [events]);
 
   const filteredEvents = useMemo(() => {
+    const today = saoPauloTodayISO();
     return upcomingEvents.filter((ev) => {
-      const matchSearch = matchesEventSearch(ev, search);
-      const matchCat = matchesPublicEventFilters(ev, globalFilters, search);
+      const matchCat = matchesPublicEventFilters(ev, globalFilters, search, today);
       const matchFav = !showFavoritesOnly || isFavorite(ev.id);
-      return matchSearch && matchCat && matchFav && matchesEventGeography(ev, regionFilter);
+      return matchCat && matchFav;
     });
   }, [
     upcomingEvents,
     search,
-    categoryFilter,
-    regionFilter,
     globalFilters,
     showFavoritesOnly,
-    favorites,
     isFavorite,
   ]);
 
