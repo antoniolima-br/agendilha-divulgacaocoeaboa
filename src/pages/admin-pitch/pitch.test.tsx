@@ -47,6 +47,7 @@ describe("pitch comercial", () => {
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByText("Projeção de receita mensal");
+    fireEvent.click(screen.getByText("Inventário e condições dos formatos"));
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().monetization)).toBeInTheDocument();
@@ -54,8 +55,8 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("columnheader", { name: /Fase de Expansão/ })).toBeInTheDocument();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: buildPitchContent().anchor.title })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "1 Anunciante Master" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "2 Sub-Masters / Co-Patrocinadores" })).toBeInTheDocument();
+    expect(screen.getByText("1 Anunciante Master")).toBeInTheDocument();
+    expect(screen.getByText("2 Sub-Masters / Co-Patrocinadores")).toBeInTheDocument();
     expect(screen.getByText(buildPitchContent().anchor.billing)).toBeInTheDocument();
     expect(screen.queryByText(/Pacote trimestral/)).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Banner âncora prioritário na Home" })).toBeInTheDocument();
