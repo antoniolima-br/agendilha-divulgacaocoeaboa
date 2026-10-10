@@ -1,1 +1,1 @@
-- Group the protected payload into three shared-theme windows; show each offer once and collapse supplemental details to prevent duplicated pricing and visual drift.
+- Use shared Accordion primitives for three independently collapsible pitch windows and keep next steps outside; this preserves keyboard access, consistent motion and unduplicated offers.
