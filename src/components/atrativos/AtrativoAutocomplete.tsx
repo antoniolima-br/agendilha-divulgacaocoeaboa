@@ -56,7 +56,8 @@ export function AtrativoAutocomplete({
     async (q: string, from: number, to: number, signal: AbortSignal) => {
       // Todos os atrativos cadastrados (aprovados ou não) aparecem para quem
       // está logado, sem expor dados pessoais do responsável.
-      const { data } = await supabase
+      const { data, error } = await supabase
+      if (error) throw error;
         .rpc("search_atrativos_autocomplete_v2", {
           _q: q || null,
           _limit: to - from + 1,

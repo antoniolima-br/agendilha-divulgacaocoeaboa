@@ -51,7 +51,8 @@ export function EstabelecimentoAutocomplete({
       // Busca todos os locais cadastrados (aprovados ou não) para facilitar o
       // preenchimento. A função no backend exige login e não devolve dados
       // pessoais do responsável.
-      const { data } = await supabase
+      const { data, error } = await supabase
+      if (error) throw error;
         .rpc("search_estabelecimentos_autocomplete", {
           _q: q || null,
           _limit: to - from + 1,
