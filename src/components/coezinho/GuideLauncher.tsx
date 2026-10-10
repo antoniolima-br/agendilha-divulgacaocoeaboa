@@ -11,6 +11,7 @@ const Chat = lazy(() => import("./CoezinhoChat").then((module) => ({ default: mo
 export function GuideLauncher({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const [requested, setRequested] = useState(initiallyOpen);
   const { pathname } = useLocation();
+  useEffect(() => { if (initiallyOpen) setRequested(true); }, [initiallyOpen]);
   useEffect(() => {
     const open = () => setRequested(true);
     window.addEventListener(OPEN_KOE_EVENT, open);

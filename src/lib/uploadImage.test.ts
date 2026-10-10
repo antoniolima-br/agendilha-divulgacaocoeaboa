@@ -14,10 +14,11 @@ describe("upload compression adapter", () => {
     const file = new File(["large"], "photo.jpg", { type: "image/jpeg" });
     const small = new File(["x"], "photo.jpg", { type: "image/jpeg" });
     const revoke = vi.fn();
-    vi.stubGlobal("URL", Object.assign(URL, { revokeObjectURL: revoke }));
+    const originalRevoke = URL.revokeObjectURL;
+    URL.revokeObjectURL = revoke;
     vi.mocked(compressImage).mockResolvedValue({ file: small, preview: "blob:preview", originalSize: 5, finalSize: 1, compressed: true, type: "image" });
     expect(await prepareUploadImage(file)).toBe(small);
     expect(revoke).toHaveBeenCalledWith("blob:preview");
-    vi.unstubAllGlobals();
+    URL.revokeObjectURL = originalRevoke;
   });
 });

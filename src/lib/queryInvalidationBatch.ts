@@ -10,7 +10,7 @@ export function createQueryInvalidationBatch(invalidate: (key: readonly unknown[
         const affected = [...keys.values()];
         keys.clear();
         timer = undefined;
-        affected.forEach(invalidate);
+        affected.forEach((key) => invalidate(key));
       }, delay);
     },
     cancel() {
