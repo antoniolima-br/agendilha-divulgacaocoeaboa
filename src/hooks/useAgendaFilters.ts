@@ -32,7 +32,7 @@ export function useAgendaFilters(params: {
   isFavorite: (id: string) => boolean;
   favorites: unknown;
 }) {
-  const { events, profile, isFavorite, favorites } = params;
+  const { events, profile, isFavorite } = params;
 
   const [search, setSearch] = useState("");
   const { filters: globalFilters, setFilters, clearFilters: clearGlobalFilters } = useGlobalEventFilters();
@@ -56,10 +56,10 @@ export function useAgendaFilters(params: {
     if (urlParams.get("view") === "favorites") setShowFavoritesOnly(true);
     const region = urlParams.get("region");
     const canonicalRegion = REGIONS.find((value) => normalizeGeography(value) === normalizeGeography(region ?? ""));
-    if (canonicalRegion) setRegionFilter(canonicalRegion);
+    if (canonicalRegion) setFilters({ region: canonicalRegion });
     const category = urlParams.get("category") || urlParams.get("categoria");
-    if (category) setCategoryFilter(category);
-  }, []);
+    if (category) setFilters({ category });
+  }, [setFilters]);
 
 
   const upcomingEvents = useMemo(() => {
@@ -81,11 +81,8 @@ export function useAgendaFilters(params: {
   }, [
     upcomingEvents,
     search,
-    categoryFilter,
-    regionFilter,
     globalFilters,
     showFavoritesOnly,
-    favorites,
     isFavorite,
   ]);
 

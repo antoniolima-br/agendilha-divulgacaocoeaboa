@@ -41,7 +41,7 @@ export default function AgendaCultural() {
 
 function AgendaCulturalInner() {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
+  const { user } = useAuth();
   const { profile } = useProfile();
   const { isDivulgador } = useDivulgadorStatus();
   const { favorites, isFavorite } = useFavorites();
@@ -105,8 +105,6 @@ function AgendaCulturalInner() {
     }
     navigate("/enviar-evento");
   };
-
-  const profileNeighborhood = profile?.home_location || profile?.work_neighborhood || null;
 
   return (
     <div className="min-h-screen bg-background">

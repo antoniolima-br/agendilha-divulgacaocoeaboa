@@ -23,7 +23,6 @@ interface FinishOptions {
 const SLOW_OPERATION_MS = 1_000;
 const MAX_MARKS = 120;
 let sequence = 0;
-const recordedMarks: string[] = [];
 const recordedMeasures: string[] = [];
 
 function now(): number {
@@ -55,7 +54,6 @@ function publish(detail: FlowMetricDetail) {
 
 function trimPerformanceEntries() {
   if (typeof performance === "undefined") return;
-  recordedMarks.splice(0, Math.max(0, recordedMarks.length - MAX_MARKS)).forEach((name) => performance.clearMarks(name));
   recordedMeasures.splice(0, Math.max(0, recordedMeasures.length - MAX_MARKS)).forEach((name) => performance.clearMeasures(name));
 }
 
@@ -71,7 +69,6 @@ export function startFlowMeasure(flow: string, operation: string, initialStep?: 
   if (typeof performance !== "undefined") {
     const startMark = `${markPrefix}:start`;
     performance.mark(startMark, { detail: { flow, operation, step: initialStep } });
-    recordedMarks.push(startMark);
   }
 
   let finished = false;
@@ -98,11 +95,14 @@ export function startFlowMeasure(flow: string, operation: string, initialStep?: 
           const measureName = `agendilha-flow:${flow}:${operation}`;
           performance.mark(endMark);
           performance.measure(measureName, `${markPrefix}:start`, endMark);
-          recordedMarks.push(endMark);
           recordedMeasures.push(measureName);
           trimPerformanceEntries();
         } catch {
           // Measuring must never break the user flow.
+        } finally {
+          // Release only this operation's marks; never evict concurrent starts.
+          performance.clearMarks(`${markPrefix}:start`);
+          performance.clearMarks(`${markPrefix}:end`);
         }
       }
 
