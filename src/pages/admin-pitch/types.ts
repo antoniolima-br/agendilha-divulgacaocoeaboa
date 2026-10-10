@@ -5,6 +5,7 @@ export interface PitchContent {
   projectionBasis: string;
   projectionRegional?: string;
   projectionGlobal?: string;
+  advertisingExclusivity?: { title: string; description: string; items: { title: string; description: string }[]; disclaimer: string };
   differential: string;
   regionalExample: string;
   formats: { title: string; cycle: string; min: number; max: number; description: string; priceSuffix?: string }[];

@@ -92,6 +92,12 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">* {content.disclaimer}</p>
     </section>
+    {content.advertisingExclusivity && <section className="space-y-5 border-t border-border pt-8">
+      <h2 className="flex items-start gap-2 text-xl font-semibold"><Megaphone className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> {content.advertisingExclusivity.title}</h2>
+      <p className="max-w-3xl text-lg leading-relaxed">{content.advertisingExclusivity.description}</p>
+      <ul className="max-w-3xl space-y-4">{content.advertisingExclusivity.items.map((item) => <li key={item.title} className="text-sm leading-relaxed text-muted-foreground"><strong className="font-medium text-foreground">{item.title}:</strong> {item.description}</li>)}</ul>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">{content.advertisingExclusivity.disclaimer}</p>
+    </section>}
     <section className="space-y-5 border-t border-border pt-8">
       <h2 className="flex items-center gap-2 text-xl font-semibold"><Target className="h-5 w-5 shrink-0 text-primary" /> Aquisição: tráfego pago hiperlocal</h2>
       <p className="text-lg font-medium">Orçamento inicial: <span className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</span></p>
