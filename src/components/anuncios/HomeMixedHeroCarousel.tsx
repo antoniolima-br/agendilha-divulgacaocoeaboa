@@ -121,7 +121,7 @@ export function HomeMixedHeroCarousel({
               tabIndex={active ? 0 : -1}
               aria-hidden={!active}
               aria-label={`Abrir evento ${slideTitle}`}
-              className="block h-auto min-w-0 flex-[0_0_100%] select-none whitespace-normal rounded-none p-0 text-left hover:bg-background"
+              className="block h-auto min-w-0 flex-[0_0_100%] select-none whitespace-normal rounded-none p-0 text-left hover:bg-background md:h-auto"
             >
               <div className="h-[min(60vh,42rem)] w-full overflow-hidden"><img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={slideIndex === 0 || active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="h-full w-full object-contain" /></div>
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
