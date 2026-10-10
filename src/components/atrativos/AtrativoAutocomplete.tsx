@@ -54,16 +54,15 @@ export function AtrativoAutocomplete({
 
   const fetchPage = useCallback(
     async (q: string, from: number, to: number, signal: AbortSignal) => {
-      // Todos os atrativos cadastrados (aprovados ou não) aparecem para quem
-      // está logado, sem expor dados pessoais do responsável.
+      // A busca respeita aprovação, propriedade e permissões da conta.
       const { data, error } = await supabase
-      if (error) throw error;
         .rpc("search_atrativos_autocomplete_v2", {
           _q: q || null,
           _limit: to - from + 1,
           _offset: from,
         })
         .abortSignal(signal);
+      if (error) throw error;
       return (data ?? []) as AtrativoSuggestion[];
     },
     [],
@@ -135,12 +134,12 @@ export function AtrativoAutocomplete({
           ))}
           {loading && suggestions.length === 0 && (
             <div className="px-3 py-2 text-xs text-muted-foreground">Buscando atrativos...</div>
-          {error && (
-            <div className="px-3 py-2 text-xs text-destructive flex items-center gap-2">
-              <AlertTriangle className="h-3.5 w-3.5" />
-              Erro ao buscar atrativos
-            </div>
           )}
+          {error && (
+            <div role="alert" className="px-3 py-2 text-xs text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Não deu pra buscar atrativos. Tente de novo em instantes.
+            </div>
           )}
           {!loading && !error && suggestions.length === 0 && showNewHint && (
             <div className="px-3 py-2 text-xs text-muted-foreground">

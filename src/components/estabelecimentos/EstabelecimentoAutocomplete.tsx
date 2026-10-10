@@ -52,13 +52,13 @@ export function EstabelecimentoAutocomplete({
       // preenchimento. A função no backend exige login e não devolve dados
       // pessoais do responsável.
       const { data, error } = await supabase
-      if (error) throw error;
         .rpc("search_estabelecimentos_autocomplete", {
           _q: q || null,
           _limit: to - from + 1,
           _offset: from,
         })
         .abortSignal(signal);
+      if (error) throw error;
       return (data ?? []) as EstabelecimentoSuggestion[];
     },
     [],
@@ -141,12 +141,12 @@ export function EstabelecimentoAutocomplete({
           ))}
           {loading && suggestions.length === 0 && (
             <div className="px-4 py-2 text-xs text-muted-foreground">Buscando locais...</div>
-          {error && (
-            <div className="px-4 py-2 text-xs text-destructive flex items-center gap-2">
-              <AlertTriangle className="h-3.5 w-3.5" />
-              Erro ao buscar locais
-            </div>
           )}
+          {error && (
+            <div role="alert" className="px-4 py-2 text-xs text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Não deu pra buscar locais. Tente de novo em instantes.
+            </div>
           )}
           {hasMore && (
             <button
