@@ -4,7 +4,7 @@ export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comerc
 export function intranetSectors(roles: string[]): IntranetSector[] {
   if (roles.some((role) => ["master", "senior"].includes(role))) return [...INTRANET_SECTORS];
   const assigned = INTRANET_SECTORS.filter((sector) => roles.includes(sector));
-  return assigned.length ? assigned : roles.includes("admin") ? ["administracao"] : [];
+  return assigned.length ? assigned.slice(0,1) : roles.includes("admin") ? ["administracao"] : [];
 }
 export function isIntranetSector(value: string | undefined): value is IntranetSector { return INTRANET_SECTORS.some((sector) => sector === value); }
 export function campaignLink(id: string) { return `${window.location.origin}/campanha/${id}`; }
