@@ -78,6 +78,25 @@ describe("pitch comercial", () => {
     await screen.findByRole("alert");
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
   });
+  it("abre a estratégia do piloto independentemente e mantém expansão como plano", async () => {
+    mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
+    render(page());
+    expect(screen.queryByText(/O Ponto de Partida/)).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
+    fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
+    const strategy = await screen.findByRole("button", { name: /04.*Estratégia · Praça-piloto e Lançamento/ });
+    expect(strategy).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(strategy);
+    expect(screen.getByRole("heading", { name: /O Ponto de Partida/ })).toBeVisible();
+    expect(screen.getByText("AgendIlha")).toBeVisible();
+    expect(screen.getByText(/como Niterói/)).toBeVisible();
+    expect(screen.getByText(/como Duque de Caxias/)).toBeVisible();
+    expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toBeVisible();
+    expect(screen.getByText(/nenhuma campanha é ativada/)).toBeVisible();
+    expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
+    fireEvent.click(strategy);
+    expect(screen.queryByText(/O Ponto de Partida/)).not.toBeInTheDocument();
+  });
   it("não solicita conteúdo quando a conta não possui acesso", () => {
     mocks.allowed = false;
     render(page());
