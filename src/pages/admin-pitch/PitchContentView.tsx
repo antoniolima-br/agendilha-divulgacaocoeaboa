@@ -42,11 +42,6 @@ export function PitchContentView({ content }: { content: PitchContent }) {
   const event = content.formats[0];
   const regional = content.formats[1];
   return <div className="space-y-6">
-    <nav aria-label="Atalhos do pitch" className="flex flex-wrap gap-2">
-      {content.b2c && shortcut("b2c", "pitch-paid-strategy", "02 · Estratégia Paga · Aceleração e Escala")}
-      {shortcut("next-steps", "pitch-regional-expansion", "04 · Plano de Expansão Regional (Fases 2 e 3)")}
-      {shortcut("next-steps", "pitch-hybrid-acquisition", "04 · Estratégia de Atração Híbrida")}
-    </nav>
     <section aria-labelledby="pitch-overview" className="space-y-5 border-b border-border pb-6">
       <h2 id="pitch-overview" className="text-2xl font-semibold">Visão Geral e Qualidades do Ecossistema</h2>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O Coé a Boa? reúne descoberta de lazer, cadastro de eventos e gestão comercial em um ecossistema pensado para facilitar a vida de quem divulga e de quem procura um rolê.</p>

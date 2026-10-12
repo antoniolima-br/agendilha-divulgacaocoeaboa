@@ -122,7 +122,7 @@ describe("pitch comercial", () => {
     expect(mocks.call).not.toHaveBeenCalled();
     expect(screen.queryByText(buildPitchContent().brandPositioning)).not.toBeInTheDocument();
   });
-  it("abre destinos fechados pelos atalhos e mantém as outras janelas abertas", async () => {
+  it("mantém atalhos só dentro dos blocos e navega às subseções", async () => {
     const scroll = vi.fn();
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
     const scrollMock = vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(scroll);
@@ -132,12 +132,22 @@ describe("pitch comercial", () => {
       expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
       fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
       fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-      const paid = await screen.findByRole("link", { name: "02 · Estratégia Paga · Aceleração e Escala" });
+      await screen.findByText("Projeção de receita mensal");
+      expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: "Estratégia Paga · Aceleração e Escala" })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: /02.*Plano de Marketing/ }));
+      const paid = screen.getByRole("link", { name: "Estratégia Paga · Aceleração e Escala" });
+      expect(paid.closest("nav")).toHaveAttribute("aria-label", "Atalhos do Plano de Marketing");
+      expect(paid).toHaveAttribute("href", "#pitch-paid-strategy");
       fireEvent.click(paid);
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "smooth", block: "start" });
       expect(screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" })).toBeVisible();
-      fireEvent.click(screen.getByRole("link", { name: "04 · Plano de Expansão Regional (Fases 2 e 3)" }));
+      fireEvent.click(screen.getByRole("button", { name: /04.*Estratégia · Praça-piloto e Lançamento/ }));
+      const expansion = screen.getByRole("link", { name: "Plano de Expansão Regional (Fases 2 e 3)" });
+      expect(expansion.closest("nav")).toHaveAttribute("aria-label", "Atalhos da Estratégia de Lançamento");
+      expect(expansion).toHaveAttribute("href", "#pitch-regional-expansion");
+      fireEvent.click(expansion);
       await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
       expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
       vi.mocked(window.matchMedia).mockReturnValue({ matches: true } as MediaQueryList);
