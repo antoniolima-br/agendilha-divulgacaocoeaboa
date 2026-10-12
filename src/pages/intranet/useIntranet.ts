@@ -20,7 +20,7 @@ export function useSectorRecords<T>(table: 'intranet_leads' | 'intranet_campaign
 }
 export function usePortalCommand() {
   const client = useQueryClient();
-  return useMutation({ mutationFn: async (action: () => PromiseLike<{ error: unknown }>) => { const { error } = await action(); if (error) throw error; }, onSuccess: async () => { await Promise.all([qk.intranet.all, qk.permissions.all, qk.curation.all, qk.submissions.all, qk.home.all, qk.agenda.all, qk.adminUsers.all].map(queryKey => client.invalidateQueries({ queryKey }))); } });
+  return useMutation({ mutationFn: async (action: () => PromiseLike<{ error: unknown }>) => { const { error } = await action(); if (error) throw error; }, onSuccess: async () => { await Promise.all([qk.intranet.all, qk.finance.all, qk.permissions.all, qk.curation.all, qk.submissions.all, qk.home.all, qk.agenda.all, qk.adminUsers.all].map(queryKey => client.invalidateQueries({ queryKey }))); } });
 }
 export function useMembers(enabled: boolean) {
   const { user } = useAuth();

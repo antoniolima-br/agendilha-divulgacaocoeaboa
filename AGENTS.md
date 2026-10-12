@@ -36,4 +36,4 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
 - Sidebar activity uses shared segment-aware matching.
 
-- Intranet is lazy and isolated; user_roles/server gates protect sectors, shared charts expose aggregates, and missing telemetry is never simulated.
+- Lazy intranet uses server sector gates and aggregate charts; never simulate telemetry. Finance categories are not payments; overdue requires due dates.
