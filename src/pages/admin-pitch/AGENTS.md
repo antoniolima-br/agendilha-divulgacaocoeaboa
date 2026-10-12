@@ -1,2 +1,3 @@
-- Use shared Accordion primitives for independently collapsible pitch windows, including next steps and the closing highlight; this preserves keyboard access, consistent motion and unduplicated offers.
-- Open contextual shortcut destinations with controlled Accordion state before focus and reduced-motion-aware scrolling so collapsed content stays reachable.
+- Use shared controlled Tabs and PitchChapter for executive chapters, with overview as the default; this keeps a single readable chapter and built-in keyboard navigation.
+- Keep corporate pillars presentational and use the existing protected pitch response; this avoids new permissions, metrics or duplicate sector data fetches.
+- Open contextual shortcut destinations with controlled tab state before focus and reduced-motion-aware scrolling so inactive content stays reachable.
