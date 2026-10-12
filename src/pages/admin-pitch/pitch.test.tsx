@@ -181,7 +181,7 @@ describe("pitch comercial", () => {
         expect(screen.queryByRole("navigation", { name })).not.toBeInTheDocument();
       }
       for (const name of ["Coé a Boa?", "Metodologia de Captação", "Diferencial do Produto", "Ecossistema Hiperlocal", "Oportunidade e Validação"]) {
-        expect(screen.getByRole("heading", { name, exact: true })).toBeVisible();
+        expect(screen.getByRole("heading", { name })).toBeVisible();
       }
       for (const navigation of navigations) {
         for (const link of within(navigation).getAllByRole("link")) {
