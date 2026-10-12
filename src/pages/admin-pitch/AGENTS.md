@@ -1,2 +1,2 @@
 - Use shared Accordion primitives for independently collapsible pitch windows, including next steps and the closing highlight; this preserves keyboard access, consistent motion and unduplicated offers.
-- Open shortcut destinations with controlled Accordion state before focus and reduced-motion-aware scrolling so collapsed content stays reachable.
+- Use the same contextual shortcut navigation in every pitch window; open controlled Accordion state and enclosing details before focus and reduced-motion-aware scrolling so every subsection stays reachable.
