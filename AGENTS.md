@@ -9,7 +9,7 @@
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
-- Establishment forms share CEP search.
+- Share establishment CEP search.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
@@ -34,6 +34,7 @@
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
-- Sidebar activity uses shared segment-aware matching.
+- Sidebar uses segment-aware activity.
 
-- Lazy intranet uses server sector gates and aggregate charts; never simulate telemetry. Finance categories are not payments; overdue requires due dates.
+- Lazy intranet uses server gates and shared manager aggregates; never fake telemetry. Formats are not payments; overdue needs due dates.
+- Share institutional UI/PDF copy to avoid credit drift.
