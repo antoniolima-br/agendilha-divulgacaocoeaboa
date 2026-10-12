@@ -55,7 +55,7 @@ describe("pitch comercial", () => {
     }
     const monetization = screen.getByRole("button", { name: /01.*O Produto e Fontes de Receita/ });
     expect(overview.compareDocumentPosition(monetization) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(screen.getByText(/A arquitetura regional/)).toHaveTextContent("validação de tração, receita e usabilidade");
+    expect(screen.getByText(/Expansão planejada a partir/)).toHaveTextContent("após validação do piloto");
     fireEvent.click(screen.getByText("Inventário e condições dos formatos"));
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("pitch comercial", () => {
     expect(screen.getByLabelText("Senha do pitch")).toBeDisabled();
     expect(screen.getByRole("button", { name: "Abrir pitch" })).toBeDisabled();
     expect(mocks.call).not.toHaveBeenCalled();
-    expect(screen.queryByText(buildPitchContent().brandPositioning)).not.toBeInTheDocument();
+    expect(screen.queryByText(/O Coé a Boa\? é o app PWA/)).not.toBeInTheDocument();
   });
   it("mantém atalhos só dentro dos blocos e navega às subseções", async () => {
     const scroll = vi.fn();
@@ -201,6 +201,22 @@ describe("pitch comercial", () => {
       scrollMock.mockRestore();
       vi.unstubAllGlobals();
     }
+  });
+  it("resume os cinco blocos sem alterar preços ou prometer retorno", async () => {
+    mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
+    render(page());
+    fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
+    fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
+    await screen.findByRole("heading", { name: "Projeção de receita mensal" });
+    expect(screen.getByText(/O Coé a Boa\? é o app PWA/)).toHaveTextContent("Rio de Janeiro");
+    expect(screen.getByRole("rowheader", { name: "Patrocínios de 7 dias / mês" })).toBeVisible();
+    expect(screen.getByText(/Um Master e dois Sub-Masters/)).toHaveTextContent("cobrança mensal");
+    for (const number of ["02", "03", "04", "05"]) fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${number}`) }));
+    expect(screen.getByRole("heading", { name: "QR codes locais" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Co-marketing local" })).toBeVisible();
+    expect(screen.getByText(/Abordagem direta ao comércio local/)).toHaveTextContent("retorno comercial não é garantido");
+    expect(screen.getByText(/Curadoria, cadastro rápido/)).toHaveTextContent("validação do piloto");
+    expect(screen.getByText("Um ecossistema seguro e inteligente para o entretenimento local.")).toBeVisible();
   });
   it("remove conteúdo ao trocar de conta", async () => {
     mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
