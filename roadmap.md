@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Atualizar somente o bloco 04 do pitch com legado AgendIlha, praça-piloto, expansão condicionada e lançamento híbrido; preservar tema e acesso.
 - [x] Preservar flyer enviado como imagem oficial e retirar oferta de geração no cadastro; 15 testes aprovados para revisão, preservação, leitura, geração patrocinada e download; build OK. Conferência do envio autenticado permanece pendente abaixo.
 - [x] Completar flyer do cadastro: indicador solicitado, geração antes dos envios patrocinados sem imagem e download nas confirmações; 410 testes aprovados, duas artes distintas e download real conferidos em apresentação isolada sem overflow, preservando gratuitos, revisão e pagamentos.
 - [ ] Conferir finalização patrocinada e releitura do flyer salvo no cadastro autenticado — requer entrar na prévia; sessão autorizada do solicitante indisponível.
