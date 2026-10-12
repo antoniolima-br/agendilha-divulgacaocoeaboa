@@ -1,6 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
-- [ ] Completar flyer do cadastro: indicador solicitado, geração profissional obrigatória para patrocinados sem imagem e exportação; preservar revisão, gratuitos e pagamentos.
+- [x] Completar flyer do cadastro: indicador solicitado, geração antes dos envios patrocinados sem imagem e download nas confirmações; 410 testes aprovados, duas artes distintas e download real conferidos em apresentação isolada sem overflow, preservando gratuitos, revisão e pagamentos.
+- [ ] Conferir finalização patrocinada e releitura do flyer salvo no cadastro autenticado — requer entrar na prévia; sessão autorizada do solicitante indisponível.
 - [x] Colocar leitura de flyer no início do cadastro, preencher dados revisáveis e preservar entrada manual; leitura real do cartaz via gateway aprovada, interface isolada sem overflow e 402 testes aprovados.
 - [ ] Validar upload → leitura → revisão no cadastro autenticado com serviço implantado — requer entrar na prévia; não existe conta correspondente ao solicitante para obter sessão autorizada.
 - [x] Nova otimização de performance: gargalos confirmados corrigidos, 395 testes aprovados e validação automática sem erros; Home, carrossel, Agenda, calendário, artistas e Guia conferidos, sem overflow nos tamanhos testados. Impactos e limites em performance-report.md.
