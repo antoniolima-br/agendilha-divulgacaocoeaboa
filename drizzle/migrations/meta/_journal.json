@@ -239,6 +239,13 @@
       "when": 1791826500980,
       "tag": "0033_intranet_management_commands",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791826564486,
+      "tag": "0034_intranet_tracking_and_isolation",
+      "breakpoints": true
     }
   ]
 }

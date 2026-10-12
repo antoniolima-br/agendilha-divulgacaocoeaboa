@@ -1503,6 +1503,7 @@ export type Database = {
         Row: {
           budget_cents: number
           channel: string
+          clicks: number
           created_at: string
           created_by: string
           destination: string
@@ -1513,6 +1514,7 @@ export type Database = {
         Insert: {
           budget_cents?: number
           channel: string
+          clicks?: number
           created_at?: string
           created_by?: string
           destination: string
@@ -1523,6 +1525,7 @@ export type Database = {
         Update: {
           budget_cents?: number
           channel?: string
+          clicks?: number
           created_at?: string
           created_by?: string
           destination?: string
@@ -3313,11 +3316,13 @@ export type Database = {
         Args: { p_days?: number; p_sector: string }
         Returns: Json
       }
+      intranet_health_probe: { Args: never; Returns: boolean }
       intranet_members: { Args: never; Returns: Json }
       intranet_moderate: {
         Args: { p_approve: boolean; p_id: string }
         Returns: Json
       }
+      intranet_open_campaign: { Args: { p_id: string }; Returns: string }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }
