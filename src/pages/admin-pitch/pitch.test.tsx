@@ -70,7 +70,8 @@ describe("pitch comercial", () => {
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
-    expect(screen.getByRole("link", { name: "Limax Sistemas" })).toHaveAttribute("href", "https://limaxsistemas.online/");
+    expect(screen.queryByRole("link", { name: "Limax Sistemas" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Coé a Boa? — empresa proprietária do ecossistema e do aplicativo.")).not.toBeInTheDocument();
   });
   it("navega ao lançamento e preserva a estratégia como plano", async () => {
     render(page()); await unlock();

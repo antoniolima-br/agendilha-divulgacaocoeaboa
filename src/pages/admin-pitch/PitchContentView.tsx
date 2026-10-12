@@ -5,7 +5,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PitchChapter } from "./PitchChapter";
 import { CorporatePillars } from "./CorporatePillars";
 import type { PitchContent } from "./types";
-import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 type Scenario = PitchContent["scenarios"][number];
@@ -193,7 +192,6 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
     <footer aria-label="Notas institucionais" className="mt-10 space-y-4 border-t border-border pt-6 text-xs leading-relaxed text-muted-foreground">
       <p>Preços sugeridos e projeções ilustrativas; não representam receita realizada nem retorno garantido. Expansão sujeita à validação da praça-piloto.</p>
       <p>Formatos, exclusividade, contagem regressiva e autoatendimento são propostas comerciais; esta apresentação não ativa campanhas, cobranças ou disparos. Push exige consentimento, segmentação e implantação.</p>
-      <InstitutionalCredits />
     </footer>
   </div>;
 }
