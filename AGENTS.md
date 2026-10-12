@@ -17,7 +17,7 @@
 - Home rotates current/future flyers, today first; Embla unifies gestures/arrows/state and stable media bounds prevent shifts. Agenda promotion stays unchanged.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
 - Idle launchers and intent-loaded Guide/routes reduce startup; public events share filters/realtime; date re-exports preserve São Paulo.
-- Authenticated streamed flyer extraction fills only unchanged empty content fields before review, preventing unsafe writes.
+- Authenticated flyer reads fill unchanged empty fields; prepare sponsored batch art before inserts and allow downloads, preventing silent media loss.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.

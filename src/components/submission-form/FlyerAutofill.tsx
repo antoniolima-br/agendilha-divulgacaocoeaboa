@@ -70,7 +70,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
         <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <div aria-live="polite" aria-busy={loading}>
-        {loading && <div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" />Lendo flyer...</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div>}
+        {loading && <div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Lendo flyer com IA...</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div>}
         {!loading && status && <p className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{status}</p>}
       </div>
       {error && <p role="alert" className="break-words text-sm text-destructive">{error}</p>}

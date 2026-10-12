@@ -27,7 +27,7 @@ import {
 } from "./submission-form/steps";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
-import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
+import { prepareSponsoredFlyers, uploadSponsoredFlyer } from "@/lib/sponsoredFlyer";
 import { emitEntityCreated } from "@/lib/entityEvents";
 import { usePromotorProfile, useUpsertPromotorProfile } from "@/data/usePromotorProfile";
 import { measureFlowOperation, startFlowMeasure } from "@/lib/flow-performance";
@@ -334,23 +334,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   };
 
 
-  /** Gera e sobe um flyer automático; retorna a URL pública ou null (nunca bloqueia o envio). */
-  const uploadFallbackFlyer = async (input: Parameters<typeof generateFallbackFlyer>[0]): Promise<string | null> => {
-    try {
-      const dataUrl = await generateFallbackFlyer(input);
-      const blob = await (await fetch(dataUrl)).blob();
-      const filePath = `${user?.id ?? "anon"}/fallback-${crypto.randomUUID()}.jpg`;
-      const { error } = await supabaseClient.storage
-        .from("event-flyers")
-        .upload(filePath, blob, { contentType: "image/jpeg", upsert: false });
-      if (error) return null;
-      return supabaseClient.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
-    } catch (e) {
-      logger.warn("[fallback flyer] falhou, seguindo sem imagem", e);
-      return null;
-    }
-  };
-
   const onSubmit = async (values: FormData) => {
     // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
     if (currentStep < steps.length) {
@@ -467,20 +450,25 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       // Envio gratuito: não gera flyer automático. O flyer profissional é
       // benefício exclusivo do Evento em Destaque (pago).
       const IS_FREE_SUBMISSION = values.promotionChoice === "free";
-      if (!imageUrl && !IS_FREE_SUBMISSION) {
-        imageUrl = (await measureFlowOperation(
+      const flyerUrls = await measureFlowOperation(
           "event-submission",
           "fallback-flyer",
-          () => uploadFallbackFlyer({
+          () => prepareSponsoredFlyers(values.promotionChoice, [{ imageUrl, data: {
             title: clean(values.eventTitle) || clean(values.atrativoName) || "Evento",
             date: toEventDateOnly(values.date),
             startTime: clean(values.startTime),
-            location: clean(values.locationName),
+            location: clean(values.locationName) || clean(values.eventAddress),
             category: resolveAtrativoCategory(values) || clean(values.category),
-          }),
+          } }, ...values.additionalEvents.map((event) => ({ data: {
+            title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
+            date: toEventDateOnly(event.date),
+            startTime: clean(event.startTime),
+            location: clean(values.locationName) || clean(values.eventAddress),
+            category: clean(event.category) || resolveAtrativoCategory(values) || clean(values.category),
+          } }))], (data) => uploadSponsoredFlyer(data, user?.id || "")),
           currentStep,
-        )) ?? imageUrl;
-      }
+        );
+      imageUrl = flyerUrls[0] || undefined;
 
       // Map camelCase form fields → snake_case DB columns
       const payload: any = {
@@ -565,13 +553,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       const insertedSubmissionIds = [result.id];
       for (let index = 0; index < values.additionalEvents.length; index += 1) {
         const event = values.additionalEvents[index];
-        const additionalImageUrl = IS_FREE_SUBMISSION ? null : await uploadFallbackFlyer({
-          title: clean(event.eventTitle) || clean(event.atrativoName) || "Evento",
-          date: toEventDateOnly(event.date),
-          startTime: clean(event.startTime),
-          location: clean(values.locationName),
-          category: clean(event.category) || payload.category,
-        });
+        const additionalImageUrl = flyerUrls[index + 1];
         const additionalPayload = {
           ...payload,
           event_title: clean(event.eventTitle),
@@ -942,6 +924,9 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                 value={form.watch("promotionChoice")}
                 onChange={(value) => form.setValue("promotionChoice", value, { shouldDirty: true, shouldValidate: true })}
               />
+              {form.watch("promotionChoice") === "highlight" && !eventImage && !form.watch("eventImageUrl") && (
+                <p className="text-sm text-muted-foreground">Ao finalizar, seu flyer será preparado com os dados revisados para baixar e divulgar no Instagram ou WhatsApp. O evento continua sujeito à revisão da equipe.</p>
+              )}
             </div>
           )}
 

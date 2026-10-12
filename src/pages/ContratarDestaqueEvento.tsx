@@ -8,6 +8,7 @@ import { SETTING_KEYS, settingOr, useAppSettings } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
+import { FlyerDownloadButton } from "@/components/submission-form/FlyerDownloadButton";
 
 type HighlightSubmission = {
   id: string;
@@ -66,7 +67,10 @@ export default function ContratarDestaqueEvento() {
         </div>
       </section>
 
-      {event.image_url && <img src={event.image_url} alt={`Flyer de ${title}`} className="mx-auto aspect-[4/5] w-full max-w-xs rounded-lg border object-cover" />}
+      {event.image_url && <section className="flex flex-col items-center gap-4">
+        <img src={event.image_url} alt={`Flyer de ${title}`} className="mx-auto max-h-[32rem] w-full max-w-sm rounded-lg border object-contain" />
+        <FlyerDownloadButton url={event.image_url} title={title} />
+      </section>}
 
       <div className="grid gap-4 sm:grid-cols-2">
         {packages.map((pkg) => {

@@ -1,5 +1,6 @@
 // Generates a lightweight 1080x1080 flyer when an event has no uploaded artwork.
 import { formatEventDateTimeBR } from "./eventDate";
+import logoUrl from "@/assets/coeaboa-logo.webp";
 
 export interface FallbackFlyerData {
   title: string;
@@ -31,7 +32,7 @@ const PALETTES = [
 ] as const;
 
 const LAYOUTS: FlyerLayout[] = ["editorial", "poster", "split", "orbit"];
-const LOGO_URL = "/coeaboa-logo.jpg";
+const LOGO_URL = logoUrl;
 let cachedLogo: HTMLImageElement | null = null;
 
 export function pickFallbackFlyerStyle(random: () => number = Math.random): FallbackFlyerStyle {
@@ -54,7 +55,7 @@ async function loadImage(src: string): Promise<HTMLImageElement | null> {
   });
 }
 
-function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines: number): string[] {
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const words = text.trim().split(/\s+/).filter(Boolean);
   const lines: string[] = [];
   let current = "";
@@ -63,15 +64,11 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number,
     if (ctx.measureText(test).width > maxWidth && current) {
       lines.push(current);
       current = word;
-      if (lines.length === maxLines - 1) break;
     } else {
       current = test;
     }
   }
-  if (current && lines.length < maxLines) lines.push(current);
-  if (lines.length === maxLines && ctx.measureText(`${lines[maxLines - 1]}…`).width > maxWidth) {
-    lines[maxLines - 1] = `${lines[maxLines - 1].slice(0, -3)}…`;
-  }
+  if (current) lines.push(current);
   return lines.length ? lines : ["Evento"];
 }
 
@@ -158,13 +155,18 @@ function drawCategory(ctx: CanvasRenderingContext2D, category: string | null | u
 
 function drawTitle(ctx: CanvasRenderingContext2D, title: string, style: FallbackFlyerStyle) {
   const centered = style.layout === "poster" || style.layout === "orbit";
-  const fontSize = style.layout === "split" ? 82 : 88;
+  let fontSize = style.layout === "split" ? 82 : 88;
   const maxWidth = style.layout === "split" ? 700 : 920;
   ctx.fillStyle = style.palette.text;
   ctx.font = `800 ${fontSize}px 'Helvetica Neue', Arial, sans-serif`;
   ctx.textBaseline = "top";
   ctx.textAlign = centered ? "center" : "left";
-  const lines = wrapText(ctx, title || "Evento", maxWidth, 4);
+  let lines = wrapText(ctx, title || "Evento", maxWidth);
+  while (lines.length > 4 && fontSize > 28) {
+    fontSize -= 2;
+    ctx.font = `800 ${fontSize}px 'Helvetica Neue', Arial, sans-serif`;
+    lines = wrapText(ctx, title || "Evento", maxWidth);
+  }
   const lineHeight = fontSize + 10;
   const startY = style.layout === "poster" ? 340 : style.layout === "orbit" ? 350 : 330;
   const x = centered ? 540 : 70;

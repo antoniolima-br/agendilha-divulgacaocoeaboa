@@ -30,6 +30,7 @@ import {
 } from "@/data/useHighlightPackages";
 import { DestaqueModal } from "@/components/destaque/DestaqueModal";
 import { buildEventSubmissionConfirmation, buildWhatsappUrl } from "@/lib/whatsapp";
+import { FlyerDownloadButton } from "@/components/submission-form/FlyerDownloadButton";
 
 interface Submission {
   id: string;
@@ -212,6 +213,7 @@ export default function EventoEnviado() {
                       ? "Seu flyer oficial está sendo preparado."
                       : "Anúncios gratuitos aparecem na agenda sem flyer automático."}
                 </p>
+                {sub?.image_url && <FlyerDownloadButton url={sub.image_url} title={nomeEvento} />}
                 <Button
                   asChild
                   size="sm"
