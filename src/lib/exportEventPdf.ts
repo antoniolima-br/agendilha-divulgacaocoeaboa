@@ -1,4 +1,5 @@
 import type jsPDF from "jspdf";
+import { INSTITUTIONAL } from "./institutional";
 
 /**
  * jsPDF e jspdf-autotable pesam ~400kB. Carregamos só na hora de gerar o PDF
@@ -94,6 +95,8 @@ function drawFooter(doc: jsPDF) {
       287,
     );
     doc.text(`Página ${i} de ${pageCount}`, 196, 287, { align: "right" });
+    doc.setFontSize(6);
+    doc.text(`${INSTITUTIONAL.ownership} ${INSTITUTIONAL.creation}`, 14, 292, { maxWidth: 182 });
   }
 }
 

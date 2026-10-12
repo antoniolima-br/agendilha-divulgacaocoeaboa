@@ -1,5 +1,6 @@
 import type jsPDF from "jspdf";
 import { AGENDILHA_LOGO_BASE64, LOGO_MIME } from "./logoBase64";
+import { INSTITUTIONAL } from "./institutional";
 
 // Dynamic import for performance optimization
 async function getJsPDF() {
@@ -191,6 +192,9 @@ function drawFooter(doc: jsPDF, isLastPage: boolean) {
     doc.text("Coé a Boa?", PAGE_W - MARGIN - 20, FOOTER_Y, { align: "right" });
     doc.setTextColor(...BRAND_ORANGE);
     doc.text("Coé a Boa?", PAGE_W - MARGIN, FOOTER_Y, { align: "right" });
+    doc.setFontSize(6);
+    doc.setTextColor(...MEDIUM_TEXT);
+    doc.text(`${INSTITUTIONAL.ownership} ${INSTITUTIONAL.creation}`, MARGIN, FOOTER_Y + 13, { maxWidth: CONTENT_W });
  
    if (isLastPage) {
      const linkUrl = "https://agendilha-divulgacao.lovable.app/agenda";
