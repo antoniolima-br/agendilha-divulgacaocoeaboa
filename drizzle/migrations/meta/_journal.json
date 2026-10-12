@@ -232,6 +232,13 @@
       "when": 1791826471252,
       "tag": "0032_intranet_workspace",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791826500980,
+      "tag": "0033_intranet_management_commands",
+      "breakpoints": true
     }
   ]
 }

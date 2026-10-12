@@ -3304,9 +3304,18 @@ export type Database = {
       increment_ad_views: { Args: { target_ad_id: string }; Returns: undefined }
       increment_shares: { Args: { event_id: string }; Returns: undefined }
       increment_views: { Args: { event_id: string }; Returns: undefined }
+      intranet_assign_sector: {
+        Args: { p_sector: string; p_user: string }
+        Returns: undefined
+      }
       intranet_can_access: { Args: { p_sector: string }; Returns: boolean }
       intranet_dashboard: {
         Args: { p_days?: number; p_sector: string }
+        Returns: Json
+      }
+      intranet_members: { Args: never; Returns: Json }
+      intranet_moderate: {
+        Args: { p_approve: boolean; p_id: string }
         Returns: Json
       }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
