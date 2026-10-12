@@ -122,6 +122,33 @@ describe("pitch comercial", () => {
     expect(mocks.call).not.toHaveBeenCalled();
     expect(screen.queryByText(buildPitchContent().brandPositioning)).not.toBeInTheDocument();
   });
+  it("abre destinos fechados pelos atalhos e mantém as outras janelas abertas", async () => {
+    const scroll = vi.fn();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const scrollMock = vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(scroll);
+    try {
+      mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
+      render(page());
+      expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
+      fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
+      fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
+      const paid = await screen.findByRole("link", { name: "02 · Estratégia Paga · Aceleração e Escala" });
+      fireEvent.click(paid);
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
+      expect(scroll).toHaveBeenLastCalledWith({ behavior: "smooth", block: "start" });
+      expect(screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" })).toBeVisible();
+      fireEvent.click(screen.getByRole("link", { name: "04 · Plano de Expansão Regional (Fases 2 e 3)" }));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
+      expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
+      vi.mocked(window.matchMedia).mockReturnValue({ matches: true } as MediaQueryList);
+      fireEvent.click(screen.getByRole("link", { name: "Estratégia de Atração Híbrida", exact: true }));
+      await waitFor(() => expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toHaveFocus());
+      expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
+    } finally {
+      scrollMock.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
   it("remove conteúdo ao trocar de conta", async () => {
     mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
     const view = render(page());
