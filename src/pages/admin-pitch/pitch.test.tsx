@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { HelmetProvider } from "react-helmet-async";
 import { buildPitchContent } from "../../../supabase/functions/commercial-pitch/content";
 import { inventoryImage } from "../../../supabase/functions/commercial-pitch/inventory-image";
@@ -154,6 +154,46 @@ describe("pitch comercial", () => {
       fireEvent.click(screen.getByRole("link", { name: /^Estratégia de Atração Híbrida$/ }));
       await waitFor(() => expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
+    } finally {
+      scrollMock.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+  it("padroniza os cinco blocos com destinos internos acessíveis e abre detalhes ocultos", async () => {
+    const scroll = vi.fn();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
+    const scrollMock = vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(scroll);
+    try {
+      mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
+      render(page());
+      fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
+      fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
+      await screen.findByText("Projeção de receita mensal");
+      for (const number of ["02", "03", "04", "05"]) {
+        fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${number}`) }));
+      }
+      const navigations = screen.getAllByRole("navigation");
+      expect(navigations).toHaveLength(5);
+      for (const navigation of navigations) {
+        expect(within(navigation).getAllByRole("link").length).toBeGreaterThan(1);
+        for (const link of within(navigation).getAllByRole("link")) {
+          const href = link.getAttribute("href");
+          expect(href).toMatch(/^#pitch-/);
+          const target = document.getElementById(href?.slice(1) ?? "");
+          expect(target).not.toBeNull();
+          expect(navigation.parentElement?.contains(target)).toBe(true);
+          fireEvent.click(link);
+          await waitFor(() => expect(target).toHaveFocus());
+          expect(target).toBeVisible();
+          expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
+          const details = target?.closest("details");
+          if (details) {
+            expect(details.open).toBe(true);
+            details.open = false;
+          }
+        }
+      }
+      expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
     } finally {
       scrollMock.mockRestore();
       vi.unstubAllGlobals();
