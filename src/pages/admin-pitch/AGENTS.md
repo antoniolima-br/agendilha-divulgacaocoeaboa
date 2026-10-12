@@ -1,3 +1,4 @@
 - Use shared controlled Tabs and PitchChapter for executive chapters, with overview as the default; this keeps a single readable chapter and built-in keyboard navigation.
 - Keep corporate pillars presentational and use the existing protected pitch response; this avoids new permissions, metrics or duplicate sector data fetches.
-- Open contextual shortcut destinations with controlled tab state before focus and reduced-motion-aware scrolling so inactive content stays reachable.
+- Use shared native PitchDetails disclosures after each chapter summary, initially closed, so executive reading stays concise with keyboard-accessible expansion.
+- Open contextual shortcut destinations with controlled tab state and ancestor disclosures before focus and reduced-motion-aware scrolling so inactive content stays reachable.

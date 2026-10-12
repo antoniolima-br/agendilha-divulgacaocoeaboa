@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Ajustar blocos 01–05 do pitch para resumos executivos e detalhes inicialmente recolhidos; preservar preços, acesso e abertura pelos atalhos.
 - [x] Redesenhar apenas o pitch em capítulos premium, cinco pilares corporativos e notas discretas; preços e acesso preservados. Oito testes aprovados, apresentação isolada conferida sem overflow; abertura com senha privada segue pendente abaixo.
 - [x] Esclarecer propriedade Coé a Boa? e autoria Limax Sistemas no pitch, rodapés, páginas institucionais e PDFs; visão conjunta Sênior/Master na intranet isolada. 37 testes aprovados; créditos públicos conferidos. Operações privadas seguem pendentes abaixo.
 - [x] Criar portal setorial isolado com acessos protegidos, CRM, campanhas/links/QR, curadoria, financeiro e medições manuais; gráficos reais e limitações de coleta explícitas.
