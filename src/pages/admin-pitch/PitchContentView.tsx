@@ -22,6 +22,16 @@ export function PitchContentView({ content }: { content: PitchContent }) {
   const event = content.formats[0];
   const regional = content.formats[1];
   return <div className="space-y-6">
+    <section aria-labelledby="pitch-overview" className="space-y-5 border-b border-border pb-6">
+      <h2 id="pitch-overview" className="text-2xl font-semibold">Visão Geral e Qualidades do Ecossistema</h2>
+      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O Coé a Boa? reúne descoberta de lazer, cadastro de eventos e gestão comercial em um ecossistema pensado para facilitar a vida de quem divulga e de quem procura um rolê.</p>
+      <ul className="grid gap-6 md:grid-cols-2">{[
+        { title: "Segurança e Governança", description: "Controle automatizado anti-duplicidade, gestão de cotas gratuitas e patrocinadas e alertas de revisão ajudam a evitar spam e envios repetidos. A moderação antes da publicação mantém a agenda organizada, com decisões reservadas à equipe autorizada." },
+        { title: "Ferramentas Administrativas e Financeiras", description: "Um painel integra as ferramentas da equipe, com controle Master e acesso conforme as permissões de cada perfil. Dados estruturados apoiam campanhas de divulgação, gestão de planos para eventos pagos, acompanhamento financeiro e áreas dedicadas a anúncios patrocinados." },
+        { title: "Usabilidade Premium", description: "Uma experiência fluida, pensada primeiro para o celular, com cadastro rápido por flyer e revisão editável. O compartilhamento do link no WhatsApp e nas redes sociais transforma cada produtor cultural em um potencial canal orgânico de aquisição, conectando sua audiência a outros rolês." },
+        { title: "Escalabilidade", description: "A arquitetura regional e os controles de governança dão suporte à expansão da praça-piloto, Ilha do Governador, para novas regiões metropolitanas. A base está preparada para crescer; a validação de tração, receita e usabilidade na praça-piloto orienta cada nova etapa, sem tratar a expansão como já concluída." },
+      ].map((quality) => <li key={quality.title} className="min-w-0 space-y-2 border-t border-border pt-4"><h3 className="text-lg font-semibold">{quality.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{quality.description}</p></li>)}</ul>
+    </section>
     <Accordion type="multiple" defaultValue={["product"]} className="space-y-4">
     <PitchWindow value="product" number="01" title="O Produto e Fontes de Receita (Monetização)" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
 
