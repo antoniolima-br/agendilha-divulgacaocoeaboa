@@ -26,6 +26,11 @@ Deno.serve(async (req) => {
     if (!parsed.success) return json("Envie um flyer em JPG, PNG ou WEBP de até 8 MB.", 400);
     const encoded = parsed.data.image.split(",")[1];
     if (!encoded || encoded.length * 0.75 > 8 * 1024 * 1024) return json("Envie uma imagem de até 8 MB.", 400);
+    const signature = atob(encoded.slice(0, 24));
+    const validImage = parsed.data.image.startsWith("data:image/jpeg;") ? signature.startsWith("\xff\xd8\xff")
+      : parsed.data.image.startsWith("data:image/png;") ? signature.startsWith("\x89PNG\r\n\x1a\n")
+      : signature.startsWith("RIFF") && signature.slice(8, 12) === "WEBP";
+    if (!validImage) return json("O arquivo não é uma imagem válida. Escolha outro flyer.", 400);
     const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
     const gateway = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(req));
     const response = await gateway.fetch("https://ai.gateway.lovable.dev/v1/responses", {
