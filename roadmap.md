@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Adicionar Visão Geral e Qualidades do Ecossistema antes da monetização no pitch restrito, com segurança, gestão, usabilidade e expansão condicionada à validação; seis testes aprovados, incluindo ordem e bloqueio do conteúdo. Abertura com senha privada segue pendente abaixo.
 - [x] Incluir Ecossistema de Governança e Expansão Regional no bloco de estratégia do pitch, com controle de duplicidade, cotas e benefícios para divulgadores e público; preservar layout, preços e acesso.
 - [x] Bloquear duplicados e cota gratuita diária com aviso e escolha patrocinada explícita; prévia antes do upload, lote em um insert e guardas com leitura atualizada. Migrações aplicadas; envio autenticado real continua pendente abaixo.
 - [x] Compartilhamento nativo/WhatsApp nos cards públicos e ação única nos detalhes; 430 testes aprovados, copiar link e abrir evento público conferidos no navegador.

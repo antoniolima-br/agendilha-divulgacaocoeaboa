@@ -42,11 +42,20 @@ describe("pitch comercial", () => {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     render(page());
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByText("Projeção de receita mensal");
+    const overview = screen.getByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
+    expect(overview).toBeVisible();
+    for (const name of ["Segurança e Governança", "Ferramentas Administrativas e Financeiras", "Usabilidade Premium", "Escalabilidade"]) {
+      expect(screen.getByRole("heading", { name })).toBeVisible();
+    }
+    const monetization = screen.getByRole("button", { name: /01.*O Produto e Fontes de Receita/ });
+    expect(overview.compareDocumentPosition(monetization) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByText(/A arquitetura regional/)).toHaveTextContent("validação de tração, receita e usabilidade");
     fireEvent.click(screen.getByText("Inventário e condições dos formatos"));
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     expect(screen.getByRole("heading", { name: /^Coé a Boa\?$/ })).toBeInTheDocument();
@@ -65,6 +74,7 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: /02\s*Aquecimento/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /03\s*Reta Final/ })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
