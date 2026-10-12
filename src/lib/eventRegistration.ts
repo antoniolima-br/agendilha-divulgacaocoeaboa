@@ -12,7 +12,7 @@ export function registrationCode(error: unknown): RegistrationCode | null {
   return (["FREE_DAILY_QUOTA", "DUPLICATE_EVENT_START", "DUPLICATE_EVENT"] as const).find(code => message.includes(code)) || null;
 }
 export type RegistrationEvent = {
-  date: string; start_time?: string | null; event_title?: string | null;
+  date: string | null; start_time?: string | null; event_title?: string | null;
   atrativo_name?: string | null; location?: string | null;
   estabelecimento_id?: string | null; atrativo_id?: string | null; artist_id?: string | null;
   address_neighborhood?: string | null; image_url?: string | null; flyer_fingerprint?: string | null;

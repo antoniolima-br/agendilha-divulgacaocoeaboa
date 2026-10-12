@@ -1,6 +1,6 @@
 export interface Event {
   id: string;
-  event_title: string;
+  event_title: string | null;
   date: string | null;
   start_time: string | null;
   end_time: string | null;
@@ -35,7 +35,8 @@ export const getEventOgShareUrl = (slug: string) => {
 
 export const getShareData = (ev?: Event) => {
   const isAgenda = !ev;
-  const title = isAgenda ? "Agenda Cultural da Ilha" : `Evento: ${ev.event_title}`;
+  const eventTitle = ev?.event_title || ev?.location || "Evento";
+  const title = isAgenda ? "Agenda Cultural da Ilha" : `Evento: ${eventTitle}`;
   const url = getShareUrl(ev?.id);
   
   let text = isAgenda 
@@ -45,7 +46,7 @@ export const getShareData = (ev?: Event) => {
   if (ev) {
     const time = ev.start_time ? `${ev.start_time}` : "";
     const addr = buildFullAddress(ev);
-    const eventDetails = `🗓️ *${ev.event_title}*${time ? `\n⏰ ${time}` : ""}${addr ? `\n📍 ${addr}` : ""}`;
+    const eventDetails = `🗓️ *${eventTitle}*${time ? `\n⏰ ${time}` : ""}${addr ? `\n📍 ${addr}` : ""}`;
     text = `${eventDetails}\n\n🌴 Veja os detalhes no Coé a Boa?:`;
   } else {
     text = `🌴 *Confira a Agenda Cultural do Rio de Janeiro!* 🌴\n\nVeja a programação completa e atualizada em:`;

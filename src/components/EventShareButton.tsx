@@ -51,11 +51,13 @@ export function EventShareButton({
         )}
         onClick={share}
         aria-label="Compartilhar evento"
+        title="Compartilhar evento"
       >
         <Share2 className={cn("h-4 w-4", !compact && "mr-2")} />
         {!compact && "Compartilhar"}
       </Button>
 
+      <div onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
       <ShareDialog
         open={fallbackOpen}
         onOpenChange={setFallbackOpen}
@@ -64,6 +66,7 @@ export function EventShareButton({
         url={url}
         onShare={() => onShared?.()}
       />
+      </div>
     </>
   );
 }

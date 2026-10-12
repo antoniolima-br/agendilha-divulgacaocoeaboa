@@ -1,8 +1,8 @@
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CalendarDays, MapPin, Share2, Sparkles } from "lucide-react";
+import { EventShareButton } from "@/components/EventShareButton";
+import { CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { EventImage } from "./EventImage";
 import { categoryLabels, type AgendaEvent } from "./types";
@@ -15,7 +15,8 @@ interface HighlightCardProps {
   trackView: (id: string) => void;
 }
 
-export function HighlightCard({ event: ev, onSelect, onShare, trackView }: HighlightCardProps) {
+export function HighlightCard({ event: ev, onSelect, trackView }: HighlightCardProps) {
+  const shareData = getShareData(ev);
   return (
     <Card
       className="w-[calc(100vw-2rem)] max-w-[350px] shrink-0 snap-start border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-transparent hover:shadow-lg transition-all cursor-pointer overflow-hidden group event-card"
@@ -36,18 +37,7 @@ export function HighlightCard({ event: ev, onSelect, onShare, trackView }: Highl
         />
         <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
           <FavoriteButton eventId={ev.id} className="h-10 w-10" />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full backdrop-blur-md border border-white/20 bg-black/20 text-white hover:bg-white/20 shadow-sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              const data = getShareData(ev as any);
-              onShare(data.title, data.text, data.url, ev.id);
-            }}
-          >
-            <Share2 className="h-5 w-5" />
-          </Button>
+          <EventShareButton {...shareData} compact className="h-10 w-10 rounded-full backdrop-blur-md border border-border bg-background/70 text-foreground hover:bg-background shadow-sm" />
         </div>
       </div>
       <CardContent className="p-6 space-y-4">

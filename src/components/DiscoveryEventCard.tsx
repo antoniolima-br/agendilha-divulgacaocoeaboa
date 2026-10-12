@@ -1,13 +1,15 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Star, Heart, Share2, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
+import { MapPin, Calendar, Star, Heart, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useMemo, memo } from "react";
 import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useThumbnailCache } from "@/hooks/useThumbnailCache";
 import { formatBrazilianDate } from "@/lib/date-utils";
+import { EventShareButton } from "@/components/EventShareButton";
+import { getShareData } from "@/lib/sharing";
 
 interface Event {
   id: string;
@@ -45,7 +47,6 @@ export const DiscoveryEventCard = memo(({
   variant = "large",
   isFavorite = false,
   onFavoriteToggle,
-   onShare,
    className
  }: {
    event: Event;
@@ -73,6 +74,7 @@ export const DiscoveryEventCard = memo(({
   const cachedThumb = useThumbnailCache(event.id, isCompact && sourceImage ? sourceImage : undefined);
   const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
   const showGeneratedArtwork = !officialImage || hasError;
+  const shareData = getShareData({ ...event, end_time: null, address_street: null, description: null });
 
   return (
     <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">
@@ -81,7 +83,7 @@ export const DiscoveryEventCard = memo(({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
             e.preventDefault();
             onClick();
           }
@@ -175,17 +177,7 @@ export const DiscoveryEventCard = memo(({
                <Heart className={cn("h-4 w-4", isFavorite && "fill-current")} strokeWidth={2} />
              </Button>
   
-             <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-9 w-9 rounded-full backdrop-blur-md border-none bg-background/70 text-foreground hover:bg-background transition-all active:scale-90"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onShare?.(e);
-                }}
-             >
-               <Share2 className="h-4 w-4" strokeWidth={2} />
-             </Button>
+             <EventShareButton {...shareData} compact className="h-9 w-9 rounded-full backdrop-blur-md border-none bg-background/70 text-foreground hover:bg-background transition-all active:scale-90" />
   
              {event.rating && event.rating.total > 0 && (
                <Badge className="bg-background/90 backdrop-blur-md text-foreground font-semibold py-1 px-2.5 rounded-full flex items-center gap-1 h-9 border-none">
