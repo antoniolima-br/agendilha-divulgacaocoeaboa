@@ -46,7 +46,6 @@ const DRAFT_KEY = "agendilha_event_submission_draft";
 
 export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
-  const [imageSource, setImageSource] = useState<"upload" | "ai" | null>(null);
   const [readingFlyer, setReadingFlyer] = useState(false);
   const [flyerRevision, setFlyerRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -760,7 +759,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     setCurrentStep(1);
     setDraftSavedAt(null);
     setEventImage(null);
-    setImageSource(null);
     setFlyerRevision(value => value + 1);
     setReadingFlyer(false);
     toast.success("Rascunho limpo.");
@@ -817,7 +815,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                 </p>
               </div>
 
-              <FlyerAutofill key={flyerRevision} form={form} onImage={(file) => { setEventImage(file); setImageSource("upload"); }} onLoading={setReadingFlyer} />
+              <FlyerAutofill key={flyerRevision} form={form} onImage={setEventImage} onLoading={setReadingFlyer} />
 
               <div id="manual-event-fields" className="border rounded-2xl px-4 py-5 bg-card/30">
                 <EventStep form={form} section="core" />
@@ -863,10 +861,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                     <EventStep form={form} section="optional" />
                     <MediaStep
                       form={form}
-                      imageSource={imageSource}
-                      setImageSource={setImageSource}
                       eventImage={eventImage}
-                      setEventImage={setEventImage}
                     />
                   </AccordionContent>
                 </AccordionItem>

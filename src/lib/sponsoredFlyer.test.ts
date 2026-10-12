@@ -5,6 +5,11 @@ vi.mock("./generateFallbackFlyer", () => ({ generateFallbackFlyer: mocks.generat
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { storage: { from: () => ({ upload: mocks.upload, getPublicUrl: (path: string) => ({ data: { publicUrl: `https://example.test/${path}` } }) }) } } }));
 beforeEach(() => vi.clearAllMocks());
 describe("sponsored artwork", () => {
+  it("never replaces an uploaded sponsored flyer", async () => {
+    const upload = vi.fn();
+    expect(await prepareSponsoredFlyers("highlight", [{ imageUrl: "official", data: { title: "A" } }], upload)).toEqual(["official"]);
+    expect(upload).not.toHaveBeenCalled();
+  });
   it("preserves uploaded art and leaves free events without automatic flyers", async () => {
     const upload = vi.fn();
     expect(await prepareSponsoredFlyers("free", [{ imageUrl: "existing", data: { title: "A" } }, { data: { title: "B" } }], upload)).toEqual(["existing", null]);
