@@ -204,6 +204,13 @@
       "when": 1791659928715,
       "tag": "0028_scope_venue_autocomplete_visibility",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791819082435,
+      "tag": "0029_event_daily_quota_and_duplicate_guard",
+      "breakpoints": true
     }
   ]
 }
