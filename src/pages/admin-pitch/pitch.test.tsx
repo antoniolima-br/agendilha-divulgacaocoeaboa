@@ -65,7 +65,7 @@ describe("pitch comercial", () => {
   });
   it("destaca cinco setores e visão consolidada sem inventar indicadores", async () => {
     render(page()); await unlock();
-    for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name, exact: true })).toBeVisible();
+    for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
