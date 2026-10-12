@@ -218,6 +218,48 @@
       "when": 1791819300438,
       "tag": "0030_registration_batch_visibility",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791826400484,
+      "tag": "0031_intranet_sector_roles",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1791826471252,
+      "tag": "0032_intranet_workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1791826500980,
+      "tag": "0033_intranet_management_commands",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1791826564486,
+      "tag": "0034_intranet_tracking_and_isolation",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1791826772602,
+      "tag": "0035_intranet_permission_boundaries",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791826833092,
+      "tag": "0036_intranet_finance_categories",
+      "breakpoints": true
     }
   ]
 }

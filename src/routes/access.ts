@@ -3,6 +3,7 @@ import type { PermissionName } from "@/hooks/useAppPermissions";
 
 /** Same capability gates apply to direct navigation and sidebar links. */
 export const ROUTE_PERMISSIONS: Record<string, PermissionName> = {
+  [ROUTES.INTRANET]: "intranet.read",
   [ROUTES.ADMIN_EVENTS]: "events.read",
   [ROUTES.ADMIN_PUBLISHED_EVENTS]: "events.read",
   [ROUTES.ADMIN_APROVAR_EVENTOS]: "events.approve",

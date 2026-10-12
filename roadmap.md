@@ -1,5 +1,8 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Criar portal setorial isolado com acessos protegidos, CRM, campanhas/links/QR, curadoria, financeiro e medições manuais; gráficos reais e limitações de coleta explícitas.
+- [ ] Conferir operações privadas do portal com sessão autorizada — solicitante sem conta correspondente; precisa entrar na prévia.
+- [ ] Conectar MAU/DAU, tráfego geral, uptime e logs contínuos do portal — dependem de fonte de monitoramento ainda não disponível.
 - [x] Enxugar textos da visão geral e dos cinco blocos do pitch, mantendo estrutura, tabela, preços, acesso e três âncoras; nove testes aprovados e validação automática OK. Conferência com senha privada segue pendente.
 - [x] Enxugar navegação do pitch para apenas uma âncora no bloco 02 e duas no 04, sem atalhos nos blocos 01/03/05 ou no topo; oito testes aprovados e validação automática OK. Conferência com senha privada permanece pendente abaixo.
 - [x] Padronizar atalhos internos nos blocos 01–05 do pitch; oito testes aprovados para destinos, detalhes expansíveis, foco e movimento reduzido. Validação automática OK; abertura real com senha privada permanece pendente abaixo.

@@ -3,13 +3,13 @@
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
-- Organizer confirmation uses safe prepared WhatsApp links; automatic sending requires a server-authenticated provider.
-- Attraction opening_hours is editable free text shown on selection; performance schedules validate separately.
+- WhatsApp confirmations use prepared links; automated sending needs an authenticated provider.
+- opening_hours is free text; performance schedules validate separately.
 - Establishments use one category; ViaCEP suggests editable street/neighborhood.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
-- All establishment creation forms share address-by-CEP search to prevent drift.
+- Establishment forms share CEP search.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
@@ -34,4 +34,6 @@
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
-- Sidebar active state uses a centralized segment-aware helper and exact sibling links, avoiding unrelated active indicators.
+- Sidebar activity uses shared segment-aware matching.
+
+- Lazy intranet uses server sector gates and aggregate charts; never simulate telemetry. Finance categories are not payments; overdue requires due dates.

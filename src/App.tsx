@@ -27,6 +27,8 @@ import NotFound from "./pages/NotFound";
 
 // Lazy-loaded routes (code-split)
 const Auth = lazy(() => import("./pages/Auth"));
+const IntranetPortal = lazy(() => import("./pages/intranet/IntranetPortal"));
+const CampaignRedirect = lazy(() => import("./pages/intranet/CampaignRedirect"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminReports = lazy(() => import("./pages/AdminReports"));
@@ -107,6 +109,7 @@ const PageFallback = () => (
 );
 
 function DeferredAppFeatures() {
+  const location = useLocation();
   const { loading, mustChangePassword } = useAuth();
   const [ready, setReady] = useState(false);
   const [chatRequested, setChatRequested] = useState(false);
@@ -137,7 +140,7 @@ function DeferredAppFeatures() {
     };
   }, []);
 
-  if (!ready || loading || mustChangePassword) return null;
+  if (!ready || loading || mustChangePassword || location.pathname.startsWith(ROUTES.INTRANET)) return null;
   return (
     <>
       <GuideLauncher initiallyOpen={chatRequested} />
@@ -207,6 +210,9 @@ export const AppRoutes = () => {
     <SectionErrorBoundary context="AppRoutes">
       <Suspense fallback={<PageFallback />}>
         <Routes>
+        <Route path={ROUTES.INTRANET} element={<ProtectedRoute requiredPermission="intranet.read"><IntranetPortal /></ProtectedRoute>} />
+        <Route path={ROUTES.INTRANET_SECTOR} element={<ProtectedRoute requiredPermission="intranet.read"><IntranetPortal /></ProtectedRoute>} />
+        <Route path={ROUTES.CAMPAIGN_LINK} element={<CampaignRedirect />} />
         {/* Públicas */}
         <Route path={ROUTES.LANDING} element={<SectionErrorBoundary context="Home" title="Não deu pra carregar a página inicial agora." description="Tenta de novo em instantes."><Landing /></SectionErrorBoundary>} />
         <Route path={ROUTES.EXPLORAR} element={<Explorar />} />

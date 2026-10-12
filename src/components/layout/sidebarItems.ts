@@ -53,6 +53,10 @@ export interface SidebarSection {
 
 export const sidebarConfig: SidebarSection[] = [
   {
+    id: "intranet", title: "Portal corporativo", roles: ["admin", "senior", "master", "financeiro", "sector"],
+    items: [{ id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "financeiro", "sector"] }],
+  },
+  {
     id: "explorar",
     title: "Explorar",
     roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
