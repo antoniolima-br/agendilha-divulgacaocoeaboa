@@ -60,16 +60,6 @@ export function PitchContentView({ content }: { content: PitchContent }) {
     <Accordion type="multiple" value={openWindows} onValueChange={setOpenWindows} className="space-y-4">
     <PitchWindow value="product" number="01" title="O Produto e Fontes de Receita (Monetização)" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
 
-        {navigation("product", "Atalhos do Produto e Monetização", [
-          { id: "pitch-product", label: "Coé a Boa?" },
-          ...(content.technology ? [{ id: "pitch-technology", label: content.technology.title }] : []),
-          { id: "pitch-formats", label: "Inventário e Condições dos Formatos" },
-          { id: "pitch-projection", label: "Projeção de receita mensal" },
-          ...(content.inventoryImage ? [{ id: "pitch-inventory-map", label: "Mapa de Inventário Publicitário" }] : []),
-          { id: "pitch-regional-ads", label: "Publicidade regional" },
-          { id: "pitch-push", label: content.push.title },
-          { id: "pitch-anchor", label: content.anchor.title },
-        ])}
         <section className="space-y-3"><h3 id="pitch-product" tabIndex={-1} className={`${headingClass} text-2xl`}>Coé a Boa?</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{content.brandPositioning}</p></section>
         {content.technology && <section className="space-y-3 border-t border-border pt-6"><h3 id="pitch-technology" tabIndex={-1} className={headingClass}>{content.technology.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.technology.description}</p></section>}
         <section className="space-y-5 border-t border-border pt-6">
@@ -102,17 +92,11 @@ export function PitchContentView({ content }: { content: PitchContent }) {
 {content.b2c && <>{navigation("b2c", "Atalhos do Plano de Marketing", [{ id: "pitch-organic-strategy", label: content.b2c.organic.title }, { id: "pitch-paid-strategy", label: content.b2c.paid.title }])}<div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy, i) => <section key={strategy.title} className="space-y-5"><h3 id={i === 1 ? "pitch-paid-strategy" : "pitch-organic-strategy"} tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{strategy.title}</h3><ul className="space-y-4">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>{i === 1 && <p className="border-l-2 border-primary pl-4 text-sm">Verba inicial estimada: <strong className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</strong></p>}</section>)}</div></>}
     </PitchWindow>
     <PitchWindow value="b2b" number="03" title="Plano Comercial (Vendas B2B e Abordagem)" eyebrow="B2B · Anunciantes" icon={BriefcaseBusiness}>
-{navigation("b2b", "Atalhos do Plano Comercial", [
-          ...(content.b2b ? [{ id: "pitch-sales-argument", label: content.b2b.exclusivity.title }, { id: "pitch-prospecting", label: "Metodologia de Captação" }] : []),
-          ...(content.selfService ? [{ id: "pitch-self-service", label: content.selfService.title }] : []),
-        ])}
 {content.b2b && <><section className="space-y-3"><h3 id="pitch-sales-argument" tabIndex={-1} className={headingClass}>{content.b2b.exclusivity.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.exclusivity.description}</p></section><section className="space-y-5 border-t border-border pt-6"><h3 id="pitch-prospecting" tabIndex={-1} className={headingClass}>Metodologia de Captação</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.anchors.description}</p><ol className="grid gap-6 md:grid-cols-3">{content.b2b.anchors.steps.map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol></section></>}
         {content.selfService && <details className="group border-t border-border pt-5"><summary className="cursor-pointer text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Evolução futura · Autoatendimento com controle</summary><section className="mt-5 space-y-4"><h3 id="pitch-self-service" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-lg font-semibold"><Workflow className="h-4 w-4 shrink-0 text-primary" /> {content.selfService.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.description}</p><ol className="grid gap-5 md:grid-cols-2">{content.selfService.steps.map((step) => <li key={step.title} className="space-y-2"><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.strategy}</p><p className="text-xs leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p></section></details>}
     </PitchWindow>
     <PitchWindow value="next-steps" number="04" title="Estratégia · Praça-piloto e Lançamento" eyebrow="Estratégia · Lançamento" icon={ArrowRight}>
       {navigation("next-steps", "Atalhos da Estratégia de Lançamento", [
-        { id: "pitch-pilot", label: "Praça-Piloto" },
-        { id: "pitch-governance", label: "Ecossistema de Governança e Expansão Regional" },
         { id: "pitch-regional-expansion", label: "Plano de Expansão Regional (Fases 2 e 3)" },
         { id: "pitch-hybrid-acquisition", label: "Estratégia de Atração Híbrida" },
       ])}
@@ -152,11 +136,6 @@ export function PitchContentView({ content }: { content: PitchContent }) {
       <p className="flex items-start gap-2 text-xs text-muted-foreground"><Target aria-hidden="true" className="h-4 w-4 shrink-0 text-primary" /> Plano proposto de lançamento e expansão. Metas, adesão e resultados dependem da validação da praça-piloto; nenhuma campanha é ativada por esta apresentação.</p>
     </PitchWindow>
     <PitchWindow value="singularity" number="05" title="Por que Investir no Coé a Boa? (Singularidade)" eyebrow="Encerramento · Resumo executivo" icon={Sparkles}>
-      {navigation("singularity", "Atalhos da Singularidade", [
-        { id: "pitch-investment-differential", label: "Diferencial do Produto" },
-        { id: "pitch-investment-ecosystem", label: "Ecossistema Hiperlocal" },
-        { id: "pitch-investment-opportunity", label: "Oportunidade e Validação" },
-      ])}
       <section className="space-y-3"><h3 id="pitch-investment-differential" tabIndex={-1} className={headingClass}>Diferencial do Produto</h3>
       <p className="max-w-3xl text-lg font-medium leading-relaxed">Tecnologia sem atrito, publicidade com foco e descoberta cultural hiperlocal em um único produto.</p></section>
       <section className="space-y-3"><h3 id="pitch-investment-ecosystem" tabIndex={-1} className={headingClass}>Ecossistema Hiperlocal</h3>

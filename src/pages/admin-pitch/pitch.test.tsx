@@ -159,7 +159,7 @@ describe("pitch comercial", () => {
       vi.unstubAllGlobals();
     }
   });
-  it("padroniza os cinco blocos com destinos internos acessíveis e abre detalhes ocultos", async () => {
+  it("mantém somente três âncoras contextualizadas e tópicos corridos nos demais blocos", async () => {
     const scroll = vi.fn();
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
     const scrollMock = vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(scroll);
@@ -173,9 +173,17 @@ describe("pitch comercial", () => {
         fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${number}`) }));
       }
       const navigations = screen.getAllByRole("navigation");
-      expect(navigations).toHaveLength(5);
+      expect(navigations).toHaveLength(2);
+      expect(within(screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" })).getAllByRole("link").map((link) => link.textContent)).toEqual(["Estratégia Paga · Aceleração e Escala"]);
+      expect(within(screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" })).getAllByRole("link").map((link) => link.textContent)).toEqual(["Plano de Expansão Regional (Fases 2 e 3)", "Estratégia de Atração Híbrida"]);
+      expect(screen.getAllByRole("link")).toHaveLength(3);
+      for (const name of ["Atalhos do Produto e Monetização", "Atalhos do Plano Comercial", "Atalhos da Singularidade"]) {
+        expect(screen.queryByRole("navigation", { name })).not.toBeInTheDocument();
+      }
+      for (const name of ["Coé a Boa?", "Metodologia de Captação", "Diferencial do Produto", "Ecossistema Hiperlocal", "Oportunidade e Validação"]) {
+        expect(screen.getByRole("heading", { name, exact: true })).toBeVisible();
+      }
       for (const navigation of navigations) {
-        expect(within(navigation).getAllByRole("link").length).toBeGreaterThan(1);
         for (const link of within(navigation).getAllByRole("link")) {
           const href = link.getAttribute("href");
           expect(href).toMatch(/^#pitch-/);
@@ -186,11 +194,6 @@ describe("pitch comercial", () => {
           await waitFor(() => expect(target).toHaveFocus());
           expect(target).toBeVisible();
           expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
-          const details = target?.closest("details");
-          if (details) {
-            expect(details.open).toBe(true);
-            details.open = false;
-          }
         }
       }
       expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
