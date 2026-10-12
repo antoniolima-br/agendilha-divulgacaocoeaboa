@@ -218,6 +218,13 @@
       "when": 1791819300438,
       "tag": "0030_registration_batch_visibility",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791826400484,
+      "tag": "0031_intranet_sector_roles",
+      "breakpoints": true
     }
   ]
 }
