@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Colocar leitura de flyer no início do cadastro, preencher dados revisáveis e preservar entrada manual; validar serviço e interface.
 - [x] Nova otimização de performance: gargalos confirmados corrigidos, 395 testes aprovados e validação automática sem erros; Home, carrossel, Agenda, calendário, artistas e Guia conferidos, sem overflow nos tamanhos testados. Impactos e limites em performance-report.md.
 - [ ] Performance: validar uploads, Radar e telas privadas com sessão autorizada — não existe conta correspondente ao solicitante; requer entrar na prévia. Não foram alterados dados reais para testar.
 - [x] Refatoração segura por evidência: paginação de três consultas centralizada, buscas extraídas da apresentação, revisão de entidades compartilhada e código morto removido; 376 testes aprovados, lint limpo e Agenda/calendário conferidos. Escopo e limites em refactor-report.md.
