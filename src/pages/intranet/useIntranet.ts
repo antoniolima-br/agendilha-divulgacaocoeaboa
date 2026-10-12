@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { qk } from '@/data/queryKeys';
 import { type IntranetSector, type IntranetDashboard } from '@/lib/intranet';
 import type { Tables } from '@/integrations/supabase/types';
+import { fetchAllPages } from '@/data/pagination';
 export type Lead = Tables<'intranet_leads'>;
 export type Campaign = Tables<'intranet_campaigns'>;
 export type Sample = Tables<'intranet_health_samples'>;
@@ -15,7 +16,7 @@ export function useIntranet(sector: IntranetSector, days: number, enabled: boole
 }
 export function useSectorRecords<T>(table: 'intranet_leads' | 'intranet_campaigns' | 'intranet_health_samples') {
   const { user } = useAuth();
-  return useQuery({ queryKey: qk.intranet.records(user?.id ?? null, table), enabled: !!user, queryFn: async () => { const { data, error } = await supabase.from(table).select('*').order('created_at', { ascending: false }).limit(500); if (error) throw error; return data as T[]; } });
+  return useQuery({ queryKey: qk.intranet.records(user?.id ?? null, table), enabled: !!user, queryFn: () => fetchAllPages<T>(async (from,to) => { const {data,error} = await supabase.from(table).select('*').order('created_at',{ascending:false}).order('id').range(from,to); return {data:data as T[] | null,error}; }) });
 }
 export function usePortalCommand() {
   const client = useQueryClient();

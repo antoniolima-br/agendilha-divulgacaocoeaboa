@@ -10,9 +10,11 @@ describe("sidebarConfig", () => {
     expect(items.filter(item => isSidebarItemActive(item, ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.COMPARTILHAR_MEUS_EVENTOS)).map(item => item.id)).toEqual(["share_my_events"]);
   });
   it("não confunde prefixos de irmãos ou links com consulta", () => {
-    const item = sidebarConfig[0].items[0];
+    const items = sidebarConfig.find(s => s.id === "explorar")?.items ?? [];
+    const item = items[0];
+    if (!item) throw new Error("missing explore link");
     expect(isSidebarItemActive(item, `${item.path}-extra`, `${item.path}-extra`)).toBe(false);
-    const favorite = sidebarConfig[0].items.find(i => i.id === "favorites");
+    const favorite = items.find(i => i.id === "favorites");
     if (!favorite) throw new Error("missing favorites link");
     expect(isSidebarItemActive(favorite, ROUTES.AGENDA, `${ROUTES.AGENDA}?view=favorites`)).toBe(true);
     expect(isSidebarItemActive(favorite, ROUTES.AGENDA, ROUTES.AGENDA)).toBe(false);

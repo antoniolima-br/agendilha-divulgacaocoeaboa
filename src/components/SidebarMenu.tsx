@@ -44,6 +44,7 @@ export function SidebarMenu({ onClose }: Props) {
   }, [roles, user]);
 
   const roleLabels: Record<Role, string> = {
+    sector: "Admin setorial",
     public_guest: "Visitante",
     public_registered: "Usuário",
     promoter: "Divulgador",
