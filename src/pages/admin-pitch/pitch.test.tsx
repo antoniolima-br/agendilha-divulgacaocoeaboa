@@ -4,6 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { buildPitchContent } from "../../../supabase/functions/commercial-pitch/content";
 import { inventoryImage } from "../../../supabase/functions/commercial-pitch/inventory-image";
 import AdminPitchComercial from "../AdminPitchComercial";
+import { PitchContentView } from "./PitchContentView";
 
 const mocks = vi.hoisted(() => ({ call: vi.fn(), allowed: true, userId: "test-user" }));
 vi.mock("@/lib/edge", () => ({ callEdge: mocks.call }));
@@ -53,11 +54,12 @@ describe("pitch comercial", () => {
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
+    expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
+    fireEvent.click(screen.getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeVisible();
     expect(screen.getByText("1 Anunciante Master")).toBeVisible();
     expect(screen.getByText("2 Sub-Masters / Co-Patrocinadores")).toBeVisible();
-    fireEvent.click(screen.getByText("Inventário e condições dos formatos"));
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
     expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
@@ -68,6 +70,7 @@ describe("pitch comercial", () => {
     for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
+    fireEvent.click(screen.getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
     expect(screen.queryByRole("link", { name: "Limax Sistemas" })).not.toBeInTheDocument();
@@ -78,6 +81,8 @@ describe("pitch comercial", () => {
     fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
     expect(screen.getByRole("heading", { name: /O Ponto de Partida/ })).toBeVisible();
     expect(screen.getByText("AgendIlha")).toBeVisible();
+    expect(screen.getByText(/como Niterói/)).not.toBeVisible();
+    fireEvent.click(screen.getByText("Ver detalhes"));
     expect(screen.getByText(/como Niterói/)).toBeVisible();
     expect(screen.getByText(/como Duque de Caxias/)).toBeVisible();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
@@ -96,13 +101,43 @@ describe("pitch comercial", () => {
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
       fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
-      expect(within(screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" })).getAllByRole("link")).toHaveLength(2);
+      const launchNav = screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" });
+      expect(within(launchNav).getAllByRole("link")).toHaveLength(2);
+      fireEvent.click(within(launchNav).getByRole("link", { name: "Plano de Expansão Regional (Fases 2 e 3)" }));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
+      fireEvent.click(screen.getByText("Recolher detalhes"));
+      fireEvent.click(within(launchNav).getByRole("link", { name: "Estratégia de Atração Híbrida" }));
+      await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).toHaveFocus());
       fireEvent.mouseDown(screen.getByRole("tab", { name: "Comercial B2B" }));
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
       fireEvent.mouseDown(screen.getByRole("tab", { name: "Por que Investir" }));
       expect(screen.getByRole("heading", { name: "Diferencial do Produto" })).toBeVisible();
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
+  });
+  it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
+    render(<PitchContentView content={buildPitchContent()} />);
+    const chapters = [
+      { tab: "Receita & Setores", summary: "Coé a Boa?", detail: "Projeção de receita mensal" },
+      { tab: "Marketing B2C", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
+      { tab: "Comercial B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
+      { tab: "Lançamento & Expansão", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },
+      { tab: "Por que Investir", summary: "Diferencial do Produto", detail: "Oportunidade e Validação" },
+    ];
+    for (const chapter of chapters) {
+      fireEvent.mouseDown(screen.getByRole("tab", { name: chapter.tab }));
+      expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
+      expect(screen.getByRole("heading", { name: chapter.summary })).toBeVisible();
+      const details = screen.getByText("Ver detalhes").closest("details");
+      expect(details).not.toHaveAttribute("open");
+      expect(screen.getByText(chapter.detail)).not.toBeVisible();
+      fireEvent.click(screen.getByText("Ver detalhes"));
+      expect(details).toHaveAttribute("open");
+      expect(screen.getByRole("heading", { name: chapter.detail })).toBeVisible();
+      fireEvent.click(screen.getByText("Recolher detalhes"));
+      expect(details).not.toHaveAttribute("open");
+      expect(screen.getByText(chapter.detail)).not.toBeVisible();
+    }
   });
   it("não solicita conteúdo sem autorização", () => {
     mocks.allowed = false; render(page());
