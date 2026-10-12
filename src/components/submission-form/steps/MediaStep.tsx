@@ -30,7 +30,7 @@ export function MediaStep({ form, imageSource, setImageSource, eventImage, setEv
           Flyer ou Banner do Evento <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
         </h2>
         <p className="text-sm text-muted-foreground">
-          Não precisa mandar arte — se pular esta etapa, a gente gera um flyer padrão do Coé a Boa? com os dados do rolê.
+          Pode seguir sem arte. Se escolher o evento patrocinado na revisão, seu flyer padrão será preparado ao finalizar. No envio gratuito, não há geração automática.
         </p>
       </div>
 

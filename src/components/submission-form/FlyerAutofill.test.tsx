@@ -27,6 +27,7 @@ describe("flyer first flow", () => {
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.png", { type: "image/png" })] } });
     await waitFor(() => expect(mocks.extract).toHaveBeenCalled());
+    expect(screen.getByText("Lendo flyer com IA...")).toBeVisible();
     fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Meu título" } });
     resolve({ eventTitle: "Outro" });
     await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
