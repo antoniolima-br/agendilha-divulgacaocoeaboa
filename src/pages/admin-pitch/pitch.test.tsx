@@ -52,7 +52,7 @@ describe("pitch comercial", () => {
     expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
-    fireEvent.click(screen.getByRole("tab", { name: "Receita & Setores" }));
+    fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeVisible();
     expect(screen.getByText("1 Anunciante Master")).toBeVisible();
@@ -67,14 +67,14 @@ describe("pitch comercial", () => {
     render(page()); await unlock();
     for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name, exact: true })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
-    fireEvent.click(screen.getByRole("tab", { name: "Receita & Setores" }));
+    fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
     expect(screen.getByRole("link", { name: "Limax Sistemas" })).toHaveAttribute("href", "https://limaxsistemas.online/");
   });
   it("navega ao lançamento e preserva a estratégia como plano", async () => {
     render(page()); await unlock();
-    fireEvent.click(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
+    fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
     expect(screen.getByRole("heading", { name: /O Ponto de Partida/ })).toBeVisible();
     expect(screen.getByText("AgendIlha")).toBeVisible();
     expect(screen.getByText(/como Niterói/)).toBeVisible();
@@ -88,17 +88,17 @@ describe("pitch comercial", () => {
     try {
       render(page()); await unlock();
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
-      fireEvent.click(screen.getByRole("tab", { name: "Marketing B2C" }));
+      fireEvent.mouseDown(screen.getByRole("tab", { name: "Marketing B2C" }));
       const nav = screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" });
       expect(within(nav).getAllByRole("link")).toHaveLength(1);
       fireEvent.click(within(nav).getByRole("link"));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
-      fireEvent.click(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
+      fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
       expect(within(screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" })).getAllByRole("link")).toHaveLength(2);
-      fireEvent.click(screen.getByRole("tab", { name: "Comercial B2B" }));
+      fireEvent.mouseDown(screen.getByRole("tab", { name: "Comercial B2B" }));
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
-      fireEvent.click(screen.getByRole("tab", { name: "Por que Investir" }));
+      fireEvent.mouseDown(screen.getByRole("tab", { name: "Por que Investir" }));
       expect(screen.getByRole("heading", { name: "Diferencial do Produto" })).toBeVisible();
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
