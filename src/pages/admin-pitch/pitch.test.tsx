@@ -141,7 +141,7 @@ describe("pitch comercial", () => {
       await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
       expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
       vi.mocked(window.matchMedia).mockReturnValue({ matches: true } as MediaQueryList);
-      fireEvent.click(screen.getByRole("link", { name: "Estratégia de Atração Híbrida", exact: true }));
+      fireEvent.click(screen.getByRole("link", { name: /^Estratégia de Atração Híbrida$/ }));
       await waitFor(() => expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
     } finally {
