@@ -253,6 +253,13 @@
       "when": 1791826772602,
       "tag": "0035_intranet_permission_boundaries",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1791826833092,
+      "tag": "0036_intranet_finance_categories",
+      "breakpoints": true
     }
   ]
 }

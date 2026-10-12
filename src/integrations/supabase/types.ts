@@ -1252,6 +1252,7 @@ export type Database = {
       }
       finance_contracts: {
         Row: {
+          billing_category: string | null
           commercial_type: string
           ends_on: string | null
           id: string
@@ -1264,6 +1265,7 @@ export type Database = {
           updated_by: string
         }
         Insert: {
+          billing_category?: string | null
           commercial_type: string
           ends_on?: string | null
           id?: string
@@ -1276,6 +1278,7 @@ export type Database = {
           updated_by: string
         }
         Update: {
+          billing_category?: string | null
           commercial_type?: string
           ends_on?: string | null
           id?: string
@@ -1360,6 +1363,7 @@ export type Database = {
       }
       finance_workflow: {
         Row: {
+          due_on: string | null
           expected_amount_cents: number | null
           id: string
           item_id: string
@@ -1371,6 +1375,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          due_on?: string | null
           expected_amount_cents?: number | null
           id?: string
           item_id: string
@@ -1382,6 +1387,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          due_on?: string | null
           expected_amount_cents?: number | null
           id?: string
           item_id?: string
@@ -3312,10 +3318,20 @@ export type Database = {
         Returns: undefined
       }
       intranet_can_access: { Args: { p_sector: string }; Returns: boolean }
+      intranet_classify_finance: {
+        Args: {
+          p_category: string
+          p_due?: string
+          p_id: string
+          p_type: string
+        }
+        Returns: undefined
+      }
       intranet_dashboard: {
         Args: { p_days?: number; p_sector: string }
         Returns: Json
       }
+      intranet_finance_metrics: { Args: { p_days?: number }; Returns: Json }
       intranet_health_probe: { Args: never; Returns: boolean }
       intranet_members: { Args: never; Returns: Json }
       intranet_moderate: {
