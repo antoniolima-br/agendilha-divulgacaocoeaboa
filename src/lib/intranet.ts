@@ -1,5 +1,8 @@
 export const INTRANET_SECTORS = ["comercial", "marketing", "administracao", "financeiro", "desenvolvimento"] as const;
 export type IntranetSector = typeof INTRANET_SECTORS[number];
+export function canViewIntranetOverview(roles: string[]): boolean {
+  return roles.some(role => role === 'master' || role === 'senior');
+}
 export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comercial", marketing: "Marketing", administracao: "Administração", financeiro: "Financeiro", desenvolvimento: "Desenvolvimento" };
 export function intranetSectors(roles: string[]): IntranetSector[] {
   if (roles.some((role) => ["master", "senior"].includes(role))) return [...INTRANET_SECTORS];
