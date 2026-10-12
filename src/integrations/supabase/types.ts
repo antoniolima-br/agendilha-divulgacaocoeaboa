@@ -3110,6 +3110,13 @@ export type Database = {
         Args: { candidate: Database["public"]["Tables"]["submissions"]["Row"] }
         Returns: string
       }
+      event_registration_pair_issue: {
+        Args: {
+          candidate: Database["public"]["Tables"]["submissions"]["Row"]
+          other: Database["public"]["Tables"]["submissions"]["Row"]
+        }
+        Returns: string
+      }
       event_titles_similar: { Args: { a: string; b: string }; Returns: boolean }
       finance_add_expense: {
         Args: {
