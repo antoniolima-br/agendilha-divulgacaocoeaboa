@@ -1,109 +1,39 @@
-import { UseFormReturn } from "react-hook-form";
-import { Image as ImageIcon, Sparkles, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FileUpload } from "../FormFields";
-import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
-import { lazy, Suspense } from "react";
-import { PhotoGallery } from "@/components/media/PhotoGallery";
-import { useAuth } from "@/contexts/AuthContext";
-
-// Lazy load heavy component
-const AIFlyerGenerator = lazy(() => import("../../AIFlyerGenerator").then(m => ({ default: m.AIFlyerGenerator })));
+import type { UseFormReturn } from "react-hook-form";
+import { Image as ImageIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { SubmissionFormData } from "../schema";
 
 interface MediaStepProps {
-  form: UseFormReturn<any>;
-  imageSource: "upload" | "ai" | null;
-  setImageSource: (val: "upload" | "ai") => void;
+  form: UseFormReturn<SubmissionFormData>;
   eventImage: File | string | null;
-  setEventImage: (val: File | string | null) => void;
 }
 
-export function MediaStep({ form, imageSource, setImageSource, eventImage, setEventImage }: MediaStepProps) {
-  const { user } = useAuth();
-  const fotos: string[] = form.watch("fotos") || [];
+export function MediaStep({ form, eventImage }: MediaStepProps) {
+  const savedImage = form.watch("eventImageUrl");
+  const [preview, setPreview] = useState("");
+  useEffect(() => {
+    if (eventImage instanceof File) {
+      const url = URL.createObjectURL(eventImage);
+      setPreview(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreview(typeof eventImage === "string" ? eventImage : savedImage || "");
+  }, [eventImage, savedImage]);
+  const hasImage = Boolean(eventImage || savedImage);
   return (
-    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-4 animate-in fade-in motion-reduce:animate-none">
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-primary flex items-center gap-2">
-          <ImageIcon className="h-5 w-5" />
+          <ImageIcon className="h-5 w-5 shrink-0" />
           Flyer ou Banner do Evento <span className="text-xs font-normal text-muted-foreground">(opcional)</span>
         </h2>
         <p className="text-sm text-muted-foreground">
-          Pode seguir sem arte. Se escolher o evento patrocinado na revisão, seu flyer padrão será preparado ao finalizar. No envio gratuito, não há geração automática.
+          {hasImage
+            ? "Seu flyer será a imagem oficial do evento. Confira os dados antes de finalizar."
+            : "Pode seguir sem arte. Se escolher o evento patrocinado na revisão, seu flyer padrão será preparado ao finalizar. No envio gratuito, não há geração automática."}
         </p>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Button
-          type="button"
-          variant={imageSource === "upload" ? "default" : "outline"}
-          className="h-20 sm:h-24 flex flex-col gap-2 transition-all"
-          onClick={() => setImageSource("upload")}
-        >
-          <ImageIcon className="h-6 w-6" />
-          <div className="text-center">
-            <div className="font-bold">Já tenho a arte</div>
-            <div className="text-[10px] opacity-70">Fazer upload do flyer</div>
-          </div>
-        </Button>
-
-        <Button
-          type="button"
-          variant={imageSource === "ai" ? "default" : "outline"}
-          className="h-20 sm:h-24 flex flex-col gap-2 relative transition-all"
-          onClick={() => setImageSource("ai")}
-        >
-          <ImageIcon className="h-6 w-6 text-primary" />
-          <div className="text-center">
-            <div className="font-bold">Gerar flyer padrão</div>
-            <div className="text-[10px] opacity-70 font-medium">Cria a arte oficial do evento</div>
-          </div>
-        </Button>
-      </div>
-
-      {imageSource === "upload" && (
-        <div className="animate-in zoom-in-95 duration-300">
-          <FileUpload
-            label="Flyer Principal"
-            accept="image/*"
-            file={eventImage}
-            onFileChange={setEventImage}
-          />
-        </div>
-      )}
-
-      {imageSource === "ai" && (
-        <div className="animate-in zoom-in-95 duration-300">
-          <Suspense fallback={
-            <div className="h-40 flex flex-col items-center justify-center gap-3 bg-muted/20 rounded-3xl border-2 border-dashed border-primary/20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm font-bold text-primary/60 uppercase tracking-widest">Carregando...</p>
-            </div>
-          }>
-            <AIFlyerGenerator
-              initialData={{
-                title: form.watch("eventTitle") || "",
-                artist: form.watch("atrativoName") || "",
-                date: form.watch("date") ? format(new Date(form.watch("date")), "dd/MM") : "",
-                time: form.watch("startTime") || "",
-                location: form.watch("locationName") || "",
-                neighborhood: "", // Derived if possible
-                category: form.watch("category") || "musica"
-              }}
-              onFlyerGenerated={(urls) => {
-                setEventImage(urls.feed);
-                form.setValue("eventImageUrl", urls.feed);
-                form.setValue("eventImageUrlStory", urls.story);
-                form.setValue("eventImageUrlWhatsapp", urls.whatsapp);
-              }}
-            />
-          </Suspense>
-        </div>
-      )}
-
-      {/* Removendo a seção Fotos extras conforme solicitado */}
-
+      {preview && <img src={preview} alt="Flyer oficial do evento" className="h-64 w-full rounded-lg bg-muted/20 object-contain" />}
     </div>
   );
 }
