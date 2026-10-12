@@ -1499,6 +1499,105 @@ export type Database = {
           },
         ]
       }
+      intranet_campaigns: {
+        Row: {
+          budget_cents: number
+          channel: string
+          created_at: string
+          created_by: string
+          destination: string
+          id: string
+          name: string
+          status: string
+        }
+        Insert: {
+          budget_cents?: number
+          channel: string
+          created_at?: string
+          created_by?: string
+          destination: string
+          id?: string
+          name: string
+          status?: string
+        }
+        Update: {
+          budget_cents?: number
+          channel?: string
+          created_at?: string
+          created_by?: string
+          destination?: string
+          id?: string
+          name?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      intranet_health_samples: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          latency_ms: number
+          storage_quota: number | null
+          storage_used: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          latency_ms: number
+          storage_quota?: number | null
+          storage_used?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          latency_ms?: number
+          storage_quota?: number | null
+          storage_used?: number | null
+        }
+        Relationships: []
+      }
+      intranet_leads: {
+        Row: {
+          company: string
+          contact: string
+          created_at: string
+          created_by: string
+          ends_on: string | null
+          id: string
+          monthly_cents: number
+          notes: string
+          stage: string
+          starts_on: string | null
+        }
+        Insert: {
+          company: string
+          contact?: string
+          created_at?: string
+          created_by?: string
+          ends_on?: string | null
+          id?: string
+          monthly_cents?: number
+          notes?: string
+          stage?: string
+          starts_on?: string | null
+        }
+        Update: {
+          company?: string
+          contact?: string
+          created_at?: string
+          created_by?: string
+          ends_on?: string | null
+          id?: string
+          monthly_cents?: number
+          notes?: string
+          stage?: string
+          starts_on?: string | null
+        }
+        Relationships: []
+      }
       location_requests: {
         Row: {
           created_at: string | null
@@ -3205,6 +3304,11 @@ export type Database = {
       increment_ad_views: { Args: { target_ad_id: string }; Returns: undefined }
       increment_shares: { Args: { event_id: string }; Returns: undefined }
       increment_views: { Args: { event_id: string }; Returns: undefined }
+      intranet_can_access: { Args: { p_sector: string }; Returns: boolean }
+      intranet_dashboard: {
+        Args: { p_days?: number; p_sector: string }
+        Returns: Json
+      }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }
