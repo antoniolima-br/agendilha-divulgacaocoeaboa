@@ -48,6 +48,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   const [eventImage, setEventImage] = useState<File | string | null>(null);
   const [imageSource, setImageSource] = useState<"upload" | "ai" | null>(null);
   const [readingFlyer, setReadingFlyer] = useState(false);
+  const [flyerRevision, setFlyerRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
@@ -778,6 +779,8 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     setDraftSavedAt(null);
     setEventImage(null);
     setImageSource(null);
+    setFlyerRevision(value => value + 1);
+    setReadingFlyer(false);
     toast.success("Rascunho limpo.");
   };
 
@@ -832,7 +835,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                 </p>
               </div>
 
-              <FlyerAutofill key={draftSavedAt === null && !eventImage ? "empty" : "flyer"} form={form} onImage={(file) => { setEventImage(file); setImageSource("upload"); }} onLoading={setReadingFlyer} />
+              <FlyerAutofill key={flyerRevision} form={form} onImage={(file) => { setEventImage(file); setImageSource("upload"); }} onLoading={setReadingFlyer} />
 
               <div id="manual-event-fields" className="border rounded-2xl px-4 py-5 bg-card/30">
                 <EventStep form={form} section="core" />
