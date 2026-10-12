@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
 import { administrativeRole } from "@/lib/access";
 import { qk } from "@/data/queryKeys";
+import { intranetSectors } from "@/lib/intranet";
 
 const ADMIN_PERMISSIONS: PermissionName[] = [
   "events.create",
@@ -45,6 +46,7 @@ type CollaboratorPermissions = {
 };
 
 export type PermissionName =
+  | "intranet.read"
   | "pitch.read"
   | "finance.read"
   | "finance.settle"
@@ -81,6 +83,8 @@ export function computePermissions(input: {
 }): { roles: string[]; permissions: Set<PermissionName> } {
   const roleNames = [...input.roleNames];
   const permissions = new Set<PermissionName>();
+  if (intranetSectors(roleNames).length) permissions.add("intranet.read");
+  if (!roleNames.some((role) => ["master", "senior"].includes(role)) && roleNames.some((role) => ["comercial", "marketing", "administracao", "desenvolvimento"].includes(role))) return { roles: roleNames, permissions };
   const staffRole = administrativeRole(roleNames);
   const isAdminRole = staffRole === "admin" || staffRole === "senior" || staffRole === "master";
 
@@ -117,7 +121,7 @@ export function computePermissions(input: {
   // senão quem é Divulgador ficava sem permissão de criar evento.
   const profileRole = (input.profileRole ?? "").toLowerCase();
   const normalizedRole = PROMOTER_ALIASES.includes(profileRole) ? "promoter" : profileRole;
-  if (normalizedRole && !["admin", "master", "senior", "financeiro"].includes(normalizedRole) && staffRole !== "financeiro" && !roleNames.includes(normalizedRole)) {
+  if (normalizedRole && !["admin", "master", "senior", "financeiro", "comercial", "marketing", "administracao", "desenvolvimento"].includes(normalizedRole) && staffRole !== "financeiro" && !roleNames.includes(normalizedRole)) {
     roleNames.push(normalizedRole);
   }
   if (normalizedRole === "promoter" && staffRole !== "financeiro") {

@@ -1,4 +1,7 @@
 export const ROUTES = {
+  INTRANET: "/intranet",
+  INTRANET_SECTOR: "/intranet/:sector",
+  CAMPAIGN_LINK: "/campanha/:id",
   LANDING: "/",
   AGENDA: "/agenda",
   SEU_RADAR: "/seu-radar",

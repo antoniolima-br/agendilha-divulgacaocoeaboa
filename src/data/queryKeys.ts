@@ -3,6 +3,11 @@
  * Keeps cache invalidation explicit and prevents typos in key arrays.
  */
 export const qk = {
+  intranet: {
+    all: ["intranet"] as const,
+    dashboard: (owner: string | null, sector: string, days: number) => [...qk.intranet.all, owner, sector, days] as const,
+    records: (owner: string | null, table: string) => [...qk.intranet.all, owner, table] as const,
+  },
   permissions: {
     all: ["app-permissions"] as const,
     byUser: (userId: string | null) => [...qk.permissions.all, userId] as const,
