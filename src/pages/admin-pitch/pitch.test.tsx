@@ -41,13 +41,13 @@ describe("pitch comercial", () => {
   it("só exibe após conferência, permite bloquear e limpa o campo", async () => {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     render(page());
-    expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-    await screen.findByText("Projeção de receita mensal");
+    await screen.findByRole("heading", { name: "Projeção de receita mensal" });
     const overview = screen.getByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
     expect(overview).toBeVisible();
     for (const name of ["Segurança e Governança", "Ferramentas Administrativas e Financeiras", "Usabilidade Premium", "Escalabilidade"]) {
@@ -77,7 +77,7 @@ describe("pitch comercial", () => {
     expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /Layout conceitual/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: buildPitchContent().anchor.title })).not.toBeInTheDocument();
-    expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
   });
   it("mantém fechado quando a senha é recusada", async () => {
@@ -86,7 +86,7 @@ describe("pitch comercial", () => {
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByRole("alert");
-    expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
   });
   it("abre a estratégia do piloto independentemente e mantém expansão como plano", async () => {
     mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
@@ -110,7 +110,7 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: "Facilidade para quem busca lazer" })).toBeVisible();
     expect(screen.getByText(/Uma agenda organizada/)).toHaveTextContent("regiões vizinhas");
     expect(screen.getByText(/nenhuma campanha é ativada/)).toBeVisible();
-    expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
     fireEvent.click(strategy);
     expect(screen.queryByText(/O Ponto de Partida/)).not.toBeInTheDocument();
   });
@@ -132,7 +132,7 @@ describe("pitch comercial", () => {
       expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
       fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
       fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-      await screen.findByText("Projeção de receita mensal");
+      await screen.findByRole("heading", { name: "Projeção de receita mensal" });
       expect(screen.queryByRole("navigation", { name: "Atalhos do pitch" })).not.toBeInTheDocument();
       expect(screen.queryByRole("link", { name: "Estratégia Paga · Aceleração e Escala" })).not.toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: /02.*Plano de Marketing/ }));
@@ -149,7 +149,7 @@ describe("pitch comercial", () => {
       expect(expansion).toHaveAttribute("href", "#pitch-regional-expansion");
       fireEvent.click(expansion);
       await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
-      expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
+      expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
       vi.mocked(window.matchMedia).mockReturnValue({ matches: true } as MediaQueryList);
       fireEvent.click(screen.getByRole("link", { name: /^Estratégia de Atração Híbrida$/ }));
       await waitFor(() => expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toHaveFocus());
@@ -168,7 +168,7 @@ describe("pitch comercial", () => {
       render(page());
       fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
       fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-      await screen.findByText("Projeção de receita mensal");
+      await screen.findByRole("heading", { name: "Projeção de receita mensal" });
       for (const number of ["02", "03", "04", "05"]) {
         fireEvent.click(screen.getByRole("button", { name: new RegExp(`^${number}`) }));
       }
@@ -204,9 +204,9 @@ describe("pitch comercial", () => {
     const view = render(page());
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-    await screen.findByText("Projeção de receita mensal");
+    await screen.findByRole("heading", { name: "Projeção de receita mensal" });
     mocks.userId = "other-test-user";
     view.rerender(page());
-    await waitFor(() => expect(screen.queryByText("Projeção de receita mensal")).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument());
   });
 });
