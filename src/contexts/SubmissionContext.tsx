@@ -63,6 +63,7 @@ interface SubmissionEntry {
    submissions: SubmissionEntry[];
    loading: boolean;
    fetchSubmissions: () => Promise<void>;
+    addSubmissionBatch: (data: Omit<SubmissionInsert, "user_id">[]) => Promise<{ id: string }[]>;
   addSubmission: (
     data: Omit<SubmissionEntry, "id" | "created_at" | "user_id" | "deleted_at" | "stage" | "status" | "rejection_reason"> & { stage?: string }
   ) => Promise<{ id: string } | null>;
@@ -102,6 +103,16 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   }, [user]);
+
+  const addSubmissionBatch = useCallback(async (data: Omit<SubmissionInsert, "user_id">[]) => {
+    if (!user) throw new Error("Sua sessão expirou. Entre novamente para enviar os eventos.");
+    const { data: inserted, error } = await supabase.from("submissions")
+      .insert(data.map(row => ({ ...row, user_id: user.id }))).select("id");
+    if (error) throw error;
+    if (!inserted || inserted.length !== data.length) throw new Error("Não deu pra confirmar o envio. Confira seus eventos antes de tentar novamente.");
+    await fetchSubmissions();
+    return inserted;
+  }, [user, fetchSubmissions]);
 
   const addSubmission = useCallback(async (data: Omit<SubmissionEntry, "id" | "created_at" | "user_id" | "deleted_at" | "status" | "rejection_reason"> & { status?: string }) => {
     if (!user) {
@@ -203,6 +214,7 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
         submissions,
         loading,
         fetchSubmissions,
+        addSubmissionBatch,
         addSubmission,
         deleteSubmission,
         resubmit,

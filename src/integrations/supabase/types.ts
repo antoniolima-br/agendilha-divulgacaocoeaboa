@@ -2090,6 +2090,7 @@ export type Database = {
           event_title: string | null
           flyer_approved_at: string | null
           flyer_aprovado: boolean
+          flyer_fingerprint: string | null
           fotos: string[] | null
           highlight_grant_type: string | null
           highlight_hidden: boolean
@@ -2193,6 +2194,7 @@ export type Database = {
           event_title?: string | null
           flyer_approved_at?: string | null
           flyer_aprovado?: boolean
+          flyer_fingerprint?: string | null
           fotos?: string[] | null
           highlight_grant_type?: string | null
           highlight_hidden?: boolean
@@ -2296,6 +2298,7 @@ export type Database = {
           event_title?: string | null
           flyer_approved_at?: string | null
           flyer_aprovado?: boolean
+          flyer_fingerprint?: string | null
           fotos?: string[] | null
           highlight_grant_type?: string | null
           highlight_hidden?: boolean
@@ -3085,6 +3088,7 @@ export type Database = {
           event_start: string
         }[]
       }
+      check_event_registration: { Args: { p_events: Json }; Returns: Json }
       cleanup_admin_pin_sessions: { Args: never; Returns: undefined }
       cleanup_expired_reset_codes: { Args: never; Returns: undefined }
       contains_bad_words: { Args: { text_to_check: string }; Returns: boolean }
@@ -3101,6 +3105,19 @@ export type Database = {
         }[]
       }
       event_day_sp: { Args: { p_date: string }; Returns: string }
+      event_match_text: { Args: { v: string }; Returns: string }
+      event_registration_issue: {
+        Args: { candidate: Database["public"]["Tables"]["submissions"]["Row"] }
+        Returns: string
+      }
+      event_registration_pair_issue: {
+        Args: {
+          candidate: Database["public"]["Tables"]["submissions"]["Row"]
+          other: Database["public"]["Tables"]["submissions"]["Row"]
+        }
+        Returns: string
+      }
+      event_titles_similar: { Args: { a: string; b: string }; Returns: boolean }
       finance_add_expense: {
         Args: {
           p_amount_cents: number

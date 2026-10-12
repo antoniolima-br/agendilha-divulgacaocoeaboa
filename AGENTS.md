@@ -10,7 +10,7 @@
 - Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - All establishment creation forms share address-by-CEP search to prevent drift.
-- Multi-event submissions share venue/contact data but keep separate rows for moderation/publication; same-day events at one venue require distinct start times in both form and database.
+- Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
 - Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
