@@ -38,6 +38,8 @@ import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSecti
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { prepareUploadImage } from "@/lib/uploadImage";
 import { FlyerAutofill } from "./submission-form/FlyerAutofill";
+import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
+import { RegistrationAlert } from "./submission-form/RegistrationAlert";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
@@ -51,7 +53,9 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
-  const { addSubmission } = useSubmissions();
+  const { addSubmissionBatch } = useSubmissions();
+  const [registrationIssue, setRegistrationIssue] = useState<RegistrationCode | null>(null);
+  const submittingRef = useRef(false);
   const { user } = useAuth();
   const { isCollaborator, isPromoter } = useAppPermissions();
   const { profile, loaded } = useProfile();
@@ -348,9 +352,30 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       setCurrentStep(missing.includes("legalAcceptance") && missing.length === 1 ? 2 : 1);
       return;
     }
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setRegistrationIssue(null);
     setSubmitting(true);
     const submissionTimer = startFlowMeasure("event-submission", "complete-submission", currentStep);
     try {
+      const fingerprint = eventImage instanceof File ? await flyerFingerprint(eventImage) : null;
+      const registrationEvents: RegistrationEvent[] = [values, ...values.additionalEvents].map((event, index) => ({
+        date: toEventDateOnly(event.date), start_time: event.startTime,
+        event_title: event.eventTitle, atrativo_name: event.atrativoName,
+        location: values.locationName, estabelecimento_id: values.estabelecimentoId || null,
+        address_neighborhood: values.addressNeighborhood,
+        atrativo_id: index === 0 && values.atrativoSourceType === "atrativo" ? values.atrativoSourceId || null : null,
+        artist_id: index === 0 && values.atrativoSourceType === "artist" ? values.atrativoSourceId || null : null,
+        image_url: index === 0 ? values.eventImageUrl : null,
+        flyer_fingerprint: index === 0 ? fingerprint : null,
+        promotion_choice: values.promotionChoice,
+      }));
+      const issue = await checkEventRegistration(registrationEvents);
+      if (issue) {
+        setRegistrationIssue(issue);
+        submissionTimer.finish({ outcome: "blocked" });
+        return;
+      }
       const duplicateStarts = findDuplicateEventStart([
         { date: values.date, startTime: values.startTime },
         ...values.additionalEvents.map((event) => ({ date: event.date, startTime: event.startTime })),
@@ -523,6 +548,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
           endereco_resumido: clean(values.perfilEnderecoResumido),
         },
         image_url: imageUrl || null,
+        flyer_fingerprint: fingerprint,
         image_url_story: values.eventImageUrlStory || null,
         image_url_whatsapp: values.eventImageUrlWhatsapp || null,
         fotos: values.fotos || [],
@@ -541,19 +567,9 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       if (selectedEstabId) payload.estabelecimento_id = selectedEstabId;
 
       const submissionInsertTimer = startFlowMeasure("event-submission", "submission-insert", currentStep);
-      const result = await addSubmission(payload as any);
-      submissionInsertTimer.finish({ outcome: result ? "success" : "failure" });
-
-      if (!result) {
-        submissionTimer.finish({ outcome: "failure" });
-        return; // toast already shown by ctx
-      }
-
-      const insertedSubmissionIds = [result.id];
-      for (let index = 0; index < values.additionalEvents.length; index += 1) {
-        const event = values.additionalEvents[index];
+      const batch = [payload, ...values.additionalEvents.map((event, index) => {
         const additionalImageUrl = flyerUrls[index + 1];
-        const additionalPayload = {
+        return {
           ...payload,
           event_title: clean(event.eventTitle),
           date: toEventDateOnly(event.date),
@@ -567,19 +583,16 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
           is_suitable_for_minors: event.ageRating === "Livre",
           description: clean(event.description),
           image_url: additionalImageUrl,
+          flyer_fingerprint: null,
           image_url_story: null,
           image_url_whatsapp: null,
         };
-        const additionalResult = await addSubmission(additionalPayload as any);
-        if (!additionalResult) {
-          toast.error(`O evento ${index + 2} não foi enviado`, {
-            description: `${insertedSubmissionIds.length} evento(s) foram enviados. Remova os já enviados antes de tentar novamente.`,
-          });
-          submissionTimer.finish({ outcome: "failure" });
-          return;
-        }
-        insertedSubmissionIds.push(additionalResult.id);
-      }
+      })];
+      const results = await addSubmissionBatch(batch);
+      submissionInsertTimer.finish({ outcome: "success" });
+      const result = results[0];
+      if (!result) throw new Error("Não deu pra confirmar o evento enviado.");
+      const insertedSubmissionIds = results.map(row => row.id);
 
       // Atrativos do evento: o principal + os incluídos pelo botão "Incluir atrativo".
       try {
@@ -696,6 +709,13 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
         { replace: true },
       );
     } catch (error) {
+      const issue = registrationCode(error);
+      if (issue) {
+        setRegistrationIssue(issue);
+        toast.error(registrationMessages[issue]);
+        submissionTimer.finish({ outcome: "blocked" });
+        return;
+      }
       submissionTimer.finish({ outcome: "failure", error });
       logRuntimeError("EventForm.submit", error, { step: currentStep, detail: { promotionChoice: values.promotionChoice, extraEvents: values.additionalEvents.length } });
       const detail = error instanceof Error ? error.message : (error as { message?: string })?.message;
@@ -720,6 +740,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
           : detail || "Algo falhou ao salvar. Confere os dados e tenta de novo em instantes.",
       });
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   };
@@ -917,8 +938,12 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
               <DestaquePremiumSection
                 submitting={submitting}
                 value={form.watch("promotionChoice")}
-                onChange={(value) => form.setValue("promotionChoice", value, { shouldDirty: true, shouldValidate: true })}
+                onChange={(value) => { setRegistrationIssue(null); form.setValue("promotionChoice", value, { shouldDirty: true, shouldValidate: true }); }}
               />
+              {registrationIssue && <RegistrationAlert code={registrationIssue} onSponsored={() => {
+                form.setValue("promotionChoice", "highlight", { shouldDirty: true, shouldValidate: true });
+                setRegistrationIssue(null);
+              }} />}
               {form.watch("promotionChoice") === "highlight" && !eventImage && !form.watch("eventImageUrl") && (
                 <p className="text-sm text-muted-foreground">Ao finalizar, seu flyer será preparado com os dados revisados para baixar e divulgar no Instagram ou WhatsApp. O evento continua sujeito à revisão da equipe.</p>
               )}
