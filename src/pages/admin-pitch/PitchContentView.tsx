@@ -3,6 +3,7 @@ import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, User
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PitchChapter } from "./PitchChapter";
+import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
 import type { PitchContent } from "./types";
 
@@ -106,9 +107,11 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
       </TabsContent>
     <PitchChapter value="product" number="01" title="Modelo de Receita & Setores" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
 
-        <CorporatePillars />
         <section className="space-y-3"><h3 id="pitch-product" tabIndex={-1} className={`${headingClass} text-2xl`}>Coé a Boa?</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{content.brandPositioning}</p></section>
         {content.technology && <section className="space-y-3 border-t border-border pt-6"><h3 id="pitch-technology" tabIndex={-1} className={headingClass}>{content.technology.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.technology.description}</p></section>}
+        <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Publicidade regional como base de receita; patrocínios de eventos como complemento. Cinco setores integrados sustentam a operação.</p>
+        <PitchDetails>
+        <CorporatePillars />
         <section className="space-y-5 border-t border-border pt-6">
           <h3 id="pitch-formats" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-xl font-semibold"><Megaphone className="h-5 w-5 shrink-0 text-primary" /> Inventário e Condições dos Formatos</h3>
           <div className="grid gap-8 md:grid-cols-2">
@@ -127,28 +130,37 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
           <div className="w-full overflow-x-auto rounded-lg border border-primary/30 bg-card" tabIndex={0} aria-label="Projeção mensal por período"><table className="w-full min-w-[620px] text-left text-sm"><caption className="sr-only">Cenário ilustrativo de vendas e receita dos meses 1, 6 e 12</caption><thead className="bg-primary/10"><tr><th scope="col" className="p-4 font-medium">Vendas e receita</th>{content.scenarios.map((s) => <th scope="col" key={s.month} className="p-4 font-medium"><span className="block">{s.phase}</span><span className="text-xs text-muted-foreground">Mês {s.month}</span></th>)}</tr></thead><tbody>{rows.map((row) => <tr key={row.label} className={row.emphasis ? "border-t border-border bg-primary/10 text-primary" : "border-t border-border"}><th scope="row" className="p-4 font-medium">{row.label}</th>{content.scenarios.map((s) => <td key={s.month} className="whitespace-nowrap p-4 tabular-nums">{row.value(s)}</td>)}</tr>)}</tbody></table></div>
           <p className="text-xs leading-relaxed text-muted-foreground">* {content.disclaimer}</p>
         </section>
-        <details className="group border-t border-border pt-5"><summary className="cursor-pointer text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Inventário e condições dos formatos</summary><div className="mt-5 space-y-6">
+        <div className="space-y-6 border-t border-border pt-5">
           {content.inventoryImage && <figure className="space-y-3"><h3 id="pitch-inventory-map" tabIndex={-1} className={headingClass}>Mapa de Inventário Publicitário</h3><img src={content.inventoryImage} alt="Layout conceitual do Coé a Boa?: Master no topo, dois co-patrocinadores abaixo, carrossel regional, banners nativos na Agenda, eventos patrocinados e notificações regionais." width={1536} height={1024} loading="lazy" decoding="async" className="h-auto w-full rounded-lg border border-border" /><figcaption className="text-xs leading-relaxed text-muted-foreground">Ilustração conceitual com marcas fictícias. Os formatos representados não confirmam sua ativação; Master e Sub-Master seguem a proposta de exclusividade por sessão, sem rotação automática.</figcaption></figure>}
           <section className="space-y-3"><h3 id="pitch-regional-ads" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-lg font-semibold"><MapPin className="h-4 w-4 text-primary" /> Publicidade regional</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.differential}</p>{regional && <p className="text-sm leading-relaxed text-muted-foreground">{regional.title}: {money(regional.min)} a {money(regional.max)} · {regional.cycle}.</p>}<p className="text-sm leading-relaxed text-muted-foreground">{content.capacity}</p><p className="text-sm leading-relaxed text-muted-foreground">{content.monetization}</p></section>
           <section className="space-y-3 border-t border-border pt-5"><h3 id="pitch-push" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-lg font-semibold"><BellRing className="h-4 w-4 text-primary" /> {content.push.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.push.example}</p><p className="text-sm font-medium">{money(content.pushTicket)} por disparo regional · {content.push.packageSends} disparos/mês por {money(content.push.packagePrice)}</p></section>
           <section className="space-y-4 border-t border-border pt-5"><h3 id="pitch-anchor" tabIndex={-1} className={headingClass}>{content.anchor.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.anchor.billing}</p><div className="grid gap-5 md:grid-cols-2"><div><h4 className="text-sm font-semibold">Banner âncora prioritário na Home</h4><p className="mt-2 text-sm text-muted-foreground">{content.anchor.banner}</p></div><div><h4 className="text-sm font-semibold">Contagem regressiva para o evento</h4><p className="mt-2 text-sm text-muted-foreground">{content.anchor.countdown}</p></div></div><ol className="grid gap-5 md:grid-cols-3">{content.anchor.phases.map((phase, i) => <li key={phase.title}><h4 className="text-sm font-semibold"><span className="mr-2 text-primary">0{i + 1}</span>{phase.title}</h4><p className="mt-2 text-sm text-muted-foreground">{phase.description}</p></li>)}</ol></section>
-        </div></details>
+        </div>
+        </PitchDetails>
     </PitchChapter>
     <PitchChapter value="b2c" number="02" title="Plano de Marketing (Atração de Usuários - B2C)" eyebrow="B2C · Público" icon={Users}>
-{content.b2c && <>{navigation("b2c", "Atalhos do Plano de Marketing", [{ id: "pitch-paid-strategy", label: "Estratégia Paga · Aceleração e Escala" }])}<div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy, i) => <section key={strategy.title} className="space-y-5"><h3 id={i === 1 ? "pitch-paid-strategy" : "pitch-organic-strategy"} tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{strategy.title}</h3><ul className="space-y-4">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>{i === 1 && <p className="border-l-2 border-primary pl-4 text-sm">Verba inicial estimada: <strong className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</strong></p>}</section>)}</div></>}
+      <section className="max-w-3xl space-y-3"><h3 className={headingClass}>Comunidade primeiro, mídia local para acelerar</h3><p className="leading-relaxed text-muted-foreground">Acesso por link, boca a boca e curadoria semanal criam o hábito de consultar a agenda. Tráfego pago hiperlocal amplia a descoberta, com investimento ajustado aos resultados.</p></section>
+{content.b2c && <>{navigation("b2c", "Atalhos do Plano de Marketing", [{ id: "pitch-paid-strategy", label: "Estratégia Paga · Aceleração e Escala" }])}<PitchDetails><div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy, i) => <section key={strategy.title} className="space-y-5"><h3 id={i === 1 ? "pitch-paid-strategy" : "pitch-organic-strategy"} tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{strategy.title}</h3><ul className="space-y-4">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>{i === 1 && <p className="border-l-2 border-primary pl-4 text-sm">Verba inicial estimada: <strong className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</strong></p>}</section>)}</div></PitchDetails></>}
     </PitchChapter>
     <PitchChapter value="b2b" number="03" title="Plano Comercial (Vendas B2B e Abordagem)" eyebrow="B2B · Anunciantes" icon={BriefcaseBusiness}>
+      <section className="max-w-3xl space-y-3"><h3 className={headingClass}>Visibilidade de bairro, resultados acompanhados</h3><p className="leading-relaxed text-muted-foreground">Propostas claras para comerciantes e parceiros âncora: região, entregas e investimento definidos, com acompanhamento mensal de contatos e resultados quando houver dados.</p></section>
+      <PitchDetails>
 {content.b2b && <><section className="space-y-3"><h3 id="pitch-sales-argument" tabIndex={-1} className={headingClass}>{content.b2b.exclusivity.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.exclusivity.description}</p></section><section className="space-y-5 border-t border-border pt-6"><h3 id="pitch-prospecting" tabIndex={-1} className={headingClass}>Metodologia de Captação</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.anchors.description}</p><ol className="grid gap-6 md:grid-cols-3">{content.b2b.anchors.steps.map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol></section></>}
-        {content.selfService && <details className="group border-t border-border pt-5"><summary className="cursor-pointer text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Evolução futura · Autoatendimento com controle</summary><section className="mt-5 space-y-4"><h3 id="pitch-self-service" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-lg font-semibold"><Workflow className="h-4 w-4 shrink-0 text-primary" /> {content.selfService.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.description}</p><ol className="grid gap-5 md:grid-cols-2">{content.selfService.steps.map((step) => <li key={step.title} className="space-y-2"><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.strategy}</p></section></details>}
+        {content.selfService && <section className="space-y-4 border-t border-border pt-5"><h3 id="pitch-self-service" tabIndex={-1} className="scroll-mt-24 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-2 text-lg font-semibold"><Workflow className="h-4 w-4 shrink-0 text-primary" /> {content.selfService.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.description}</p><ol className="grid gap-5 md:grid-cols-2">{content.selfService.steps.map((step) => <li key={step.title} className="space-y-2"><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.strategy}</p></section>}
+      </PitchDetails>
     </PitchChapter>
     <PitchChapter value="next-steps" number="04" title="Estratégia · Praça-piloto e Lançamento" eyebrow="Estratégia · Lançamento" icon={ArrowRight}>
+      <section className="space-y-4">
+        <h3 id="pitch-pilot" tabIndex={-1} className={headingClass}>O Ponto de Partida: Ilha do Governador como Praça-Piloto</h3>
+        <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">A <strong className="font-medium text-foreground">Ilha do Governador</strong> é a praça-piloto oficial. O legado do <em>AgendIlha</em> conecta o projeto a produtores, estabelecimentos e público local.</p>
+      </section>
+      <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Validar produto, tração e receita no piloto antes de avançar para Niterói e a Baixada Fluminense.</p>
       {navigation("next-steps", "Atalhos da Estratégia de Lançamento", [
         { id: "pitch-regional-expansion", label: "Plano de Expansão Regional (Fases 2 e 3)" },
         { id: "pitch-hybrid-acquisition", label: "Estratégia de Atração Híbrida" },
       ])}
+      <PitchDetails>
       <section className="space-y-4">
-        <h3 id="pitch-pilot" tabIndex={-1} className={headingClass}>O Ponto de Partida: Ilha do Governador como Praça-Piloto</h3>
-        <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">A <strong className="font-medium text-foreground">Ilha do Governador</strong> é a praça-piloto oficial. O legado do <em>AgendIlha</em> conecta o projeto a produtores, estabelecimentos e público local.</p>
         <ul className="grid gap-5 md:grid-cols-2">{[
           { title: "Vantagem Inicial", description: "Relações locais e conhecimento da região como ponto de partida." },
           { title: "Validação de Produto", description: "Ouvir o público e refinar o cadastro por flyer e a experiência de uso." },
@@ -179,14 +191,18 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
           { title: "Tráfego Pago Hiperlocal", description: "Segmentar por geolocalização e raio de interesse; medir antes de ampliar." },
         ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
       </section>
+      </PitchDetails>
     </PitchChapter>
     <PitchChapter value="singularity" number="05" title="Por que Investir no Coé a Boa? (Singularidade)" eyebrow="Encerramento · Resumo executivo" icon={Sparkles}>
       <section className="space-y-3"><h3 id="pitch-investment-differential" tabIndex={-1} className={headingClass}>Diferencial do Produto</h3>
       <p className="max-w-3xl text-lg font-medium leading-relaxed">Um ecossistema seguro e inteligente para o entretenimento local.</p></section>
+      <p className="max-w-3xl leading-relaxed text-muted-foreground">Descoberta hiperlocal, parceiros conectados e operação enxuta, com expansão condicionada à validação de cada praça.</p>
+      <PitchDetails>
       <section className="space-y-3"><h3 id="pitch-investment-ecosystem" tabIndex={-1} className={headingClass}>Ecossistema Hiperlocal</h3>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Curadoria, cadastro rápido e publicidade de bairro conectam público, produtores e comerciantes. Preparado para escalar praça a praça, com governança e validação do piloto.</p></section>
       <section className="space-y-3"><h3 id="pitch-investment-opportunity" tabIndex={-1} className={headingClass}>Oportunidade e Validação</h3>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Crescer no mercado de lazer local com operação enxuta, governança e resultados medidos.</p></section>
+      </PitchDetails>
     </PitchChapter>
     </Tabs>
     <footer aria-label="Notas institucionais" className="mt-10 space-y-4 border-t border-border pt-6 text-xs leading-relaxed text-muted-foreground">
