@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, Target, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Accordion } from "@/components/ui/accordion";
 import { PitchWindow } from "./PitchWindow";
 import type { PitchContent } from "./types";
@@ -19,9 +21,32 @@ const rows: { label: string; value: (s: Scenario) => string | number; emphasis?:
 ];
 
 export function PitchContentView({ content }: { content: PitchContent }) {
+  const [openWindows, setOpenWindows] = useState<string[]>(["product"]);
+  const [destination, setDestination] = useState<string | null>(null);
+  useEffect(() => {
+    if (!destination) return;
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById(destination);
+      if (!target) return;
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      setDestination(null);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [destination, openWindows]);
+  const shortcut = (windowId: string, targetId: string, label: string) => <Button key={targetId} asChild variant="outline" size="sm" className="h-auto min-h-11 max-w-full whitespace-normal text-left"><a href={`#${targetId}`} onClick={(event) => {
+    event.preventDefault();
+    setOpenWindows((current) => current.includes(windowId) ? current : [...current, windowId]);
+    setDestination(targetId);
+  }}><ArrowRight aria-hidden="true" /><span>{label}</span></a></Button>;
   const event = content.formats[0];
   const regional = content.formats[1];
   return <div className="space-y-6">
+    <nav aria-label="Atalhos do pitch" className="flex flex-wrap gap-2">
+      {content.b2c && shortcut("b2c", "pitch-paid-strategy", "02 · Estratégia Paga · Aceleração e Escala")}
+      {shortcut("next-steps", "pitch-regional-expansion", "04 · Plano de Expansão Regional (Fases 2 e 3)")}
+      {shortcut("next-steps", "pitch-hybrid-acquisition", "04 · Estratégia de Atração Híbrida")}
+    </nav>
     <section aria-labelledby="pitch-overview" className="space-y-5 border-b border-border pb-6">
       <h2 id="pitch-overview" className="text-2xl font-semibold">Visão Geral e Qualidades do Ecossistema</h2>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O Coé a Boa? reúne descoberta de lazer, cadastro de eventos e gestão comercial em um ecossistema pensado para facilitar a vida de quem divulga e de quem procura um rolê.</p>
@@ -32,7 +57,7 @@ export function PitchContentView({ content }: { content: PitchContent }) {
         { title: "Escalabilidade", description: "A arquitetura regional e os controles de governança dão suporte à expansão da praça-piloto, Ilha do Governador, para novas regiões metropolitanas. A base está preparada para crescer; a validação de tração, receita e usabilidade na praça-piloto orienta cada nova etapa, sem tratar a expansão como já concluída." },
       ].map((quality) => <li key={quality.title} className="min-w-0 space-y-2 border-t border-border pt-4"><h3 className="text-lg font-semibold">{quality.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{quality.description}</p></li>)}</ul>
     </section>
-    <Accordion type="multiple" defaultValue={["product"]} className="space-y-4">
+    <Accordion type="multiple" value={openWindows} onValueChange={setOpenWindows} className="space-y-4">
     <PitchWindow value="product" number="01" title="O Produto e Fontes de Receita (Monetização)" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
 
         <section className="space-y-3"><h3 className="text-2xl font-semibold">Coé a Boa?</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{content.brandPositioning}</p></section>
@@ -64,13 +89,17 @@ export function PitchContentView({ content }: { content: PitchContent }) {
         </div></details>
     </PitchWindow>
     <PitchWindow value="b2c" number="02" title="Plano de Marketing (Atração de Usuários - B2C)" eyebrow="B2C · Público" icon={Users}>
-{content.b2c && <div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy, i) => <section key={strategy.title} className="space-y-5"><h3 className="text-lg font-semibold">{strategy.title}</h3><ul className="space-y-4">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>{i === 1 && <p className="border-l-2 border-primary pl-4 text-sm">Verba inicial estimada: <strong className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</strong></p>}</section>)}</div>}
+{content.b2c && <><nav aria-label="Atalhos do Plano de Marketing" className="mb-6 flex flex-wrap gap-2">{shortcut("b2c", "pitch-paid-strategy", "Estratégia Paga · Aceleração e Escala")}</nav><div className="grid gap-8 md:grid-cols-2">{[content.b2c.organic, content.b2c.paid].map((strategy, i) => <section key={strategy.title} className="space-y-5"><h3 id={i === 1 ? "pitch-paid-strategy" : undefined} tabIndex={i === 1 ? -1 : undefined} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{strategy.title}</h3><ul className="space-y-4">{strategy.items.map((item) => <li key={item.title} className="space-y-1.5 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>{i === 1 && <p className="border-l-2 border-primary pl-4 text-sm">Verba inicial estimada: <strong className="text-primary">{money(content.marketingMin)} a {money(content.marketingMax)}/mês</strong></p>}</section>)}</div></>}
     </PitchWindow>
     <PitchWindow value="b2b" number="03" title="Plano Comercial (Vendas B2B e Abordagem)" eyebrow="B2B · Anunciantes" icon={BriefcaseBusiness}>
 {content.b2b && <><section className="space-y-3"><h3 className="text-lg font-semibold">{content.b2b.exclusivity.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.exclusivity.description}</p></section><section className="space-y-5 border-t border-border pt-6"><h3 className="text-lg font-semibold">Metodologia de Captação</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.b2b.anchors.description}</p><ol className="grid gap-6 md:grid-cols-3">{content.b2b.anchors.steps.map((step, i) => <li key={step.title} className="space-y-2"><span className="text-xs font-semibold text-primary">0{i + 1}</span><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol></section></>}
         {content.selfService && <details className="group border-t border-border pt-5"><summary className="cursor-pointer text-sm font-medium text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Evolução futura · Autoatendimento com controle</summary><section className="mt-5 space-y-4"><h3 className="flex items-center gap-2 text-lg font-semibold"><Workflow className="h-4 w-4 shrink-0 text-primary" /> {content.selfService.title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.description}</p><ol className="grid gap-5 md:grid-cols-2">{content.selfService.steps.map((step) => <li key={step.title} className="space-y-2"><h4 className="text-sm font-semibold">{step.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p></li>)}</ol><p className="text-sm leading-relaxed text-muted-foreground">{content.selfService.strategy}</p><p className="text-xs leading-relaxed text-muted-foreground">{content.selfService.disclaimer}</p></section></details>}
     </PitchWindow>
     <PitchWindow value="next-steps" number="04" title="Estratégia · Praça-piloto e Lançamento" eyebrow="Estratégia · Lançamento" icon={ArrowRight}>
+      <nav aria-label="Atalhos da Estratégia de Lançamento" className="flex flex-wrap gap-2">
+        {shortcut("next-steps", "pitch-regional-expansion", "Plano de Expansão Regional (Fases 2 e 3)")}
+        {shortcut("next-steps", "pitch-hybrid-acquisition", "Estratégia de Atração Híbrida")}
+      </nav>
       <section className="space-y-4">
         <h3 className="text-lg font-semibold">O Ponto de Partida: Ilha do Governador como Praça-Piloto</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O Coé a Boa? não nasce do zero. Amparado pelo legado e pela base de conhecimento do histórico <em>AgendIlha</em>, o aplicativo inicia sua operação comercial e de comunidade tendo a <strong className="font-medium text-foreground">Ilha do Governador</strong> como sua praça-piloto oficial.</p>
@@ -88,7 +117,7 @@ export function PitchContentView({ content }: { content: PitchContent }) {
         ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
       </section>
       <section className="space-y-4 border-t border-border pt-6">
-        <h3 className="text-lg font-semibold">Plano de Expansão Regional (Fases 2 e 3)</h3>
+        <h3 id="pitch-regional-expansion" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Plano de Expansão Regional (Fases 2 e 3)</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Validado o modelo de tração e receita na praça-piloto, o Coé a Boa? poderá expandir de forma direcionada para macro-regiões estratégicas do estado:</p>
         <ul className="grid gap-5 md:grid-cols-2">{[
           { title: "Fase de Adjacência", description: "Expansão para polos vizinhos de alto consumo de lazer, como Niterói." },
@@ -96,7 +125,7 @@ export function PitchContentView({ content }: { content: PitchContent }) {
         ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
       </section>
       <section className="space-y-4 border-t border-border pt-6">
-        <h3 className="text-lg font-semibold">Estratégia de Atração Híbrida (Go-To-Market)</h3>
+        <h3 id="pitch-hybrid-acquisition" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Estratégia de Atração Híbrida (Go-To-Market)</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">A estratégia de lançamento combina o esforço de guerrilha e o marketing digital de precisão:</p>
         <ul className="grid gap-6 md:grid-cols-3">{[
           { title: "Boca a Boca e Parcerias Locais (B2B Orgânico)", description: "Abordagem direta aos principais bares, quiosques e organizadores de eventos locais, demonstrando a facilidade do cadastro por flyer, com leitura automática e revisão dos dados." },
