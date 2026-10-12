@@ -70,6 +70,14 @@ export function PitchContentView({ content }: { content: PitchContent }) {
         ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
       </section>
       <section className="space-y-4 border-t border-border pt-6">
+        <h3 className="text-lg font-semibold">Ecossistema de Governança e Expansão Regional</h3>
+        <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O controle inteligente de duplicidade e a gestão de cotas — gratuito versus patrocinado — mantêm a curadoria limpa e sustentável. Ao evitar envios repetidos e equilibrar a divulgação orgânica com múltiplas atrações patrocinadas em horários distintos, o Coé a Boa? cria uma base de governança para escalar com segurança para novas praças e regiões metropolitanas além da Ilha do Governador, preservando a revisão pela curadoria.</p>
+        <ul className="grid gap-5 md:grid-cols-2">{[
+          { title: "Facilidade para quem divulga", description: "Cadastro rápido por flyer, revisão simples e um loop de compartilhamento viral: o produtor divulga o link do evento no WhatsApp e nas redes sociais, traz público e amplia a descoberta de outros rolês no app." },
+          { title: "Facilidade para quem busca lazer", description: "Uma agenda organizada para encontrar programas na sua localidade ou em regiões vizinhas, aproximando o público de atrações, produtores e negócios locais sem repetição desnecessária de eventos." },
+        ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
+      </section>
+      <section className="space-y-4 border-t border-border pt-6">
         <h3 className="text-lg font-semibold">Plano de Expansão Regional (Fases 2 e 3)</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Validado o modelo de tração e receita na praça-piloto, o Coé a Boa? poderá expandir de forma direcionada para macro-regiões estratégicas do estado:</p>
         <ul className="grid gap-5 md:grid-cols-2">{[

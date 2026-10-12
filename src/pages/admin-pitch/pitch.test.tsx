@@ -92,6 +92,13 @@ describe("pitch comercial", () => {
     expect(screen.getByText(/como Niterói/)).toBeVisible();
     expect(screen.getByText(/como Duque de Caxias/)).toBeVisible();
     expect(screen.getByRole("heading", { name: /Estratégia de Atração Híbrida/ })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Ecossistema de Governança e Expansão Regional" })).toBeVisible();
+    expect(screen.getByText(/controle inteligente de duplicidade/)).toHaveTextContent("gratuito versus patrocinado");
+    expect(screen.getByText(/controle inteligente de duplicidade/)).toHaveTextContent("além da Ilha do Governador");
+    expect(screen.getByRole("heading", { name: "Facilidade para quem divulga" })).toBeVisible();
+    expect(screen.getByText(/loop de compartilhamento viral/)).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Facilidade para quem busca lazer" })).toBeVisible();
+    expect(screen.getByText(/Uma agenda organizada/)).toHaveTextContent("regiões vizinhas");
     expect(screen.getByText(/nenhuma campanha é ativada/)).toBeVisible();
     expect(screen.getByText("Projeção de receita mensal")).toBeVisible();
     fireEvent.click(strategy);
