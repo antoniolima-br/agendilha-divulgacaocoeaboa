@@ -1,4 +1,5 @@
 import logo from "@/assets/coeaboa-logo.webp";
+import { InstitutionalCredits } from "./InstitutionalCredits";
 
 interface SiteFooterProps {
   variant?: "default" | "muted";
@@ -21,7 +22,7 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
       <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center gap-6 text-center sm:grid-cols-3 sm:text-left">
         {/* Copyright */}
         <div className="text-xs text-foreground/80 font-medium order-2 sm:order-1">
-          © {year} — Todos os direitos reservados
+          © {year} Coé a Boa? — Todos os direitos reservados
         </div>
 
         {/* Marca + slogan */}
@@ -43,15 +44,7 @@ export function SiteFooter({ variant = "default", className = "" }: SiteFooterPr
 
         {/* Créditos */}
         <div className="text-xs text-foreground/80 font-medium order-3 sm:text-right">
-          Criado por{" "}
-          <a
-            href="https://limaxsistemas.online/"
-            target="_blank"
-            rel="noreferrer"
-            className="font-bold text-foreground/80 hover:text-primary transition-colors hover:underline"
-          >
-            Lima<span className="text-orange-500">X</span> Soluções
-          </a>
+          <InstitutionalCredits />
         </div>
       </div>
     </footer>

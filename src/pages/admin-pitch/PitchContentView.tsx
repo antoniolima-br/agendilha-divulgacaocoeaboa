@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion } from "@/components/ui/accordion";
 import { PitchWindow } from "./PitchWindow";
 import type { PitchContent } from "./types";
+import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 type Scenario = PitchContent["scenarios"][number];
@@ -77,6 +78,7 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
   const event = content.formats[0];
   const regional = content.formats[1];
   return <div className="space-y-6">
+    <InstitutionalCredits />
     <section aria-labelledby="pitch-overview" className="space-y-5 border-b border-border pb-6">
       <h2 id="pitch-overview" className="text-2xl font-semibold">Visão Geral e Qualidades do Ecossistema</h2>
       <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Descoberta de lazer, divulgação e gestão comercial no mesmo lugar.</p>

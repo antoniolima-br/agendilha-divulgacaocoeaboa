@@ -176,7 +176,9 @@ describe("pitch comercial", () => {
       expect(navigations).toHaveLength(2);
       expect(within(screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" })).getAllByRole("link").map((link) => link.textContent)).toEqual(["Estratégia Paga · Aceleração e Escala"]);
       expect(within(screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" })).getAllByRole("link").map((link) => link.textContent)).toEqual(["Plano de Expansão Regional (Fases 2 e 3)", "Estratégia de Atração Híbrida"]);
-      expect(screen.getAllByRole("link")).toHaveLength(3);
+      expect(screen.getAllByRole("link").filter(link => link.getAttribute("href")?.startsWith("#pitch-"))).toHaveLength(3);
+      expect(screen.getByText("Coé a Boa? — empresa proprietária do ecossistema e do aplicativo.")).toBeVisible();
+      expect(screen.getByRole("link", { name: "Limax Sistemas" })).toHaveAttribute("href", "https://limaxsistemas.online/");
       for (const name of ["Atalhos do Produto e Monetização", "Atalhos do Plano Comercial", "Atalhos da Singularidade"]) {
         expect(screen.queryByRole("navigation", { name })).not.toBeInTheDocument();
       }

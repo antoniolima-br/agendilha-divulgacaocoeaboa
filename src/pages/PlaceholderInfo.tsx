@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 
 interface Props {
   title: string;
@@ -46,6 +47,7 @@ function InfoPage({
         </span>
         <h1 className="break-words font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{title}</h1>
         <p className="text-foreground/70 leading-relaxed">{intro}</p>
+        <InstitutionalCredits />
       </header>
 
       <div className="space-y-6">

@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Esclarecer propriedade Coé a Boa? e autoria Limax Sistemas no pitch, rodapés, páginas institucionais e PDFs; visão conjunta Sênior/Master na intranet isolada. 37 testes aprovados; créditos públicos conferidos. Operações privadas seguem pendentes abaixo.
 - [x] Criar portal setorial isolado com acessos protegidos, CRM, campanhas/links/QR, curadoria, financeiro e medições manuais; gráficos reais e limitações de coleta explícitas.
 - [ ] Conferir operações privadas do portal com sessão autorizada — solicitante sem conta correspondente; precisa entrar na prévia.
 - [ ] Conectar MAU/DAU, tráfego geral, uptime e logs contínuos do portal — dependem de fonte de monitoramento ainda não disponível.

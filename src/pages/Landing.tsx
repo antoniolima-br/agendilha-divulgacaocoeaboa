@@ -1,4 +1,5 @@
 import { usePublicEvents } from "@/data/usePublicEvents";
+import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
 import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
@@ -672,7 +673,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-3 text-center sm:text-left">
             {/* Copyright */}
             <div className="order-2 text-xs font-medium text-muted-foreground sm:order-1">
-              © {new Date().getFullYear()} — Todos os direitos reservados
+              © {new Date().getFullYear()} Coé a Boa? — Todos os direitos reservados
             </div>
 
             {/* Marca / Slogan */}
@@ -690,15 +691,7 @@ export default function Landing() {
 
             {/* Créditos */}
             <div className="order-3 text-xs font-medium text-muted-foreground sm:text-right">
-              Criado por{" "}
-              <a
-                href="https://limaxsistemas.online/"
-                target="_blank"
-                rel="noreferrer"
-                className="font-bold text-foreground transition-colors hover:text-primary hover:underline"
-              >
-                Lima<span className="text-orange-500">X</span> Soluções
-              </a>
+              <InstitutionalCredits />
             </div>
           </div>
         </div>

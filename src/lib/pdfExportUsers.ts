@@ -1,4 +1,5 @@
 import { formatPhoneDisplay } from "@/lib/whatsapp";
+import { INSTITUTIONAL } from "./institutional";
 
 export interface UserPdfRow {
   responsible_name: string | null;
@@ -31,6 +32,9 @@ export async function exportUsersToPdf(users: UserPdfRow[]): Promise<void> {
   ]);
 
   doc.text("Relatório de Usuários - Coé a Boa?", 14, 15);
-  autoTable(doc, { head: [columns], body: rows, startY: 20 });
+  autoTable(doc, { head: [columns], body: rows, startY: 20, margin: { bottom: 20 }, didDrawPage: () => {
+    doc.setFontSize(6);
+    doc.text(`${INSTITUTIONAL.ownership} ${INSTITUTIONAL.creation}`, 14, doc.internal.pageSize.getHeight() - 9, { maxWidth: 182 });
+  } });
   doc.save(`usuarios_agendilha_${new Date().toISOString().split("T")[0]}.pdf`);
 }
