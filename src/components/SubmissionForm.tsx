@@ -37,6 +37,7 @@ import { submissionFormSchema, type SubmissionFormData } from "./submission-form
 import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { prepareUploadImage } from "@/lib/uploadImage";
+import { FlyerAutofill } from "./submission-form/FlyerAutofill";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
@@ -46,6 +47,7 @@ const DRAFT_KEY = "agendilha_event_submission_draft";
 export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
   const [imageSource, setImageSource] = useState<"upload" | "ai" | null>(null);
+  const [readingFlyer, setReadingFlyer] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
@@ -774,6 +776,8 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     });
     setCurrentStep(1);
     setDraftSavedAt(null);
+    setEventImage(null);
+    setImageSource(null);
     toast.success("Rascunho limpo.");
   };
 
@@ -824,11 +828,13 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold">Divulgar um rolê</h1>
                 <p className="text-sm text-muted-foreground">
-                  Comece pelo essencial: nome, data e horário. O resto pode ficar pra depois.
+                  Envie seu flyer ou preencha os dados do rolê abaixo.
                 </p>
               </div>
 
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
+              <FlyerAutofill key={draftSavedAt === null && !eventImage ? "empty" : "flyer"} form={form} onImage={(file) => { setEventImage(file); setImageSource("upload"); }} onLoading={setReadingFlyer} />
+
+              <div id="manual-event-fields" className="border rounded-2xl px-4 py-5 bg-card/30">
                 <EventStep form={form} section="core" />
               </div>
 
@@ -860,7 +866,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
               </div>
 
 
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible defaultValue="extras" className="w-full">
                 <AccordionItem value="extras" className="border rounded-2xl px-4 bg-muted/20">
                   <AccordionTrigger className="hover:no-underline font-semibold">
                     Complementos opcionais
@@ -950,7 +956,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
             {currentStep < steps.length ? (
               // `key` distinto impede o React de reaproveitar o mesmo botão: sem isso, o clique em
               // "Continuar" virava "Publicar" no meio do evento e enviava o formulário sem passar pela Revisão.
-              <Button key="next-step" type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
+              <Button key="next-step" type="button" onClick={nextStep} disabled={readingFlyer} className="gap-2 h-12 px-6 font-bold">
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
