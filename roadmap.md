@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Esclarecer propriedade Coé a Boa? e autoria tecnológica Limax Sistemas nos materiais institucionais e consolidar a visão Sênior/Master da intranet.
 - [x] Criar portal setorial isolado com acessos protegidos, CRM, campanhas/links/QR, curadoria, financeiro e medições manuais; gráficos reais e limitações de coleta explícitas.
 - [ ] Conferir operações privadas do portal com sessão autorizada — solicitante sem conta correspondente; precisa entrar na prévia.
 - [ ] Conectar MAU/DAU, tráfego geral, uptime e logs contínuos do portal — dependem de fonte de monitoramento ainda não disponível.
