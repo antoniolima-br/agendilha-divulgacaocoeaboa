@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Adicionar painel executivo por setor com resultados reais, metas mensais persistidas e comparação mensal; validar acesso e edição de metas na Visão Consolidada.
 - [x] Separar BI exclusivo Master/Sênior das operações setoriais; integrar caixa real e despesas, adicionar atividades administrativas/técnicas e coleta diária de aberturas de campanhas. 21 testes aprovados; atividade criada/editada/relida no BI e excluída com sessão Master; visitante bloqueado, todos os setores sem overflow em 390/833/1280 px. Formulário de despesas conferido sem lançar custos fictícios; nova baixa real depende de cobrança autorizada.
 - [x] Manter menus laterais fixos no desktop/PWA com largura reservada; 21 testes aprovados e intranet/gestão autenticadas conferidas em 833, 1280 e 390 px sem overflow, incluindo troca de setor. Navegação móvel preservada; instalação real do PWA não reproduzida no sandbox.
 - [x] Reorganizar pitch em documento linear: visão geral, pilares sem cartões e capítulos 01–05; nove testes aprovados, sequência/tabela/atalhos conferidos em apresentação isolada no computador e celular sem overflow. Detalhes, valores e proteção preservados; senha privada segue pendente abaixo.
