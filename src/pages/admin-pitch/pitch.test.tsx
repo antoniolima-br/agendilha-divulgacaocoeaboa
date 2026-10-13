@@ -89,22 +89,18 @@ describe("pitch comercial", () => {
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
     try {
       render(page()); await unlock();
-      expect(screen.getAllByRole("navigation")).toHaveLength(2);
+      expect(screen.getAllByRole("navigation")).toHaveLength(1);
       const nav = screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" });
       expect(within(nav).getAllByRole("link")).toHaveLength(1);
       fireEvent.click(within(nav).getByRole("link"));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
-      const launchNav = screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" });
-      expect(within(launchNav).getAllByRole("link")).toHaveLength(2);
-      fireEvent.click(within(launchNav).getByRole("link", { name: "Plano de Expansão Regional (Fases 2 e 3)" }));
-      await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
+      fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Ver detalhes"));
+      expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toBeVisible();
       fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Recolher detalhes"));
-      fireEvent.click(within(launchNav).getByRole("link", { name: "Estratégia de Atração Híbrida" }));
-      await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).toHaveFocus());
-      expect(screen.getAllByRole("navigation")).toHaveLength(2);
+      expect(screen.getAllByRole("navigation")).toHaveLength(1);
+      expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).not.toBeVisible();
       expect(screen.getByRole("heading", { name: "Diferencial do Produto" })).toBeVisible();
-      expect(screen.getAllByRole("navigation")).toHaveLength(2);
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
   });
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
