@@ -19,7 +19,7 @@ export function useFinance() {
     },
   });
   const refresh = async () => {
-    await Promise.all([qk.finance.all, qk.highlights.all, qk.highlights.publicList(), qk.ads.all, qk.submissions.all, qk.agenda.all, qk.home.all, qk.curation.all].map((queryKey) => client.invalidateQueries({ queryKey })));
+    await Promise.all([qk.intranet.all, qk.finance.all, qk.highlights.all, qk.highlights.publicList(), qk.ads.all, qk.submissions.all, qk.agenda.all, qk.home.all, qk.curation.all].map((queryKey) => client.invalidateQueries({ queryKey })));
   };
   const mutation = useMutation({
     mutationFn: async (command: FinanceCommand) => {

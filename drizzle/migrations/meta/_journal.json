@@ -260,6 +260,13 @@
       "when": 1791826833092,
       "tag": "0036_intranet_finance_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1791899032920,
+      "tag": "0037_intranet_bi_and_sector_operations",
+      "breakpoints": true
     }
   ]
 }

@@ -1505,6 +1505,32 @@ export type Database = {
           },
         ]
       }
+      intranet_campaign_daily: {
+        Row: {
+          campaign_id: string
+          day: string
+          opens: number
+        }
+        Insert: {
+          campaign_id: string
+          day: string
+          opens?: number
+        }
+        Update: {
+          campaign_id?: string
+          day?: string
+          opens?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intranet_campaign_daily_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "intranet_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       intranet_campaigns: {
         Row: {
           budget_cents: number
@@ -1604,6 +1630,48 @@ export type Database = {
           notes?: string
           stage?: string
           starts_on?: string | null
+        }
+        Relationships: []
+      }
+      intranet_operations: {
+        Row: {
+          created_at: string
+          created_by: string
+          due_on: string | null
+          id: string
+          notes: string
+          priority: string
+          responsible: string
+          sector: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          due_on?: string | null
+          id?: string
+          notes?: string
+          priority?: string
+          responsible?: string
+          sector: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          due_on?: string | null
+          id?: string
+          notes?: string
+          priority?: string
+          responsible?: string
+          sector?: string
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -3317,6 +3385,7 @@ export type Database = {
         Args: { p_sector: string; p_user: string }
         Returns: undefined
       }
+      intranet_bi: { Args: { p_days?: number }; Returns: Json }
       intranet_can_access: { Args: { p_sector: string }; Returns: boolean }
       intranet_classify_finance: {
         Args: {

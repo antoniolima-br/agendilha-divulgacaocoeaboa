@@ -36,5 +36,5 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
 - Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
-- Lazy intranet uses server gates and shared manager aggregates; never fake telemetry. Formats are not payments; overdue needs due dates.
+- Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
 - Share UI/PDF credits to avoid drift.
