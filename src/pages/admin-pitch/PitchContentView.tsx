@@ -139,10 +139,6 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">A <strong className="font-medium text-foreground">Ilha do Governador</strong> é a praça-piloto oficial. O legado do <em>AgendIlha</em> conecta o projeto a produtores, estabelecimentos e público local.</p>
       </section>
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Validar produto, tração e receita no piloto antes de avançar para Niterói e a Baixada Fluminense.</p>
-      {navigation("Atalhos da Estratégia de Lançamento", [
-        { id: "pitch-regional-expansion", label: "Plano de Expansão Regional (Fases 2 e 3)" },
-        { id: "pitch-hybrid-acquisition", label: "Estratégia de Atração Híbrida" },
-      ])}
       <PitchDetails>
       <section className="space-y-4">
         <ul className="space-y-5">{[
