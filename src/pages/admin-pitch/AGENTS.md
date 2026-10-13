@@ -1,4 +1,4 @@
-- Use shared controlled Tabs and PitchChapter for executive chapters, with overview as the default; this keeps a single readable chapter and built-in keyboard navigation.
+- Render PitchChapter as labeled sections in one continuous overview-to-conclusion document, without tabs or duplicate pillars, so executive reading stays sequential.
 - Keep corporate pillars presentational and use the existing protected pitch response; this avoids new permissions, metrics or duplicate sector data fetches.
 - Use shared native PitchDetails disclosures after each chapter summary, initially closed, so executive reading stays concise with keyboard-accessible expansion.
-- Open contextual shortcut destinations with controlled tab state and ancestor disclosures before focus and reduced-motion-aware scrolling so inactive content stays reachable.
+- Open contextual shortcut ancestor disclosures before focus and reduced-motion-aware scrolling so detailed content stays reachable.
