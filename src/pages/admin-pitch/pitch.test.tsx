@@ -43,34 +43,31 @@ describe("pitch comercial", () => {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-    await screen.findByRole("tab", { name: "Visão Geral" });
+    await screen.findByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
   }
-  it("abre somente após conferência e mantém um capítulo visível", async () => {
+  it("abre somente após conferência e apresenta capítulos em sequência", async () => {
     render(page());
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     await unlock();
-    expect(screen.getByRole("tab", { name: "Visão Geral" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
-    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
-    fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
-    fireEvent.click(screen.getByText("Ver detalhes"));
+    fireEvent.click(within(screen.getByRole("region", { name: "Modelo de Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeVisible();
     expect(screen.getByText("1 Anunciante Master")).toBeVisible();
     expect(screen.getByText("2 Sub-Masters / Co-Patrocinadores")).toBeVisible();
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
   });
   it("destaca cinco setores e visão consolidada sem inventar indicadores", async () => {
     render(page()); await unlock();
     for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
-    fireEvent.mouseDown(screen.getByRole("tab", { name: "Receita & Setores" }));
-    fireEvent.click(screen.getByText("Ver detalhes"));
+    fireEvent.click(within(screen.getByRole("region", { name: "Modelo de Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
     expect(screen.queryByRole("link", { name: "Limax Sistemas" })).not.toBeInTheDocument();
@@ -78,14 +75,13 @@ describe("pitch comercial", () => {
   });
   it("navega ao lançamento e preserva a estratégia como plano", async () => {
     render(page()); await unlock();
-    fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
     expect(screen.getByRole("heading", { name: /O Ponto de Partida/ })).toBeVisible();
     expect(screen.getByText("AgendIlha")).toBeVisible();
     expect(screen.getByText(/como Niterói/)).not.toBeVisible();
-    fireEvent.click(screen.getByText("Ver detalhes"));
+    fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Ver detalhes"));
     expect(screen.getByText(/como Niterói/)).toBeVisible();
     expect(screen.getByText(/como Duque de Caxias/)).toBeVisible();
-    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
+    expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("Expansão sujeita à validação");
   });
   it("mantém somente as âncoras contextuais e respeita movimento reduzido", async () => {
@@ -93,48 +89,44 @@ describe("pitch comercial", () => {
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
     try {
       render(page()); await unlock();
-      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
-      fireEvent.mouseDown(screen.getByRole("tab", { name: "Marketing B2C" }));
+      expect(screen.getAllByRole("navigation")).toHaveLength(2);
       const nav = screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" });
       expect(within(nav).getAllByRole("link")).toHaveLength(1);
       fireEvent.click(within(nav).getByRole("link"));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia Paga · Aceleração e Escala" })).toHaveFocus());
       expect(scroll).toHaveBeenLastCalledWith({ behavior: "auto", block: "start" });
-      fireEvent.mouseDown(screen.getByRole("tab", { name: "Lançamento & Expansão" }));
       const launchNav = screen.getByRole("navigation", { name: "Atalhos da Estratégia de Lançamento" });
       expect(within(launchNav).getAllByRole("link")).toHaveLength(2);
       fireEvent.click(within(launchNav).getByRole("link", { name: "Plano de Expansão Regional (Fases 2 e 3)" }));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Plano de Expansão Regional (Fases 2 e 3)" })).toHaveFocus());
-      fireEvent.click(screen.getByText("Recolher detalhes"));
+      fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Recolher detalhes"));
       fireEvent.click(within(launchNav).getByRole("link", { name: "Estratégia de Atração Híbrida" }));
       await waitFor(() => expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).toHaveFocus());
-      fireEvent.mouseDown(screen.getByRole("tab", { name: "Comercial B2B" }));
-      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
-      fireEvent.mouseDown(screen.getByRole("tab", { name: "Por que Investir" }));
+      expect(screen.getAllByRole("navigation")).toHaveLength(2);
       expect(screen.getByRole("heading", { name: "Diferencial do Produto" })).toBeVisible();
-      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+      expect(screen.getAllByRole("navigation")).toHaveLength(2);
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
   });
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
     render(<PitchContentView content={buildPitchContent()} />);
     const chapters = [
-      { tab: "Receita & Setores", summary: "Coé a Boa?", detail: "Projeção de receita mensal" },
-      { tab: "Marketing B2C", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
-      { tab: "Comercial B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
-      { tab: "Lançamento & Expansão", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },
-      { tab: "Por que Investir", summary: "Diferencial do Produto", detail: "Oportunidade e Validação" },
+      { tab: "Modelo de Negócio, Produto e Receita", summary: "Coé a Boa?", detail: "Projeção de receita mensal" },
+      { tab: "Plano de Marketing · B2C & Aceleração", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
+      { tab: "Plano Comercial · Abordagem B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
+      { tab: "Estratégia de Lançamento e Expansão Regional", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },
+      { tab: "Conclusão · Por que Investir no Coé a Boa?", summary: "Diferencial do Produto", detail: "Oportunidade e Validação" },
     ];
     for (const chapter of chapters) {
-      fireEvent.mouseDown(screen.getByRole("tab", { name: chapter.tab }));
-      expect(screen.getAllByRole("tabpanel")).toHaveLength(1);
+      const region = within(screen.getByRole("region", { name: chapter.tab }));
+      expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
       expect(screen.getByRole("heading", { name: chapter.summary })).toBeVisible();
-      const details = screen.getByText("Ver detalhes").closest("details");
+      const details = region.getByText("Ver detalhes").closest("details");
       expect(details).not.toHaveAttribute("open");
       expect(screen.getByText(chapter.detail)).not.toBeVisible();
-      fireEvent.click(screen.getByText("Ver detalhes"));
+      fireEvent.click(region.getByText("Ver detalhes"));
       expect(details).toHaveAttribute("open");
       expect(screen.getByRole("heading", { name: chapter.detail })).toBeVisible();
-      fireEvent.click(screen.getByText("Recolher detalhes"));
+      fireEvent.click(region.getByText("Recolher detalhes"));
       expect(details).not.toHaveAttribute("open");
       expect(screen.getByText(chapter.detail)).not.toBeVisible();
     }
@@ -150,7 +142,7 @@ describe("pitch comercial", () => {
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
     await screen.findByRole("alert");
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
   });
   it("remove os capítulos ao trocar de conta", async () => {
     const view = render(page()); await unlock(); mocks.userId = "other-test-user"; view.rerender(page());
