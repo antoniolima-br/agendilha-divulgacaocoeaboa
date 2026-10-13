@@ -13,7 +13,7 @@
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation to avoid media/text overlap.
-- Highlight payment workflow uses `highlight_payment_status`, while financial settlement remains exclusively recorded in `payment_records`; this separates workflow labels from authoritative payment evidence.
+- `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home rotates current/future flyers, today first; Embla unifies gestures/arrows/state and stable media bounds prevent shifts. Agenda promotion stays unchanged.
 - Event detail surfaces expose one standardized Share action: native device sharing first, then a fallback with only WhatsApp and Copy link.
 - Idle launchers and intent-loaded Guide/routes reduce startup; public events share filters/realtime; date re-exports preserve São Paulo.
@@ -34,7 +34,7 @@
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
-- Sidebar activity is segment-aware.
+- Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
 - Lazy intranet uses server gates and shared manager aggregates; never fake telemetry. Formats are not payments; overdue needs due dates.
 - Share UI/PDF credits to avoid drift.

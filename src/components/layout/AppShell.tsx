@@ -29,11 +29,12 @@ export function AppShell({
 
   // Automatically show sidebar for admins/masters if not explicitly false
   const effectiveShowSidebar = showSidebar || (isAdmin || isMaster || isPromoter);
+  const hasSidebar = Boolean(effectiveShowSidebar && user);
   
   // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, isMobile]);
 
   const maxWidthClasses = {
     sm: "max-w-3xl",
@@ -46,8 +47,8 @@ export function AppShell({
   return (
     <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/10 overflow-x-hidden relative">
       {/* Sidebar for Desktop */}
-      {effectiveShowSidebar && !isMobile && user && (
-        <aside className="w-72 fixed inset-y-0 left-0 z-40 border-r border-border bg-sidebar shadow-sm">
+      {hasSidebar && (
+        <aside aria-label="Menu principal" className="fixed inset-y-0 left-0 z-40 hidden w-72 overflow-y-auto border-r border-border bg-sidebar shadow-sm md:block">
           <SidebarMenu />
         </aside>
       )}
@@ -55,7 +56,7 @@ export function AppShell({
       {/* Main Container */}
       <div className={cn(
         "flex-1 flex flex-col min-w-0 transition-all duration-300 w-full",
-        effectiveShowSidebar && !isMobile && user ? "md:pl-72" : "pl-0"
+        hasSidebar ? "md:pl-72" : "pl-0"
       )}>
         {/* Unified Header */}
         <Header onMobileMenuToggle={() => setMobileMenuOpen(true)} />
@@ -75,8 +76,8 @@ export function AppShell({
       </div>
 
       {/* Mobile Menu Drawer */}
-      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
+      <Sheet open={mobileMenuOpen && isMobile} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0 md:hidden">
           <SidebarMenu onClose={() => setMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>
