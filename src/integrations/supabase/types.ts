@@ -1594,6 +1594,30 @@ export type Database = {
         }
         Relationships: []
       }
+      intranet_kpi_targets: {
+        Row: {
+          metric: string
+          month: string
+          target: number
+          updated_at: string
+          updated_by: string
+        }
+        Insert: {
+          metric: string
+          month: string
+          target: number
+          updated_at?: string
+          updated_by?: string
+        }
+        Update: {
+          metric?: string
+          month?: string
+          target?: number
+          updated_at?: string
+          updated_by?: string
+        }
+        Relationships: []
+      }
       intranet_leads: {
         Row: {
           company: string
@@ -3408,6 +3432,11 @@ export type Database = {
         Returns: Json
       }
       intranet_open_campaign: { Args: { p_id: string }; Returns: string }
+      intranet_save_kpi_targets: {
+        Args: { p_month: string; p_targets: Json }
+        Returns: undefined
+      }
+      intranet_sector_kpis: { Args: { p_month: string }; Returns: Json }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }

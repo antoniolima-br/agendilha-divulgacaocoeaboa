@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import type { IntranetBI } from '@/lib/intranet';
 import ConsolidatedView from './ConsolidatedView';
 vi.mock('./SectorViews', () => ({ ChartView: ({ title }: { title: string }) => <h2>{title}</h2> }));
+vi.mock('./ExecutiveSectorKpis', () => ({ default: () => <h2>Painel Executivo de KPIs por Setor</h2> }));
 vi.mock('./CashflowChart', () => ({ default: () => <h2>Entradas, despesas e saldo diário</h2> }));
 const sector = { summary: { submissions: 3, pending: 1, users: 2, received_cents: 10000 }, consolidated: [], growth: [], inventory: [] };
 const data: IntranetBI = { summary: { received_cents: 10000, expenses_cents: 2500, balance_cents: 7500, submissions: 3, users: 2, campaign_opens: 5, won_leads: 1, open_operations: 4 }, cashflow: [], sources: [], funnel: [{ name: 'ganho', value: 1 }], traffic: [], campaigns: [], operations: [], administration: sector, marketing: sector, commercial: sector };

@@ -267,6 +267,13 @@
       "when": 1791899032920,
       "tag": "0037_intranet_bi_and_sector_operations",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1791901913150,
+      "tag": "0038_executive_sector_kpis",
+      "breakpoints": true
     }
   ]
 }
