@@ -13,6 +13,13 @@ export function isIntranetSector(value: string | undefined): value is IntranetSe
 export function campaignLink(id: string) { return `${window.location.origin}/campanha/${id}`; }
 export function validCampaignDestination(value: string): boolean { try { const url = new URL(value); return url.protocol === "https:" && !url.username && !url.password; } catch { return false; } }
 export type ChartPoint = { name: string; value: number };
+export type Operation = { id: string; sector: 'administracao' | 'desenvolvimento'; title: string; status: string; priority: string; responsible: string; due_on: string | null; notes: string; created_at: string; updated_at: string };
+export type IntranetBI = {
+  summary: { received_cents: number; expenses_cents: number; balance_cents: number; submissions: number; users: number; campaign_opens: number; won_leads: number; open_operations: number };
+  cashflow: { name: string; revenue: number; expenses: number }[];
+  sources: ChartPoint[]; funnel: ChartPoint[]; traffic: ChartPoint[]; campaigns: ChartPoint[]; operations: ChartPoint[];
+  administration: IntranetDashboard; marketing: IntranetDashboard; commercial: IntranetDashboard;
+};
 export type IntranetDashboard = {
   summary: { submissions: number; pending: number; users: number; received_cents: number };
   consolidated: ChartPoint[]; growth?: ChartPoint[]; inventory?: ChartPoint[];
