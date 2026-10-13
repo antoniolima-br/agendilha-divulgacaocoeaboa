@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Manter menus laterais fixos no desktop/PWA e reservar sua largura no conteúdo; conferir intranet autenticada e navegação móvel.
 - [x] Reorganizar pitch em documento linear: visão geral, pilares sem cartões e capítulos 01–05; nove testes aprovados, sequência/tabela/atalhos conferidos em apresentação isolada no computador e celular sem overflow. Detalhes, valores e proteção preservados; senha privada segue pendente abaixo.
 - [x] Ajustar blocos 01–05 do pitch para resumos executivos e detalhes inicialmente recolhidos; nove testes aprovados, clique/teclado e atalhos conferidos em apresentação isolada sem overflow. Preços e acesso preservados; abertura com senha privada segue pendente abaixo.
 - [x] Redesenhar apenas o pitch em capítulos premium, cinco pilares corporativos e notas discretas; preços e acesso preservados. Oito testes aprovados, apresentação isolada conferida sem overflow; abertura com senha privada segue pendente abaixo.
