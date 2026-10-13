@@ -7,7 +7,7 @@
 - [x] Redesenhar apenas o pitch em capítulos premium, cinco pilares corporativos e notas discretas; preços e acesso preservados. Oito testes aprovados, apresentação isolada conferida sem overflow; abertura com senha privada segue pendente abaixo.
 - [x] Esclarecer propriedade Coé a Boa? e autoria Limax Sistemas no pitch, rodapés, páginas institucionais e PDFs; visão conjunta Sênior/Master na intranet isolada. 37 testes aprovados; créditos públicos conferidos. Operações privadas seguem pendentes abaixo.
 - [x] Criar portal setorial isolado com acessos protegidos, CRM, campanhas/links/QR, curadoria, financeiro e medições manuais; gráficos reais e limitações de coleta explícitas.
-- [ ] Conferir operações privadas do portal com sessão autorizada — solicitante sem conta correspondente; precisa entrar na prévia.
+- [x] Conferir portal com sessão Master: cadastro/edição/exclusão de atividade e reflexo no BI validados; caixa e formulário de despesa conferidos sem alterar pagamentos reais.
 - [ ] Conectar MAU/DAU, tráfego geral, uptime e logs contínuos do portal — dependem de fonte de monitoramento ainda não disponível.
 - [x] Enxugar textos da visão geral e dos cinco blocos do pitch, mantendo estrutura, tabela, preços, acesso e três âncoras; nove testes aprovados e validação automática OK. Conferência com senha privada segue pendente.
 - [x] Enxugar navegação do pitch para apenas uma âncora no bloco 02 e duas no 04, sem atalhos nos blocos 01/03/05 ou no topo; oito testes aprovados e validação automática OK. Conferência com senha privada permanece pendente abaixo.
