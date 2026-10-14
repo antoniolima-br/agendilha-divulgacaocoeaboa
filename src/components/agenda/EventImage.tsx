@@ -9,6 +9,7 @@ interface EventImageProps {
   category?: string | null;
   className?: string;
   icon?: any;
+  fit?: "cover" | "contain";
 }
 
 const EVENT_IMAGE_FALLBACKS: Record<string, string> = {
@@ -19,7 +20,7 @@ const EVENT_IMAGE_FALLBACKS: Record<string, string> = {
   outros: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=72&w=480",
 };
 
-export function EventImage({ src, alt, category, className, icon: Icon }: EventImageProps) {
+export function EventImage({ src, alt, category, className, icon: Icon, fit = "cover" }: EventImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
   const fallback = useMemo(() => getEventFallbackImage(category), [category]);
@@ -49,7 +50,8 @@ export function EventImage({ src, alt, category, className, icon: Icon }: EventI
         alt={alt}
         key={src || "fallback"}
         className={cn(
-          "h-full w-full object-cover transition-all duration-700",
+          "h-full w-full transition-all duration-700",
+          fit === "contain" ? "object-contain" : "object-cover",
           !isLoaded ? "opacity-0 blur-sm scale-105" : "opacity-100 blur-0 scale-100",
         )}
         onLoad={() => setIsLoaded(true)}

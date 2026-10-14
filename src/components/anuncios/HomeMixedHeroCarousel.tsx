@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { Eye, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { eventDateISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
@@ -33,8 +33,6 @@ export function HomeMixedHeroCarousel({
   onActiveDateChange?: (date: string) => void;
 }) {
   const [index, setIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const items = useMemo(() => {
@@ -72,13 +70,13 @@ export function HomeMixedHeroCarousel({
   }, []);
 
   useEffect(() => {
-    if (!carousel || hovered || focused || dragging || reduceMotion || total < 2) return;
+    if (!carousel || dragging || reduceMotion || total < 2) return;
     const timer = window.setInterval(() => {
       if (document.hidden) return;
       goTo(carousel.selectedScrollSnap() + 1);
     }, AUTOPLAY_MS);
     return () => window.clearInterval(timer);
-  }, [carousel, hovered, focused, dragging, reduceMotion, total, index, goTo]);
+  }, [carousel, dragging, reduceMotion, total, index, goTo]);
 
   const item = items[index] ?? items[0];
 
@@ -94,15 +92,6 @@ export function HomeMixedHeroCarousel({
       className="mb-2 min-w-0 w-full max-w-full"
       aria-label="Eventos em destaque"
       aria-roledescription="carrossel"
-      onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(true); }}
-      onPointerLeave={(event) => { if (event.pointerType === "mouse") setHovered(false); }}
-      onTouchStart={() => { setDragging(true); setFocused(false); }}
-      onTouchEnd={() => setDragging(false)}
-      onTouchCancel={() => setDragging(false)}
-      onFocusCapture={(event) => setFocused(event.target.matches(":focus-visible"))}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
-      }}
       onKeyDown={(event) => {
         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
         event.preventDefault();
@@ -151,11 +140,6 @@ export function HomeMixedHeroCarousel({
                 {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
                 {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
-                {active && (
-                  <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-primary/70 bg-background/90 px-4 py-2 text-xs font-bold uppercase text-foreground shadow-lg backdrop-blur-sm">
-                    <Eye className="h-4 w-4 text-primary" aria-hidden="true" /> Ver detalhes
-                  </span>
-                )}
               </div>
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl break-words font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>

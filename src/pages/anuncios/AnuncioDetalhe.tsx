@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { safeAdDestination } from "@/lib/advertising";
 
 export default function AnuncioDetalhe() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { data: ad, isLoading } = useAd(id);
   const photos = Array.isArray(ad?.photos) ? ad.photos : [];
@@ -52,11 +53,9 @@ export default function AnuncioDetalhe() {
   return (
     <PageContainer>
       <div className="space-y-6 max-w-3xl">
-        <Button asChild variant="ghost" size="sm" className="font-medium -ml-2">
-          <Link to={ROUTES.ANUNCIOS}>
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
-            Anúncios
-          </Link>
+        <Button variant="ghost" size="sm" className="font-medium -ml-2" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4 mr-1.5" />
+          Voltar
         </Button>
 
         <div className="rounded-2xl overflow-hidden border bg-muted aspect-[4/3] flex items-center justify-center">
@@ -64,7 +63,7 @@ export default function AnuncioDetalhe() {
             <img
               src={urls[photos[0]]}
               alt={ad.title}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
             />
           ) : (
             <ImageIcon className="h-10 w-10 text-muted-foreground" />

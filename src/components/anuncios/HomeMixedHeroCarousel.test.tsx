@@ -15,7 +15,11 @@ const engine = vi.hoisted(() => {
     },
     off: (name: string, fn: () => void) => { listeners.get(name)?.delete(fn); return api; },
   };
-  return { api, reset: () => { index = 0; listeners.clear(); } };
+  return {
+    api,
+    emit: (name: string) => listeners.get(name)?.forEach(fn => fn()),
+    reset: () => { index = 0; listeners.clear(); },
+  };
 });
 vi.mock("embla-carousel-react", () => ({ default: () => [vi.fn(), engine.api] }));
 
@@ -66,33 +70,24 @@ describe("Home event carousel interactions", () => {
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 
-  it("rotates at five seconds and pauses during hover", () => {
+  it("rotates at five seconds without pausing on hover", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
     act(() => vi.advanceTimersByTime(4999));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
     act(() => vi.advanceTimersByTime(1));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
-    const hover = new Event("pointerover", { bubbles: true });
-    Object.defineProperty(hover, "pointerType", { value: "mouse" });
-    fireEvent(screen.getByRole("region"), hover);
     engine.api.scrollTo.mockClear();
-    act(() => vi.advanceTimersByTime(10000));
-    expect(engine.api.scrollTo).not.toHaveBeenCalled();
-    const leave = new Event("pointerout", { bubbles: true });
-    Object.defineProperty(leave, "pointerType", { value: "mouse" });
-    fireEvent(screen.getByRole("region"), leave);
-    act(() => vi.advanceTimersByTime(4999));
-    expect(engine.api.scrollTo).not.toHaveBeenCalled();
-    act(() => vi.advanceTimersByTime(1));
+    fireEvent.pointerEnter(screen.getByRole("region"), { pointerType: "mouse" });
+    act(() => vi.advanceTimersByTime(5000));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(0);
   });
 
   it("resumes five seconds after touch ends", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
-    fireEvent.touchStart(screen.getByRole("region"));
+    act(() => engine.emit("pointerDown"));
     act(() => vi.advanceTimersByTime(10000));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
-    fireEvent.touchEnd(screen.getByRole("region"));
+    act(() => engine.emit("pointerUp"));
     act(() => vi.advanceTimersByTime(5000));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
   });
@@ -107,7 +102,7 @@ describe("Home event carousel interactions", () => {
   it("opens complete details from the center and title without changing slides", () => {
     const openEvent = vi.fn();
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={openEvent} />);
-    expect(screen.getByText("Ver detalhes")).toBeInTheDocument();
+    expect(screen.queryByText("Ver detalhes")).not.toBeInTheDocument();
     tapFlyerCenter();
     expect(openEvent).toHaveBeenLastCalledWith("1");
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
@@ -134,7 +129,7 @@ describe("Home event carousel interactions", () => {
     tapFlyer("right");
 
     expect(onActiveDateChange).toHaveBeenLastCalledWith("2026-10-15");
-    expect(document.querySelectorAll("[data-flyer] span")).toHaveLength(1);
+    expect(document.querySelectorAll("[data-flyer] span")).toHaveLength(0);
   });
   it("supports keyboard navigation and suppresses taps after swiping", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
