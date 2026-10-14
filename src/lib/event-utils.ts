@@ -1,17 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { normalizeText } from "./utils";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export const normalizeText = (text: string) => {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-};
+export { normalizeText };
 
 export const getEventFallbackImage = (category: string | null) => {
   const fallbacks: Record<string, string> = {
