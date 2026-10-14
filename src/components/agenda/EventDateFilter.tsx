@@ -31,7 +31,7 @@ export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
         <Button
           variant="outline"
           aria-label="Data dos rolês"
-          className={cn("h-11 w-full justify-start gap-2 text-left font-normal sm:w-48", !selected && "text-muted-foreground")}
+          className="h-11 w-full justify-start gap-2 text-left font-normal text-foreground hover:text-accent-foreground sm:w-48"
         >
           <CalendarIcon className="h-4 w-4 shrink-0" />
           <span>{selected ? format(selected, "dd/MM/yyyy") : "Todas as datas"}</span>

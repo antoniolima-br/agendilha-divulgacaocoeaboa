@@ -386,7 +386,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
                 <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
               </Button>
               <Button 
-                className="flex-1 gradient-sunset text-white" 
+                className="flex-1 gradient-sunset text-primary-foreground" 
                 onClick={handleSignUp}
                 disabled={loading}
               >

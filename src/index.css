@@ -299,7 +299,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   box-shadow: var(--shadow-gold);
 }
 /* Secondary copy stays readable; disabled controls retain their distinct state. */
-:is([class*="text-muted-foreground/"], [class*="text-foreground/"]):not(:disabled):not([data-disabled]):not([class*="bg-primary"]):not([class*="bg-secondary"]):not([class*="bg-accent"]) {
+:is([class*="text-muted-foreground/"], [class*="text-foreground/"]):not(:disabled):not([data-disabled]):not([class*="bg-primary"]):not([class*="bg-secondary"]):not([class*="bg-accent"]):not(:hover):not(:focus) {
   color: hsl(var(--readable-secondary));
 }
 @media (min-width: 768px) {
