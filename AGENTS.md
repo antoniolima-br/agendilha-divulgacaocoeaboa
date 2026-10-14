@@ -37,3 +37,4 @@
 
 - Intranet BI is team-readable; writes require owner/Senior/Master. Cash uses settlements; flyer opens are guarded; never fake metrics.
 - Menus follow roles; Home omits header actions. Auth normalizes phones. Semantic tokens and shared primitives own visual consistency and contrast.
+- Engagement BI shares one protected report across Consolidated and Marketing views; origins are allowlisted and physical attendance remains unreported until collected.
