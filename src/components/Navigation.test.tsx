@@ -132,9 +132,8 @@ describe('Admin/Master Route Protection Integration', () => {
     await waitFor(() => {
       expect(screen.getByTestId('admin-events')).toBeInTheDocument();
     });
-    // Sidebar should be present (implied by AdminLayout rendering).
-    // A seção admin hoje se chama "Operação" no sidebarConfig.
-    expect(screen.getByText('Operação')).toBeInTheDocument();
+    // The layout itself is the stable contract; visible sections vary by fine-grained permissions.
+    expect(screen.getByLabelText('Menu principal')).toBeInTheDocument();
   });
 
   it('blocks admin user from /admin/master', async () => {
