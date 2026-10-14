@@ -30,6 +30,7 @@ import { getShareUrl } from "@/lib/sharing";
 import { cn } from "@/lib/utils";
 import { isHighlightActive } from "@/lib/highlights";
 import { AgendaSponsoredCards } from "@/components/anuncios/AgendaSponsoredCards";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function AgendaCultural() {
   return (
@@ -139,30 +140,12 @@ function AgendaCulturalInner() {
         />
 
         {/* Abas */}
-        <div className="flex p-1 bg-muted/50 rounded-2xl mb-12 max-w-sm mx-auto border border-border/50">
-          <button
-            onClick={() => setActiveTab("events")}
-            className={cn(
-              "flex-1 py-3 px-4 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2",
-              activeTab === "events"
-                ? "bg-background shadow-md text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <CalendarDays className="h-4 w-4" /> EVENTOS
-          </button>
-          <button
-            onClick={() => setActiveTab("artists")}
-            className={cn(
-              "flex-1 py-3 px-4 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2",
-              activeTab === "artists"
-                ? "bg-background shadow-md text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Users className="h-4 w-4" /> ARTISTAS
-          </button>
-        </div>
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "events" | "artists")} className="mb-10 sm:mb-12">
+          <TabsList className="mx-auto grid w-full max-w-sm grid-cols-2">
+            <TabsTrigger value="events" className="gap-2"><CalendarDays className="h-4 w-4" />Eventos</TabsTrigger>
+            <TabsTrigger value="artists" className="gap-2"><Users className="h-4 w-4" />Artistas</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {activeTab === "artists" && (
           <Suspense fallback={<AgendaListSkeleton />}>
