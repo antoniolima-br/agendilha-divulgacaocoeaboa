@@ -98,7 +98,7 @@ describe("sidebarConfig", () => {
 
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
     const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
-    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "divulgador_status"]);
+    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
     expect(promoterItems.find((item) => item.id === "send_event")?.label).toBe("Publicar Evento");
     expect(promoterItems.some((item) => item.id === "ad_plans_catalog")).toBe(true);
