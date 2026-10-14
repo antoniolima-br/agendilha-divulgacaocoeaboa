@@ -8,6 +8,10 @@ export function administrativeRole(roles: string[]): "admin" | "financeiro" | "s
   return null;
 }
 
+export function isAdministrativeRole(role: ReturnType<typeof administrativeRole>): boolean {
+  return role === "admin" || role === "senior" || role === "master";
+}
+
 export function activeAccessRole(signedIn: boolean, roles: string[]): AccessRole {
   if (!signedIn) return "public_guest";
   if (!roles.some((role) => ["master", "senior"].includes(role)) && roles.some((role) => ["comercial", "marketing", "administracao", "desenvolvimento"].includes(role))) return "sector";
