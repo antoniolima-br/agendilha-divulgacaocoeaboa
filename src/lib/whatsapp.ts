@@ -1,8 +1,6 @@
+import { onlyDigits } from "./phone";
 // Utilities to validate Brazilian WhatsApp numbers and build wa.me links.
 
-export function onlyDigits(phone: string): string {
-  return (phone ?? "").replace(/\D/g, "");
-}
 
 // Lista oficial de DDDs brasileiros válidos (ANATEL).
 const VALID_BR_DDDS = new Set<number>([
