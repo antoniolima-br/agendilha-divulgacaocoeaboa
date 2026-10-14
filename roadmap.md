@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Conferir ausência de Divulgar no topo e confirmar respostas reais do Coezinho sobre cadastro, publicidade e agenda atual, preservando conversa limpa.
 - [x] Ocultar explicitamente a ação Divulgar do topo, alinhar Local/Categoria em duas colunas com bairro abaixo e observar altura da navegação para Coezinho permanecer acima de Perfil; 15 testes aprovados, filtros operantes em 320/390/1280 px, sem overflow e com 24 px entre mascote e barra inferior. Validação automática OK.
 - [x] Refinar Coezinho como guia/recepcionista, com duas sugestões e boas-vindas; cada abertura inicia sessão nova e fechamento interrompe pedidos. Divulgar/Contratar renomeado na navegação compartilhada; seis testes aprovados, envio/fechamento e Escape/reabertura sem mensagens ou rascunhos conferidos em 390/1280 px, sem overflow. Validação automática OK; lint geral tem pendências preexistentes fora das áreas alteradas. Resposta do Guia segue com a dependência já registrada abaixo.
 - [x] Remover ações do topo e integrar Meu Radar e Anunciar / Parcerias à navegação inferior/lateral, com submenu Cadastrar Evento e Espaço Publicitário; 20 testes aprovados, menus conferidos em 390/1280 px e três destinos abertos com sessão autenticada, preservando permissões.
