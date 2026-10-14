@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CurationImpactPanel, { EventImpactCounters, useCurationImpact } from "./CurationImpactPanel";
 import { toast } from "sonner";
 
 type CurationEvent = {
@@ -60,6 +61,8 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
     },
   });
   const events = eventsQuery.data ?? [];
+  const impactQuery = useCurationImpact(30);
+  const impactByEvent = useMemo(() => new Map((impactQuery.data?.events ?? []).map((item) => [item.id, item])), [impactQuery.data?.events]);
   const visibleEvents = useMemo(() => events.filter((event) => `${event.event_title ?? ""} ${event.date ?? ""}`.toLocaleLowerCase("pt-BR").includes(search.toLocaleLowerCase("pt-BR"))), [events, search]);
   const selected = events.find((event) => event.id === selectedId) ?? events[0] ?? null;
 
@@ -135,10 +138,11 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         <p className="max-w-3xl text-sm text-muted-foreground">As mudanças salvas aqui chegam automaticamente ao carrossel e aos feeds públicos.</p>
       </header>
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-4">
           <TabsTrigger value="register">Cadastro</TabsTrigger>
           <TabsTrigger value="manage">Gerenciar</TabsTrigger>
           <TabsTrigger value="share">Divulgação</TabsTrigger>
+          <TabsTrigger value="impact">Impacto</TabsTrigger>
         </TabsList>
 
         <TabsContent value="register" className="pt-4">
@@ -165,7 +169,7 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
           <div className="relative mb-4 max-w-md"><Search className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" /><Input aria-label="Buscar rolê" className="pl-9" placeholder="Buscar por nome ou data" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
           {eventsQuery.isLoading ? <p className="py-8" role="status">Carregando rolês…</p> : eventsQuery.isError ? <div className="space-y-3 py-8"><p role="alert">Não deu pra carregar os rolês.</p><Button variant="outline" onClick={() => void eventsQuery.refetch()}>Tentar novamente</Button></div> : visibleEvents.length === 0 ? <p className="py-8 text-sm text-muted-foreground">Nenhum rolê encontrado. Use o cadastro rápido para começar.</p> : <ul className="divide-y border-y">{visibleEvents.map((event) => <li key={event.id} className="flex min-w-0 flex-col gap-3 py-4 sm:flex-row sm:items-center">
             {event.image_url ? <img src={event.image_url} alt="" className="h-20 w-16 shrink-0 rounded-md object-cover" /> : <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded-md border bg-card/40"><ImagePlus className="h-5 w-5 text-muted-foreground" /></div>}
-            <div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{event.event_title || "Rolê sem título"}</h3><p className="text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p><Badge variant="outline" className="mt-2">{event.status}</Badge></div>
+            <div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{event.event_title || "Rolê sem título"}</h3><p className="text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p><Badge variant="outline" className="mt-2">{event.status}</Badge><EventImpactCounters impact={impactByEvent.get(event.id)} /></div>
             {canEdit && <div className="grid grid-cols-2 gap-2 sm:flex"><Button variant="outline" size="sm" onClick={() => edit(event)}><Pencil />Editar</Button><Button variant="ghost" size="sm" disabled={archive.isPending} onClick={() => confirmArchive(event)}><Trash2 />Excluir</Button></div>}
           </li>)}</ul>}
         </TabsContent>
@@ -176,20 +180,24 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
             {selected && <EventQr event={selected} />}
           </div>}
         </TabsContent>
+
+        <TabsContent value="impact" className="pt-2"><CurationImpactPanel /></TabsContent>
       </Tabs>
     </section>
   );
 }
 
 function ShareActions({ event }: { event: CurationEvent }) {
-  const link = curationEventLink(event);
-  const invitation = curationEventInvite(event, link);
-  const copy = async () => { try { await navigator.clipboard.writeText(link); toast.success("Link copiado."); } catch { toast.error("Não deu pra copiar. Selecione o link abaixo."); } };
-  return <div className="min-w-0 space-y-3"><div className="break-all rounded-md border bg-card/40 p-3 text-sm text-muted-foreground">{link}</div><div className="flex flex-col gap-2 sm:flex-row"><Button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(invitation)}`, "_blank", "noopener,noreferrer")}><MessageCircle />Compartilhar no WhatsApp</Button><Button variant="outline" onClick={() => void copy()}><Copy />Copiar link</Button>{navigator.share && <Button variant="ghost" onClick={() => void navigator.share({ title: event.event_title || "Rolê", text: invitation, url: link }).catch(() => undefined)}><Share2 />Compartilhar</Button>}</div></div>;
+  const visibleLink = curationEventLink(event, window.location.origin, "curation_link");
+  const whatsappLink = curationEventLink(event, window.location.origin, "curation_whatsapp");
+  const shareLink = curationEventLink(event, window.location.origin, "curation_share");
+  const invitation = curationEventInvite(event, whatsappLink);
+  const copy = async () => { try { await navigator.clipboard.writeText(visibleLink); toast.success("Link copiado."); } catch { toast.error("Não deu pra copiar. Selecione o link abaixo."); } };
+  return <div className="min-w-0 space-y-3"><div className="break-all rounded-md border bg-card/40 p-3 text-sm text-muted-foreground">{visibleLink}</div><div className="flex flex-col gap-2 sm:flex-row"><Button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(invitation)}`, "_blank", "noopener,noreferrer")}><MessageCircle />Compartilhar no WhatsApp</Button><Button variant="outline" onClick={() => void copy()}><Copy />Copiar link</Button>{navigator.share && <Button variant="ghost" onClick={() => void navigator.share({ title: event.event_title || "Rolê", text: curationEventInvite(event, shareLink), url: shareLink }).catch(() => undefined)}><Share2 />Compartilhar</Button>}</div></div>;
 }
 
 function EventQr({ event }: { event: CurationEvent }) {
-  const link = curationEventLink(event);
+  const link = curationEventLink(event, window.location.origin, "curation_qr");
   const qrId = `curation-qr-${event.id}`;
   function download() {
     const svg = document.getElementById(qrId);
