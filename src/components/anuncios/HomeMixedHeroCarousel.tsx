@@ -128,7 +128,6 @@ export function HomeMixedHeroCarousel({
           const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
           const slideImage = slide.image_url || getEventFallbackImage(slide.category);
           const slideLocation = [slide.location, slide.address_neighborhood].filter(Boolean).join(" · ");
-          const slideDate = formatEventDateTimeBR(slide.date, slide.start_time);
           return (
             <Button
               key={slide.id}
