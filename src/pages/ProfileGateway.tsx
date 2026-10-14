@@ -14,7 +14,7 @@ export default function ProfileGateway() {
   if (user) return <ProfileSettings />;
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-xl items-center px-1 py-8 sm:py-12">
+    <section className="mx-auto flex min-h-[calc(100dvh-10rem)] max-w-xl items-start px-1 pb-36 pt-8 sm:items-center sm:py-12">
       <div className="w-full space-y-7">
         <header className="space-y-3 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-primary/35 bg-primary/10 text-primary">

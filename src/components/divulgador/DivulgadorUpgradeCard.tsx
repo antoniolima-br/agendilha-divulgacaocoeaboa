@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 import { BAIRROS } from "@/lib/neighborhoods";
+import { supabase } from "@/integrations/supabase/client";
 
 const TYPES = ["Produtor(a) de eventos", "Espaço cultural", "Artista/Banda", "Coletivo", "Outro"];
 
@@ -63,6 +64,8 @@ export function DivulgadorUpgradeCard() {
     if (password !== confirmPassword) return toast.error("As senhas não estão iguais.");
 
     try {
+      const { error: passwordError } = await supabase.auth.updateUser({ password });
+      if (passwordError) throw passwordError;
       await createRequest.mutateAsync({
         userId: user.id,
         nome: name.trim(),
