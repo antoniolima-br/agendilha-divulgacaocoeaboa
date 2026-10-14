@@ -1,5 +1,7 @@
 export const INTRANET_SECTORS = ["comercial", "marketing", "administracao", "financeiro", "desenvolvimento"] as const;
 export type IntranetSector = typeof INTRANET_SECTORS[number];
+export const SECTOR_SHORTCUTS: IntranetSector[] = ["comercial", "marketing", "administracao", "financeiro"];
+export const ADMINISTRATIVE_ROLES = ["master", "senior", "admin", ...INTRANET_SECTORS] as const;
 export function canViewIntranetOverview(roles: string[]): boolean {
   return roles.some(role => ['master','senior','admin','comercial','marketing','administracao','financeiro','desenvolvimento'].includes(role));
 }
@@ -7,6 +9,12 @@ export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comerc
 export const sectorOwners: Record<IntranetSector, string> = { comercial: "Mauro Iorio", marketing: "Prof. Ana", administracao: "Cintya Coelho", financeiro: "Bia Pinha", desenvolvimento: "Equipe técnica" };
 export function intranetSectors(roles: string[]): IntranetSector[] {
   return canViewIntranetOverview(roles) ? [...INTRANET_SECTORS] : [];
+}
+export function assignedIntranetSector(roles: string[]): IntranetSector | null {
+  return INTRANET_SECTORS.find((sector) => roles.includes(sector)) ?? (roles.includes("admin") ? "administracao" : null);
+}
+export function isAdministrativeMember(roles: string[]): boolean {
+  return roles.some((role) => ADMINISTRATIVE_ROLES.some((administrativeRole) => administrativeRole === role));
 }
 export function isIntranetSector(value: string | undefined): value is IntranetSector { return INTRANET_SECTORS.some((sector) => sector === value); }
 export function campaignLink(id: string) { return `${window.location.origin}/campanha/${id}`; }

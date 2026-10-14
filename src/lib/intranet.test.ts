@@ -1,5 +1,5 @@
 import { describe,it,expect } from 'vitest';
-import { intranetSectors,validCampaignDestination,canViewIntranetOverview } from './intranet';
+import { assignedIntranetSector, intranetSectors, isAdministrativeMember, SECTOR_SHORTCUTS, validCampaignDestination, canViewIntranetOverview } from './intranet';
 import { computePermissions } from '@/hooks/useAppPermissions';
 import { activeAccessRole } from './access';
 import { filterSidebarSections } from '@/components/layout/sidebarItems';
@@ -10,6 +10,8 @@ describe('intranet isolation',()=>{
  it.each(['comercial','marketing','administracao','desenvolvimento'])('%s reads every panel without inheriting operational privileges',role=>{const {permissions}=computePermissions({roleNames:['admin',role],profileRole:'divulgador',collaborator:{is_active:true,can_submit:true,can_edit:true,can_delete:true,can_approve:true}});expect([...permissions]).toEqual(['intranet.read']);expect(intranetSectors(['admin',role])).toHaveLength(5);const menu=filterSidebarSections(activeAccessRole(true,['admin',role]),p=>permissions.has(p),routeExists);expect(menu.flatMap(s=>s.items.map(i=>i.path))).toEqual([ROUTES.INTRANET]);});
  it('legacy admin and finance can view every management panel',()=>{expect(intranetSectors(['admin'])).toHaveLength(5);expect(intranetSectors(['admin','financeiro'])).toHaveLength(5);});
  it('mixed sector roles still expose the unified workspace',()=>expect(intranetSectors(['marketing','comercial'])).toHaveLength(5));
+ it('shows dedicated shortcuts for the four operational departments',()=>expect(SECTOR_SHORTCUTS).toEqual(['comercial','marketing','administracao','financeiro']));
+ it('recognizes only administrative members and their assigned sector',()=>{expect(isAdministrativeMember(['user'])).toBe(false);expect(isAdministrativeMember(['admin'])).toBe(true);expect(assignedIntranetSector(['admin'])).toBe('administracao');expect(assignedIntranetSector(['marketing'])).toBe('marketing');expect(assignedIntranetSector(['user'])).toBeNull();});
  it('editable profile never grants intranet',()=>expect(computePermissions({roleNames:[],profileRole:'comercial',collaborator:null}).permissions.has('intranet.read')).toBe(false));
  it('validates destinations',()=>{expect(validCampaignDestination('https://example.org/event')).toBe(true);for(const s of ['javascript:alert(1)','http://example.org','https://user:pass@example.org','/agenda'])expect(validCampaignDestination(s)).toBe(false);});
 });
