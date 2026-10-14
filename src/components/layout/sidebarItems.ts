@@ -18,7 +18,8 @@ import {
   Settings2,
   CreditCard,
   Share2,
-  CheckCircle2
+  CheckCircle2,
+  UserRound
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { type AccessRole } from "@/lib/access";
@@ -221,6 +222,13 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Conta",
     roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
+      {
+        id: "profile",
+        label: "Meu Perfil",
+        path: ROUTES.PERFIL,
+        icon: UserRound,
+        roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"]
+      },
       {
         id: "divulgador_status",
         label: "Seja Divulgador",

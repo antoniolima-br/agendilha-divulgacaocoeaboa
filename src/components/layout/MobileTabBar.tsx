@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Menu, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ export function isTabBarHidden(pathname: string) {
  */
 export function MobileTabBar({ onMenuClick }: Props) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   if (isTabBarHidden(pathname)) return null;
 
@@ -66,8 +67,8 @@ export function MobileTabBar({ onMenuClick }: Props) {
           <Button
             variant="ghost"
             type="button"
-            onClick={onMenuClick}
-            aria-label="Abrir menu"
+            onClick={() => navigate(ROUTES.PERFIL)}
+            aria-label="Abrir perfil"
             className="flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
           >
             <Menu className="h-5 w-5 shrink-0" />
