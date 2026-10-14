@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Compactar Coezinho com preto/amarelo fluorescente da marca, ampliar orientações reais do Guia e simplificar rodapé para um único crédito LimaX com X laranja; conferir no celular e computador.
 - [x] Ajustar Coezinho no canto inferior direito, esmaecer após seis segundos e renovar chat limpo com seis sugestões do app; canto, repouso, retorno, foco e fechamento conferidos em computador e celular, cinco testes aprovados.
 - [ ] Confirmar resposta real do Guia após envio: pergunta aparece, mas nenhuma resposta foi recebida durante a verificação; última tentativa de diagnóstico bloqueada pela indisponibilidade do ambiente.
 - [x] Substituir botão do Guia por Coezinho arrastável em todo o app, preservando conversa; cinco testes aprovados, arraste real por mouse/toque sem abertura acidental, clique abre, fechamento restaura posição, navegação e redução de tela conferidos.
