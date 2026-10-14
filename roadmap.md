@@ -296,3 +296,4 @@
 - [x] Separar rigorosamente Curadoria, Marketing, Financeiro e Comercial na Gestão Setorial, com telas simples e mobile-first.
 - [x] Reorganizar o menu lateral em Curadoria, Marketing, Comercial, Financeiro e Configurações, sem atalhos duplicados.
 - [x] Remover definitivamente o atalho de Envios do topo em celular e computador, preservando o menu lateral.
+- [ ] Garantir leitura de toda a programação pública, flyers e detalhes sem cadastro, preservando os dados privados e o Perfil opcional.
