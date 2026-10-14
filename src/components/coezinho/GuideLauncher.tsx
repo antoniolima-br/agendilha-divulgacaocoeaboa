@@ -4,7 +4,7 @@ import { MascotLauncher } from "./MascotLauncher";
 
 const Chat = lazy(() => import("./CoezinhoChat").then((module) => ({ default: module.CoezinhoChat })));
 
-/** Keep the visible launcher light; retain conversation state after first use. */
+/** Keep the launcher light; the chat owns a fresh conversation per opening. */
 export function GuideLauncher({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const [requested, setRequested] = useState(initiallyOpen);
   useEffect(() => { if (initiallyOpen) setRequested(true); }, [initiallyOpen]);

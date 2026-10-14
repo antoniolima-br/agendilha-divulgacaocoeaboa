@@ -9,25 +9,31 @@ import { Shimmer } from "@/components/ai-elements/shimmer";
 import mascot from "@/assets/coezinho-mascot.png";
 import { Link } from "react-router-dom";
 import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
-import { X, CalendarDays, CircleHelp, Megaphone, Ticket, BadgeCheck, Music2, ArrowUp } from "lucide-react";
+import { X, CalendarDays, Ticket, ArrowUp } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MascotLauncher } from "./MascotLauncher";
 
 const QUICK_PROMPTS = [
   { label: "O que tá rolando hoje?", icon: CalendarDays, text: "Quais eventos estão rolando hoje?" },
-  { label: "Onde tem música ao vivo?", icon: Music2, text: "Quais eventos têm música ao vivo?" },
-  { label: "Como funciona o app?", icon: CircleHelp, text: "O que posso fazer no app Coé a Boa?" },
-  { label: "Quero anunciar minha marca", icon: Megaphone, text: "Como anunciar em um espaço publicitário do app?" },
   { label: "Como divulgar meu evento?", icon: Ticket, text: "Como cadastrar e divulgar meu evento?" },
-  { label: "Quero destacar um evento", icon: BadgeCheck, text: "Como funciona a divulgação patrocinada para destacar um evento?" },
 ];
 
 
 export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const [open, setOpen] = useState(initiallyOpen);
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_KOE_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_KOE_EVENT, onOpen);
+  }, []);
+  return open ? <CoezinhoSession onClose={() => setOpen(false)} /> : <MascotLauncher onOpen={() => setOpen(true)} />;
+}
+
+function CoezinhoSession({ onClose }: { onClose: () => void }) {
   const [input, setInput] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(true);
 
   const transport = useMemo(
     () =>
@@ -43,16 +49,22 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
 
   const { messages, sendMessage, status, stop } = useChat({
     transport,
-    onError: () => toast.error("Não rolou falar com o Guia agora. Tenta de novo em instantes."),
+    onError: () => {
+      if (activeRef.current) toast.error("Não rolou falar com o Guia agora. Tenta de novo em instantes.");
+    },
   });
   const busy = status === "submitted" || status === "streaming";
 
   useEffect(() => {
-    if (!open) return;
+    activeRef.current = true;
+    return () => { activeRef.current = false; void stop(); };
+  }, [stop]);
+
+  useEffect(() => {
     const previous = document.activeElement;
     const focus = requestAnimationFrame(() => panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true }));
     const keydown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") onClose();
       if (event.key !== "Tab") return;
       const controls = Array.from(panelRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), textarea, a[href]') ?? []);
       const first = controls[0], last = controls[controls.length - 1];
@@ -68,13 +80,13 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
       window.removeEventListener("keydown", keydown);
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
     };
-  }, [open]);
+  }, [onClose]);
 
   useEffect(() => {
-    if (open && !busy && !document.activeElement?.closest('button, a, input')) {
+    if (!busy && !document.activeElement?.closest('button, a, input')) {
       panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
     }
-  }, [open, busy]);
+  }, [busy]);
 
   const send = (text: string) => {
     const value = text.trim();
@@ -84,16 +96,7 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
     panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
   };
 
-  useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener(OPEN_KOE_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_KOE_EVENT, onOpen);
-  }, []);
-
   return (
-    <>
-      {!open && <MascotLauncher onOpen={() => setOpen(true)} />}
-      {open && (
         <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="coezinho-title"
           className="theme-coeaboa fixed inset-0 z-50 flex h-[100dvh] flex-col bg-background text-foreground">
           <header className="shrink-0 border-b border-border px-4 py-3 sm:px-8">
@@ -102,10 +105,10 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
                 <img src={mascot} alt="Coezinho" className="h-12 w-12 object-contain" />
                 <div>
                   <h1 id="coezinho-title" className="font-display text-base font-semibold">Guia do Coé</h1>
-                  <p className="text-xs text-muted-foreground">Seu parceiro de rolê</p>
+                  <p className="text-xs text-muted-foreground">Guia e recepcionista do Coé a Boa?</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" aria-label="Fechar" title="Fechar conversa" onClick={() => setOpen(false)}>
+              <Button variant="ghost" size="icon" aria-label="Fechar" title="Fechar conversa" onClick={onClose}>
                 <X />
               </Button>
             </div>
@@ -117,11 +120,12 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">Coé! Que bom ter você por aqui.</p>
                     <h2 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Qual é a boa?</h2>
+                    <p className="max-w-xl text-base leading-relaxed text-muted-foreground">Sou o Coezinho, guia do Coé a Boa? Pode perguntar à vontade sobre a programação de hoje, como cadastrar seu evento ou encontrar o que você precisa no app.</p>
                   </div>
                   <div className="grid gap-3" aria-label="Sugestões rápidas">
                     {QUICK_PROMPTS.map(({ label, text, icon: Icon }) => (
                       <Button key={label} type="button" variant="ghost" onClick={() => send(text)} disabled={busy}
-                        className="h-auto min-h-16 justify-start gap-4 whitespace-normal rounded-lg bg-card px-5 py-4 text-left text-base font-medium text-foreground shadow-none hover:bg-muted md:h-auto">
+                        className="h-auto min-h-11 justify-start gap-3 whitespace-normal rounded-md px-3 py-3 text-left text-sm font-medium text-foreground shadow-none hover:bg-muted">
                         <Icon className="h-5 w-5 text-primary" />
                         <span className="min-w-0">{label}</span>
                       </Button>
@@ -136,7 +140,7 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
                       message.role === "user" ? <p key={index} className="whitespace-pre-wrap break-words">{part.text}</p> :
                       <MessageResponse key={index} isAnimating={status === "streaming" && message.id === messages.at(-1)?.id}
                         components={{ a: ({ href, children }) => href?.startsWith("/") ? (
-                          <Link to={href} onClick={() => setOpen(false)} className="font-semibold text-primary underline">{children}</Link>
+                          <Link to={href} onClick={onClose} className="font-semibold text-primary underline">{children}</Link>
                         ) : <a href={href} target="_blank" rel="noreferrer" className="text-primary underline">{children}</a> }}>
                         {part.text}
                       </MessageResponse>
@@ -162,7 +166,5 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
             </PromptInput>
           </footer>
         </div>
-      )}
-    </>
   );
 }

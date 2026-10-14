@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 export function PartnershipMenu({ compact = false, onNavigate }: { compact?: boolean; onNavigate?: () => void }) {
   return <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="ghost" title="Anunciar / Parcerias" className={cn("w-full rounded-none text-muted-foreground hover:text-foreground", compact ? "h-16 flex-col gap-1 px-1" : "justify-start gap-3 px-3")}>
+      <Button variant="ghost" title="Divulgar/Contratar" className={cn("w-full rounded-none text-muted-foreground hover:text-foreground", compact ? "h-16 flex-col gap-1 px-1" : "justify-start gap-3 px-3")}>
         <Megaphone className="h-5 w-5 shrink-0" />
-        <span className={compact ? "text-center text-[10px] font-semibold leading-tight" : "text-sm"}>Anunciar / Parcerias</span>
+        <span className={compact ? "text-center text-[10px] font-semibold leading-tight" : "text-sm"}>Divulgar/Contratar</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent side="top" align="center" sideOffset={8} className="z-[60] w-56">
