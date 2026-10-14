@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { availableEventDays, eventDayStripWindow } from "./eventCalendar";
+import { availableEventDays, eventDayStripWindow, eventWeekStart } from "./eventCalendar";
 import { DEFAULT_EVENT_FILTERS } from "./publicEventFilters";
 
 describe("dias disponíveis no calendário", () => {
@@ -35,5 +35,9 @@ describe("dias disponíveis no calendário", () => {
   it("reposiciona a semana quando os filtros removem os dias exibidos", () => {
     expect(eventDayStripWindow(new Set(["2026-10-31"]), today, today).days).toEqual(["2026-10-31"]);
     expect(eventDayStripWindow(new Set([today]), "2026-10-31", today).days).toEqual([today]);
+  });
+  it("leva o calendário para a semana que contém o flyer em foco", () => {
+    expect(eventWeekStart("2026-10-16", today)).toBe(today);
+    expect(eventWeekStart("2026-10-17", today)).toBe("2026-10-17");
   });
 });

@@ -2,7 +2,7 @@ import { usePublicEvents } from "@/data/usePublicEvents";
 import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
-import { availableEventDays, eventDayStripWindow } from "@/lib/eventCalendar";
+import { availableEventDays, eventDayStripWindow, eventWeekStart } from "@/lib/eventCalendar";
 import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, useMemo } from "react";
@@ -221,7 +221,7 @@ export default function Landing() {
     const [carouselDate, setCarouselDate] = useState("");
     const syncCarouselDate = useCallback((date: string) => {
       setCarouselDate(date);
-      setWeekStart(date);
+      setWeekStart(eventWeekStart(date));
     }, []);
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
