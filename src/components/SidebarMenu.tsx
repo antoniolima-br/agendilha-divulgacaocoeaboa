@@ -71,7 +71,7 @@ export function SidebarMenu({ onClose }: Props) {
       {/* Header Profile */}
       <div className="p-4 md:p-6 pb-2 shrink-0">
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
-          <div className="flex items-center gap-2.5 group cursor-pointer px-1" onClick={() => { navigate("/"); if (onClose) onClose(); }}>
+          <Link to="/" className="flex items-center gap-2.5 group px-1" onClick={onClose}>
             <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shadow-lg group-hover:rotate-6 transition-all">
               <img src={logoCoeABoa} alt="Coé a Boa?" className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full ring-2 ring-white/20" />
             </div>
@@ -79,11 +79,11 @@ export function SidebarMenu({ onClose }: Props) {
               <span className="font-display text-xl font-black text-primary tracking-tighter">Coé a Boa?</span>
               <span className="text-[10px] text-secondary font-black uppercase tracking-widest opacity-90">Rio de Janeiro</span>
             </div>
-          </div>
+          </Link>
           <Separator className="bg-sidebar-border/50" />
         </div>
         
-        <div className="flex flex-col gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent p-3 shadow-sm transition-all hover:shadow-md md:p-4">
+        <div className="flex flex-col gap-3 rounded-lg border border-sidebar-border bg-sidebar p-3 shadow-sm transition-all hover:shadow-md md:p-4">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 md:h-11 md:w-11 rounded-full bg-gradient-to-br from-primary via-primary to-accent text-primary-foreground flex items-center justify-center font-display text-base font-bold shrink-0 shadow-lg ring-2 ring-white/50">
               {user ? initials : <User className="h-5 w-5" />}
