@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-
 import { 
   CalendarDays, 
   ClipboardList, 
@@ -14,14 +12,12 @@ import {
   CheckCircle, 
   Shield, 
   Settings, 
-  ChevronDown, 
   UserCog, 
   Crown, 
   Trophy, 
   Sun, 
   Moon,
-  ExternalLink,
-  Share2
+  ExternalLink
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { MapPin, UserRound } from "lucide-react";
@@ -41,14 +37,6 @@ import SubmissionsPanel from "@/components/SubmissionsPanel";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { UpdateAppButton } from "@/components/system/UpdateAppButton";
 import { MobileTabBar, MobileTabBarSpacer } from "@/components/layout/MobileTabBar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -200,17 +188,13 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   })()}
                 </span>
               </Link>
-              <Button asChild variant="ghost" size="icon" className="h-11 w-11 shrink-0 self-start rounded-full">
-                <Link to={user ? ROUTES.PERFIL : ROUTES.CADASTRO_PUBLICO} aria-label={user ? `Meu perfil: ${badgeName}, sessão ativa` : "Criar meu perfil"}>
-                  {user ? <span className="relative">
-                    <Avatar className="h-9 w-9 ring-2 ring-primary">
-                      <AvatarImage src={typeof user.user_metadata?.avatar_url === "string" ? user.user_metadata.avatar_url : undefined} alt={badgeName} />
-                      <AvatarFallback className="bg-primary text-sm font-semibold text-primary-foreground">{initials}</AvatarFallback>
-                    </Avatar>
-                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background bg-primary" aria-hidden="true" />
-                  </span> : <UserRound className="h-6 w-6 text-primary" />}
-                </Link>
-              </Button>
+              {user ? (
+                <div className="shrink-0 self-start"><HeaderUserMenu variant="desktop" hideContext /></div>
+              ) : (
+                <Button asChild variant="ghost" size="icon" className="h-11 w-11 shrink-0 self-start rounded-full">
+                  <Link to={ROUTES.CADASTRO_PUBLICO} aria-label="Criar meu perfil"><UserRound className="h-6 w-6 text-primary" /></Link>
+                </Button>
+              )}
             </div>
           </div>
         </header>
@@ -298,22 +282,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
             // Use centralized name resolution from useUserBadge (profile → company → collaborator → metadata → email/phone)
             const fullName = badgeName && badgeName !== "Usuário" ? badgeName : "Divulgador";
             const firstName = fullName.split(" ")[0];
-            const roleLabel = status === "financeiro" ? "Administrador Financeiro" : status === "senior" ? "Administrador Sênior" : isMaster
-              ? "Admin Master"
-              : isAdmin
-              ? "Admin"
-              : perms.isCollaborator
-              ? "Divulgador"
-              : "Usuário";
-
-            // Role-aware icon for the trigger
-            const RoleIcon = isMaster ? Crown : isAdmin ? Shield : UserCog;
-            const roleAccent = isMaster
-              ? "text-secondary"
-              : isAdmin
-              ? "text-accent"
-              : "text-muted-foreground";
-
             return (
              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               <UpdateAppButton compact />
@@ -343,113 +311,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 <TooltipContent>Meus envios e rascunhos</TooltipContent>
               </Tooltip>}
 
-              {/* User dropdown — moved to the far right */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 px-2 gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:bg-primary/10 hover:text-primary"
-                    aria-label={`Menu do ${roleLabel}`}
-                  >
-                    <div className="relative">
-                      <Avatar className={`h-6 w-6 ${isMaster ? "ring-2 ring-secondary ring-offset-1 ring-offset-background" : isAdmin ? "ring-2 ring-accent ring-offset-1 ring-offset-background" : ""}`}>
-                        <AvatarFallback className="bg-primary text-[10px] font-semibold text-primary-foreground">
-                          {getInitials(fullName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <RoleIcon
-                        className={`absolute -top-1.5 -right-1.5 h-3.5 w-3.5 ${roleAccent} ${isMaster ? "fill-secondary" : ""} drop-shadow-sm`}
-                        strokeWidth={2}
-                        aria-label={roleLabel}
-                      />
-                    </div>
-                    <span className="hidden min-[420px]:inline truncate max-w-[80px] sm:max-w-[120px]">{firstName}</span>
-                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel className="text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-foreground truncate">{fullName}</span>
-                      {isMaster && <Crown className="h-3.5 w-3.5 text-secondary fill-secondary shrink-0" strokeWidth={2} />}
-                    </div>
-                    <div className={`font-normal text-[11px] mt-0.5 ${isMaster ? "text-secondary font-semibold" : "text-muted-foreground"}`}>
-                      {roleLabel}
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-
-                  {/* Admin & Master: Eventos */}
-                  {perms.hasPermission("events.read") && (
-                    <DropdownMenuItem onClick={() => navigate("/admin/events")} className="cursor-pointer">
-                      <CalendarDays className="h-4 w-4 mr-2 text-primary" />
-                      Eventos
-                    </DropdownMenuItem>
-                  )}
-                  {perms.canViewFinance && (
-                    <DropdownMenuItem onClick={() => navigate("/admin/financeiro")} className="cursor-pointer">
-                      <ClipboardList className="h-4 w-4 mr-2 text-primary" />Financeiro
-                    </DropdownMenuItem>
-                  )}
-
-                  {/* Master only: Usuários */}
-                  {isMaster && (
-                    <DropdownMenuItem onClick={() => navigate("/admin/users")} className="cursor-pointer">
-                      <Users className="h-4 w-4 mr-2 text-primary" />
-                      Usuários
-                    </DropdownMenuItem>
-                  )}
-
-                  {/* Master only: Ranking */}
-                  {isMaster && (
-                    <DropdownMenuItem onClick={() => navigate("/ranking")} className="cursor-pointer">
-                      <Trophy className="h-4 w-4 mr-2 text-secondary" />
-                      Ranking
-                    </DropdownMenuItem>
-                  )}
-                  
-
-                  {(isAdmin || isMaster) && user && (
-                    <DropdownMenuItem 
-                      onClick={async () => {
-                        const shareUrl = `${window.location.origin}/divulgador/${user.id}`;
-                        const shareText = `Confira meu perfil de divulgador no Coé a Boa?: ${shareUrl}`;
-                        
-                        if (navigator.share) {
-                          try {
-                            await navigator.share({
-                              title: 'Perfil no Coé a Boa?',
-                              text: shareText,
-                              url: shareUrl,
-                            });
-                          } catch (err) {
-                            console.error("Erro ao compartilhar:", err);
-                          }
-                        } else {
-                          try {
-                            await navigator.clipboard.writeText(shareUrl);
-                            toast.success("Link do perfil copiado!");
-                          } catch (err) {
-                            toast.error("Não foi possível copiar o link.");
-                          }
-                        }
-                      }} 
-                      className="cursor-pointer font-medium text-primary"
-                    >
-                      <Share2 className="h-4 w-4 mr-2 text-primary" />
-                      Compartilhar Perfil
-                    </DropdownMenuItem>
-                  )}
-
-                  {(isAdmin || isMaster) && <DropdownMenuSeparator />}
-
-                  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <HeaderUserMenu variant="desktop" />
 
               {/* Logout is inside the user dropdown above */}
             </div>
