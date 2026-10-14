@@ -3492,6 +3492,10 @@ export type Database = {
       increment_ad_views: { Args: { target_ad_id: string }; Returns: undefined }
       increment_shares: { Args: { event_id: string }; Returns: undefined }
       increment_views: { Args: { event_id: string }; Returns: undefined }
+      intranet_archive_curation_event: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
       intranet_assign_sector: {
         Args: { p_sector: string; p_user: string }
         Returns: undefined
@@ -3509,6 +3513,20 @@ export type Database = {
         }
         Returns: undefined
       }
+      intranet_curation_events: {
+        Args: never
+        Returns: {
+          date: string
+          deleted_at: string
+          event_title: string
+          id: string
+          image_url: string
+          slug: string
+          start_time: string
+          status: string
+          video_link: string
+        }[]
+      }
       intranet_dashboard: {
         Args: { p_days?: number; p_sector: string }
         Returns: Json
@@ -3525,6 +3543,17 @@ export type Database = {
         Returns: Json
       }
       intranet_open_campaign: { Args: { p_id: string }; Returns: string }
+      intranet_save_curation_event: {
+        Args: {
+          p_date: string
+          p_id: string
+          p_image_url?: string
+          p_start_time: string
+          p_title: string
+          p_video_link?: string
+        }
+        Returns: Json
+      }
       intranet_save_kpi_targets: {
         Args: { p_month: string; p_targets: Json }
         Returns: undefined
