@@ -1,4 +1,5 @@
 import { normalizeText } from "./utils";
+import { formatBrazilianDate } from "./date-utils";
 
 export { normalizeText };
 
@@ -35,7 +36,6 @@ const EVENT_FALLBACK_PALETTES = [
   "bg-accent text-accent-foreground",
 ] as const;
 
-/** Escolhe uma paleta estável para o mesmo evento, sem depender da ordem da lista. */
 export function getEventFallbackPalette(seed: string): string {
   let hash = 0;
   for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
@@ -71,8 +71,9 @@ export interface ShareableEvent extends AddressComponents {
 }
 
 export function buildEventShareText(ev: ShareableEvent, options: { includeBrief?: boolean; url?: string } = {}): string {
-  const title = ev.event_title || "Evento";
+  const title = ev.event_title || ev.location || "Evento";
   const time = ev.start_time ? ev.start_time.slice(0, 5) : "";
+  const brDate = formatBrazilianDate(ev.date);
   const addr = formatEventAddress(ev);
   const brief = options.includeBrief && ev.description 
     ? (ev.description.length > 280 ? `\n${ev.description.slice(0, 277).trimEnd()}…` : `\n${ev.description}`)
@@ -80,7 +81,7 @@ export function buildEventShareText(ev: ShareableEvent, options: { includeBrief?
   
   const lines = [
     `*${title}*`,
-    ev.date ? `📅 ${ev.date}${time ? ` · ${time}` : ""}` : "",
+    ev.date ? `📅 ${brDate}${time ? ` · ${time}` : ""}` : "",
     addr ? `📍 ${addr}` : "",
     brief,
     options.url ? `\nMais informações: ${options.url}` : ""

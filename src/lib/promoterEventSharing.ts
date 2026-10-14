@@ -1,5 +1,4 @@
 import { eventDateISO, saoPauloTodayISO, isPublicEventStatus } from "@/lib/eventDate";
-import { formatBrazilianDate } from "@/lib/date-utils";
 import { buildEventShareText, ShareableEvent } from "./event-utils";
 
 export interface PromoterShareEvent extends ShareableEvent {
@@ -21,7 +20,7 @@ export function buildPromoterEventShare(event: PromoterShareEvent, origin: strin
   });
   
   return { 
-    title: event.event_title || "Evento", 
+    title: event.event_title || event.location || "Evento", 
     text, 
     url 
   };
