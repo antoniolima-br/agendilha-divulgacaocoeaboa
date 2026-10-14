@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { DivulgadorUpgradeCard } from "./DivulgadorUpgradeCard";
 
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: "user-1" } }) }));
+vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { updateUser: vi.fn() } } }));
 vi.mock("@/data/useDivulgadorRequest", () => ({ useCreateDivulgadorRequest: () => ({ isPending: false, mutateAsync: vi.fn() }) }));
 vi.mock("@/data/useDivulgadorStatus", () => ({
   useDivulgadorStatus: () => ({
