@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Ampliar temporariamente Outras Programações para todas as datas públicas disponíveis, mantendo rolagem e proteção de registros privados.
 - [x] Unificar temporariamente a lista textual de hoje e navegar no carrossel por toque nas metades, sem setas; 17 testes aprovados, eventos públicos reais e detalhes conferidos, celular sem overflow; oito linhas simuladas somente no navegador confirmaram rolagem nativa após cinco visíveis.
 - [x] Filtrar a barra semanal da Home pela disponibilidade do calendário; ocultar dias vazios e pular semanas vazias. Dez testes aprovados; quatro datas reais exibidas, seleção abriu Explorar com a data e celular sem overflow.
 - [ ] Adicionar painel executivo por setor com resultados reais, metas mensais persistidas e comparação mensal; validar acesso e edição de metas na Visão Consolidada.

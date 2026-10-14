@@ -130,9 +130,16 @@ export default function Landing() {
      const today = saoPauloTodayISO();
      return (eventsData ?? []).filter((event) => matchesPublicEventFilters(event, globalFilters, "", today));
    }, [eventsData, globalFilters]);
-    const { visual: visualEvents, textOnly: freeEvents } = useMemo(
+    const { visual: visualEvents } = useMemo(
       () => splitHomeEventPresentation(allEvents), [allEvents],
     );
+    const freeEvents = useMemo(() => {
+      const listFilters = { ...globalFilters, period: "all" as const, date: "" };
+      return (eventsData ?? []).filter((event) =>
+        PUBLIC_EVENT_STATUSES.some((status) => status === event.status)
+        && matchesPublicEventFilters(event, listFilters),
+      );
+    }, [eventsData, globalFilters]);
     const promotionalFlyerEvents = visualEvents;
     const todayEventsCount = useMemo(() => {
       const today = saoPauloTodayISO();
@@ -530,10 +537,7 @@ export default function Landing() {
 
             {freeEvents.length > 0 ? (
               <ul
-                className={cn(
-                  "divide-y divide-border border-y border-border",
-                  freeEvents.length >= 4 && "max-h-[13.5rem] overflow-y-auto overscroll-contain pr-1",
-                )}
+                className="max-h-[22.5rem] overflow-y-auto divide-y divide-border border-y border-border"
                 aria-label="Outras programações"
               >
                 {freeEvents.map((event) => {

@@ -93,7 +93,7 @@ describe("Landing sem dados", () => {
     expect(screen.queryByRole('navigation', { name: 'Dias com rolês' })).not.toBeInTheDocument();
   });
   it("oferece cada evento sem flyer somente uma vez, na programação textual", () => {
-    eventMocks.data = [{ id: "text-only", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
+    eventMocks.data = [{ id: "text-only", status: "publicado", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
     expect(screen.getAllByRole("heading", { name: "Rolê sem flyer" })).toHaveLength(1);
     expect(screen.getByRole("list", { name: "Outras programações" })).toContainElement(screen.getByRole("heading", { name: "Rolê sem flyer" }));
