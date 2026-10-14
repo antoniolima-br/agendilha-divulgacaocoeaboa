@@ -23,6 +23,7 @@ const QUICK_PROMPTS = [
 const COMPOSER_MAX_LINES = 5;
 
 function resizeComposer(textarea: HTMLTextAreaElement) {
+  textarea.style.setProperty("field-sizing", "fixed");
   textarea.style.height = "auto";
   const styles = window.getComputedStyle(textarea);
   const lineHeight = Number.parseFloat(styles.lineHeight) || 24;
