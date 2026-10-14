@@ -13,15 +13,20 @@ export function LoadingState({
   className 
 }: LoadingStateProps) {
   return (
-    <div className={cn(
-      "flex flex-col items-center justify-center gap-4 rounded-lg border border-border/60 bg-card/35 px-6 text-center animate-fade-in",
-      fullPage ? "min-h-[60vh] w-full" : "min-h-40 py-10",
-      className
-    )}>
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/20 bg-primary/10">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+    <div 
+      role="status" 
+      aria-live="polite"
+      className={cn(
+        "flex flex-col items-center justify-center gap-4 rounded-2xl border border-border/60 bg-card/35 px-6 text-center animate-fade-in relative overflow-hidden",
+        fullPage ? "min-h-[60vh] w-full" : "min-h-48 py-10",
+        className
+      )}
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-pulse pointer-events-none" />
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-primary/20 bg-primary/10 relative z-10">
+        <Loader2 className="h-7 w-7 animate-spin text-primary" />
       </div>
-      <p className="max-w-sm text-sm font-medium leading-relaxed text-muted-foreground">{message}</p>
+      <p className="max-w-sm text-sm font-semibold leading-relaxed text-muted-foreground relative z-10">{message}</p>
     </div>
   );
 }

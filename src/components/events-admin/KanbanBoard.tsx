@@ -30,7 +30,7 @@ export function KanbanBoard({ submissions, onSelect, selectedId }: Props) {
         {EDITORIAL_STAGES.filter(s => s.key !== "rejeitado").map(stage => {
           const items = byStage[stage.key] || [];
           return (
-            <div key={stage.key} className="flex-shrink-0 w-[260px] flex flex-col">
+            <div key={stage.key} className="flex-shrink-0 w-[280px] flex flex-col">
               <div className={`rounded-t-xl border border-b-0 px-3 py-2 ${stage.color}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider">{stage.label}</span>
@@ -40,7 +40,7 @@ export function KanbanBoard({ submissions, onSelect, selectedId }: Props) {
               </div>
               <div className="flex-1 min-h-[200px] rounded-b-xl border bg-muted/20 p-2 space-y-2">
                 {items.length === 0 && (
-                  <p className="text-[10px] text-muted-foreground text-center py-6">Sem eventos</p>
+                  <p className="text-xs text-muted-foreground text-center py-8">Sem eventos</p>
                 )}
                 {items.map(sub => {
                   const pending = stage.key === "pronto_divulgar";

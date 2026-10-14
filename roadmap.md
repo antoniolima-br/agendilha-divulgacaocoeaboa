@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Refinar globalmente UI/UX sem alterar funções: hierarquia, campos, seletores, cartões, diálogos, abas, feedback, estados e responsividade alinhados à identidade atual.
 - [x] Otimizar performance global sem mudar a experiência: estabilizar dados, paginar listas completas, reduzir peso do Coezinho, simplificar animações e melhorar imagens.
 - [x] Refatorar a base sem alterar comportamento: centralizar regras do formulário de eventos, autoridade administrativa, carregamento de rotas e formatadores comerciais; remover duplicações com cobertura focada e validação completa.
 - [x] Criar cadastro progressivo com perfil convidativo, conta pública simples, upgrade de divulgador em etapas, bloqueio seguro até confirmação oficial pelo WhatsApp e painel pessoal com estados claros.

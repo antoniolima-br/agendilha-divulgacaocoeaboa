@@ -64,7 +64,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
           <span 
             key={step.id}
             className={cn(
-              "text-[10px] uppercase tracking-wider font-bold transition-colors",
+              "text-xs uppercase tracking-wider font-bold transition-colors",
               step.id === currentStep ? "text-primary" : "text-muted-foreground"
             )}
           >

@@ -8,6 +8,7 @@ interface EmptyStateProps {
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
+  buttonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   className?: string;
 }
 
@@ -17,11 +18,12 @@ export function EmptyState({
   description,
   actionLabel,
   onAction,
+  buttonVariant = "default",
   className
 }: EmptyStateProps) {
   return (
     <div className={cn(
-      "flex min-h-48 flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border bg-card/35 p-6 text-center animate-fade-in sm:p-8",
+      "flex min-h-48 flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-card/35 p-6 text-center animate-fade-in sm:p-8",
       className
     )}>
       <div className="flex h-14 w-14 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary">
@@ -32,7 +34,7 @@ export function EmptyState({
         {description && <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>}
       </div>
       {actionLabel && onAction && (
-        <Button onClick={onAction} className="px-6">
+        <Button onClick={onAction} variant={buttonVariant} className="px-6">
           {actionLabel}
         </Button>
       )}
