@@ -16,7 +16,7 @@ describe("compartilhamento do divulgador", () => {
   });
   it("gera dados exclusivamente do evento e link direto", () => {
     const share = buildPromoterEventShare(event, "https://example.org");
-    expect(share.url).toBe("https://example.org/evento/samba-na-praca");
+    expect(share.url).toBe("https://example.org/evento/samba-na-praca?src=whatsapp");
     expect(share.text).toContain("09/10/2026 · 19:00");
     expect(share.text).toContain("Praça Central — Rua A — Centro");
     expect(share.text).toContain(event.description);
@@ -26,6 +26,6 @@ describe("compartilhamento do divulgador", () => {
     const share = buildPromoterEventShare({ ...event, event_title: null, slug: null, description: "x".repeat(400) }, "https://example.org");
     expect(share.title).toBe("Praça Central");
     expect(share.text).toContain("x".repeat(277) + "…");
-    expect(share.url).toBe("https://example.org/evento/event-1");
+    expect(share.url).toBe("https://example.org/evento/event-1?src=whatsapp");
   });
 });

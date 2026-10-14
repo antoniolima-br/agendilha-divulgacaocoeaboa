@@ -1405,16 +1405,19 @@ export type Database = {
           event_id: string
           id: number
           opened_at: string
+          origin: string
         }
         Insert: {
           event_id: string
           id?: number
           opened_at?: string
+          origin?: string
         }
         Update: {
           event_id?: string
           id?: number
           opened_at?: string
+          origin?: string
         }
         Relationships: [
           {
@@ -1715,6 +1718,7 @@ export type Database = {
           id: string
           monthly_cents: number
           notes: string
+          origin: string
           stage: string
           starts_on: string | null
         }
@@ -1727,6 +1731,7 @@ export type Database = {
           id?: string
           monthly_cents?: number
           notes?: string
+          origin?: string
           stage?: string
           starts_on?: string | null
         }
@@ -1739,6 +1744,7 @@ export type Database = {
           id?: string
           monthly_cents?: number
           notes?: string
+          origin?: string
           stage?: string
           starts_on?: string | null
         }
@@ -3531,6 +3537,10 @@ export type Database = {
         Args: { p_days?: number; p_sector: string }
         Returns: Json
       }
+      intranet_engagement_funnel: {
+        Args: { p_end_at: string; p_start_at: string }
+        Returns: Json
+      }
       intranet_finance_metrics: { Args: { p_days?: number }; Returns: Json }
       intranet_flyer_engagement: {
         Args: { p_end_at: string; p_start_at: string }
@@ -3574,6 +3584,10 @@ export type Database = {
           nome_tabela: string
           registro_id: string
         }[]
+      }
+      record_event_open: {
+        Args: { p_event_id: string; p_origin?: string }
+        Returns: undefined
       }
       report_event: {
         Args: {
