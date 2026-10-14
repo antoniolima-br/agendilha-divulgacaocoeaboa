@@ -28,7 +28,8 @@ body:has(.coezinho-fab) { padding-bottom: calc(4rem + var(--mascot-lane) + env(s
 body:has(.coezinho-fab)::after {
   content: "";
   position: fixed;
-  inset-inline: 0;
+  right: 0;
+  width: calc(var(--mascot-lane) + 32px);
   bottom: 0;
   height: calc(var(--mascot-lane) + 16px);
   background: hsl(var(--background));
