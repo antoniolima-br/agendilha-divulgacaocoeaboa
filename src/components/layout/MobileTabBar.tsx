@@ -51,10 +51,10 @@ export function MobileTabBar({ onMenuClick }: Props) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex h-[var(--bottom-navigation-height)] flex-col items-center justify-center gap-0.5 px-2 transition-colors",
-                  active ? "text-primary" : "text-muted-foreground"
+                  active ? "text-primary font-bold" : "text-muted-foreground"
                 )}
               >
-                <Icon className={cn("h-5 w-5 shrink-0", active && "fill-primary/10")} />
+                <div className="relative flex flex-col items-center"><Icon className={cn("h-5 w-5 shrink-0 transition-transform", active && "fill-primary/10 scale-110")} />{active && <div className="absolute -bottom-1 h-1 w-1 rounded-full bg-primary" /></div>
                 <span className="w-full truncate text-center text-[10px] font-semibold leading-none">
                   {item.label}
                 </span>

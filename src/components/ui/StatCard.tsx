@@ -102,7 +102,7 @@ export function StatCard({
     <Card 
       className={cn(
         "border-border bg-card shadow-sm transition-all duration-300 overflow-hidden group",
-        (onClick || description) && "cursor-pointer",
+        (onClick || description) (onClick || description) && "cursor-pointer",(onClick || description) && "cursor-pointer", "cursor-pointer active:scale-[0.98] active:shadow-sm",
         expanded ? "ring-2 ring-primary/20 scale-[1.02] shadow-md" : (onClick || description) ? "hover:scale-[1.01]" : "",
         className
       )}
