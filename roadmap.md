@@ -295,4 +295,4 @@
 - [x] Ampliar flyers da Curadoria, ler o título automaticamente, bloquear publicação sem título e remover a ação confusa de exibição imediata.
 - [x] Separar rigorosamente Curadoria, Marketing, Financeiro e Comercial na Gestão Setorial, com telas simples e mobile-first.
 - [x] Reorganizar o menu lateral em Curadoria, Marketing, Comercial, Financeiro e Configurações, sem atalhos duplicados.
-- [ ] Remover definitivamente o atalho de Envios do topo em celular e computador, preservando o menu lateral.
+- [x] Remover definitivamente o atalho de Envios do topo em celular e computador, preservando o menu lateral.
