@@ -250,9 +250,10 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   display: none !important;
 }
 
-/* Shared Coé a Boa? theme: navy with the logo's fluorescent yellow. */
+/* Shared theme: comfortable butter-gold controls; vivid yellow reserved for brand accents. */
 :root, .theme-coeaboa {
-  --brand-highlight: 60 100% 51%;
+  --brand-vibrant: 60 100% 51%;
+  --brand-highlight: 48 72% 72%;
   --background: 224 45% 8%;
   --foreground: 40 40% 94%;
   --card: 224 38% 12%;
