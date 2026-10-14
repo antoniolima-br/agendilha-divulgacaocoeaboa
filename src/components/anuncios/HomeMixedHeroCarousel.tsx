@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { CalendarDays, Eye, MapPin } from "lucide-react";
+import { Eye, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatEventDateTimeBR } from "@/lib/eventDate";
+import { eventDateISO } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
-import coezinhoMascot from "@/assets/coezinho-mascot.png";
 
 const AUTOPLAY_MS = 5_000;
 
@@ -27,9 +26,11 @@ interface HeroEvent {
 export function HomeMixedHeroCarousel({
   events,
   onOpenEvent,
+  onActiveDateChange,
 }: {
   events?: HeroEvent[] | null;
   onOpenEvent: (id: string) => void;
+  onActiveDateChange?: (date: string) => void;
 }) {
   const [index, setIndex] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -82,7 +83,11 @@ export function HomeMixedHeroCarousel({
   if (total === 0) return null;
   const item = items[index] ?? items[0];
   if (!item) return null;
-  const activeDate = formatEventDateTimeBR(item.date, item.start_time);
+
+  useEffect(() => {
+    const activeDate = eventDateISO(item.date);
+    if (activeDate) onActiveDateChange?.(activeDate);
+  }, [item.date, onActiveDateChange]);
 
   return (
     <section
@@ -105,20 +110,6 @@ export function HomeMixedHeroCarousel({
       }}
     >
       <div className="relative w-full overflow-hidden bg-background">
-        {activeDate && (
-          <div
-            key={item.id}
-            aria-live="polite"
-            aria-atomic="true"
-            className="pointer-events-none absolute left-3 top-3 z-20 flex max-w-[calc(100%-1.5rem)] items-end motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-2 motion-safe:duration-300 sm:left-4 sm:top-4"
-          >
-            <img src={coezinhoMascot} alt="" aria-hidden="true" className="-mr-2 h-12 w-12 shrink-0 object-contain drop-shadow-md sm:h-14 sm:w-14" />
-            <span className="inline-flex min-w-0 items-center gap-2 rounded-full border border-primary/70 bg-background/95 px-3 py-2 text-xs font-bold text-foreground shadow-lg backdrop-blur-sm sm:px-4 sm:text-sm">
-              <CalendarDays className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-              <span className="truncate">{activeDate}</span>
-            </span>
-          </div>
-        )}
         <div ref={viewportRef} className="overflow-hidden touch-pan-y pinch-zoom">
         <div className="flex items-stretch">
         {items.map((slide, slideIndex) => {
