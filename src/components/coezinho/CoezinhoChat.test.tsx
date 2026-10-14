@@ -45,6 +45,23 @@ describe("Coezinho fresh conversations", () => {
     expect(screen.queryByText("Como cadastrar e divulgar meu evento?")).not.toBeInTheDocument();
   });
 
+  it("starts compact, grows with the message and scrolls only after five lines", () => {
+    render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
+    const textarea = screen.getByRole("textbox", { name: "Sua mensagem" });
+    Object.defineProperty(textarea, "scrollHeight", { configurable: true, value: 96 });
+    fireEvent.change(textarea, { target: { value: "Uma mensagem um pouco maior" } });
+    expect(textarea).toHaveAttribute("rows", "1");
+    expect(textarea).toHaveStyle({ height: "96px", overflowY: "hidden" });
+
+    Object.defineProperty(textarea, "scrollHeight", { configurable: true, value: 220 });
+    fireEvent.change(textarea, { target: { value: "Linha 1\nLinha 2\nLinha 3\nLinha 4\nLinha 5\nLinha 6" } });
+    expect(textarea).toHaveStyle({ height: "144px", overflowY: "auto" });
+
+    Object.defineProperty(textarea, "scrollHeight", { configurable: true, value: 48 });
+    fireEvent.change(textarea, { target: { value: "" } });
+    expect(textarea).toHaveStyle({ height: "48px", overflowY: "hidden" });
+  });
+
   it.each([
     ["Quais eventos estão rolando hoje?", /programação atual fica na Agenda/],
     ["Como divulgar meu evento?", /abra Publicar Evento/],
