@@ -15,7 +15,7 @@
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home rotates current/future flyers, today first; Embla unifies swipes, half-flyer taps and keyboard; titles open details and stable media bounds prevent shifts. Agenda promotion stays unchanged.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
-- Lazy Guide/routes; shared public filters/realtime; São Paulo date re-exports. Read src/components/coezinho/AGENTS.md for FAB changes.
+- Lazy Guide/routes; shared filters/realtime and São Paulo dates. Read coezinho AGENTS.md in components/functions for FAB and factual answers.
 - Authenticated flyer reads fill unchanged empty fields; preserve supplied art, generating downloadable missing sponsored art only before batch inserts.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
@@ -36,4 +36,4 @@
 - Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- PartnershipMenu shares destinations; CSS retires header actions; UI/PDF credits separate.
+- PartnershipMenu shares routes; CSS retires header actions; UI/PDF credits separate.
