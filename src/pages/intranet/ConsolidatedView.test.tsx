@@ -2,11 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import type { IntranetBI } from '@/lib/intranet';
 import ConsolidatedView from './ConsolidatedView';
-vi.mock('./SectorViews', () => ({ ChartView: ({ title }: { title: string }) => <h2>{title}</h2> }));
-vi.mock('./ExecutiveSectorKpis', () => ({ default: () => <h2>Painel Executivo de KPIs por Setor</h2> }));
+vi.mock('./ExecutiveSuccessOverview', () => ({ default: () => <><h2>Resultados principais</h2><span>Total de Eventos Ativos</span><span>Total de Pessoas Alcançadas</span><span>Cliques Totais</span></> }));
 vi.mock('./CashflowChart', () => ({ default: () => <h2>Entradas, despesas e saldo diário</h2> }));
-vi.mock('./EngagementFunnelPanel', () => ({ default: () => <h2>Aberturas, origens e conversões</h2> }));
-vi.mock('./GuestAnalyticsPanel', () => ({ default: () => <h2>Leads e conversões por convidado</h2> }));
 const sector = { summary: { submissions: 3, pending: 1, users: 2, received_cents: 10000 }, consolidated: [], growth: [], inventory: [] };
 const data: IntranetBI = { summary: { received_cents: 10000, expenses_cents: 2500, balance_cents: 7500, submissions: 3, users: 2, campaign_opens: 5, won_leads: 1, open_operations: 4 }, cashflow: [], sources: [], funnel: [{ name: 'ganho', value: 1 }], traffic: [], campaigns: [], operations: [], administration: sector, marketing: sector, commercial: sector };
 describe('executive BI', () => {
@@ -17,13 +14,10 @@ describe('executive BI', () => {
     expect(screen.getByText('Saldo do período').parentElement).toHaveTextContent('75,00');
     expect(await screen.findByText('Entradas, despesas e saldo diário')).toBeInTheDocument();
   });
-  it('combines operational aggregates without claiming uncollected unique traffic', () => {
+  it('shows the three success indicators in plain language', () => {
     render(<ConsolidatedView data={data}/>);
-    expect(screen.getByText('Pendências por setor')).toBeInTheDocument();
-    expect(screen.getByText('Receita recebida por produto e plano')).toBeInTheDocument();
-    expect(screen.getByText('Aberturas de campanhas').parentElement).toHaveTextContent('5');
-    expect(screen.getByText(/não são visitantes únicos/)).toBeInTheDocument();
-    expect(screen.getByText('Aberturas, origens e conversões')).toBeInTheDocument();
-    expect(screen.getByText('Leads e conversões por convidado')).toBeInTheDocument();
+    expect(screen.getByText('Total de Eventos Ativos')).toBeInTheDocument();
+    expect(screen.getByText('Total de Pessoas Alcançadas')).toBeInTheDocument();
+    expect(screen.getByText('Cliques Totais')).toBeInTheDocument();
   });
 });
