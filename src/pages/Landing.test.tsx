@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Landing from "./Landing";
 import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
-import { clearGlobalEventFilters, getGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
+import { clearGlobalEventFilters, getGlobalEventFilters, setGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 const eventMocks = vi.hoisted(() => ({ data: [] as Record<string, unknown>[] }));
 vi.mock("@/data/usePublicEvents", () => ({ usePublicEvents: () => ({ data: eventMocks.data }) }));
 
@@ -92,8 +92,26 @@ describe("Landing sem dados", () => {
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
     expect(screen.queryByRole('navigation', { name: 'Dias com rolês' })).not.toBeInTheDocument();
   });
+  it("amplia somente a lista textual para datas futuras, sem expor pendentes ou arquivos", () => {
+    const today = saoPauloTodayISO();
+    const later = addDaysToISO(today, 2);
+    setGlobalEventFilters({ period: "custom", date: today });
+    eventMocks.data = [
+      { id: "today", status: "publicado", date: today, event_title: "Hoje com flyer", image_url: "/today.webp" },
+      { id: "later", status: "aprovado", date: later, event_title: "Futuro patrocinado", image_url: "/later.webp", is_highlight: true },
+      { id: "pending", status: "pendente", date: later, event_title: "Ainda em revisão" },
+      { id: "past", status: "publicado", date: addDaysToISO(today, -1), event_title: "Arquivo privado" },
+    ];
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    const list = within(screen.getByRole("list", { name: "Outras programações" }));
+    expect(list.getAllByRole("listitem")).toHaveLength(2);
+    expect(list.getByText("Hoje com flyer")).toBeInTheDocument();
+    expect(list.getByText("Futuro patrocinado")).toBeInTheDocument();
+    expect(list.queryByText("Ainda em revisão")).not.toBeInTheDocument();
+    expect(list.queryByText("Arquivo privado")).not.toBeInTheDocument();
+  });
   it("oferece cada evento sem flyer somente uma vez, na programação textual", () => {
-    eventMocks.data = [{ id: "text-only", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
+    eventMocks.data = [{ id: "text-only", status: "publicado", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
     expect(screen.getAllByRole("heading", { name: "Rolê sem flyer" })).toHaveLength(1);
     expect(screen.getByRole("list", { name: "Outras programações" })).toContainElement(screen.getByRole("heading", { name: "Rolê sem flyer" }));
