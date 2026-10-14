@@ -5,9 +5,9 @@
 - Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
 - WhatsApp confirmations use prepared links; automation requires an authenticated provider.
 - opening_hours is free text; performance schedules validate separately.
-- Establishments use one category; ViaCEP suggests editable street/neighborhood.
+- Establishments have one category; ViaCEP suggests editable street/neighborhood.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Use centralized routes, query keys/defaults and permissions to prevent cache/access drift.
+- Centralize routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
