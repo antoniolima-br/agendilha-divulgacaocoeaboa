@@ -19,7 +19,9 @@ import {
   CreditCard,
   Share2,
   CheckCircle2,
-  UserRound
+  UserRound,
+  BriefcaseBusiness,
+  Wallet
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { type AccessRole } from "@/lib/access";
@@ -126,72 +128,47 @@ export const sidebarConfig: SidebarSection[] = [
     ]
   },
   {
-    id: "operacao",
-    title: "Operação",
-    roles: ["admin", "senior", "financeiro", "master"],
-    items: [
-      { id: "central_moderacao", label: "Curadoria e Moderação", path: ROUTES.ADMIN_CENTRAL, icon: ShieldCheck, roles: ["admin", "senior", "master"] },
-      {
-        id: "relatorio_diario",
-        label: "Relatório Diário (Coé a Boa?)",
-        path: ROUTES.ADMIN_AGENDA_INFORMA,
-        icon: Megaphone,
-        roles: ["admin", "senior", "master"],
-        children: [
-          {
-            id: "agenda_informa",
-            label: "AgendIlha Informa",
-            path: ROUTES.ADMIN_AGENDA_INFORMA,
-            icon: Megaphone,
-            roles: ["admin", "senior", "master"],
-            exact: true
-          },
-          {
-            id: "carrossel",
-            label: "Carrossel WhatsApp",
-            path: ROUTES.CARROSSEL,
-            icon: Images,
-            roles: ["admin", "senior", "master"]
-          },
-          {
-            id: "whatsapp_templates",
-            label: "Templates WhatsApp",
-            path: ROUTES.ADMIN_WHATSAPP_TEMPLATES,
-            icon: MessageSquare,
-            roles: ["admin", "senior", "master"]
-          }
-        ]
-      },
-      {
-        id: "advertising_admin",
-        label: "Publicidade e pacotes",
-        path: ROUTES.ADMIN_ANUNCIOS,
-        icon: ShoppingBag,
-        roles: ["admin", "senior", "financeiro", "master"],
-        children: [
-          { id: "anuncios_admin", label: "Gestão de anúncios", path: ROUTES.ADMIN_ANUNCIOS, icon: LayoutDashboard, roles: ["admin", "senior", "financeiro", "master"], exact: true },
-          { id: "planos_anuncio_admin", label: "Pacotes de anúncios", path: ROUTES.ADMIN_PLANOS_ANUNCIO, icon: ShoppingBag, roles: ["admin", "senior", "financeiro", "master"] },
-          { id: "destaques_admin", label: "Gestão de destaques", path: ROUTES.ADMIN_DESTAQUES, icon: CheckCircle2, roles: ["admin", "senior", "master"] },
-          { id: "pagamentos_destaque_admin", label: "Pagamentos dos destaques", path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
-        ],
-      },
-      {
-        id: "configuracoes_admin",
-        label: "Configurações",
-        path: ROUTES.ADMIN_CONFIGURACOES,
-        icon: Settings2,
-         roles: ["senior", "master"]
-      },
-    ]
+    id: "curadoria", title: "Curadoria", roles: ["admin", "senior", "master"],
+    items: [{
+      id: "curadoria_moderacao", label: "Curadoria e Moderação", path: ROUTES.ADMIN_CENTRAL, icon: ShieldCheck, roles: ["admin", "senior", "master"],
+      children: [
+        { id: "central_moderacao", label: "Eventos e flyers", path: ROUTES.ADMIN_CENTRAL, icon: ShieldCheck, roles: ["admin", "senior", "master"], exact: true },
+        { id: "agenda_informa", label: "Relatório diário", path: ROUTES.ADMIN_AGENDA_INFORMA, icon: ClipboardList, roles: ["admin", "senior", "master"], exact: true },
+        { id: "carrossel", label: "Carrossel WhatsApp", path: ROUTES.CARROSSEL, icon: Images, roles: ["admin", "senior", "master"] },
+        { id: "whatsapp_templates", label: "Templates WhatsApp", path: ROUTES.ADMIN_WHATSAPP_TEMPLATES, icon: MessageSquare, roles: ["admin", "senior", "master"] },
+      ],
+    }],
   },
   {
-    id: "governanca",
-    title: "Governança",
-    roles: ["admin", "financeiro", "senior", "master"],
+    id: "marketing", title: "Marketing", roles: ["admin", "senior", "financeiro", "master"],
     items: [
+      { id: "marketing_setorial", label: "Painel de Marketing", path: `${ROUTES.INTRANET}/marketing`, icon: Megaphone, roles: ["master"] },
+      { id: "anuncios_admin", label: "Anúncios e banners", path: ROUTES.ADMIN_ANUNCIOS, icon: LayoutDashboard, roles: ["admin", "senior", "financeiro", "master"], exact: true },
+      { id: "destaques_admin", label: "Destaques e promoções", path: ROUTES.ADMIN_DESTAQUES, icon: CheckCircle2, roles: ["admin", "senior", "master"] },
+    ],
+  },
+  {
+    id: "comercial", title: "Comercial", roles: ["admin", "financeiro", "senior", "master"],
+    items: [
+      { id: "comercial_setorial", label: "Clientes e pós-venda", path: `${ROUTES.INTRANET}/comercial`, icon: BriefcaseBusiness, roles: ["master"] },
+      { id: "planos_anuncio_admin", label: "Publicidade e pacotes", path: ROUTES.ADMIN_PLANOS_ANUNCIO, icon: ShoppingBag, roles: ["admin", "senior", "financeiro", "master"] },
+      { id: "pitch_comercial", label: "Pitch Comercial e Projeção", path: ROUTES.ADMIN_PITCH_COMERCIAL, icon: ClipboardList, roles: ["admin", "financeiro", "senior", "master"] },
+    ],
+  },
+  {
+    id: "financeiro", title: "Financeiro", roles: ["admin", "financeiro", "senior", "master"],
+    items: [
+      { id: "financeiro_admin", label: "Conciliação e caixa", path: ROUTES.ADMIN_FINANCEIRO, icon: Wallet, roles: ["admin", "financeiro", "senior", "master"] },
+      { id: "pagamentos_destaque_admin", label: "Pagamentos de eventos", path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
+    ],
+  },
+  {
+    id: "configuracoes", title: "Configurações", roles: ["admin", "senior", "master"],
+    items: [
+      { id: "configuracoes_admin", label: "Configurações do app", path: ROUTES.ADMIN_CONFIGURACOES, icon: Settings2, roles: ["senior", "master"] },
       {
         id: "governance_records",
-        label: "Administração e cadastros",
+        label: "Usuários e cadastros",
         path: ROUTES.ADMIN_USERS,
         icon: FolderKanban,
         roles: ["admin", "senior", "master"],
@@ -203,7 +180,6 @@ export const sidebarConfig: SidebarSection[] = [
         ],
       },
       { id: "audit_logs", label: "Logs de Auditoria", path: ROUTES.ADMIN_AUDIT, icon: History, roles: ["admin", "senior", "master"] },
-      { id: "pitch_comercial", label: "Pitch Comercial e Projeção", path: ROUTES.ADMIN_PITCH_COMERCIAL, icon: ClipboardList, roles: ["admin", "financeiro", "senior", "master"] },
       { 
         id: "master_panel", 
         label: "Painel Master", 

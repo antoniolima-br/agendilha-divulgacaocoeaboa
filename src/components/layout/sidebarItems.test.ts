@@ -41,23 +41,22 @@ describe("sidebarConfig", () => {
     expect(filterSidebarSections("admin", () => true, routeExists).some((section) => section.id === "intranet")).toBe(false);
     expect(filterSidebarSections("master", () => true, routeExists).some((section) => section.id === "intranet")).toBe(true);
   });
-  it("centraliza as ferramentas de WhatsApp no Relatório Diário", () => {
-    const operation = sidebarConfig.find((section) => section.id === "operacao");
-    const central = operation?.items.find((item) => item.id === "relatorio_diario");
+  it("centraliza eventos e relatórios na Curadoria", () => {
+    const curation = sidebarConfig.find((section) => section.id === "curadoria");
+    const central = curation?.items.find((item) => item.id === "curadoria_moderacao");
 
-    expect(central?.label).toBe("Relatório Diário (Coé a Boa?)");
+    expect(central?.label).toBe("Curadoria e Moderação");
     expect(central?.children?.map((item) => item.id)).toEqual([
+      "central_moderacao",
       "agenda_informa",
       "carrossel",
       "whatsapp_templates",
     ]);
-    expect(central?.children?.some((item) => item.id === "compartilhar_agenda_informa")).toBe(false);
-    expect(operation?.items.some((item) => item.id === "carrossel")).toBe(false);
-    expect(operation?.items.some((item) => item.id === "whatsapp_templates")).toBe(false);
+    expect(central?.children?.some((item) => ["anuncios_admin", "planos_anuncio_admin", "destaques_admin"].includes(item.id))).toBe(false);
   });
 
-  it("mantém Operação e Governança exclusivas de administradores", () => {
-    for (const sectionId of ["operacao", "governanca"]) {
+  it("mantém os setores administrativos fora dos perfis públicos", () => {
+    for (const sectionId of ["curadoria", "marketing", "comercial", "financeiro", "configuracoes"]) {
       const section = sidebarConfig.find((candidate) => candidate.id === sectionId);
       expect(section?.roles).toEqual(expect.arrayContaining(["admin", "master"]));
       expect(section?.roles).not.toContain("public_guest");
@@ -66,9 +65,9 @@ describe("sidebarConfig", () => {
     }
   });
 
-  it("unifica usuários e cadastros em Governança", () => {
+  it("unifica usuários e cadastros em Configurações", () => {
     const explore = sidebarConfig.find((section) => section.id === "explorar");
-    const governance = sidebarConfig.find((section) => section.id === "governanca");
+    const governance = sidebarConfig.find((section) => section.id === "configuracoes");
     const exploreRegistrations = explore?.items.find((item) => item.id === "cadastros_explorar");
     const adminRegistrations = governance?.items.find((item) => item.id === "governance_records");
 
@@ -83,7 +82,7 @@ describe("sidebarConfig", () => {
       "estabelecimentos_admin",
       "negocios_admin",
     ]);
-    expect(adminRegistrations?.label).toBe("Administração e cadastros");
+    expect(adminRegistrations?.label).toBe("Usuários e cadastros");
     expect(adminRegistrations?.children?.map((item) => item.label)).toEqual([
       "Gerenciar usuários",
       "Gerenciar atrativos",
@@ -95,9 +94,34 @@ describe("sidebarConfig", () => {
   });
 
   it("unifica Central da Home e Moderação em uma única entrada", () => {
-    const operation = sidebarConfig.find((section) => section.id === "operacao");
-    expect(operation?.items.find((item) => item.id === "central_moderacao")?.label).toBe("Curadoria e Moderação");
-    expect(operation?.items.filter((item) => ["central_home", "moderacao"].includes(item.id))).toHaveLength(0);
+    const curation = sidebarConfig.find((section) => section.id === "curadoria");
+    expect(curation?.items.find((item) => item.id === "curadoria_moderacao")?.label).toBe("Curadoria e Moderação");
+    expect(curation?.items.filter((item) => ["central_home", "moderacao"].includes(item.id))).toHaveLength(0);
+  });
+
+  it("separa Marketing, Comercial e Financeiro sem atalhos duplicados", () => {
+    const marketing = sidebarConfig.find((section) => section.id === "marketing");
+    const commercial = sidebarConfig.find((section) => section.id === "comercial");
+    const finance = sidebarConfig.find((section) => section.id === "financeiro");
+    expect(marketing?.items.map((item) => item.id)).toEqual(["marketing_setorial", "anuncios_admin", "destaques_admin"]);
+    expect(commercial?.items.map((item) => item.id)).toEqual(["comercial_setorial", "planos_anuncio_admin", "pitch_comercial"]);
+    expect(finance?.items.map((item) => item.id)).toEqual(["financeiro_admin", "pagamentos_destaque_admin"]);
+    const ids = sidebarConfig.flatMap((section) => section.items.map((item) => item.id));
+    expect(ids.filter((id) => id === "anuncios_admin")).toHaveLength(1);
+    expect(ids.filter((id) => id === "planos_anuncio_admin")).toHaveLength(1);
+    expect(ids.filter((id) => id === "pagamentos_destaque_admin")).toHaveLength(1);
+  });
+
+  it("mostra os cinco setores no menu do Master conforme as permissões protegidas", () => {
+    const { permissions } = computePermissions({ roleNames: ["master"], collaborator: null, profileRole: null });
+    const visible = filterSidebarSections("master", (permission) => permissions.has(permission), routeExists);
+    expect(visible.map((section) => section.id)).toEqual(expect.arrayContaining([
+      "curadoria",
+      "marketing",
+      "comercial",
+      "financeiro",
+      "configuracoes",
+    ]));
   });
 
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
