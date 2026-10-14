@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useDivulgadorStatus } from "@/data/useDivulgadorStatus";
 
 import { 
   CalendarDays, 
@@ -19,7 +18,6 @@ import {
   UserCog, 
   Crown, 
   Trophy, 
-  Megaphone, 
   Sun, 
   Moon,
   ExternalLink,
@@ -153,18 +151,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
    const { theme, toggleTheme } = useTheme();
   const { profile } = useProfile();
   const perms = useAppPermissions();
-  const { isDivulgador } = useDivulgadorStatus();
-  // Só Divulgador (ou admin) cria evento — o resto vai pedir acesso.
-  const irParaDivulgar = () => {
-    if (!user) return navigate("/auth?redirect=/enviar-evento");
-    if (!isDivulgador) {
-      toast.info("Acesso exclusivo para Divulgadores", {
-        description: "Para divulgar eventos, você precisa ser aprovado como Divulgador.",
-      });
-      return navigate("/divulgador/status");
-    }
-    navigate("/enviar-evento");
-  };
   const { status, name: badgeName } = useUserBadge();
   const isMaster = status === "master";
   const navigate = useNavigate();
@@ -247,17 +233,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
 
             <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               <UpdateAppButton compact />
-              {(isAdmin || isDivulgador || perms.isCollaborator) && (
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={irParaDivulgar}
-                  className="hidden sm:inline-flex rounded-full text-xs font-semibold tracking-tight border border-foreground/15 text-foreground hover:bg-foreground/5 bg-transparent shadow-none px-5 h-9 sm:h-10 active:scale-95"
-                >
-                  Divulgar evento
-                </Button>
-              )}
-              
               <HeaderUserMenu variant="desktop" hideContext={true} />
             </div>
           </div>
@@ -355,18 +330,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 </TooltipTrigger>
                 <TooltipContent>Meus envios e rascunhos</TooltipContent>
               </Tooltip>}
-
-               {/* Enviar Evento CTA — desktop/tablet only */}
-               {perms.canSubmit && (
-                 <Button 
-                   size="sm" 
-                   onClick={irParaDivulgar} 
-                   className="hidden sm:inline-flex rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold tracking-tight shadow-none text-xs sm:text-sm px-4 sm:px-5 h-9"
-                 >
-                   <Megaphone className="h-4 w-4 sm:mr-1.5" />
-                   <span className="hidden sm:inline">Divulgar evento</span>
-                 </Button>
-               )}
 
               {/* User dropdown — moved to the far right */}
               <DropdownMenu>
@@ -507,16 +470,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                     )}
                   </Button>
                 </SubmissionsPanel>
-                {(isAdmin || perms.isCollaborator) && (
-                  <Button
-                    size="sm"
-                    onClick={irParaDivulgar}
-                    className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold tracking-tight shadow-none text-xs px-3.5 h-9"
-                  >
-                    <Megaphone className="h-3.5 w-3.5 mr-1" />
-                    Divulgar
-                  </Button>
-                )}
               </div>
             </div>
           )}
