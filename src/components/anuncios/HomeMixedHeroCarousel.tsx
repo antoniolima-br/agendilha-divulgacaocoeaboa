@@ -80,14 +80,14 @@ export function HomeMixedHeroCarousel({
     return () => window.clearInterval(timer);
   }, [carousel, hovered, focused, dragging, reduceMotion, total, index, goTo]);
 
-  if (total === 0) return null;
   const item = items[index] ?? items[0];
-  if (!item) return null;
 
   useEffect(() => {
-    const activeDate = eventDateISO(item.date);
+    const activeDate = eventDateISO(item?.date);
     if (activeDate) onActiveDateChange?.(activeDate);
-  }, [item.date, onActiveDateChange]);
+  }, [item?.date, onActiveDateChange]);
+
+  if (total === 0 || !item) return null;
 
   return (
     <section

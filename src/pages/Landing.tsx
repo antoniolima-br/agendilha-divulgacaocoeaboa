@@ -230,7 +230,14 @@ export default function Landing() {
       [visualEvents, todayStr],
     );
 
-    const daysWithEvents = useMemo(() => availableEventDays(eventsData ?? [], globalFilters), [eventsData, globalFilters]);
+    const daysWithEvents = useMemo(() => {
+      const days = availableEventDays(eventsData ?? [], globalFilters);
+      unfilteredHomeFlyerEvents.forEach((event) => {
+        const day = eventDateISO(event.date);
+        if (day) days.add(day);
+      });
+      return days;
+    }, [eventsData, globalFilters, unfilteredHomeFlyerEvents]);
     const dayStrip = useMemo(() => eventDayStripWindow(daysWithEvents, weekStart), [daysWithEvents, weekStart]);
     
     // Deduplicate: events in alta should not be in today if possible, or limited
