@@ -52,7 +52,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     const size = mascotSize(width);
     let initial = positionRef.current ?? { x: width - size - 16, y: height - size - reservedBottom() - 12 };
     if (!positionRef.current && lastPosition) initial = { x: lastPosition.x * width, y: lastPosition.y * height };
-    place(initial, Boolean(lastPosition));
+    place(initial, true);
     const resize = () => { if (positionRef.current) place(positionRef.current, true); };
     const keepAboveNavigation = () => { if (positionRef.current) place(positionRef.current, false); };
     const navigation = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"]');
