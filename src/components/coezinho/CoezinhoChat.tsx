@@ -187,17 +187,17 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
             </ConversationContent>
             <ConversationScrollButton aria-label="Ver últimas mensagens" />
           </Conversation>
-          <footer className="shrink-0 border-t border-border bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-8">
+          <footer className="shrink-0 border-t border-border bg-background px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-8">
             <PromptInput onSubmit={({ text }) => send(text)} className="coezinho-composer mx-auto max-w-3xl">
               <PromptInputTextarea rows={1} value={input} onChange={(event) => {
                 setInput(event.target.value);
                 resizeComposer(event.currentTarget);
               }} placeholder="Pergunte ao Coezinho…" aria-label="Sua mensagem"
-                className="h-auto min-h-12 max-h-36 flex-none overflow-y-hidden px-4 py-3 text-base leading-6 transition-[height] duration-150 ease-out" />
-              <PromptInputFooter className="justify-end px-3 pb-3">
+                className="h-auto min-h-10 max-h-[8.5rem] flex-none overflow-y-hidden px-3 py-2 text-base leading-6 transition-[height] duration-150 ease-out" />
+              <PromptInputFooter className="justify-end px-2 pb-2 pt-1">
                 <PromptInputSubmit status={status} onStop={() => stop()} disabled={!busy && !input.trim()}
                   aria-label={busy ? "Parar" : "Enviar"} title={busy ? "Parar resposta" : "Enviar mensagem"}
-                  className="h-10 w-10 shrink-0 rounded-md p-0 md:h-10 md:w-10">
+                  className="h-9 w-9 shrink-0 rounded-md p-0 md:h-9 md:w-9">
                   {!busy && <ArrowUp className="h-5 w-5" />}
                 </PromptInputSubmit>
               </PromptInputFooter>
