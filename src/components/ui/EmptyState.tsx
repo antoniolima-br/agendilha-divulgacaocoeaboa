@@ -3,6 +3,7 @@ import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
+  buttonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   icon?: LucideIcon;
   title: string;
   description?: string;
@@ -32,7 +33,7 @@ export function EmptyState({
         {description && <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>}
       </div>
       {actionLabel && onAction && (
-        <Button onClick={onAction} className="px-6">
+        <Button onClick={onAction} variant={buttonVariant} className="px-6">
           {actionLabel}
         </Button>
       )}

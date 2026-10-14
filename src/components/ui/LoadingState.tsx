@@ -14,7 +14,7 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-4 rounded-2xl border border-border/60 bg-card/35 px-6 text-center animate-fade-in relative overflow-hidden",
+      "flex flex-col items-center justify-center gap-4 rounded-2xl border border-border/60 bg-card/35 px-6 text-center animate-fade-in relative" role="status" aria-live="polite" overflow-hidden",
       fullPage ? "min-h-[60vh] w-full" : "min-h-48 py-10",
       className
     )}>
