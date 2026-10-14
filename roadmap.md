@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Criar central administrativa protegida com pauta da Home, anúncios do Coezinho e troca do flyer principal; compactar e estabilizar o rodapé e a reserva inferior.
 - [x] Blindar a leitura automática do flyer com indicador visual, aviso amigável sem erro cru e formulário manual sempre disponível após falhas de conexão, cota ou processamento.
 - [x] Blindar o Guia do Coé com fallback útil para agenda, divulgação e navegação quando a conexão falhar, preservando sessão limpa a cada abertura.
 - [x] Acesso por WhatsApp com máscara; calendário com Todas as datas; menus fecham ao navegar e reabrem; contraste compartilhado corrigido. 19 testes e navegação real desktop/mobile conferidos; cadastro/login completo não executado sem credenciais.
