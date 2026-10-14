@@ -53,7 +53,7 @@ describe("pitch comercial", () => {
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
-    fireEvent.click(within(screen.getByRole("region", { name: "Modelo de Negócio, Produto e Receita" })).getByText("Ver detalhes"));
+    fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
     expect(screen.getByRole("rowheader", { name: "Receita de pushes patrocinados" })).toBeVisible();
     expect(screen.getByText("1 Anunciante Master")).toBeVisible();
@@ -67,7 +67,7 @@ describe("pitch comercial", () => {
     render(page()); await unlock();
     for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
-    fireEvent.click(within(screen.getByRole("region", { name: "Modelo de Negócio, Produto e Receita" })).getByText("Ver detalhes"));
+    fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
     expect(screen.queryByRole("link", { name: "Limax Sistemas" })).not.toBeInTheDocument();
@@ -106,7 +106,7 @@ describe("pitch comercial", () => {
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
     render(<PitchContentView content={buildPitchContent()} />);
     const chapters = [
-      { tab: "Modelo de Negócio, Produto e Receita", summary: "Coé a Boa?", detail: "Projeção de receita mensal" },
+      { tab: "Negócio, Produto e Receita", summary: "Coé a Boa?", detail: "Projeção de receita mensal" },
       { tab: "Plano de Marketing · B2C & Aceleração", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
       { tab: "Plano Comercial · Abordagem B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
       { tab: "Estratégia de Lançamento e Expansão Regional", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },

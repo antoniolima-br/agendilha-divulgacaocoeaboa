@@ -22,7 +22,7 @@ describe("Coezinho fresh conversations", () => {
   });
   it("welcomes free questions with only two suggestions and clears messages and drafts on close", () => {
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
-    expect(screen.getByText(/Pode perguntar à vontade/)).toBeInTheDocument();
+    expect(screen.getByText(/Posso acompanhar você na busca/)).toBeInTheDocument();
     expect(screen.getByLabelText("Sugestões rápidas").querySelectorAll("button")).toHaveLength(2);
     fireEvent.click(screen.getByRole("button", { name: "O que tá rolando hoje?" }));
     expect(screen.getByText("Quais eventos estão rolando hoje?")).toBeInTheDocument();
@@ -32,7 +32,7 @@ describe("Coezinho fresh conversations", () => {
     fireEvent.click(screen.getByRole("button", { name: "Falar com o Guia do Coé" }));
     expect(screen.queryByText("Quais eventos estão rolando hoje?")).not.toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Sua mensagem" })).toHaveValue("");
-    expect(screen.getByText(/Pode perguntar à vontade/)).toBeInTheDocument();
+    expect(screen.getByText(/Posso acompanhar você na busca/)).toBeInTheDocument();
   });
 
   it("also starts fresh after Escape", () => {

@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Dar protagonismo ao Coezinho na leitura de flyer, validações, avisos e ajuda geral, removendo termos técnicos das telas.
 - [x] Reorganizar sidebar por perfil: remover atalhos redundantes, mover Financeiro para Gestão Setorial, unificar cadastros/usuários em Governança, consolidar curadoria/moderação e oferecer planos em modo leitura ao Divulgador.
 - [x] Enriquecer “Outras programações” com nome principal, data, horário e local, ordenando eventos atuais e futuros do mais próximo para o mais distante.
 - [x] Refinar profundamente a UI/UX compartilhada: superfícies, tipografia, controles, estados, modais, tabelas, formulários, Agenda e Seu Radar, preservando regras e identidade navy/amarelo-manteiga.

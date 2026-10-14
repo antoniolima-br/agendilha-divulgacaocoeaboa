@@ -9,7 +9,7 @@ describe("Coezinho connection fallback", () => {
   });
 
   it("routes submissions and explains the app", () => {
-    expect(coezinhoFallbackAnswer("Como divulgar?")).toContain("Cadastrar Evento");
-    expect(coezinhoFallbackAnswer("Como funciona o app?")).toContain("Meu Radar");
+    expect(coezinhoFallbackAnswer("Como divulgar?")).toContain("Publicar Evento");
+    expect(coezinhoFallbackAnswer("Como funciona o app?")).toContain("Planos e valores");
   });
 });
