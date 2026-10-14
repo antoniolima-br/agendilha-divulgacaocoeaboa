@@ -122,7 +122,8 @@ export function HomeMixedHeroCarousel({
               type="button"
               variant="ghost"
               onClick={(event) => {
-                if (event.defaultPrevented || carousel?.clickAllowed() === false) return;
+                // Embla cancels clicks following a drag before they reach React.
+                if (event.defaultPrevented) return;
                 const flyer = event.target instanceof Element ? event.target.closest("[data-flyer]") : null;
                 if (event.detail > 0 && flyer && total > 1) {
                   const bounds = flyer.getBoundingClientRect();

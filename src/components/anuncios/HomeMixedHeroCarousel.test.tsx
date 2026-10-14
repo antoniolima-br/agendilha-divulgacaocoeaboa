@@ -6,7 +6,6 @@ const engine = vi.hoisted(() => {
   let index = 0;
   const listeners = new Map<string, Set<() => void>>();
   const api = {
-    clickAllowed: vi.fn(() => true),
     selectedScrollSnap: () => index,
     scrollTo: vi.fn((next: number) => { index = next; listeners.get("select")?.forEach(fn => fn()); }),
     on: (name: string, fn: () => void) => {
@@ -100,9 +99,10 @@ describe("Home event carousel interactions", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
     fireEvent.keyDown(screen.getByRole("region"), { key: "ArrowRight" });
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
-    engine.api.clickAllowed.mockReturnValueOnce(false);
     engine.api.scrollTo.mockClear();
-    tapFlyer("right");
+    const click = new MouseEvent("click", { bubbles: true, cancelable: true, detail: 1, clientX: 900 });
+    click.preventDefault();
+    fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 2" }), click);
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });

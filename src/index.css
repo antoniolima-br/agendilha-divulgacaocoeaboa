@@ -291,6 +291,11 @@ html { scroll-behavior: smooth; }
 .pitch-window-body { padding: 1.5rem; }
 .pitch-window-header > span { flex-shrink: 0; white-space: nowrap; }
 .pitch-window-body > * + * { margin-top: 2rem; }
+/* Five daily rows in view; additional events stay in native vertical flow. */
+ul[aria-label="Outras programações"] {
+  max-height: 22.5rem;
+  overflow-y: auto;
+}
 @media (max-width: 639px) {
   .pitch-window-header, .pitch-window-body { padding: 1rem; }
 }
