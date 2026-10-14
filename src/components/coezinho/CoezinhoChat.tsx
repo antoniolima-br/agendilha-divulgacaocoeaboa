@@ -1,5 +1,5 @@
 import { getGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
@@ -19,6 +19,20 @@ const QUICK_PROMPTS = [
   { label: "O que tá rolando hoje?", icon: CalendarDays, text: "Quais eventos estão rolando hoje?" },
   { label: "Como divulgar meu evento?", icon: Ticket, text: "Como cadastrar e divulgar meu evento?" },
 ];
+
+const COMPOSER_MAX_LINES = 5;
+
+function resizeComposer(textarea: HTMLTextAreaElement) {
+  textarea.style.setProperty("field-sizing", "fixed");
+  textarea.style.height = "auto";
+  const styles = window.getComputedStyle(textarea);
+  const lineHeight = Number.parseFloat(styles.lineHeight) || 24;
+  const verticalPadding = (Number.parseFloat(styles.paddingTop) || 0) + (Number.parseFloat(styles.paddingBottom) || 0);
+  const maximumHeight = lineHeight * COMPOSER_MAX_LINES + verticalPadding;
+  const nextHeight = Math.min(textarea.scrollHeight, maximumHeight);
+  textarea.style.height = `${nextHeight}px`;
+  textarea.style.overflowY = textarea.scrollHeight > maximumHeight ? "auto" : "hidden";
+}
 
 
 export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
@@ -93,6 +107,11 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
       panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
     }
   }, [busy]);
+
+  useLayoutEffect(() => {
+    const textarea = panelRef.current?.querySelector("textarea");
+    if (textarea) resizeComposer(textarea);
+  }, [input]);
 
   const send = (text: string) => {
     const value = text.trim();
@@ -170,8 +189,11 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
           </Conversation>
           <footer className="shrink-0 border-t border-border bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-8">
             <PromptInput onSubmit={({ text }) => send(text)} className="coezinho-composer mx-auto max-w-3xl">
-              <PromptInputTextarea value={input} onChange={(event) => setInput(event.target.value)}
-                placeholder="Pergunte ao Coezinho…" aria-label="Sua mensagem" className="px-4 py-3 text-base" />
+              <PromptInputTextarea rows={1} value={input} onChange={(event) => {
+                setInput(event.target.value);
+                resizeComposer(event.currentTarget);
+              }} placeholder="Pergunte ao Coezinho…" aria-label="Sua mensagem"
+                className="h-auto min-h-12 max-h-36 flex-none overflow-y-hidden px-4 py-3 text-base leading-6 transition-[height] duration-150 ease-out" />
               <PromptInputFooter className="justify-end px-3 pb-3">
                 <PromptInputSubmit status={status} onStop={() => stop()} disabled={!busy && !input.trim()}
                   aria-label={busy ? "Parar" : "Enviar"} title={busy ? "Parar resposta" : "Enviar mensagem"}
