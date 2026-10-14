@@ -1539,8 +1539,11 @@ export type Database = {
           created_at: string
           created_by: string
           destination: string
+          expected_return_cents: number
+          forecast_cents: number
           id: string
           name: string
+          platform: string
           status: string
         }
         Insert: {
@@ -1550,8 +1553,11 @@ export type Database = {
           created_at?: string
           created_by?: string
           destination: string
+          expected_return_cents?: number
+          forecast_cents?: number
           id?: string
           name: string
+          platform?: string
           status?: string
         }
         Update: {
@@ -1561,8 +1567,11 @@ export type Database = {
           created_at?: string
           created_by?: string
           destination?: string
+          expected_return_cents?: number
+          forecast_cents?: number
           id?: string
           name?: string
+          platform?: string
           status?: string
         }
         Relationships: []
@@ -1591,6 +1600,51 @@ export type Database = {
           latency_ms?: number
           storage_quota?: number | null
           storage_used?: number | null
+        }
+        Relationships: []
+      }
+      intranet_investments: {
+        Row: {
+          actual_return_cents: number
+          amount_cents: number
+          category: string
+          created_at: string
+          created_by: string
+          expected_return_cents: number
+          id: string
+          invested_on: string
+          name: string
+          notes: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actual_return_cents?: number
+          amount_cents: number
+          category?: string
+          created_at?: string
+          created_by?: string
+          expected_return_cents?: number
+          id?: string
+          invested_on: string
+          name: string
+          notes?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actual_return_cents?: number
+          amount_cents?: number
+          category?: string
+          created_at?: string
+          created_by?: string
+          expected_return_cents?: number
+          id?: string
+          invested_on?: string
+          name?: string
+          notes?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -3411,6 +3465,8 @@ export type Database = {
       }
       intranet_bi: { Args: { p_days?: number }; Returns: Json }
       intranet_can_access: { Args: { p_sector: string }; Returns: boolean }
+      intranet_can_edit_sector: { Args: { p_sector: string }; Returns: boolean }
+      intranet_can_view: { Args: never; Returns: boolean }
       intranet_classify_finance: {
         Args: {
           p_category: string
@@ -3436,6 +3492,7 @@ export type Database = {
         Args: { p_month: string; p_targets: Json }
         Returns: undefined
       }
+      intranet_sector_access: { Args: never; Returns: Json }
       intranet_sector_kpis: { Args: { p_month: string }; Returns: Json }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
