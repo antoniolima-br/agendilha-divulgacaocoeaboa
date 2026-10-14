@@ -35,5 +35,5 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
-- Intranet rules and protected aggregation presentation live in src/pages/intranet/AGENTS.md; read it before changing the portal.
+- Intranet is Master-only across client and backend; presentation rules live in src/pages/intranet/AGENTS.md and must be read before portal changes.
 - Menus follow roles; bottom Menu opens the sidebar; Home owns the profile shortcut. Auth normalizes phones. Public/promoter journeys stay separate; approval requires protected WhatsApp confirmation.

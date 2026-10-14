@@ -1,12 +1,11 @@
 import { lazy, Suspense, useState } from 'react';
-import { Plus, Pencil, Trash2, RefreshCw, Check, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { moneyBR } from '@/lib/finance';
 import { type IntranetDashboard } from '@/lib/intranet';
-import { formatEventDateTimeBR } from '@/lib/eventDate';
 import { toast } from 'sonner';
 import { usePortalCommand, useSectorRecords, type Lead, type Sample } from './useIntranet';
 import { RecordDialog } from './RecordDialog';
@@ -33,9 +32,8 @@ export function Marketing({data,canEdit,days=30}:{data:IntranetDashboard;canEdit
   return <section className="min-w-0" aria-label={`Impacto de Marketing nos últimos ${days} dias`}><Suspense fallback={<p className="py-10">Reunindo o impacto dos flyers…</p>}><FlyerEngagementPanel/></Suspense></section>;
 }
 export function Administration({data,canEdit}:{data:IntranetDashboard;canEdit:boolean}) {
- const command=usePortalCommand();
- async function decide(id:string,approve:boolean){try{await command.mutateAsync(()=>supabase.rpc('intranet_moderate',{p_id:id,p_approve:approve}));toast.success(approve?'Evento aprovado.':'Evento rejeitado.');}catch(e){toast.error(e && typeof e==='object' && 'message' in e ? String(e.message) : 'Não deu pra confirmar. Tente novamente.');}}
- return <><Suspense fallback={<p className="py-8">Carregando ferramentas da Curadoria…</p>}><CurationOperationsPanel canEdit={canEdit}/></Suspense><Operations sector="administracao" canEdit={canEdit}/><div className="grid gap-6 lg:grid-cols-2"><ChartView title="Submissões diárias" points={data.consolidated}/><ChartView title="Ranking de locais" points={data.ranking ?? []}/></div><nav aria-label="Módulos da curadoria" className="grid gap-2 border-y py-5 sm:grid-cols-2 lg:grid-cols-4">{[['Eventos','/admin/events'],['Atrativos','/admin/atrativos'],['Locais','/admin/estabelecimentos'],['Anunciantes','/admin/anuncios']].map(([label,path])=><Button asChild variant="outline" key={path}><a href={path}>{label}</a></Button>)}</nav><div className="flex flex-wrap items-center gap-3 border-b py-5"><Badge variant="outline">Auditoria de flyers e publicações</Badge><Badge variant="outline">Anti-duplicidade ativo</Badge><Badge variant="outline">Cota gratuita: 1 por dia/local</Badge><p className="text-sm">Moderação média: {data.moderation_hours==null ? 'Sem decisões no período' : `${data.moderation_hours} h`}</p></div><h2 className="py-6 text-xl font-semibold">Fila de aprovação</h2>{!data.queue?.length ? <p className="py-8 text-muted-foreground">Tudo em dia. Novos envios aparecerão aqui.</p> : <ul className="divide-y">{data.queue.map(e=><li key={e.id} className="flex flex-wrap items-center justify-between gap-4 py-5"><div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{e.event_title || e.location || 'Rolê sem título'}</h3><p className="break-words text-sm text-muted-foreground">{formatEventDateTimeBR(e.date,e.start_time)} · {e.location}</p>{e.promotion_choice==='highlight' && <Badge variant="outline">Patrocinado · liberação no Financeiro</Badge>}</div>{canEdit&&<div className="flex gap-2"><Button size="sm" disabled={command.isPending} onClick={()=>void decide(e.id,true)}><Check className="mr-1 h-4 w-4"/>Aprovar</Button><Button variant="outline" size="sm" disabled={command.isPending} onClick={()=>void decide(e.id,false)}><X className="mr-1 h-4 w-4"/>Rejeitar</Button></div>}</li>)}</ul>}<p className="py-3 text-xs text-muted-foreground">Até 100 envios por vez, do mais antigo ao mais recente.</p></>;
+ void data;
+ return <Suspense fallback={<p className="py-8">Carregando a fila da Curadoria…</p>}><CurationOperationsPanel canEdit={canEdit}/></Suspense>;
 }
 export function Development({canEdit}:{canEdit:boolean}){
  const query=useSectorRecords<Sample>('intranet_health_samples');const command=usePortalCommand();const [error,setError]=useState('');

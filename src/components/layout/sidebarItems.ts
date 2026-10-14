@@ -48,12 +48,11 @@ export interface SidebarSection {
 
 export const sidebarConfig: SidebarSection[] = [
   {
-    id: "intranet", title: "Portal corporativo", roles: ["admin", "senior", "master", "financeiro", "sector"],
+    id: "intranet", title: "Bastidores", roles: ["master"],
     items: [{
-      id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "financeiro", "sector"],
+      id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["master"],
       children: [
-        { id: "sector_portal", label: "Portal setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "sector"], exact: true },
-        { id: "financeiro", label: "Financeiro", path: ROUTES.ADMIN_FINANCEIRO, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
+        { id: "sector_portal", label: "Abrir gestão", path: ROUTES.INTRANET, icon: Building2, roles: ["master"], exact: true },
       ],
     }],
   },

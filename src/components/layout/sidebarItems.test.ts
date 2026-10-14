@@ -30,12 +30,16 @@ describe("sidebarConfig", () => {
     expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["admin", "financeiro", "senior", "master"].includes(role));
     expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_PITCH_COMERCIAL]).toBe("pitch.read");
   });
-  it("admin tem Meus eventos separado da Curadoria e Financeiro dentro de Gestão setorial", () => {
+  it("mantém Meus eventos do admin separado e esconde a Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
     expect(personal?.items.find((item) => item.id === "send_event")?.roles).toContain("admin");
     expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
-    expect(sidebarConfig.find((section) => section.id === "intranet")?.items.find((item) => item.id === "intranet_portal")?.children?.find((item) => item.id === "financeiro")?.roles).toContain("admin");
+    const intranet = sidebarConfig.find((section) => section.id === "intranet");
+    expect(intranet?.roles).toEqual(["master"]);
+    expect(intranet?.items[0]?.roles).toEqual(["master"]);
+    expect(filterSidebarSections("admin", () => true, routeExists).some((section) => section.id === "intranet")).toBe(false);
+    expect(filterSidebarSections("master", () => true, routeExists).some((section) => section.id === "intranet")).toBe(true);
   });
   it("centraliza as ferramentas de WhatsApp no Relatório Diário", () => {
     const operation = sidebarConfig.find((section) => section.id === "operacao");
