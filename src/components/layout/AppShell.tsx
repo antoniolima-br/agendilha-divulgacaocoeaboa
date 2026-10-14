@@ -65,7 +65,10 @@ export function AppShell({
         hasSidebar && desktopMenuOpen ? "md:pl-72" : "pl-0"
       )}>
         {/* Unified Header */}
-        <Header onMobileMenuToggle={() => setMobileMenuOpen(true)} />
+        <Header onMobileMenuToggle={() => {
+          if (!isMobile && hasSidebar) setDesktopSidebar(true);
+          else setMobileMenuOpen(true);
+        }} />
 
         {hasSidebar && !desktopMenuOpen && <div className="hidden px-4 pt-3 md:block"><Button variant="outline" aria-label="Abrir menu lateral" onClick={() => setDesktopSidebar(true)}><Menu className="h-4 w-4" />Menu</Button></div>}
 
@@ -84,8 +87,8 @@ export function AppShell({
       </div>
 
       {/* Mobile Menu Drawer */}
-      <Sheet open={mobileMenuOpen && isMobile} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0 md:hidden">
+      <Sheet open={mobileMenuOpen && (isMobile || !hasSidebar)} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
           <SheetTitle className="sr-only">Menu principal</SheetTitle>
           <SidebarMenu onClose={() => setMobileMenuOpen(false)} />
         </SheetContent>

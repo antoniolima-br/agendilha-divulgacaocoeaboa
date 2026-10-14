@@ -36,4 +36,4 @@
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet rules live in src/pages/intranet/AGENTS.md; read it before changing the portal.
-- Menus follow roles; Home omits header actions. Auth normalizes phones. Progressive registration separates public/promoter records and requires protected WhatsApp confirmation before approval.
+- Menus follow roles; bottom Menu opens the sidebar; Home owns the profile shortcut. Auth normalizes phones. Public/promoter journeys stay separate; approval requires protected WhatsApp confirmation.
