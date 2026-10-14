@@ -3790,6 +3790,10 @@ export type Database = {
       }
       intranet_sector_access: { Args: never; Returns: Json }
       intranet_sector_kpis: { Args: { p_month: string }; Returns: Json }
+      intranet_set_curation_status: {
+        Args: { p_action: string; p_id: string }
+        Returns: Json
+      }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }
