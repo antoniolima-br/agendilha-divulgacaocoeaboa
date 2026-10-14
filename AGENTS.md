@@ -36,4 +36,4 @@
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet rules live in src/pages/intranet/AGENTS.md; read it before changing the portal.
-- Menus follow roles; Home omits header actions. Auth normalizes phones. Semantic tokens and shared primitives own visual consistency and contrast.
+- Menus follow roles; Home omits header actions. Auth normalizes phones. Progressive registration separates public/promoter records and requires protected WhatsApp confirmation before approval.
