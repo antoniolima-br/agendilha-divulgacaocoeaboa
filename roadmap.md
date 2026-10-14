@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Criar na Curadoria da Gestão Setorial cadastro rápido, gerenciamento completo e divulgação por QR Code, link direto e WhatsApp, com atualização em tempo real.
 - [x] Criar painel de Engajamento de Flyers no Marketing com aberturas reais, campeão, média diária, períodos e evolução por flyer.
 - [x] Auditar e padronizar contraste, campos, modais, cards e superfícies com tokens premium em todo o aplicativo.
 - [x] Compactar o campo de mensagem do Coezinho para 40px, com controles próximos, expansão até cinco linhas e rolagem interna após o limite.
