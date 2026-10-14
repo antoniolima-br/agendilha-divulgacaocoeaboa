@@ -292,4 +292,4 @@
 - [x] Auditar e reforçar segurança, integridade e desempenho do banco, autenticação, funções, uploads e integrações; revalidar produção.
 
 - [x] Restringir Gestão Setorial exclusivamente ao Master em todas as camadas; confirmar leitura automática do flyer e simplificar Curadoria, Marketing, Comercial e Financeiro em cartões e listas mobile-first.
-- [ ] Ampliar flyers da Curadoria, ler o título automaticamente, bloquear publicação sem título e remover a ação confusa de exibição imediata.
+- [x] Ampliar flyers da Curadoria, ler o título automaticamente, bloquear publicação sem título e remover a ação confusa de exibição imediata.
