@@ -2,10 +2,10 @@
 - Authority comes only from protected user_roles; SQL/client checks match to prevent escalation.
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
-- Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
+- Schedules validate client/database; gaps under two hours block, missing ends warn.
 - WhatsApp confirmations use prepared links; automation requires an authenticated provider.
 - opening_hours is free text; performance schedules validate separately.
-- Establishments have one category; ViaCEP suggests editable street/neighborhood.
+- One venue category; ViaCEP suggests editable street/neighborhood.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, query keys/defaults and permissions to prevent cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
@@ -36,4 +36,4 @@
 - Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- UI credits/PDF separate.
+- PartnershipMenu shares destinations; CSS retires header actions; UI/PDF credits separate.

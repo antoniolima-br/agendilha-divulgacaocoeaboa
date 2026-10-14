@@ -13,7 +13,7 @@ export function PartnershipMenu({ compact = false, onNavigate }: { compact?: boo
         <span className={compact ? "text-center text-[10px] font-semibold leading-tight" : "text-sm"}>Anunciar / Parcerias</span>
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent side="top" align="center" sideOffset={8} className="w-56">
+    <DropdownMenuContent side="top" align="center" sideOffset={8} className="z-[60] w-56">
       <DropdownMenuItem asChild><Link to={ROUTES.ENVIAR_EVENTO} onClick={onNavigate} className="gap-3 py-3"><CalendarPlus className="h-4 w-4" />Cadastrar Evento</Link></DropdownMenuItem>
       <DropdownMenuItem asChild><Link to={ROUTES.ANUNCIO_NOVO} onClick={onNavigate} className="gap-3 py-3"><Megaphone className="h-4 w-4" />Espaço Publicitário</Link></DropdownMenuItem>
     </DropdownMenuContent>

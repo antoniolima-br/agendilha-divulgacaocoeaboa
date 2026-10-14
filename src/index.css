@@ -15,6 +15,7 @@ header > div > .grid.mt-1\.5:has(> .btn-gold) {
   right: 12px;
 }
 header > div:has(> .grid.mt-1\.5 > .btn-gold) { position: relative; }
+header > div:has(> .grid.mt-1\.5 > .btn-gold) > .grid:first-child > a:last-child { align-self: start; margin-top: 10px; }
 header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:first-child { min-width: 80px; }
 body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) {
   padding-bottom: calc(4rem + env(safe-area-inset-bottom));
