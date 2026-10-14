@@ -1,18 +1,25 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CoezinhoChat } from "./CoezinhoChat";
 
-const { stop } = vi.hoisted(() => ({ stop: vi.fn() }));
+const { stop, chatState } = vi.hoisted(() => ({ stop: vi.fn(), chatState: { failNext: false } }));
 vi.mock("@ai-sdk/react", async () => {
   const { useState } = await import("react");
-  return { useChat: () => {
+  return { useChat: ({ onError }: { onError: () => void }) => {
     const [messages, setMessages] = useState<Array<{ id: string; role: "user"; parts: Array<{ type: "text"; text: string }> }>>([]);
-    return { messages, status: "ready", stop, sendMessage: ({ text }: { text: string }) => setMessages([{ id: "test", role: "user", parts: [{ type: "text", text }] }]) };
+    return { messages, status: "ready", stop, sendMessage: ({ text }: { text: string }) => {
+      setMessages([{ id: "test", role: "user", parts: [{ type: "text", text }] }]);
+      if (chatState.failNext) onError();
+    } };
   } };
 });
 
 describe("Coezinho fresh conversations", () => {
+  afterEach(() => {
+    cleanup();
+    chatState.failNext = false;
+  });
   it("welcomes free questions with only two suggestions and clears messages and drafts on close", () => {
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
     expect(screen.getByText(/Pode perguntar à vontade/)).toBeInTheDocument();
@@ -35,5 +42,19 @@ describe("Coezinho fresh conversations", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Falar com o Guia do Coé" }));
     expect(screen.queryByText("Como cadastrar e divulgar meu evento?")).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["Quais eventos estão rolando hoje?", /programação atual fica na Agenda/],
+    ["Como divulgar meu evento?", /abra Divulgar\/Contratar/],
+    ["Como funciona o app?", /reúne a programação na Agenda/],
+  ])("answers %s with a useful fallback when the connection fails", async (question, answer) => {
+    chatState.failNext = true;
+    render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
+    fireEvent.change(screen.getByRole("textbox", { name: "Sua mensagem" }), { target: { value: question } });
+    fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
+    await waitFor(() => expect(screen.getByRole("log").textContent).toMatch(answer));
+    expect(screen.queryByText(/Não rolou falar/)).not.toBeInTheDocument();
+    chatState.failNext = false;
   });
 });

@@ -10,9 +10,9 @@ import mascot from "@/assets/coezinho-mascot.png";
 import { Link } from "react-router-dom";
 import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 import { X, CalendarDays, Ticket, ArrowUp } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MascotLauncher } from "./MascotLauncher";
+import { coezinhoFallbackAnswer } from "./fallbackAnswer";
 
 const QUICK_PROMPTS = [
   { label: "O que tá rolando hoje?", icon: CalendarDays, text: "Quais eventos estão rolando hoje?" },
@@ -32,8 +32,10 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
 
 function CoezinhoSession({ onClose }: { onClose: () => void }) {
   const [input, setInput] = useState("");
+  const [fallback, setFallback] = useState<{ question: string; answer: string } | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(true);
+  const lastQuestionRef = useRef("");
 
   const transport = useMemo(
     () =>
@@ -50,7 +52,10 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
   const { messages, sendMessage, status, stop } = useChat({
     transport,
     onError: () => {
-      if (activeRef.current) toast.error("Não rolou falar com o Guia agora. Tenta de novo em instantes.");
+      if (activeRef.current) setFallback({
+        question: lastQuestionRef.current,
+        answer: coezinhoFallbackAnswer(lastQuestionRef.current),
+      });
     },
   });
   const busy = status === "submitted" || status === "streaming";
@@ -91,6 +96,8 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
   const send = (text: string) => {
     const value = text.trim();
     if (!value || busy) return;
+    lastQuestionRef.current = value;
+    setFallback(null);
     sendMessage({ text: value }, { body: { eventFilters: getGlobalEventFilters() } });
     setInput("");
     panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
@@ -148,6 +155,13 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
                   </MessageContent>
                 </Message>
               ))}
+              {fallback && (
+                <Message from="assistant" className="max-w-full">
+                  <MessageContent>
+                    <MessageResponse>{fallback.answer}</MessageResponse>
+                  </MessageContent>
+                </Message>
+              )}
               {status === "submitted" && <Shimmer className="text-sm">Coezinho tá pensando…</Shimmer>}
             </ConversationContent>
             <ConversationScrollButton aria-label="Ver últimas mensagens" />
