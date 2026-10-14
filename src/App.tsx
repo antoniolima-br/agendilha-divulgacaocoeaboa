@@ -80,6 +80,7 @@ const AdminPitchComercial = lazy(() => import("./pages/AdminPitchComercial"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
 const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
 const AdminAdPlans = lazy(() => import("./pages/AdminAdPlans"));
+const AdPlansCatalog = lazy(() => import("./pages/AdPlansCatalog"));
 const AdminAds = lazy(() => import("./pages/AdminAds"));
 const Anuncios = lazy(() => import("./pages/anuncios/Anuncios"));
 const AnuncioDetalhe = lazy(() => import("./pages/anuncios/AnuncioDetalhe"));
@@ -242,6 +243,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.SEU_RADAR} element={<ProtectedRoute><SeuRadar /></ProtectedRoute>} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<PromotorRoute><MeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.COMPARTILHAR_MEUS_EVENTOS} element={<PromotorRoute><CompartilharMeusEventos /></PromotorRoute>} />
+          <Route path={ROUTES.PLANOS_ANUNCIOS} element={<PromotorRoute><AdPlansCatalog /></PromotorRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />
@@ -286,6 +288,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_ATRATIVOS} element={<AdminAtrativos />} />
           <Route path={ROUTES.ADMIN_ANUNCIOS} element={<AdminAds />} />
           <Route path={ROUTES.ADMIN_PLANOS_ANUNCIO} element={<AdminAdPlans />} />
+          <Route path={ROUTES.ADMIN_AUDIT} element={<ProtectedRoute requiredPermission="audit_logs.read"><AdminAuditLogs /></ProtectedRoute>} />
         </Route>
 
         {/* Promotor area — guarded by user_type=divulgador (admins/masters incluídos) */}
@@ -303,7 +306,6 @@ export const AppRoutes = () => {
           <Route path={ROUTES.MASTER_DASHBOARD} element={<AdminMaster />} />
           <Route path={ROUTES.MASTER_USUARIOS} element={<AdminUsers />} />
           <Route path={ROUTES.MASTER_LOGS} element={<AdminAuditLogs />} />
-          <Route path={ROUTES.ADMIN_AUDIT} element={<AdminAuditLogs />} />
           <Route path={ROUTES.RANKING} element={<Ranking />} />
         </Route>
 

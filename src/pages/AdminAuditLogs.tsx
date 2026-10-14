@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import { handleError } from "@/lib/error-handler";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  Loader2, 
   History, 
   User, 
-  Shield, 
-  Activity,
-  Filter,
   RefreshCcw,
   ArrowLeft
 } from "lucide-react";
@@ -25,7 +20,6 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
-import Header from "@/components/Header";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 
@@ -41,7 +35,6 @@ interface AuditLog {
 }
 
 export default function AdminAuditLogs() {
-  const { user } = useAuth();
   const { hasPermission, loading: permsLoading } = useAppPermissions();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,19 +45,13 @@ export default function AdminAuditLogs() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) return;
 
-      const { data: isMaster } = await supabase.rpc('is_master', { _user_id: session.user.id });
-
-      let query = supabase
+      const query = supabase
         .from('audit_logs')
         .select(`
           *,
           actor:profiles!audit_logs_actor_id_fkey(responsible_name)
         `);
       
-      if (!isMaster) {
-        query = query.eq('actor_id', session.user.id);
-      }
-
       const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(100);
@@ -99,7 +86,7 @@ export default function AdminAuditLogs() {
           subtitle="Rastreabilidade completa de ações administrativas"
           rightElement={
             <>
-              <Link to="/master/dashboard">
+              <Link to="/admin/central-home">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Voltar

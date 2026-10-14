@@ -19,4 +19,10 @@ describe("central administrativa", () => {
     expect(routeExists(ROUTES.ADMIN_CENTRAL)).toBe(true);
     expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_CENTRAL]).toBe("events.update");
   });
+
+  it("usa uma única entrada para Central da Home e Moderação", () => {
+    const operation = filterSidebarSections("admin", () => true, routeExists).find((section) => section.id === "operacao");
+    expect(operation?.items.find((item) => item.id === "central_moderacao")?.path).toBe(ROUTES.ADMIN_CENTRAL);
+    expect(operation?.items.some((item) => ["central_home", "moderacao"].includes(item.id))).toBe(false);
+  });
 });

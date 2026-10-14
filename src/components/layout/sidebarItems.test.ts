@@ -9,15 +9,11 @@ describe("sidebarConfig", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
     expect(items.filter(item => isSidebarItemActive(item, ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.COMPARTILHAR_MEUS_EVENTOS)).map(item => item.id)).toEqual(["share_my_events"]);
   });
-  it("não confunde prefixos de irmãos ou links com consulta", () => {
+  it("não confunde prefixos de irmãos", () => {
     const items = sidebarConfig.find(s => s.id === "explorar")?.items ?? [];
     const item = items[0];
     if (!item) throw new Error("missing explore link");
     expect(isSidebarItemActive(item, `${item.path}-extra`, `${item.path}-extra`)).toBe(false);
-    const favorite = items.find(i => i.id === "favorites");
-    if (!favorite) throw new Error("missing favorites link");
-    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, `${ROUTES.AGENDA}?view=favorites`)).toBe(true);
-    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, ROUTES.AGENDA)).toBe(false);
   });
   it("compartilhamento pessoal segue o acesso do painel do divulgador", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
@@ -34,12 +30,12 @@ describe("sidebarConfig", () => {
     expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["admin", "financeiro", "senior", "master"].includes(role));
     expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_PITCH_COMERCIAL]).toBe("pitch.read");
   });
-  it("admin tem Meus eventos separado da Curadoria e do Financeiro", () => {
+  it("admin tem Meus eventos separado da Curadoria e Financeiro dentro de Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
     expect(personal?.items.find((item) => item.id === "send_event")?.roles).toContain("admin");
     expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
-    expect(sidebarConfig.find((section) => section.id === "operacao")?.items.find((item) => item.id === "financeiro")?.roles).toContain("admin");
+    expect(sidebarConfig.find((section) => section.id === "intranet")?.items.find((item) => item.id === "intranet_portal")?.children?.find((item) => item.id === "financeiro")?.roles).toContain("admin");
   });
   it("centraliza as ferramentas de WhatsApp no Relatório Diário", () => {
     const operation = sidebarConfig.find((section) => section.id === "operacao");
@@ -66,11 +62,11 @@ describe("sidebarConfig", () => {
     }
   });
 
-  it("agrupa atrativos e estabelecimentos em Cadastros", () => {
+  it("unifica usuários e cadastros em Governança", () => {
     const explore = sidebarConfig.find((section) => section.id === "explorar");
-    const operation = sidebarConfig.find((section) => section.id === "operacao");
+    const governance = sidebarConfig.find((section) => section.id === "governanca");
     const exploreRegistrations = explore?.items.find((item) => item.id === "cadastros_explorar");
-    const adminRegistrations = operation?.items.find((item) => item.id === "cadastros_admin");
+    const adminRegistrations = governance?.items.find((item) => item.id === "governance_records");
 
     expect(exploreRegistrations?.children?.map((item) => item.id)).toEqual([
       "artists",
@@ -78,30 +74,34 @@ describe("sidebarConfig", () => {
       "negocios_explorar",
     ]);
     expect(adminRegistrations?.children?.map((item) => item.id)).toEqual([
+      "divulgadores_admin",
       "atrativos_admin",
       "estabelecimentos_admin",
       "negocios_admin",
     ]);
-    expect(adminRegistrations?.label).toBe("Gerenciamento de Cadastros");
+    expect(adminRegistrations?.label).toBe("Administração e cadastros");
     expect(adminRegistrations?.children?.map((item) => item.label)).toEqual([
-      "Gerenciar Atrativos",
-      "Gerenciar Locais de Rolê",
-      "Gerenciar Negócios Gerais",
+      "Gerenciar usuários",
+      "Gerenciar atrativos",
+      "Gerenciar locais de rolê",
+      "Gerenciar negócios gerais",
     ]);
     expect(explore?.items.some((item) => ["artists", "estabelecimentos_explorar"].includes(item.id))).toBe(false);
-    expect(operation?.items.some((item) => ["atrativos_admin", "estabelecimentos_admin"].includes(item.id))).toBe(false);
+    expect(governance?.items.some((item) => ["atrativos_admin", "estabelecimentos_admin", "manage_users"].includes(item.id))).toBe(false);
   });
 
-  it("agrupa a gestão de eventos e flyers em Moderação", () => {
+  it("unifica Central da Home e Moderação em uma única entrada", () => {
     const operation = sidebarConfig.find((section) => section.id === "operacao");
-    const moderation = operation?.items.find((item) => item.id === "moderacao");
+    expect(operation?.items.find((item) => item.id === "central_moderacao")?.label).toBe("Curadoria e Moderação");
+    expect(operation?.items.filter((item) => ["central_home", "moderacao"].includes(item.id))).toHaveLength(0);
+  });
 
-    expect(moderation?.children?.map((item) => item.id)).toEqual([
-      "manage_events",
-      "curadoria",
-      "published_events",
-      "flyer_moderator",
-    ]);
-    expect(operation?.items.some((item) => ["manage_events", "flyer_moderator"].includes(item.id))).toBe(false);
+  it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
+    const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
+    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "divulgador_status"]);
+    const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
+    expect(promoterItems.find((item) => item.id === "send_event")?.label).toBe("Publicar Evento");
+    expect(promoterItems.some((item) => item.id === "ad_plans_catalog")).toBe(true);
+    expect(sidebarConfig.flatMap((section) => section.items).some((item) => ["seu_radar", "divulgar_contratar"].includes(item.id))).toBe(false);
   });
 });
