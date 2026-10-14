@@ -22,7 +22,7 @@ export default function AdminControlCenter() {
         <div className="flex items-center gap-3"><Settings2 className="h-6 w-6 text-primary" /><h1 className="text-2xl font-bold sm:text-3xl">Central da Home e Divulgação</h1></div>
         <p className="max-w-3xl text-sm text-muted-foreground">Aprove eventos e anúncios, atualize a pauta e organize o flyer principal em um só lugar.</p>
       </header>
-      <Tabs defaultValue="schedule" className="min-w-0">
+      <Tabs defaultValue="moderation" className="min-w-0">
         <TabsList className="grid h-auto w-full grid-cols-2 gap-1 lg:grid-cols-4">
           <TabsTrigger value="moderation" className="gap-2 whitespace-normal"><CheckCircle2 className="h-4 w-4" />Moderação</TabsTrigger>
           <TabsTrigger value="schedule" className="gap-2 whitespace-normal"><CalendarDays className="h-4 w-4" />Horários, datas e local</TabsTrigger>

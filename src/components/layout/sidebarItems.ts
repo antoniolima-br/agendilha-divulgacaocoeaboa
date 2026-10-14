@@ -1,20 +1,14 @@
 import React from "react";
 import { 
-  Sparkles, 
   CalendarDays, 
   Users, 
-  Heart, 
-  Shield, 
   History, 
   ClipboardList,
-  User,
   ShieldCheck,
   Crown,
   PlusCircle,
   LayoutDashboard,
-  LogIn,
   Eye,
-  UserPlus,
   Megaphone,
   Images,
   MessageSquare,
@@ -54,7 +48,13 @@ export interface SidebarSection {
 export const sidebarConfig: SidebarSection[] = [
   {
     id: "intranet", title: "Portal corporativo", roles: ["admin", "senior", "master", "financeiro", "sector"],
-    items: [{ id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "financeiro", "sector"] }],
+    items: [{
+      id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "financeiro", "sector"],
+      children: [
+        { id: "sector_portal", label: "Portal setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["admin", "senior", "master", "sector"], exact: true },
+        { id: "financeiro", label: "Financeiro", path: ROUTES.ADMIN_FINANCEIRO, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
+      ],
+    }],
   },
   {
     id: "explorar",
@@ -62,80 +62,6 @@ export const sidebarConfig: SidebarSection[] = [
     roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
       { id: "agenda", label: "Agenda", path: ROUTES.AGENDA, icon: CalendarDays, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] },
-      { id: "seu_radar", label: "Seu Radar", path: ROUTES.SEU_RADAR, icon: Heart, roles: ["public_registered"] },
-      { 
-        id: "favorites", 
-        label: "Meus Favoritos", 
-        path: `${ROUTES.AGENDA}?view=favorites`, 
-        icon: Heart, 
-        roles: ["public_registered"] 
-      },
-      {
-        id: "eventos_destaque",
-        label: "Eventos em destaque",
-        path: ROUTES.EVENTOS_DESTAQUE,
-        icon: Sparkles,
-        roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
-      },
-      {
-        id: "anuncios_destaques",
-        label: "Anúncios e Destaques",
-        path: ROUTES.ANUNCIOS,
-        icon: ShoppingBag,
-        roles: ["promoter", "admin", "senior", "financeiro", "master"],
-        children: [
-          {
-            id: "ver_anuncios",
-            label: "Explorar Anúncios",
-            path: ROUTES.ANUNCIOS,
-            icon: Eye,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"],
-            exact: true
-          },
-          {
-            id: "contratar",
-            label: "Contratar",
-            path: ROUTES.ANUNCIO_NOVO,
-            icon: ShoppingBag,
-            roles: ["public_guest", "public_registered", "promoter", "admin", "senior", "financeiro", "master"]
-          },
-          {
-            id: "meus_anuncios",
-            label: "Meus Anúncios",
-            path: ROUTES.MEUS_ANUNCIOS,
-            icon: ShoppingBag,
-            roles: ["promoter", "collaborator", "admin", "senior", "master"]
-          },
-          {
-            id: "planos_anuncio_admin",
-            label: "Planos disponíveis",
-            path: ROUTES.ADMIN_PLANOS_ANUNCIO,
-            icon: LayoutDashboard,
-            roles: ["admin", "senior", "financeiro", "master"]
-          },
-          {
-            id: "destaques_admin",
-            label: "Gestão de destaques",
-            path: ROUTES.ADMIN_DESTAQUES,
-            icon: Sparkles,
-             roles: ["admin", "senior", "master"]
-          },
-          {
-            id: "pagamentos_destaque_admin",
-            label: "Pagamentos dos destaques",
-            path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE,
-            icon: CreditCard,
-             roles: ["admin", "senior", "financeiro", "master"]
-          },
-          {
-            id: "anuncios_admin",
-            label: "Anúncios (Gestão)",
-            path: ROUTES.ADMIN_ANUNCIOS,
-            icon: LayoutDashboard,
-             roles: ["admin", "senior", "financeiro", "master"]
-          }
-        ]
-      },
       {
         id: "cadastros_explorar",
         label: "Cadastros",
@@ -191,18 +117,12 @@ export const sidebarConfig: SidebarSection[] = [
       },
       { 
         id: "send_event", 
-        label: "Enviar Evento", 
+        label: "Publicar Evento", 
         path: ROUTES.ENVIAR_EVENTO, 
         icon: PlusCircle, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
-      {
-        id: "promotor_perfil",
-        label: "Perfil de Divulgador",
-        path: ROUTES.PROMOTOR_PERFIL,
-        icon: User,
-        roles: ["promoter"]
-      }
+      { id: "ad_plans_catalog", label: "Planos e valores de anúncios", path: ROUTES.PLANOS_ANUNCIOS, icon: ShoppingBag, roles: ["promoter", "collaborator", "admin", "senior", "master"] }
     ]
   },
   {
@@ -210,8 +130,7 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Operação",
     roles: ["admin", "senior", "financeiro", "master"],
     items: [
-      { id: "financeiro", label: "Financeiro", path: ROUTES.ADMIN_FINANCEIRO, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
-      { id: "central_home", label: "Central da Home", path: ROUTES.ADMIN_CENTRAL, icon: LayoutDashboard, roles: ["admin", "senior", "master"] },
+      { id: "central_moderacao", label: "Curadoria e Moderação", path: ROUTES.ADMIN_CENTRAL, icon: ShieldCheck, roles: ["admin", "senior", "master"] },
       {
         id: "relatorio_diario",
         label: "Relatório Diário (Coé a Boa?)",
@@ -244,36 +163,17 @@ export const sidebarConfig: SidebarSection[] = [
         ]
       },
       {
-        id: "moderacao",
-        label: "Moderação",
-        path: ROUTES.ADMIN_EVENTS,
-        icon: ShieldCheck,
-        roles: ["admin", "senior", "master"],
+        id: "advertising_admin",
+        label: "Publicidade e pacotes",
+        path: ROUTES.ADMIN_ANUNCIOS,
+        icon: ShoppingBag,
+        roles: ["admin", "senior", "financeiro", "master"],
         children: [
-          {
-            id: "manage_events",
-            label: "Gerenciar Eventos",
-            path: ROUTES.ADMIN_EVENTS,
-            icon: ShieldCheck,
-            roles: ["admin", "senior", "master"],
-            exact: true
-          },
-          { id: "curadoria", label: "Curadoria", path: ROUTES.ADMIN_APROVAR_EVENTOS, icon: CheckCircle2, roles: ["admin", "senior", "master"] },
-          {
-            id: "published_events",
-            label: "Eventos Publicados",
-            path: ROUTES.ADMIN_PUBLISHED_EVENTS,
-            icon: CalendarDays,
-            roles: ["admin", "senior", "master"]
-          },
-          {
-            id: "flyer_moderator",
-            label: "Moderador de Flyers",
-            path: ROUTES.ADMIN_MEDIA,
-            icon: Shield,
-            roles: ["admin", "senior", "master"]
-          }
-        ]
+          { id: "anuncios_admin", label: "Gestão de anúncios", path: ROUTES.ADMIN_ANUNCIOS, icon: LayoutDashboard, roles: ["admin", "senior", "financeiro", "master"], exact: true },
+          { id: "planos_anuncio_admin", label: "Pacotes de anúncios", path: ROUTES.ADMIN_PLANOS_ANUNCIO, icon: ShoppingBag, roles: ["admin", "senior", "financeiro", "master"] },
+          { id: "destaques_admin", label: "Gestão de destaques", path: ROUTES.ADMIN_DESTAQUES, icon: CheckCircle2, roles: ["admin", "senior", "master"] },
+          { id: "pagamentos_destaque_admin", label: "Pagamentos dos destaques", path: ROUTES.ADMIN_PAGAMENTOS_DESTAQUE, icon: CreditCard, roles: ["admin", "senior", "financeiro", "master"] },
+        ],
       },
       {
         id: "configuracoes_admin",
@@ -282,44 +182,6 @@ export const sidebarConfig: SidebarSection[] = [
         icon: Settings2,
          roles: ["senior", "master"]
       },
-      {
-        id: "cadastros_admin",
-        label: "Gerenciamento de Cadastros",
-        path: ROUTES.ADMIN_ATRATIVOS,
-        icon: FolderKanban,
-        roles: ["admin", "senior", "master"],
-        children: [
-          {
-            id: "atrativos_admin",
-            label: "Gerenciar Atrativos",
-            path: ROUTES.ADMIN_ATRATIVOS,
-            icon: Users,
-            roles: ["admin", "senior", "master"],
-            exact: true
-          },
-          {
-            id: "estabelecimentos_admin",
-            label: "Gerenciar Locais de Rolê",
-            path: ROUTES.ADMIN_ESTABELECIMENTOS,
-            icon: Building2,
-            roles: ["admin", "senior", "master"]
-          },
-          {
-            id: "negocios_admin",
-            label: "Gerenciar Negócios Gerais",
-            path: ROUTES.ADMIN_NEGOCIOS,
-            icon: Building2,
-            roles: ["admin", "senior", "master"]
-          }
-        ]
-      },
-      {
-        id: "divulgadores_admin",
-         label: "Usuários",
-        path: ROUTES.ADMIN_USERS,
-        icon: Megaphone,
-         roles: ["admin", "senior", "master"]
-      }
     ]
   },
   {
@@ -327,6 +189,20 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Governança",
     roles: ["admin", "financeiro", "senior", "master"],
     items: [
+      {
+        id: "governance_records",
+        label: "Administração e cadastros",
+        path: ROUTES.ADMIN_USERS,
+        icon: FolderKanban,
+        roles: ["admin", "senior", "master"],
+        children: [
+          { id: "divulgadores_admin", label: "Gerenciar usuários", path: ROUTES.ADMIN_USERS, icon: Users, roles: ["admin", "senior", "master"], exact: true },
+          { id: "atrativos_admin", label: "Gerenciar atrativos", path: ROUTES.ADMIN_ATRATIVOS, icon: Users, roles: ["admin", "senior", "master"] },
+          { id: "estabelecimentos_admin", label: "Gerenciar locais de rolê", path: ROUTES.ADMIN_ESTABELECIMENTOS, icon: Building2, roles: ["admin", "senior", "master"] },
+          { id: "negocios_admin", label: "Gerenciar negócios gerais", path: ROUTES.ADMIN_NEGOCIOS, icon: Building2, roles: ["admin", "senior", "master"] },
+        ],
+      },
+      { id: "audit_logs", label: "Logs de Auditoria", path: ROUTES.ADMIN_AUDIT, icon: History, roles: ["admin", "senior", "master"] },
       { id: "pitch_comercial", label: "Pitch Comercial e Projeção", path: ROUTES.ADMIN_PITCH_COMERCIAL, icon: ClipboardList, roles: ["admin", "financeiro", "senior", "master"] },
       { 
         id: "master_panel", 
@@ -335,16 +211,8 @@ export const sidebarConfig: SidebarSection[] = [
         icon: Crown, 
         roles: ["master"],
         children: [
-          { id: "master_overview", label: "Visão Geral", path: ROUTES.MASTER_DASHBOARD, icon: Eye, roles: ["master"] },
-          { id: "audit_logs", label: "Logs de Auditoria", path: ROUTES.MASTER_LOGS, icon: History, roles: ["master"] }
+          { id: "master_overview", label: "Visão Geral", path: ROUTES.MASTER_DASHBOARD, icon: Eye, roles: ["master"] }
         ]
-      },
-      { 
-        id: "manage_users", 
-        label: "Gerenciar Usuários", 
-        path: ROUTES.MASTER_USUARIOS, 
-        icon: Users, 
-        roles: ["master"] 
       }
     ]
   },
@@ -356,30 +224,9 @@ export const sidebarConfig: SidebarSection[] = [
       {
         id: "divulgador_status",
         label: "Seja Divulgador",
-        path: ROUTES.DIVULGADOR_STATUS,
+        path: ROUTES.CADASTRO_DIVULGADOR,
         icon: Megaphone,
-        roles: ["public_registered"]
-      },
-      { 
-        id: "profile", 
-        label: "Meu Perfil", 
-        path: ROUTES.PERFIL, 
-        icon: User, 
-        roles: ["public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] 
-      },
-      { 
-        id: "login", 
-        label: "Entrar", 
-        path: ROUTES.AUTH, 
-        icon: LogIn, 
-        roles: ["public_guest"] 
-      },
-      { 
-        id: "register", 
-        label: "Criar conta", 
-        path: `${ROUTES.AUTH}?mode=signup`, 
-        icon: UserPlus, 
-        roles: ["public_guest"] 
+        roles: ["public_guest", "public_registered"]
       }
     ]
   }

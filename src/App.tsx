@@ -288,6 +288,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_ATRATIVOS} element={<AdminAtrativos />} />
           <Route path={ROUTES.ADMIN_ANUNCIOS} element={<AdminAds />} />
           <Route path={ROUTES.ADMIN_PLANOS_ANUNCIO} element={<AdminAdPlans />} />
+          <Route path={ROUTES.ADMIN_AUDIT} element={<ProtectedRoute requiredPermission="audit_logs.read"><AdminAuditLogs /></ProtectedRoute>} />
         </Route>
 
         {/* Promotor area — guarded by user_type=divulgador (admins/masters incluídos) */}
@@ -305,7 +306,6 @@ export const AppRoutes = () => {
           <Route path={ROUTES.MASTER_DASHBOARD} element={<AdminMaster />} />
           <Route path={ROUTES.MASTER_USUARIOS} element={<AdminUsers />} />
           <Route path={ROUTES.MASTER_LOGS} element={<AdminAuditLogs />} />
-          <Route path={ROUTES.ADMIN_AUDIT} element={<AdminAuditLogs />} />
           <Route path={ROUTES.RANKING} element={<Ranking />} />
         </Route>
 
