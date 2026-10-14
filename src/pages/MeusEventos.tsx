@@ -47,17 +47,17 @@ interface Row {
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string; Icon: any }> = {
     pendente: {
-      label: "Em análise",
+      label: "Aguardando liberação da curadoria",
       cls: "border-amber-600/30 text-amber-700 bg-amber-50/60",
       Icon: Clock,
     },
     aprovado: {
-      label: "Aprovado",
+      label: "Aprovado / ativo",
       cls: "border-emerald-600/30 text-emerald-700 bg-emerald-50/60",
       Icon: ShieldCheck,
     },
     publicado: {
-      label: "Publicado",
+      label: "Aprovado / ativo",
       cls: "border-emerald-600/30 text-emerald-700 bg-emerald-50/60",
       Icon: ShieldCheck,
     },
