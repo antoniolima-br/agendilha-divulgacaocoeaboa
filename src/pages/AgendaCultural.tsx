@@ -27,7 +27,6 @@ import { buildWhatsAppShare } from "@/components/agenda/agenda-utils";
 import type { AgendaEvent } from "@/components/agenda/types";
 
 import { getShareUrl } from "@/lib/sharing";
-import { cn } from "@/lib/utils";
 import { isHighlightActive } from "@/lib/highlights";
 import { AgendaSponsoredCards } from "@/components/anuncios/AgendaSponsoredCards";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
