@@ -17,7 +17,7 @@ describe("WhatsApp recovery", () => {
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
     render(<MemoryRouter><ForgotPassword /></MemoryRouter>);
     expect(screen.queryByText(/PIN/)).not.toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText("E-mail ou WhatsApp da conta"), { target: { value: "21987654321" } });
+    fireEvent.change(screen.getByLabelText("WhatsApp da conta"), { target: { value: "21987654321" } });
     fireEvent.click(screen.getByRole("button", { name: "Solicitar pelo WhatsApp" }));
     expect(open).toHaveBeenCalledOnce();
     const url = new URL(String(open.mock.calls[0][0]));

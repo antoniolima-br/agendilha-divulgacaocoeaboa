@@ -49,14 +49,14 @@ export default function Auth() {
   if (user) return <Navigate to={mustChangePassword ? ROUTES.TROCAR_SENHA : redirect} replace />;
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setPhone(e.target.value);
+    setPhone(maskBrPhone(e.target.value));
   }
 
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const phoneProblem = phone.includes("@") ? (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phone.trim()) ? null : "Confira seu e-mail.") : validateWhatsappForAccount(phone);
+    const phoneProblem = validateWhatsappForAccount(phone);
     if (phoneProblem) {
       toast.error("Número inválido", { description: phoneProblem });
       return;
@@ -95,7 +95,7 @@ export default function Auth() {
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-[280px] mx-auto">
             {mode === "login" 
-              ? "Use seu e-mail ou WhatsApp para entrar na sua conta e salvar seus favoritos." 
+              ? "Entre com seu WhatsApp e senha pra encontrar seus próximos rolês." 
               : "Cadastre-se para receber sugestões personalizadas de eventos baseadas no seu bairro e estilo musical."}
           </p>
         </div>
@@ -105,17 +105,18 @@ export default function Auth() {
             <div className="space-y-2">
               <Label htmlFor="phone" className="flex items-center gap-2">
                 <Phone className="h-3.5 w-3.5 text-primary" />
-                E-mail ou WhatsApp
+                WhatsApp
               </Label>
               <Input
                 id="phone"
                 name="tel"
                 autoComplete="username"
-                type="text"
+                type="tel"
+                inputMode="tel"
                 value={phone}
                 onChange={handlePhoneChange}
                 required
-                placeholder="Seu e-mail ou celular com DDD"
+                placeholder="(21) 98765-4321"
                 className="h-11 sm:h-12 bg-muted/30 focus-visible:ring-primary/20"
               />
               <p className="text-[10px] text-muted-foreground">O DDD é obrigatório. Ex: 21 para o Rio. Prefixo +55 opcional.</p>
@@ -163,13 +164,13 @@ export default function Auth() {
 
         <p className="text-center text-sm text-muted-foreground">
           {mode === "login" ? "Não tem conta?" : "Já tem conta?"}{" "}
-          <button
+          <Button variant="link"
             type="button"
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
             className="text-primary font-medium hover:underline"
           >
             {mode === "login" ? "Cadastre-se" : "Faça login"}
-          </button>
+          </Button>
         </p>
       </div>
     </div>

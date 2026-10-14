@@ -270,7 +270,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
               </div>
               {(type === "promoter" || type === "artist") && (
                 <div className="space-y-2">
-                  <Label htmlFor="email">E-mail (Para contato comercial)</Label>
+                  <Label htmlFor="email">E-mail comercial (opcional)</Label>
                   <Input
                     id="email"
                     name="email"

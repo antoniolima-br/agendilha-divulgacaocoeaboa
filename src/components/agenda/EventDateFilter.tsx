@@ -34,10 +34,16 @@ export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
           className={cn("h-11 w-full justify-start gap-2 text-left font-normal sm:w-48", !selected && "text-muted-foreground")}
         >
           <CalendarIcon className="h-4 w-4 shrink-0" />
-          <span>{selected ? format(selected, "dd/MM/yyyy") : "Calendário"}</span>
+          <span>{selected ? format(selected, "dd/MM/yyyy") : "Todas as datas"}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="theme-coeaboa w-auto p-0" align="start">
+        <div className="border-b border-border p-3">
+          <Button variant={selected ? "outline" : "secondary"} className="min-h-11 w-full" aria-pressed={!selected} onClick={() => {
+            onChange("");
+            setOpen(false);
+          }}>Todas as datas</Button>
+        </div>
         <Calendar
           mode="single"
           locale={ptBR}

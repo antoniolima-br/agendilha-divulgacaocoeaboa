@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppSettings, SETTING_KEYS, settingOr } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
-import { validateWhatsappForAccount } from "@/lib/phone";
+import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 import { ROUTES } from "@/routes/config";
 
 export default function ForgotPassword() {
@@ -22,9 +22,7 @@ export default function ForgotPassword() {
   function requestRecovery(event: React.FormEvent) {
     event.preventDefault();
     const value = identifier.trim();
-    const problem = value.includes("@")
-      ? (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? null : "Confira o e-mail da sua conta.")
-      : validateWhatsappForAccount(value);
+    const problem = validateWhatsappForAccount(value);
     if (problem) { toast.error(problem); return; }
     if (!url) { toast.error("O contato da equipe não está disponível. Tenta de novo em instantes."); return; }
     setRequested(true);
@@ -41,8 +39,8 @@ export default function ForgotPassword() {
         </div>
         <form onSubmit={requestRecovery} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="recover-identifier">E-mail ou WhatsApp da conta</Label>
-            <Input id="recover-identifier" autoComplete="username" required value={identifier} onChange={(e) => { setIdentifier(e.target.value); setRequested(false); }} placeholder="Seu e-mail ou celular com DDD" />
+            <Label htmlFor="recover-identifier">WhatsApp da conta</Label>
+            <Input id="recover-identifier" type="tel" inputMode="tel" autoComplete="tel" required value={identifier} onChange={(e) => { setIdentifier(maskBrPhone(e.target.value)); setRequested(false); }} placeholder="(21) 98765-4321" />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading || !url}>
             <MessageCircle className="mr-2 h-4 w-4" /> Solicitar pelo WhatsApp
