@@ -80,6 +80,7 @@ const AdminPitchComercial = lazy(() => import("./pages/AdminPitchComercial"));
 const AdminRolandoAgora = lazy(() => import("./pages/AdminRolandoAgora"));
 const AdminAprovarEventos = lazy(() => import("./pages/AdminAprovarEventos"));
 const AdminAdPlans = lazy(() => import("./pages/AdminAdPlans"));
+const AdPlansCatalog = lazy(() => import("./pages/AdPlansCatalog"));
 const AdminAds = lazy(() => import("./pages/AdminAds"));
 const Anuncios = lazy(() => import("./pages/anuncios/Anuncios"));
 const AnuncioDetalhe = lazy(() => import("./pages/anuncios/AnuncioDetalhe"));
@@ -242,6 +243,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.SEU_RADAR} element={<ProtectedRoute><SeuRadar /></ProtectedRoute>} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<PromotorRoute><MeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.COMPARTILHAR_MEUS_EVENTOS} element={<PromotorRoute><CompartilharMeusEventos /></PromotorRoute>} />
+          <Route path={ROUTES.PLANOS_ANUNCIOS} element={<PromotorRoute><AdPlansCatalog /></PromotorRoute>} />
           <Route path={ROUTES.EVENTO_ENVIADO} element={<ProtectedRoute><EventoEnviado /></ProtectedRoute>} />
           <Route path={ROUTES.EVENTO_CONTRATAR_DESTAQUE} element={<ProtectedRoute><ContratarDestaqueEvento /></ProtectedRoute>} />
           <Route path={ROUTES.DIVULGADOR_STATUS} element={<ProtectedRoute><StatusDivulgador /></ProtectedRoute>} />
