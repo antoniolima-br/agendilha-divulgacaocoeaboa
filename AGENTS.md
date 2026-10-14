@@ -5,7 +5,7 @@
 - Schedules validate client/database; gaps under two hours block, missing ends warn.
 - WhatsApp confirmations use prepared links; automation requires an authenticated provider.
 - opening_hours is free text; performance schedules validate separately.
-- One venue category; ViaCEP suggests editable street/neighborhood.
+- One venue category; ViaCEP suggests editable addresses.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, query keys/defaults and permissions against cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
