@@ -41,3 +41,22 @@ export function getEventFallbackPalette(seed: string): string {
   for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
   return EVENT_FALLBACK_PALETTES[hash % EVENT_FALLBACK_PALETTES.length];
 }
+
+export interface AddressComponents {
+  location?: string | null;
+  address_street?: string | null;
+  address_number?: string | null;
+  address_neighborhood?: string | null;
+  address_city?: string | null;
+}
+
+export function formatEventAddress(ev: AddressComponents): string {
+  const streetPart = [ev.address_street, ev.address_number].filter(Boolean).join(", ");
+  const parts = [
+    ev.location,
+    streetPart,
+    ev.address_neighborhood,
+    ev.address_city
+  ].filter(Boolean);
+  return parts.join(" — ");
+}
