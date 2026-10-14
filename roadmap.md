@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Sincronizar o selo superior de cada flyer do carrossel principal com a data e o horário reais do respectivo evento.
 - [x] Reforçar o padrão mobile-first global com alvos de toque confortáveis, conteúdo sem overflow e Gestão Setorial adaptada à navegação inferior.
 - [x] Refinar a Gestão Setorial com equipe apenas administrativa, atalhos dedicados e edição restrita ao responsável de cada setor.
 - [x] Implantar Gestão Setorial unificada com BI para a equipe, painéis Comercial/Marketing/Curadoria/Financeiro, responsáveis visíveis e edição protegida por responsável, Sênior ou Master.
