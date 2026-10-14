@@ -119,8 +119,9 @@ describe("Home event carousel interactions", () => {
       />,
     );
 
-    const firstFlyer = screen.getByRole("button", { name: "Abrir evento Rolê 1" }).querySelector("[data-flyer]");
-    const secondFlyer = screen.getByRole("button", { name: "Abrir evento Rolê 2" }).querySelector("[data-flyer]");
+    const slides = document.querySelectorAll<HTMLButtonElement>('button[aria-label^="Abrir evento Rolê"]');
+    const firstFlyer = slides[0]?.querySelector("[data-flyer]");
+    const secondFlyer = slides[1]?.querySelector("[data-flyer]");
     expect(firstFlyer).toHaveTextContent("Qua., 14 de Out. às 18:00");
     expect(secondFlyer).toHaveTextContent("Qui., 15 de Out. às 21:30");
     expect(firstFlyer?.firstElementChild).not.toContainHTML("14 de Out");
