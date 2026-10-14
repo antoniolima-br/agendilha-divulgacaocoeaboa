@@ -316,6 +316,13 @@
       "when": 1792010559943,
       "tag": "0044_curation_event_impact_tracking",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1792011721346,
+      "tag": "0045_guest_invites_and_conversion_tracking",
+      "breakpoints": true
     }
   ]
 }
