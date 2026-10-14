@@ -4,6 +4,7 @@ import { CalendarDays, Eye, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
+import coezinhoMascot from "@/assets/coezinho-mascot.png";
 
 const AUTOPLAY_MS = 5_000;
 
@@ -81,6 +82,7 @@ export function HomeMixedHeroCarousel({
   if (total === 0) return null;
   const item = items[index] ?? items[0];
   if (!item) return null;
+  const activeDate = formatEventDateTimeBR(item.date, item.start_time);
 
   return (
     <section
@@ -103,6 +105,20 @@ export function HomeMixedHeroCarousel({
       }}
     >
       <div className="relative w-full overflow-hidden bg-background">
+        {activeDate && (
+          <div
+            key={item.id}
+            aria-live="polite"
+            aria-atomic="true"
+            className="pointer-events-none absolute left-3 top-3 z-20 flex max-w-[calc(100%-1.5rem)] items-end motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-2 motion-safe:duration-300 sm:left-4 sm:top-4"
+          >
+            <img src={coezinhoMascot} alt="" aria-hidden="true" className="-mr-2 h-12 w-12 shrink-0 object-contain drop-shadow-md sm:h-14 sm:w-14" />
+            <span className="inline-flex min-w-0 items-center gap-2 rounded-full border border-primary/70 bg-background/95 px-3 py-2 text-xs font-bold text-foreground shadow-lg backdrop-blur-sm sm:px-4 sm:text-sm">
+              <CalendarDays className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <span className="truncate">{activeDate}</span>
+            </span>
+          </div>
+        )}
         <div ref={viewportRef} className="overflow-hidden touch-pan-y pinch-zoom">
         <div className="flex items-stretch">
         {items.map((slide, slideIndex) => {
@@ -112,7 +128,6 @@ export function HomeMixedHeroCarousel({
           const slideTitle = slide.event_title || slide.atrativo_style || slide.category || "Evento";
           const slideImage = slide.image_url || getEventFallbackImage(slide.category);
           const slideLocation = [slide.location, slide.address_neighborhood].filter(Boolean).join(" · ");
-          const slideDate = formatEventDateTimeBR(slide.date, slide.start_time);
           return (
             <Button
               key={slide.id}
@@ -145,12 +160,6 @@ export function HomeMixedHeroCarousel({
                 {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
                 {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
-                {slideDate && (
-                  <span className="pointer-events-none absolute left-3 top-3 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full border border-primary/70 bg-background/95 px-3 py-2 text-xs font-bold text-foreground shadow-lg backdrop-blur-sm sm:left-4 sm:top-4 sm:px-4 sm:text-sm">
-                    <CalendarDays className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                    <span className="truncate">{slideDate}</span>
-                  </span>
-                )}
                 {active && (
                   <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-primary/70 bg-background/90 px-4 py-2 text-xs font-bold uppercase text-foreground shadow-lg backdrop-blur-sm">
                     <Eye className="h-4 w-4 text-primary" aria-hidden="true" /> Ver detalhes
