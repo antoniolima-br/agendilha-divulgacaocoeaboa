@@ -138,7 +138,11 @@ export default function Landing() {
       return (eventsData ?? []).filter((event) =>
         PUBLIC_EVENT_STATUSES.some((status) => status === event.status)
         && matchesPublicEventFilters(event, listFilters),
-      );
+      ).sort((a, b) => {
+        const dateComparison = eventDateISO(a.date).localeCompare(eventDateISO(b.date));
+        if (dateComparison !== 0) return dateComparison;
+        return (a.start_time ?? "99:99").localeCompare(b.start_time ?? "99:99");
+      });
     }, [eventsData, globalFilters]);
     const promotionalFlyerEvents = visualEvents;
     const todayEventsCount = useMemo(() => {
@@ -541,22 +545,27 @@ export default function Landing() {
                 aria-label="Outras programações"
               >
                 {freeEvents.map((event) => {
-                  const timeLabel = event.start_time?.slice(0, 5) || "Horário a confirmar";
+                  const title = event.event_title || event.atrativo_style || event.category || "Evento";
+                  const scheduleLabel = formatEventDateTimeBR(event.date, event.start_time) || "Data e horário a confirmar";
                   const locationLabel = [event.location, event.address_neighborhood].filter(Boolean).join(" · ") || "Local a confirmar";
 
                   return (
                     <li key={event.id}>
                       <Link
                         to={`/agenda?event=${event.id}`}
-                        className="group grid min-h-[4.5rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-3 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none transition-colors"
+                        className="group flex min-h-[5.25rem] flex-col justify-center gap-1.5 px-1 py-3.5 transition-colors hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none sm:px-2"
                       >
-                        <div className="min-w-0">
-                          <h3 className="font-semibold text-sm sm:text-base text-foreground break-words group-hover:text-primary transition-colors">
-                            {event.event_title || "Evento"}
-                          </h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground break-words">{locationLabel}</p>
-                        </div>
-                        <span className="shrink-0 text-xs font-medium text-primary sm:text-sm">{timeLabel}</span>
+                        <h3 className="break-words font-display text-sm font-bold text-foreground transition-colors group-hover:text-primary sm:text-base">
+                          {title}
+                        </h3>
+                        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground sm:text-sm">
+                          <span className="flex items-center gap-1.5 font-medium text-primary">
+                            <Calendar className="h-3.5 w-3.5 shrink-0" />{scheduleLabel}
+                          </span>
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" /><span className="break-words">{locationLabel}</span>
+                          </span>
+                        </p>
                       </Link>
                     </li>
                   );
