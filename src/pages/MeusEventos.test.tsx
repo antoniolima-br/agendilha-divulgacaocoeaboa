@@ -41,7 +41,7 @@ describe("organizer archives", () => {
     expect(screen.queryByRole("button", { name: "Editar" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Consultar" }));
     expect(screen.getByText("Apresentação passada")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    fireEvent.click(screen.getByRole("button", { name: "Fechar" }));
     fireEvent.click(screen.getByRole("button", { name: "Repetir evento" }));
     expect(mocks.navigate).toHaveBeenCalledWith("/enviar-evento", { state: { repeatEventId: "past" } });
   });
