@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, User, Radar } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, Menu, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/routes/config";
@@ -18,7 +18,6 @@ export const OPEN_KOE_EVENT = "koe:open";
 
 export function isTabBarHidden(pathname: string) {
   return (
-    pathname.startsWith("/evento/") ||
     pathname.startsWith("/enviar-evento") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/cadastro")
@@ -27,19 +26,14 @@ export function isTabBarHidden(pathname: string) {
 
 export function MobileTabBar({ onMenuClick }: Props) {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   if (isTabBarHidden(pathname)) return null;
 
-  const isProfileActive = pathname === ROUTES.PERFIL;
 
   return (
     <nav
       aria-label="Navegação principal"
-      className={cn(
-        "app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]", 
-        pathname !== ROUTES.LANDING && "md:hidden"
-      )}
+      className="app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
         {items.map((item) => {
@@ -71,18 +65,18 @@ export function MobileTabBar({ onMenuClick }: Props) {
           <Button
             variant="ghost"
             type="button"
-            onClick={() => navigate(ROUTES.PERFIL)}
-            aria-label="Abrir perfil"
+            onClick={onMenuClick}
+            aria-label="Abrir menu lateral"
+            aria-haspopup="dialog"
             className={cn(
               "flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 transition-colors",
-              isProfileActive ? "text-primary font-bold" : "text-muted-foreground"
+              "text-muted-foreground"
             )}
           >
             <div className="relative flex flex-col items-center">
-              <User className={cn("h-5 w-5 shrink-0 transition-transform", isProfileActive && "fill-primary/10 scale-110")} />
-              {isProfileActive && <div className="absolute -bottom-1.5 h-1 w-1 rounded-full bg-primary animate-in zoom-in duration-300" />}
+              <Menu className="h-5 w-5 shrink-0" />
             </div>
-            <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
+            <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Menu</span>
           </Button>
         </li>
       </ul>

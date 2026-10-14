@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Restaurar Menu inferior e mover Perfil para o topo direito da Home, com cadastro público simples para visitantes.
 - [x] Refinar globalmente UI/UX sem alterar funções: hierarquia, campos, seletores, cartões, diálogos, abas, feedback, estados e responsividade alinhados à identidade atual.
 - [x] Otimizar performance global sem mudar a experiência: estabilizar dados, paginar listas completas, reduzir peso do Coezinho, simplificar animações e melhorar imagens.
 - [x] Refatorar a base sem alterar comportamento: centralizar regras do formulário de eventos, autoridade administrativa, carregamento de rotas e formatadores comerciais; remover duplicações com cobertura focada e validação completa.

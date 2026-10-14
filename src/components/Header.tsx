@@ -23,7 +23,8 @@ import {
   ExternalLink,
   Share2
 } from "lucide-react";
-import { MapPin } from "lucide-react";
+import { ROUTES } from "@/routes/config";
+import { MapPin, UserRound } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
  import logoCoeABoa from "@/assets/coeaboa-logo.webp";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Sheet, 
   SheetContent, 
@@ -151,7 +152,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
    const { theme, toggleTheme } = useTheme();
   const { profile } = useProfile();
   const perms = useAppPermissions();
-  const { status, name: badgeName } = useUserBadge();
+  const { status, name: badgeName, initials } = useUserBadge();
   const isMaster = status === "master";
   const navigate = useNavigate();
   const currentDate = useCurrentDate();
@@ -183,12 +184,12 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
          <>
         <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-background"}`}>
           <div className="mx-auto w-full max-w-6xl px-3 pb-1 pt-2 sm:px-8">
-            <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
               <Link to="/" className="group shrink-0 justify-self-start" aria-label="Coé a Boa? - Página Inicial">
                 <img src={logoCoeABoa} alt="Coé a Boa?" className="h-24 w-24 rounded-full object-cover ring-1 ring-primary/40 transition-transform group-hover:scale-105 sm:h-[6.75rem] sm:w-[6.75rem]" />
               </Link>
               <Link to="/explorar" className="flex min-h-11 min-w-0 flex-col items-end justify-self-end text-right hover:opacity-90" aria-label="Localização: Rio de Janeiro, Brasil">
-                <span className="flex items-center gap-1.5 font-display text-base font-semibold leading-tight text-foreground sm:text-lg">
+                <span className="flex items-center gap-1.5 font-display text-sm font-semibold leading-tight text-foreground sm:text-lg">
                   <MapPin className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                   Rio de Janeiro, Brasil
                 </span>
@@ -199,6 +200,17 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                   })()}
                 </span>
               </Link>
+              <Button asChild variant="ghost" size="icon" className="h-11 w-11 shrink-0 self-start rounded-full">
+                <Link to={user ? ROUTES.PERFIL : ROUTES.CADASTRO_PUBLICO} aria-label={user ? `Meu perfil: ${badgeName}, sessão ativa` : "Criar meu perfil"}>
+                  {user ? <span className="relative">
+                    <Avatar className="h-9 w-9 ring-2 ring-primary">
+                      <AvatarImage src={typeof user.user_metadata?.avatar_url === "string" ? user.user_metadata.avatar_url : undefined} alt={badgeName} />
+                      <AvatarFallback className="bg-primary text-sm font-semibold text-primary-foreground">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background bg-primary" aria-hidden="true" />
+                  </span> : <UserRound className="h-6 w-6 text-primary" />}
+                </Link>
+              </Button>
             </div>
           </div>
         </header>
