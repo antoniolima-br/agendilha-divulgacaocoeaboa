@@ -40,7 +40,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 .coezinho-fab[data-idle="true"] { opacity: 0.22; }
 .coezinho-fab:focus-visible { opacity: 1; }
 .coezinho-composer [data-slot="input-group"] { height: auto; flex-direction: column; background: hsl(var(--card)); }
-.coezinho-composer textarea { width: 100%; min-height: 48px; max-height: 144px; }
+.coezinho-composer textarea { width: 100%; min-height: 48px; max-height: 144px; field-sizing: fixed; }
 .coezinho-fab[data-dragging="true"] { cursor: grabbing; }
 .coezinho-character { transition: transform 180ms ease; }
 .coezinho-fab:hover .coezinho-character { transform: translateY(-3px) rotate(-3deg); }
