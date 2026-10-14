@@ -1400,6 +1400,39 @@ export type Database = {
         }
         Relationships: []
       }
+      flyer_engagement_events: {
+        Row: {
+          event_id: string
+          id: number
+          opened_at: string
+        }
+        Insert: {
+          event_id: string
+          id?: number
+          opened_at?: string
+        }
+        Update: {
+          event_id?: string
+          id?: number
+          opened_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flyer_engagement_events_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flyer_engagement_events_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follows: {
         Row: {
           created_at: string
@@ -3481,6 +3514,10 @@ export type Database = {
         Returns: Json
       }
       intranet_finance_metrics: { Args: { p_days?: number }; Returns: Json }
+      intranet_flyer_engagement: {
+        Args: { p_end_at: string; p_start_at: string }
+        Returns: Json
+      }
       intranet_health_probe: { Args: never; Returns: boolean }
       intranet_members: { Args: never; Returns: Json }
       intranet_moderate: {
