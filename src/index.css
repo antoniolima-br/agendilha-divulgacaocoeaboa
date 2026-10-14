@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 .coezinho-fab { cursor: grab; transition: opacity 450ms ease; }
+.limax-brand-x { color: hsl(var(--brand-limax)); }
 .coezinho-fab[data-idle="true"] { opacity: 0.22; }
 .coezinho-fab:focus-visible { opacity: 1; }
 .coezinho-composer [data-slot="input-group"] { height: auto; flex-direction: column; background: hsl(var(--card)); }
@@ -26,6 +27,7 @@
   }
 
   :root {
+    --brand-limax: 24 100% 50%;
     /* ── Editorial Warm Sand · Premium Local ── */
     --background: 40 33% 97%;          /* #faf8f5 ivory sand */
     --foreground: 24 14% 10%;          /* deep ink for premium contrast */
