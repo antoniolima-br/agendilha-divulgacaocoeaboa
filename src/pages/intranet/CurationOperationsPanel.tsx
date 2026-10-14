@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QRCodeSVG } from "qrcode.react";
-import { ArrowLeft, Copy, Download, ImagePlus, Loader2, MessageCircle, Pencil, Plus, Search, Share2, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, Check, Copy, Download, ImagePlus, Loader2, MessageCircle, PauseCircle, Pencil, Plus, Search, Share2, Trash2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
@@ -118,6 +118,18 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
     onError: (error) => toast.error(errorMessage(error, "Não deu pra excluir agora. Tente novamente.")),
   });
 
+  const moderation = useMutation({
+    mutationFn: async ({ id, action }: { id: string; action: "approve" | "reject" | "suspend" }) => {
+      const { error } = await supabase.rpc("intranet_set_curation_status", { p_id: id, p_action: action });
+      if (error) throw error;
+    },
+    onSuccess: async (_, variables) => {
+      await invalidateEventViews(client);
+      toast.success(variables.action === "approve" ? "Rolê aprovado." : variables.action === "reject" ? "Rolê rejeitado." : "Rolê suspenso e retirado das áreas públicas.");
+    },
+    onError: (error) => toast.error(errorMessage(error, "Não deu pra concluir essa ação. Tente novamente.")),
+  });
+
   function chooseFile(next: File | null) {
     if (next && !next.type.startsWith("image/")) return toast.error("Escolha uma imagem JPG, PNG ou WEBP.");
     if (next && next.size > MAX_FLYER_MB * 1024 * 1024) return toast.error(`O flyer pode ter até ${MAX_FLYER_MB} MB.`);
@@ -132,6 +144,11 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
 
   function confirmArchive(event: CurationEvent) {
     if (window.confirm(`Excluir “${event.event_title || "este rolê"}” das áreas públicas?`)) archive.mutate(event.id);
+  }
+
+  function decide(event: CurationEvent, action: "approve" | "reject" | "suspend") {
+    const label = action === "approve" ? "aprovar" : action === "reject" ? "rejeitar" : "suspender";
+    if (window.confirm(`Quer ${label} “${event.event_title || "este rolê"}”?`)) moderation.mutate({ id: event.id, action });
   }
 
   return (
@@ -175,10 +192,10 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
 
         <TabsContent value="manage" className="pt-4">
           <div className="relative mb-4 max-w-md"><Search className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" /><Input aria-label="Buscar rolê" className="pl-9" placeholder="Buscar por nome ou data" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
-          {eventsQuery.isLoading ? <p className="py-8" role="status">Carregando rolês…</p> : eventsQuery.isError ? <div className="space-y-3 py-8"><p role="alert">Não deu pra carregar os rolês.</p><Button variant="outline" onClick={() => void eventsQuery.refetch()}>Tentar novamente</Button></div> : visibleEvents.length === 0 ? <p className="py-8 text-sm text-muted-foreground">Nenhum rolê encontrado. Use o cadastro rápido para começar.</p> : <ul className="divide-y border-y">{visibleEvents.map((event) => <li key={event.id} className="flex min-w-0 flex-col gap-3 py-4 sm:flex-row sm:items-center">
-            {event.image_url ? <img src={event.image_url} alt="" className="h-20 w-16 shrink-0 rounded-md object-cover" /> : <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded-md border bg-card/40"><ImagePlus className="h-5 w-5 text-muted-foreground" /></div>}
-            <div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{event.event_title || "Rolê sem título"}</h3><p className="text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p><Badge variant="outline" className="mt-2">{event.status}</Badge><EventImpactCounters impact={impactByEvent.get(event.id)} /></div>
-            {canEdit && <div className="grid grid-cols-2 gap-2 sm:flex"><Button variant="outline" size="sm" onClick={() => edit(event)}><Pencil />Editar</Button><Button variant="ghost" size="sm" disabled={archive.isPending} onClick={() => confirmArchive(event)}><Trash2 />Excluir</Button></div>}
+          {eventsQuery.isLoading ? <p className="py-8" role="status">Carregando rolês…</p> : eventsQuery.isError ? <div className="space-y-3 py-8"><p role="alert">Não deu pra carregar os rolês.</p><Button variant="outline" onClick={() => void eventsQuery.refetch()}>Tentar novamente</Button></div> : visibleEvents.length === 0 ? <p className="py-8 text-sm text-muted-foreground">Nenhum rolê encontrado. Use o cadastro rápido para começar.</p> : <ul className="grid gap-4 lg:grid-cols-2">{visibleEvents.map((event) => <li key={event.id} className="min-w-0 rounded-lg border bg-card p-4 shadow-sm">
+            <div className="grid min-w-0 gap-4 sm:grid-cols-[9rem_minmax(0,1fr)]">{event.image_url ? <img src={event.image_url} alt={`Flyer de ${event.event_title || "rolê"}`} className="aspect-[3/4] w-full rounded-md object-contain" /> : <div className="flex aspect-[3/4] w-full items-center justify-center rounded-md border bg-card/40"><ImagePlus className="h-7 w-7 text-muted-foreground" /></div>}
+            <div className="min-w-0"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="break-words text-lg font-semibold">{event.event_title || "Rolê sem título"}</h3><Badge variant="outline">{event.status === "cancelado" ? "suspenso" : event.status}</Badge></div><p className="mt-1 text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p><div className="mt-4 border-t pt-3"><p className="text-xs font-semibold uppercase text-muted-foreground">Histórico artístico</p><p className="mt-1 line-clamp-4 text-sm">{event.artist_history || "Ainda não informado."}</p></div><EventImpactCounters impact={impactByEvent.get(event.id)} /></div></div>
+            {canEdit && <div className="mt-4 grid grid-cols-2 gap-2 border-t pt-4 sm:grid-cols-4"><Button className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "approve")}><Check />Aprovar</Button><Button variant="outline" className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "reject")}><X />Rejeitar</Button><Button variant="secondary" className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "suspend")}><PauseCircle />Suspender</Button><Button variant="outline" className="min-h-11" onClick={() => edit(event)}><Pencil />Editar</Button></div>}
           </li>)}</ul>}
         </TabsContent>
 

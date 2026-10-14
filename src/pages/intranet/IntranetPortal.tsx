@@ -16,7 +16,7 @@ const AccessPanel=lazy(()=>import('./AccessPanel'));
 const icons={comercial:BriefcaseBusiness,marketing:Megaphone,administracao:ShieldCheck,financeiro:Wallet,desenvolvimento:Activity};
 export default function IntranetPortal(){
  const {user,signOut}=useAuth();const {roles,loading,isMaster}=useAppPermissions();const {sector:requested}=useParams();const [days,setDays]=useState(30);
- const canOverview=canViewIntranetOverview(roles); const overview=canOverview && (!requested || requested==='visao-geral'); const access=useSectorAccess(!loading && !!user);
+ const canOverview=canViewIntranetOverview(roles); const overview=canOverview && (!requested || requested==='visao-geral'); const access=useSectorAccess(!loading && !!user && isMaster);
  const sectors=intranetSectors(roles); const sector=isIntranetSector(requested) ? requested : sectors[0] ?? 'administracao';const authorized=overview || sectors.includes(sector);const sectorQuery=useIntranet(sector,days,!loading && authorized && !overview); const biQuery=useIntranetBI(days,!loading && authorized && overview); const query=overview ? biQuery : sectorQuery;
  if(loading)return <p className="p-8">Carregando acesso…</p>;
  if(!user)return <Navigate to={`${ROUTES.AUTH}?redirect=${encodeURIComponent(ROUTES.INTRANET)}`} replace/>;
