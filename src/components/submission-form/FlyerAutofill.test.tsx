@@ -39,4 +39,15 @@ describe("flyer first flow", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("JPG, PNG ou WEBP");
     expect(mocks.extract).not.toHaveBeenCalled();
   });
+  it("shows a friendly fallback and keeps manual fields available when reading fails", async () => {
+    mocks.extract.mockRejectedValue(new Error("402 raw gateway response"));
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.webp", { type: "image/webp" })] } });
+    expect(await screen.findByText("Lendo flyer com IA...")).toBeVisible();
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível ler o flyer automaticamente agora, mas preencha os campos abaixo rapidinho.");
+    expect(screen.queryByText(/402 raw gateway response/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Título")).toBeEnabled();
+    expect(screen.getByText("Prefiro preencher manualmente")).toBeVisible();
+    expect(mocks.loading).toHaveBeenLastCalledWith(false);
+  });
 });

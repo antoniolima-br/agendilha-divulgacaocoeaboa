@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { ImagePlus, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
+import { AlertCircle, ImagePlus, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractFlyer, safeFlyerPatch } from "@/lib/flyerExtraction";
 import { prepareUploadImage } from "@/lib/uploadImage";
@@ -18,6 +18,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
+  const manualFallback = "Não foi possível ler o flyer automaticamente agora, mas preencha os campos abaixo rapidinho.";
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
@@ -42,7 +43,10 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
       }
       setStatus(Object.keys(patch).length ? "Dados preenchidos. Confira título, data, horário e endereço antes de continuar." : "Nenhum campo vazio foi preenchido. Confira os dados abaixo ou envie outro flyer.");
     } catch (e) {
-      if (!controller.signal.aborted) setError(e instanceof Error ? e.message : "Não deu pra ler o flyer. Preencha os dados abaixo.");
+      if (!controller.signal.aborted) {
+        setError(manualFallback);
+        document.getElementById("manual-event-fields")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     } finally {
       if (request.current === controller) { setLoading(false); onLoading(false); }
     }
@@ -70,10 +74,10 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
         <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <div aria-live="polite" aria-busy={loading}>
-        {loading && <div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Lendo flyer com IA...</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div>}
+        {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Lendo flyer com IA...</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><div aria-hidden="true" className="space-y-2"><div className="h-2 w-4/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /><div className="h-2 w-3/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /></div></div>}
         {!loading && status && <p className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{status}</p>}
       </div>
-      {error && <p role="alert" className="break-words text-sm text-destructive">{error}</p>}
+      {error && <p role="alert" className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{error}</p>}
       <Button type="button" variant="link" className="h-auto p-0 text-sm" onClick={() => { if (loading) cancel(); document.getElementById("manual-event-fields")?.scrollIntoView({ behavior: "auto", block: "start" }); }}>Prefiro preencher manualmente</Button>
     </section>
   );
