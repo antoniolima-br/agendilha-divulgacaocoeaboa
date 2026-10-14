@@ -1,6 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Menu } from "lucide-react";
+import { Home, Menu, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/routes/config";
+import { PartnershipMenu } from "./PartnershipMenu";
 
 interface Props {
   onMenuClick: () => void;
@@ -8,6 +11,7 @@ interface Props {
 
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
+  { label: "Meu Radar", icon: Radar, path: ROUTES.SEU_RADAR, match: (p: string) => p === ROUTES.SEU_RADAR },
 ];
 
 export const OPEN_KOE_EVENT = "koe:open";
@@ -33,9 +37,9 @@ export function MobileTabBar({ onMenuClick }: Props) {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+      className={cn("fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl", pathname !== ROUTES.LANDING && "md:hidden")}
     >
-      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-2 px-2 xs:px-3">
+      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -57,16 +61,18 @@ export function MobileTabBar({ onMenuClick }: Props) {
             </li>
           );
         })}
+        <li className="min-w-0"><PartnershipMenu compact /></li>
         <li className="min-w-0">
-          <button
+          <Button
+            variant="ghost"
             type="button"
             onClick={onMenuClick}
             aria-label="Abrir menu"
-            className="flex h-16 w-full flex-col items-center justify-center gap-1 px-2 text-muted-foreground transition-colors active:text-primary"
+            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
           >
             <Menu className="h-5 w-5 shrink-0" />
             <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
-          </button>
+          </Button>
         </li>
       </ul>
     </nav>
