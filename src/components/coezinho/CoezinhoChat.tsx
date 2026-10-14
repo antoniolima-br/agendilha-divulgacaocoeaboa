@@ -62,7 +62,35 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", keydown);
-    return (
+    return () => {
+      cancelAnimationFrame(focus);
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", keydown);
+      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (open && !busy && !document.activeElement?.closest('button, a, input')) {
+      panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
+    }
+  }, [open, busy]);
+
+  const send = (text: string) => {
+    const value = text.trim();
+    if (!value || busy) return;
+    sendMessage({ text: value }, { body: { eventFilters: getGlobalEventFilters() } });
+    setInput("");
+    panelRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
+  };
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_KOE_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_KOE_EVENT, onOpen);
+  }, []);
+
+  return (
     <>
       {!open && <MascotLauncher onOpen={() => setOpen(true)} />}
       {open && (
