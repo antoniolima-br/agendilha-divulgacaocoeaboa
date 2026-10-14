@@ -2,10 +2,10 @@ import { usePublicEvents } from "@/data/usePublicEvents";
 import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
-import { availableEventDays, eventDayStripWindow } from "@/lib/eventCalendar";
+import { availableEventDays, eventDayStripWindow, eventWeekStart } from "@/lib/eventCalendar";
 import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
-import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -218,6 +218,11 @@ export default function Landing() {
     }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
     const [weekStart, setWeekStart] = useState(() => saoPauloTodayISO());
+    const [carouselDate, setCarouselDate] = useState("");
+    const syncCarouselDate = useCallback((date: string) => {
+      setCarouselDate(date);
+      setWeekStart(eventWeekStart(date));
+    }, []);
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
     const todayEvents = useMemo(
@@ -225,7 +230,14 @@ export default function Landing() {
       [visualEvents, todayStr],
     );
 
-    const daysWithEvents = useMemo(() => availableEventDays(eventsData ?? [], globalFilters), [eventsData, globalFilters]);
+    const daysWithEvents = useMemo(() => {
+      const days = availableEventDays(eventsData ?? [], globalFilters);
+      unfilteredHomeFlyerEvents.forEach((event) => {
+        const day = eventDateISO(event.date);
+        if (day) days.add(day);
+      });
+      return days;
+    }, [eventsData, globalFilters, unfilteredHomeFlyerEvents]);
     const dayStrip = useMemo(() => eventDayStripWindow(daysWithEvents, weekStart), [daysWithEvents, weekStart]);
     
     // Deduplicate: events in alta should not be in today if possible, or limited
@@ -355,7 +367,7 @@ export default function Landing() {
            <div className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
              {dayStrip.days.map((dayStr) => {
                const day = parseISO(dayStr);
-               const isSel = (globalFilters.date || todayStr) === dayStr;
+               const isSel = (carouselDate || globalFilters.date || todayStr) === dayStr;
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
                    className={cn("h-11 min-w-14 flex-1 flex-col gap-0 rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
@@ -372,6 +384,7 @@ export default function Landing() {
          <HomeMixedHeroCarousel
            events={unfilteredHomeFlyerEvents.filter((event) => matchesPublicEventFilters(event, globalFilters))}
            onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
+           onActiveDateChange={syncCarouselDate}
          />
        </div>
 
