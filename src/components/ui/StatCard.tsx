@@ -58,8 +58,8 @@ export function StatCard({
 
   if (variant === "compact") {
     return (
-      <div className={cn("flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-4", className)}>
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-background text-primary shadow-sm">
+      <div className={cn("flex items-start gap-3 rounded-xl border border-border bg-muted/30 p-4", className)}>
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background text-primary shadow-sm">
           <Icon className="h-5 w-5" />
         </div>
         <div>
