@@ -151,4 +151,17 @@ describe("useAgendaFilters", () => {
     }));
     expect(withNullItems.current.upcomingEvents.map((item) => item.id)).toEqual(["hoje"]);
   });
+  it("Todas as datas removes only the day restriction and keeps geography and category", () => {
+    const { result } = renderHook(() => useAgendaFilters({ events: [
+      { ...event("hoje", "2026-09-22"), address_neighborhood: "Olaria", category: "musica" },
+      { ...event("futuro", "2026-09-26"), address_neighborhood: "Olaria", category: "musica" },
+      { ...event("passado", "2026-09-21"), address_neighborhood: "Olaria", category: "musica" },
+      { ...event("outra-regiao", "2026-09-26"), address_neighborhood: "Copacabana", category: "musica" },
+      { ...event("outra-categoria", "2026-09-26"), address_neighborhood: "Olaria", category: "cultura" },
+    ], profile: null, isFavorite: () => false, favorites: [] }));
+    act(() => { result.current.setRegionFilter("Zona Norte"); result.current.setCategoryFilter("musica"); result.current.setDate("2026-09-22"); });
+    expect(result.current.filteredEvents.map(e => e.id)).toEqual(["hoje"]);
+    act(() => result.current.setDate(""));
+    expect(result.current.filteredEvents.map(e => e.id)).toEqual(["hoje", "futuro"]);
+  });
 });
