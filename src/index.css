@@ -136,6 +136,8 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   body {
@@ -143,7 +145,11 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
     font-family: var(--font-body);
     font-feature-settings: "ss01", "cv11", "cv02";
     line-height: 1.55;
+    max-width: 100%;
+    overflow-x: clip;
   }
+
+  main, section, article, form, fieldset { min-width: 0; }
 
   input::placeholder,
   textarea::placeholder {
@@ -317,6 +323,17 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 }
 @media (min-width: 768px) {
   :root, .theme-coeaboa { --mascot-lane: 128px; }
+}
+
+/* Smartphone-first interaction: generous controls without inflating desktop layouts. */
+@media (max-width: 767px) {
+  :is(button, [role="button"], [role="menuitem"], [role="option"], nav a) {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  :is(input, select, textarea) { font-size: 16px; }
+  [role="dialog"] { max-width: calc(100vw - 1rem); }
+  body:has(nav[aria-label="Setores"]) .coezinho-fab { display: none; }
 }
 .home-action-clarity header .btn-gold:nth-last-child(3),
 .home-action-clarity header .btn-gold:nth-last-child(2) {
