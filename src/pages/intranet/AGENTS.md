@@ -1,0 +1,2 @@
+- Intranet BI is team-readable; writes require owner/Senior/Master. Cash uses settlements; flyer opens are guarded; never fake metrics.
+- Engagement BI shares one protected report across Consolidated and Marketing views; origins are allowlisted and physical attendance remains unreported until collected.
