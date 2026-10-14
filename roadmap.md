@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Ordenar o carrossel principal por data e horário mais próximos, sincronizar a faixa superior e manter autoplay de cinco segundos com pausa e retomada após interação.
 - [x] Manter a arte do flyer limpa e sincronizar a seleção da faixa superior de calendário com a data real do evento em foco.
 - [x] Reforçar o padrão mobile-first global com alvos de toque confortáveis, conteúdo sem overflow e Gestão Setorial adaptada à navegação inferior.
 - [x] Refinar a Gestão Setorial com equipe apenas administrativa, atalhos dedicados e edição restrita ao responsável de cada setor.

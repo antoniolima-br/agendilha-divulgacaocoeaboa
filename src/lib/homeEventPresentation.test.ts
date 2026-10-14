@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { splitHomeEventPresentation } from "./homeEventPresentation";
+import { orderHomeFlyersChronologically, splitHomeEventPresentation } from "./homeEventPresentation";
 
 describe("Home event presentation", () => {
   it("keeps every event without media exclusively in the textual collection", () => {
@@ -29,4 +29,29 @@ describe("Home event presentation", () => {
     expect(split.visual.map(e => e.id)).toEqual(["paid", "free", "future"]);
   });
 
+});
+
+describe("Home flyer chronology", () => {
+  it("places the nearest day first and orders the same day by start time", () => {
+    const rows = [
+      { id: "later-day", date: "2026-10-16", start_time: "10:00" },
+      { id: "later-hour", date: "14/10/2026", start_time: "21:00" },
+      { id: "nearer-hour", date: "2026-10-14", start_time: "18:30" },
+      { id: "tomorrow", date: "2026-10-15", start_time: "09:00" },
+    ];
+    expect(orderHomeFlyersChronologically(rows).map((event) => event.id)).toEqual([
+      "nearer-hour", "later-hour", "tomorrow", "later-day",
+    ]);
+  });
+
+  it("keeps the original order when date and time are equal", () => {
+    const rows = [
+      { id: "first", date: "2026-10-14", start_time: "20:00" },
+      { id: "second", date: "2026-10-14", start_time: "20:00" },
+      { id: "without-time", date: "2026-10-14", start_time: null },
+    ];
+    expect(orderHomeFlyersChronologically(rows).map((event) => event.id)).toEqual([
+      "first", "second", "without-time",
+    ]);
+  });
 });

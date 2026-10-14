@@ -3,7 +3,7 @@ import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
 import { availableEventDays, eventDayStripWindow, eventWeekStart } from "@/lib/eventCalendar";
-import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
+import { orderHomeFlyersChronologically, splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { REGIONS, regionOf, normalizeGeography, matchesEventGeography } from "@/lib/regions";
@@ -50,7 +50,7 @@ import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarous
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
-import { isHighlightActive, limitHomeCarouselEvents, prioritizeHomeHeroEvents, selectHomeLaunchFlyerEvents } from "@/lib/highlights";
+import { isHighlightActive, limitHomeCarouselEvents, selectHomeLaunchFlyerEvents } from "@/lib/highlights";
 
 const HOME_CATEGORIES = [
   { key: "turismo", label: "Turismo", hint: "Passeios, excursões e viagens", match: ["turismo"] },
@@ -149,7 +149,6 @@ export default function Landing() {
       const today = saoPauloTodayISO();
       return allEvents.filter((event) => eventDateISO(event.date) === today).length;
     }, [allEvents]);
-    const [heroSeed] = useState(() => Math.floor(Math.random() * 2 ** 31));
     const { data: flyerAdsData } = usePublishedFlyerAds();
     const flyerAds = Array.isArray(flyerAdsData) ? flyerAdsData : [];
     const flyerPhotoPaths = flyerAds.flatMap((ad) => {
@@ -201,21 +200,14 @@ export default function Landing() {
         const activeHighlights = pool.filter((event) =>
           eventDateISO(event.date) >= today && (event.id.startsWith("ad:") || isHighlightActive(event)),
        );
-       // Destaques ativos sempre entram no banner; as vagas restantes priorizam o que acontece hoje.
+       // Destaques ativos sempre entram no banner; as vagas restantes mantêm a programação atual e futura.
        const base = Array.from(new Map([
          ...activeHighlights,
          ...(todays.length > 0 ? todays : pool.filter((ev) => eventDateISO(ev.date) >= today)),
        ].map((event) => [event.id, event])).values());
-       // Ordem aleatória por visita dentro de cada grupo, mantendo os flyers de hoje primeiro.
-      const rand = (id: string) => {
-        let h = heroSeed;
-        for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 2654435761);
-        return h >>> 0;
-      };
-         const ordered = prioritizeHomeHeroEvents(base, rand)
-           .sort((a, b) => Number(eventDateISO(b.date) === today) - Number(eventDateISO(a.date) === today));
+       const ordered = orderHomeFlyersChronologically(base);
          return limitHomeCarouselEvents(ordered, today);
-    }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
+    }, [flyerAds, flyerUrls, promotionalFlyerEvents]);
 
     const [weekStart, setWeekStart] = useState(() => saoPauloTodayISO());
     const [carouselDate, setCarouselDate] = useState("");

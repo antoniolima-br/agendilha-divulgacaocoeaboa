@@ -13,7 +13,7 @@
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation for daily text and flyer selection.
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
-- Home rotates current/future flyers, today first; upper dates follow focus with no art overlays. Embla handles gestures/keys and center taps open details. Agenda stays unchanged.
+- Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; shared filters/realtime and São Paulo dates. Read coezinho AGENTS.md in components/functions for FAB and factual answers.
 - Flyer reads fill empty fields and hide provider errors; manual entry stays usable. Preserve art; generate missing sponsored art before batch inserts.

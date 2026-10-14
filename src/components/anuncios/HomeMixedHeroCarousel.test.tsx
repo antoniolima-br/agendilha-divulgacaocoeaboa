@@ -78,6 +78,13 @@ describe("Home event carousel interactions", () => {
     engine.api.scrollTo.mockClear();
     act(() => vi.advanceTimersByTime(10000));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
+    const leave = new Event("pointerout", { bubbles: true });
+    Object.defineProperty(leave, "pointerType", { value: "mouse" });
+    fireEvent(screen.getByRole("region"), leave);
+    act(() => vi.advanceTimersByTime(4999));
+    expect(engine.api.scrollTo).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(engine.api.scrollTo).toHaveBeenLastCalledWith(0);
   });
 
   it("resumes five seconds after touch ends", () => {
