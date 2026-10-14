@@ -147,6 +147,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
     line-height: 1.55;
     max-width: 100%;
     overflow-x: clip;
+    min-height: 100dvh;
   }
 
   main, section, article, form, fieldset { min-width: 0; }
@@ -170,6 +171,10 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
     font-weight: 600;
     letter-spacing: 0;
   }
+
+  h1 { line-height: 1.15; }
+  h2, h3 { line-height: 1.25; }
+  button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 }
 
 @layer components {

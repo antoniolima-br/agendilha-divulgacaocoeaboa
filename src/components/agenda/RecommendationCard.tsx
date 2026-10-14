@@ -31,7 +31,7 @@ export function RecommendationCard({
           src={ev.image_url}
           alt={ev.event_title}
           category={ev.category}
-          className="h-16 w-16 rounded-xl shrink-0 event-image ring-1 ring-border"
+          className="h-16 w-16 rounded-2xl shrink-0 event-image ring-1 ring-border"
           icon={icon}
         />
         <div className="min-w-0 flex-1">

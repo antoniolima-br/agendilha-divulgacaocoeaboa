@@ -90,7 +90,7 @@ export function PublicFormLinks() {
         {links.map((item) => {
           const Icon = item.icon;
           return (
-            <div key={item.key} className="rounded-xl border p-3 space-y-3 bg-card">
+            <div key={item.key} className="rounded-2xl border p-3.5 space-y-3 bg-card">
               <div className="space-y-1">
                 <p className="font-semibold text-sm flex items-center gap-2">
                   <Icon className="h-4 w-4 text-primary shrink-0" />

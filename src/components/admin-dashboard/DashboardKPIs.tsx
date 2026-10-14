@@ -34,7 +34,7 @@ export function DashboardKPIs({ stats }: DashboardKPIsProps) {
   const navigate = useNavigate();
   
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4">
       <StatCard icon={Users} label="Total Usuários" value={stats.totalUsers} tone="border-primary/30 bg-primary/10 text-primary" description="Soma de todos os perfis cadastrados: Público, Divulgadores e Administradores." onClick={() => navigate("/admin/users")} />
       <StatCard icon={Users} label="Público" value={stats.publicUsers} tone="border-border bg-muted text-foreground" description="Usuários que utilizam a agenda para busca e salvamento de favoritos." onClick={() => navigate("/admin/users?type=usuario")} />
       <StatCard icon={Users} label="Divulgadores" value={stats.promoters} tone="border-primary/30 bg-primary/10 text-primary" description="Produtores e estabelecimentos com permissão para publicar eventos." onClick={() => navigate("/admin/users?type=divulgador")} />

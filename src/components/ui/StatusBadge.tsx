@@ -45,12 +45,12 @@ export function StatusBadge({ role, className, variant = "outline" }: StatusBadg
     <Badge
       variant="outline"
       className={cn(
-        "gap-1 px-2 py-0.5 text-[10px] font-bold uppercase transition-colors",
+        "gap-1 px-2 py-0.5 text-xs font-bold uppercase transition-colors",
         styles,
         className
       )}
     >
-      <Icon className="h-2.5 w-2.5" />
+      <Icon className="h-3 w-3" />
       {label}
     </Badge>
   );

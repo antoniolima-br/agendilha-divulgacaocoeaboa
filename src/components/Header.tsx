@@ -97,7 +97,7 @@ function RoleBadge({
     return (
       <Badge
         variant="outline"
-        className="text-xs gap-1 border-secondary text-secondary bg-secondary/10 font-semibold shadow-sm"
+        className="text-xs font-bold uppercase gap-1 border-secondary text-secondary bg-secondary/10 font-semibold shadow-sm"
       >
         <Crown className="h-3 w-3" strokeWidth={2.5} />
         Admin Master

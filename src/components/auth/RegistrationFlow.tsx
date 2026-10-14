@@ -658,10 +658,10 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
           ))}
         </div>
         <div className="flex justify-between px-1">
-          <span className="text-[9px] font-bold uppercase text-muted-foreground">Perfil</span>
-          <span className="text-[9px] font-bold uppercase text-muted-foreground">Básico</span>
-          <span className="text-[9px] font-bold uppercase text-muted-foreground">Detalhes</span>
-          <span className="text-[9px] font-bold uppercase text-muted-foreground">Revisão</span>
+          <span className="text-[10px] font-bold uppercase text-muted-foreground">Perfil</span>
+          <span className="text-[10px] font-bold uppercase text-muted-foreground">Básico</span>
+          <span className="text-[10px] font-bold uppercase text-muted-foreground">Detalhes</span>
+          <span className="text-[10px] font-bold uppercase text-muted-foreground">Revisão</span>
         </div>
       </div>
 
@@ -677,7 +677,7 @@ function CardOption({ icon, title, description, selected, onClick }: any) {
     <button
       onClick={onClick}
       className={cn(
-        "flex items-start p-4 rounded-xl border-2 text-left transition-all hover:border-primary/50 group",
+        "flex items-start p-4 rounded-2xl border-2 text-left transition-all hover:border-primary/50 group",
         selected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-card"
       )}
     >

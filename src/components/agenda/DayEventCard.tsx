@@ -49,7 +49,7 @@ export function DayEventCard({
 
   return (
     <Card
-      className="event-card group cursor-pointer overflow-hidden rounded-2xl border-border/60 bg-card/50 transition-colors hover:border-primary/60"
+      className="event-card group cursor-pointer overflow-hidden rounded-2xl border-border/60 bg-card/50 transition-all hover:border-primary/60 hover:shadow-md"
       data-event-id={ev.id}
       onClick={() => { trackView(ev.id); onSelect(ev); }}
     >
