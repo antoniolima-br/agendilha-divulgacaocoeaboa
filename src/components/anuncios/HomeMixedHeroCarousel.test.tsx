@@ -108,7 +108,7 @@ describe("Home event carousel interactions", () => {
     expect(openEvent).toHaveBeenLastCalledWith("1");
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
   });
-  it("shows each flyer's own registered date at the top of its image", () => {
+  it("moves Coezinho's calendar to the date of the flyer in focus", () => {
     render(
       <HomeMixedHeroCarousel
         events={[
@@ -119,12 +119,14 @@ describe("Home event carousel interactions", () => {
       />,
     );
 
-    const slides = document.querySelectorAll<HTMLButtonElement>('button[aria-label^="Abrir evento Rolê"]');
-    const firstFlyer = slides[0]?.querySelector("[data-flyer]");
-    const secondFlyer = slides[1]?.querySelector("[data-flyer]");
-    expect(firstFlyer).toHaveTextContent("Qua., 14 de Out. às 18:00");
-    expect(secondFlyer).toHaveTextContent("Qui., 15 de Out. às 21:30");
-    expect(firstFlyer?.firstElementChild).not.toContainHTML("14 de Out");
+    expect(screen.getByText("Qua., 14 de Out. às 18:00")).toBeInTheDocument();
+    expect(screen.queryByText("Qui., 15 de Out. às 21:30")).not.toBeInTheDocument();
+
+    tapFlyer("right");
+
+    expect(screen.queryByText("Qua., 14 de Out. às 18:00")).not.toBeInTheDocument();
+    expect(screen.getByText("Qui., 15 de Out. às 21:30")).toBeInTheDocument();
+    expect(document.querySelectorAll("[data-flyer] span")).toHaveLength(1);
   });
   it("supports keyboard navigation and suppresses taps after swiping", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
@@ -140,7 +142,7 @@ describe("Home event carousel interactions", () => {
   it("keeps slide bounds but mounts images only for active and neighboring flyers", () => {
     const { container } = render(<HomeMixedHeroCarousel events={[1, 2, 3, 4, 5, 6].map((id) => ({ ...event(String(id)), image_url: `/flyer-${id}.webp` }))} onOpenEvent={vi.fn()} />);
     expect(container.querySelectorAll('button[aria-label^="Abrir evento"]')).toHaveLength(6);
-    expect(container.querySelectorAll("img")).toHaveLength(6);
+    expect(container.querySelectorAll("img")).toHaveLength(7);
     expect(container.querySelectorAll('img[fetchpriority="high"]')).toHaveLength(1);
     expect(container.querySelector('img[src="/flyer-3.webp"]')).toBeNull();
     tapFlyer("right");
