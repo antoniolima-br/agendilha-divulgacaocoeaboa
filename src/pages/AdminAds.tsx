@@ -42,7 +42,7 @@ const FILTROS: { valor: AdStatus | "todos"; label: string }[] = [
   { valor: "todos", label: "Todos" },
 ];
 
-export default function AdminAds() {
+export default function AdminAds({ embedded = false }: { embedded?: boolean }) {
   const { user } = useAuth();
   const { hasPermission, loading: permsLoading } = useAppPermissions();
   const isAdmin = hasPermission("ads.manage");
@@ -237,8 +237,7 @@ export default function AdminAds() {
   if (permsLoading) return <LoadingState message="Verificando seu acesso…" fullPage />;
   if (!isAdmin) return <Navigate to="/" replace />;
 
-  return (
-    <PageContainer>
+  const content = (<>
       <div className="space-y-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
@@ -417,6 +416,6 @@ export default function AdminAds() {
           <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => void confirmarExclusao()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir anúncio</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </PageContainer>
-  );
+  </>);
+  return embedded ? content : <PageContainer>{content}</PageContainer>;
 }

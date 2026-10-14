@@ -4,3 +4,4 @@
 - Guest invites use opaque per-event tokens; Curadoria owns registration, Marketing reads identified opens, and BI consolidates conversions without exposing invite data publicly.
 - Keep the executive overview to three plain-language success metrics; registered reach means flyer plus campaign opens and must never be described as unique people.
 - Curadoria decisions use the protected Master-only status RPC; suspension is reversible state, never deletion, and removes the event from public views.
+- Keep operational ownership strict: Curadoria handles events only, Marketing owns ad creative/placements, Financeiro reconciles money, and Comercial owns partner relationships.
