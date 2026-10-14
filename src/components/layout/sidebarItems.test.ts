@@ -112,6 +112,18 @@ describe("sidebarConfig", () => {
     expect(ids.filter((id) => id === "pagamentos_destaque_admin")).toHaveLength(1);
   });
 
+  it("mostra os cinco setores no menu do Master conforme as permissões protegidas", () => {
+    const { permissions } = computePermissions({ roleNames: ["master"], collaborator: null, profileRole: null });
+    const visible = filterSidebarSections("master", (permission) => permissions.has(permission), routeExists);
+    expect(visible.map((section) => section.id)).toEqual(expect.arrayContaining([
+      "curadoria",
+      "marketing",
+      "comercial",
+      "financeiro",
+      "configuracoes",
+    ]));
+  });
+
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
     const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
     expect(publicItems.map((item) => item.id)).toEqual(["agenda", "profile", "divulgador_status"]);

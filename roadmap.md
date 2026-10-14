@@ -294,3 +294,4 @@
 - [x] Restringir Gestão Setorial exclusivamente ao Master em todas as camadas; confirmar leitura automática do flyer e simplificar Curadoria, Marketing, Comercial e Financeiro em cartões e listas mobile-first.
 - [x] Ampliar flyers da Curadoria, ler o título automaticamente, bloquear publicação sem título e remover a ação confusa de exibição imediata.
 - [x] Separar rigorosamente Curadoria, Marketing, Financeiro e Comercial na Gestão Setorial, com telas simples e mobile-first.
+- [x] Reorganizar o menu lateral em Curadoria, Marketing, Comercial, Financeiro e Configurações, sem atalhos duplicados.
