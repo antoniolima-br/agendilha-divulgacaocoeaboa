@@ -60,3 +60,31 @@ export function formatEventAddress(ev: AddressComponents): string {
   ].filter(Boolean);
   return parts.join(" — ");
 }
+
+export interface ShareableEvent extends AddressComponents {
+  event_title: string | null;
+  date?: string | null;
+  start_time?: string | null;
+  description?: string | null;
+  slug?: string | null;
+  id: string;
+}
+
+export function buildEventShareText(ev: ShareableEvent, options: { includeBrief?: boolean; url?: string } = {}): string {
+  const title = ev.event_title || "Evento";
+  const time = ev.start_time ? ev.start_time.slice(0, 5) : "";
+  const addr = formatEventAddress(ev);
+  const brief = options.includeBrief && ev.description 
+    ? (ev.description.length > 280 ? `\n${ev.description.slice(0, 277).trimEnd()}…` : `\n${ev.description}`)
+    : "";
+  
+  const lines = [
+    `*$\{title}*`,
+    ev.date ? `📅 $\{ev.date}${time ? ` · $\{time}` : ""}` : "",
+    addr ? `📍 $\{addr}` : "",
+    brief,
+    options.url ? `\nMais informações: $\{options.url}` : ""
+  ].filter(Boolean);
+  
+  return lines.join("\n");
+}

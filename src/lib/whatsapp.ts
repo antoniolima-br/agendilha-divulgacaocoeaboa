@@ -107,7 +107,9 @@ export function isValidBrazilianMobile(phone: string): boolean {
  * prefixo internacional 55, e outros caracteres não numéricos.
  * Sempre devolve no formato "(XX) 9XXXX-XXXX", cortando dígitos excedentes.
  */
-export function formatPhoneDisplay(value: string): string {
+import { maskBrPhone as formatPhoneDisplay } from "./phone";
+/* Removed redundant implementation
+export function _deprecated_formatPhoneDisplay(value: string): string {
   if (!value) return "";
   // Remove tudo que não é dígito (isso já cuida de espaços, +, -, (, ), etc.)
   let d = onlyDigits(value);
