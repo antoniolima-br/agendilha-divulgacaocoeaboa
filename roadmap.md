@@ -290,3 +290,5 @@
 - [x] Permitir buscar o CEP por Estado, Cidade, Bairro e Nome da Rua no cadastro público.
 - [x] Remover o campo separado de complemento e permitir informá-lo junto ao número.
 - [x] Auditar e reforçar segurança, integridade e desempenho do banco, autenticação, funções, uploads e integrações; revalidar produção.
+
+- [ ] Restringir Gestão Setorial exclusivamente ao Master e revisar simplicidade dos fluxos de flyer, Curadoria, Marketing, Comercial e Financeiro.
