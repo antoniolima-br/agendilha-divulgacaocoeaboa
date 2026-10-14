@@ -373,10 +373,10 @@ export default function Landing() {
 
        <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-5 sm:px-6 sm:pb-24 sm:pt-8">
          {/* Filtros Local / Categoria */}
-         <div className="mb-8 space-y-2">
+         <div className="mb-8 grid grid-cols-2 gap-2" aria-label="Filtros de local e categoria">
            <Select value={homeBairro} onValueChange={setHomeBairro}>
-             <SelectTrigger aria-label="Filtrar por local" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
-               <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Local:</span><SelectValue /></span>
+             <SelectTrigger aria-label="Filtrar por local" className="h-16 min-w-0 gap-1 rounded-lg border-primary/70 bg-card/60 px-3 font-display text-xs font-bold uppercase text-primary sm:h-11 sm:text-sm">
+               <span className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2"><span className="flex shrink-0 items-center gap-1 text-foreground/70"><MapPin className="h-4 w-4 shrink-0" />Local:</span><span className="block min-w-0 w-full truncate sm:w-auto"><SelectValue /></span></span>
              </SelectTrigger>
              <SelectContent>
                 <SelectItem value="all">Todas as regiões</SelectItem>
@@ -385,7 +385,7 @@ export default function Landing() {
             </Select>
             {regionNbhs.length > 0 && (
               <Select value={homeNbh} onValueChange={setHomeNbh}>
-                <SelectTrigger aria-label="Filtrar por bairro" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
+                <SelectTrigger aria-label="Filtrar por bairro" className="order-3 col-span-2 h-11 min-w-0 rounded-lg border-primary/70 bg-card/60 font-display text-sm font-bold uppercase text-primary">
                   <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Bairro:</span><SelectValue /></span>
                 </SelectTrigger>
                 <SelectContent>
@@ -395,8 +395,8 @@ export default function Landing() {
               </Select>
             )}
            <Select value={homeCat} onValueChange={setHomeCat}>
-             <SelectTrigger aria-label="Filtrar por categoria" className="h-11 rounded-xl border-primary/70 bg-card/60 font-display text-sm font-bold uppercase tracking-wide text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]">
-               <span className="flex min-w-0 items-center gap-2"><Sparkles className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Categoria:</span><SelectValue /></span>
+             <SelectTrigger aria-label="Filtrar por categoria" className="h-16 min-w-0 gap-1 rounded-lg border-primary/70 bg-card/60 px-3 font-display text-xs font-bold uppercase text-primary sm:h-11 sm:text-sm">
+               <span className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2"><span className="flex shrink-0 items-center gap-1 text-foreground/70"><Sparkles className="h-4 w-4 shrink-0" />Categoria:</span><span className="block min-w-0 w-full truncate sm:w-auto"><SelectValue /></span></span>
              </SelectTrigger>
              <SelectContent>
                <SelectItem value="all">Geral</SelectItem>

@@ -73,6 +73,13 @@ vi.mock("@/components/ShareDialog", () => ({ ShareDialog: () => null }));
 
 describe("Landing sem dados", () => {
   beforeEach(() => { eventMocks.data = []; clearGlobalEventFilters(); });
+  it("mantém local e categoria em duas colunas", () => {
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    const filters = screen.getByLabelText("Filtros de local e categoria");
+    expect(filters).toHaveClass("grid-cols-2");
+    expect(filters).toContainElement(screen.getByRole("combobox", { name: "Filtrar por local" }));
+    expect(filters).toContainElement(screen.getByRole("combobox", { name: "Filtrar por categoria" }));
+  });
   it("mostra apenas dias com eventos públicos, inclusive sem flyer, e aplica a data ao clicar", () => {
     const today = saoPauloTodayISO();
     const later = addDaysToISO(today, 2);
