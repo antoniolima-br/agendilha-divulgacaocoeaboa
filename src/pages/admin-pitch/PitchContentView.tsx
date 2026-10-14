@@ -90,7 +90,7 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
         </section>
         <CorporatePillars />
       </div>
-    <PitchChapter value="product" number="01" title="Modelo de Negócio, Produto e Receita" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
+    <PitchChapter value="product" number="01" title="Negócio, Produto e Receita" eyebrow="Produto · Monetização" icon={BriefcaseBusiness}>
 
         <section className="space-y-3"><h3 id="pitch-product" tabIndex={-1} className={`${headingClass} text-2xl`}>Coé a Boa?</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{content.brandPositioning}</p></section>
         {content.technology && <section className="space-y-3 border-t border-border pt-6"><h3 id="pitch-technology" tabIndex={-1} className={headingClass}>{content.technology.title}</h3><p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{content.technology.description}</p></section>}

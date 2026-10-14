@@ -128,7 +128,7 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">Coé! Que bom ter você por aqui.</p>
                     <h2 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Qual é a boa?</h2>
-                    <p className="max-w-xl text-base leading-relaxed text-muted-foreground">Sou o Coezinho, guia do Coé a Boa? Pode perguntar à vontade sobre a programação de hoje, como cadastrar seu evento ou encontrar o que você precisa no app.</p>
+                    <p className="max-w-xl text-base leading-relaxed text-muted-foreground">Sou o Coezinho, guia do Coé a Boa? Posso acompanhar você na busca, no cadastro, na divulgação ou na contratação de planos. Pergunte à vontade.</p>
                   </div>
                   <div className="grid gap-3" aria-label="Sugestões rápidas">
                     {QUICK_PROMPTS.map(({ label, text, icon: Icon }) => (

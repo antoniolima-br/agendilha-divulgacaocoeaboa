@@ -55,7 +55,7 @@ export const submissionFormSchema = z.object({
   legalAcceptance: z.literal(true, {
     errorMap: () => ({ message: "Você precisa aceitar os termos para continuar" }),
   }),
-  // Novo modelo (Fase 7): "Responsável pelo evento".
+  // Estrutura atual (Fase 7): "Responsável pelo evento".
   // Substitui o antigo seletor promotor/atrativo/estabelecimento.
   responsavelNome: z.string().trim().max(100).optional().or(z.literal("")),
   usarMeuWhatsapp: z.boolean().default(true),

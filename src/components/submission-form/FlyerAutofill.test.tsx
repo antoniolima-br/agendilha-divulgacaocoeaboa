@@ -27,7 +27,7 @@ describe("flyer first flow", () => {
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.png", { type: "image/png" })] } });
     await waitFor(() => expect(mocks.extract).toHaveBeenCalled());
-    expect(screen.getByText("Lendo flyer com IA...")).toBeVisible();
+    expect(screen.getByText("Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!")).toBeVisible();
     fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Meu título" } });
     resolve({ eventTitle: "Outro" });
     await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
@@ -44,9 +44,9 @@ describe("flyer first flow", () => {
     mocks.extract.mockImplementation(() => new Promise((_, rejectPromise) => { reject = rejectPromise; }));
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.webp", { type: "image/webp" })] } });
-    expect(await screen.findByText("Lendo flyer com IA...")).toBeVisible();
+    expect(await screen.findByText("Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!")).toBeVisible();
     reject(new Error("402 raw gateway response"));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível ler o flyer automaticamente agora, mas preencha os campos abaixo rapidinho.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Oi, sou o Coezinho! Não consegui ler seu flyer agora, mas deixei os campos abaixo livres pra você preencher rapidinho.");
     expect(screen.queryByText(/402 raw gateway response/i)).not.toBeInTheDocument();
     expect(screen.getByLabelText("Título")).toBeEnabled();
     expect(screen.getByText("Prefiro preencher manualmente")).toBeVisible();

@@ -49,13 +49,13 @@ export function buildPitchContent() {
     projectionRegional: "Cada praça (ex.: Zona Sul, Centro, etc.) opera de forma autônoma e escalável, gerando previsibilidade de receita recorrente através de patrocínios e destaques locais.",
     advertisingExclusivity: {
       title: "Diferencial de Exclusividade e Performance Publicitária",
-      description: "Para concentrar a atenção do usuário e eliminar a poluição visual de carrosséis tradicionais, o Coé a Boa? propõe um modelo sofisticado e de alto impacto para os espaços Master e Sub-Master.",
+      description: "Para concentrar a atenção do usuário e eliminar a poluição visual de carrosséis tradicionais, o Coé a Boa? propõe um formato sofisticado e de alto impacto para os espaços Master e Sub-Master.",
       items: [
         { title: "Exclusividade por Sessão (Abertura/Atualização)", description: "A proposta é apresentar os parceiros com foco único a cada abertura do aplicativo ou atualização da tela, sem carrosséis automáticos nos espaços Master e Sub-Master, banners piscando ou disputa simultânea entre cotas." },
         { title: "Valor Percebido Superior", description: "Para o lojista e o patrocinador, o espaço sem disputa visual favorece a atenção do leitor no momento do impacto e eleva o valor percebido da presença de marca." },
         { title: "Experiência Limpa", description: "A interface permanece elegante, rápida e focada na descoberta de conteúdo local." },
       ],
-      disclaimer: "Modelo comercial proposto, ainda sujeito à implantação. Exclusividade visual não garante 100% da atenção do leitor, conversão ou lucro; a performance depende do público, da campanha e dos resultados medidos.",
+      disclaimer: "Formato comercial proposto, ainda sujeito à implantação. Exclusividade visual não garante 100% da atenção do leitor, conversão ou lucro; a performance depende do público, da campanha e dos resultados medidos.",
     },
     projectionGlobal: "Ao expandir e consolidar a operação integrada pelas principais macro-regiões do Rio de Janeiro, o potencial de faturamento mensal total escala proporcionalmente, multiplicando a captação comercial e o alcance do ecossistema. A tabela apresenta os totais consolidados de 1, 3 e 6 regiões em cada fase, não o valor individual por praça. O potencial de rentabilidade depende das vendas realizadas e dos custos da operação.",
     differential: "O comerciante não precisa falar com a cidade inteira. Precisa chegar a quem pode visitar seu negócio. A segmentação por macro-região concentra a divulgação perto do público certo e reduz a dispersão da verba.",

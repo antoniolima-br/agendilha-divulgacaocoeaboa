@@ -1,6 +1,7 @@
 # Project Memory
 
 ## Core
+Textos visíveis nunca usam “IA”, “Inteligência Artificial”, “modelo” ou “bot”; Coezinho fala em primeira pessoa nos avisos, validações, leitura de flyer e ajuda geral.
 Community portal for local events (AgendIlha / Coé a Boa?).
 Supabase backend, PWA enabled. Mobile-first Shadcn UI.
 Auth: WhatsApp number mapped to @phone.agendilha.app, OTP verified.

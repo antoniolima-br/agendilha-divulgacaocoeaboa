@@ -14,6 +14,7 @@ vi.mock("@ai-sdk/react", async () => {
     } };
   } };
 });
+vi.mock("./GuidePromotions", () => ({ GuidePromotions: () => null }));
 
 describe("Coezinho fresh conversations", () => {
   afterEach(() => {
@@ -22,7 +23,7 @@ describe("Coezinho fresh conversations", () => {
   });
   it("welcomes free questions with only two suggestions and clears messages and drafts on close", () => {
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
-    expect(screen.getByText(/Pode perguntar à vontade/)).toBeInTheDocument();
+    expect(screen.getByText(/Posso acompanhar você na busca/)).toBeInTheDocument();
     expect(screen.getByLabelText("Sugestões rápidas").querySelectorAll("button")).toHaveLength(2);
     fireEvent.click(screen.getByRole("button", { name: "O que tá rolando hoje?" }));
     expect(screen.getByText("Quais eventos estão rolando hoje?")).toBeInTheDocument();
@@ -32,7 +33,7 @@ describe("Coezinho fresh conversations", () => {
     fireEvent.click(screen.getByRole("button", { name: "Falar com o Guia do Coé" }));
     expect(screen.queryByText("Quais eventos estão rolando hoje?")).not.toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Sua mensagem" })).toHaveValue("");
-    expect(screen.getByText(/Pode perguntar à vontade/)).toBeInTheDocument();
+    expect(screen.getByText(/Posso acompanhar você na busca/)).toBeInTheDocument();
   });
 
   it("also starts fresh after Escape", () => {
@@ -46,8 +47,8 @@ describe("Coezinho fresh conversations", () => {
 
   it.each([
     ["Quais eventos estão rolando hoje?", /programação atual fica na Agenda/],
-    ["Como divulgar meu evento?", /abra Divulgar\/Contratar/],
-    ["Como funciona o app?", /reúne a programação na Agenda/],
+    ["Como divulgar meu evento?", /abra Publicar Evento/],
+    ["Como funciona o app?", /Eu te ajudo a encontrar a programação na Agenda/],
   ])("answers %s with a useful fallback when the connection fails", async (question, answer) => {
     chatState.failNext = true;
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);

@@ -19,7 +19,7 @@ interface AgendaHeroProps {
   onExportPdf: () => void;
 }
 
-/** Cabeçalho da agenda: título, recomendações da IA e ações principais. */
+/** Cabeçalho da agenda: título, recomendações personalizadas e ações principais. */
 export function AgendaHero({
   isLoggedIn,
   nearYouEvents,
