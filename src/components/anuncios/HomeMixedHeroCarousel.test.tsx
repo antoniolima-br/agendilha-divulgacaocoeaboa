@@ -29,6 +29,14 @@ function tapFlyer(side: "left" | "right") {
   fireEvent.click(flyer, { detail: 1, clientX: side === "left" ? 100 : 900 });
 }
 
+function tapFlyerCenter() {
+  const slide = screen.getByRole("button", { name: /Abrir evento Rolê/ });
+  const flyer = slide.querySelector("[data-flyer]");
+  if (!flyer) throw new Error("Flyer missing");
+  vi.spyOn(flyer, "getBoundingClientRect").mockReturnValue({ left: 0, width: 1000 } as DOMRect);
+  fireEvent.click(flyer, { detail: 1, clientX: 500 });
+}
+
 describe("Home event carousel interactions", () => {
   beforeEach(() => { vi.useFakeTimers(); engine.reset(); vi.clearAllMocks(); });
   afterEach(() => { cleanup(); vi.useRealTimers(); });
@@ -89,10 +97,15 @@ describe("Home event carousel interactions", () => {
     fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 1" }), suppressedClick);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
-  it("opens details from title activation", () => {
-    render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
+  it("opens complete details from the center and title without changing slides", () => {
+    const openEvent = vi.fn();
+    render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={openEvent} />);
+    expect(screen.getByText("Ver detalhes")).toBeInTheDocument();
+    tapFlyerCenter();
+    expect(openEvent).toHaveBeenLastCalledWith("1");
+    expect(engine.api.scrollTo).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("heading", { name: "Rolê 1" }), { detail: 1 });
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(openEvent).toHaveBeenLastCalledWith("1");
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
   });
   it("supports keyboard navigation and suppresses taps after swiping", () => {
