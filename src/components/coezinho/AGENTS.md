@@ -1,3 +1,5 @@
 - Keep FAB-only changes scoped to MascotLauncher; preserve the existing transcript, composer, transport and conversation state. AI Elements migration is outside a launcher-only request.
 - Pointer capture, drag threshold and click suppression distinguish dragging from opening; clamp viewport bounds, reserve navigation and prefer drop positions without controls.
 - GuideLauncher remains intent-loaded; CoezinhoChat reuses the mascot when closed for consistent placement and behavior.
+- CoezinhoChat composes AI Elements for conversation, messages and input; preserve transport, models and session-only history during presentation changes.
+- Launcher starts in the bottom-right each page session; retain drag placement only for that session and use passive activity listeners for idle fading.
