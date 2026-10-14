@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import mascot from "@/assets/coezinho-mascot.png";
 import { clampMascot, MASCOT_SIZE, safeMascotPosition, type Point } from "./mascotPosition";
-const KEY = "coezinho:position";
+let lastPosition: Point | null = null;
 const viewport = () => ({ width: window.innerWidth, height: window.visualViewport?.height ?? window.innerHeight });
 export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const { pathname } = useLocation();
@@ -11,6 +11,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const gesture = useRef<{ id: number; start: Point; origin: Point; moved: boolean } | null>(null);
   const suppressClick = useRef(false);
   const [dragging, setDragging] = useState(false);
+  const [idle, setIdle] = useState(false);
   const [position, setPosition] = useState<Point | null>(null);
   const positionRef = useRef<Point | null>(null);
   const reservedBottom = useCallback(() => {
@@ -29,25 +30,35 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   }, [reservedBottom]);
   const save = (point: Point) => {
     const { width, height } = viewport();
-    try { sessionStorage.setItem(KEY, JSON.stringify({ x: point.x / width, y: point.y / height })); } catch { /* Optional storage. */ }
+    lastPosition = { x: point.x / width, y: point.y / height };
   };
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const wake = () => {
+      setIdle(false);
+      clearTimeout(timer);
+      timer = setTimeout(() => { if (!gesture.current) setIdle(true); }, 6000);
+    };
+    const events = ["pointermove", "pointerdown", "keydown", "scroll", "touchstart", "wheel"] as const;
+    events.forEach((event) => window.addEventListener(event, wake, { passive: true }));
+    wake();
+    return () => {
+      clearTimeout(timer);
+      events.forEach((event) => window.removeEventListener(event, wake));
+    };
+  }, []);
   useEffect(() => {
     const { width, height } = viewport();
     let initial = positionRef.current ?? { x: width - MASCOT_SIZE - 16, y: height - MASCOT_SIZE - reservedBottom() - 12 };
-    if (!positionRef.current) {
-      try {
-        const stored = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
-        if (stored && Number.isFinite(stored.x) && Number.isFinite(stored.y)) initial = { x: stored.x * width, y: stored.y * height };
-      } catch { /* Default corner. */ }
-    }
-    place(initial, true);
+    if (!positionRef.current && lastPosition) initial = { x: lastPosition.x * width, y: lastPosition.y * height };
+    place(initial, Boolean(lastPosition));
     const resize = () => { if (positionRef.current) place(positionRef.current, true); };
     window.addEventListener("resize", resize); window.visualViewport?.addEventListener("resize", resize);
     return () => { window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
   }, [pathname, place, reservedBottom]);
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
     className="coezinho-fab fixed z-50 h-[104px] w-[104px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
-    data-dragging={dragging} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
+    data-dragging={dragging} data-idle={idle} onFocus={() => setIdle(false)} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
     onPointerDown={(e) => {
       if (e.button !== 0 || !e.isPrimary) return;
       const rect = e.currentTarget.getBoundingClientRect(); suppressClick.current = false;

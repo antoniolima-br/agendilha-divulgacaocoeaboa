@@ -1,5 +1,7 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Ajustar Coezinho no canto inferior direito, esmaecer após seis segundos e renovar chat limpo com seis sugestões do app; canto, repouso, retorno, foco e fechamento conferidos em computador e celular, cinco testes aprovados.
+- [ ] Confirmar resposta real do Guia após envio: pergunta aparece, mas nenhuma resposta foi recebida durante a verificação; última tentativa de diagnóstico bloqueada pela indisponibilidade do ambiente.
 - [x] Substituir botão do Guia por Coezinho arrastável em todo o app, preservando conversa; cinco testes aprovados, arraste real por mouse/toque sem abertura acidental, clique abre, fechamento restaura posição, navegação e redução de tela conferidos.
 - [x] Corrigir fechamento definitivo dos detalhes de eventos, limpando seleção e URL sem perder filtros; três testes aprovados e evento público real conferido com X, Fechar Detalhes, clique fora e Escape, permanecendo fechado após recarregar.
 - [x] Ampliar temporariamente Outras Programações para todas as datas públicas disponíveis, mantendo rolagem e proteção de registros privados; dez testes aprovados, dez eventos reais de sete datas conferidos, rolagem/links funcionando e celular sem overflow. Arquivos privados e pendentes continuam protegidos.
