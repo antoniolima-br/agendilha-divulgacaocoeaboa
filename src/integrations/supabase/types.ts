@@ -2320,6 +2320,27 @@ export type Database = {
         }
         Relationships: []
       }
+      public_request_limits: {
+        Row: {
+          fingerprint: string
+          request_count: number
+          scope: string
+          window_started_at: string
+        }
+        Insert: {
+          fingerprint: string
+          request_count?: number
+          scope: string
+          window_started_at: string
+        }
+        Update: {
+          fingerprint?: string
+          request_count?: number
+          scope?: string
+          window_started_at?: string
+        }
+        Relationships: []
+      }
       segmentos_notificacao: {
         Row: {
           ativo: boolean
@@ -3528,6 +3549,23 @@ export type Database = {
       check_event_registration: { Args: { p_events: Json }; Returns: Json }
       cleanup_admin_pin_sessions: { Args: never; Returns: undefined }
       cleanup_expired_reset_codes: { Args: never; Returns: undefined }
+      consume_coezinho_quota: {
+        Args: { p_fingerprint: string }
+        Returns: boolean
+      }
+      consume_public_rate_limit: {
+        Args: {
+          p_fingerprint: string
+          p_limit: number
+          p_scope: string
+          p_window: string
+        }
+        Returns: boolean
+      }
+      consume_public_submission_quota: {
+        Args: { p_fingerprint: string }
+        Returns: boolean
+      }
       contains_bad_words: { Args: { text_to_check: string }; Returns: boolean }
       count_recent_failed_pin_attempts: {
         Args: { _user_id: string }

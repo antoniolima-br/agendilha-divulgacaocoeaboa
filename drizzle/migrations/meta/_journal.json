@@ -330,6 +330,13 @@
       "when": 1792012632753,
       "tag": "0046_prepare_divulgador_whatsapp_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1792014866645,
+      "tag": "0047_harden_public_data_and_rate_limits",
+      "breakpoints": true
     }
   ]
 }
