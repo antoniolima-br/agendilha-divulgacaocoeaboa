@@ -9,7 +9,7 @@ export const phoneSchema = z
 
 export const passwordSchema = z
   .string()
-  .min(8, "Mínimo 8 caracteres")
+  .min(6, "Mínimo 6 caracteres")
   .max(72, "Máximo 72 caracteres");
 
 export const loginSchema = z.object({

@@ -33,4 +33,13 @@ describe("Required personal password", () => {
     expect(mocks.call).toHaveBeenCalledWith("complete-password-change", { currentPassword: "Temporary!3489", newPassword: "Personal!4839" });
     expect(mocks.refresh).toHaveBeenCalledOnce();
   });
+  it("sends a six-character lowercase password without demanding complexity", async () => {
+    mocks.call.mockResolvedValueOnce({ success: true });
+    render(<ChangePasswordSection isTemporary />);
+    fireEvent.change(screen.getByLabelText("Senha temporária"), { target: { value: "Temporary!3489" } });
+    fireEvent.change(screen.getByLabelText("Nova senha"), { target: { value: "roleno" } });
+    fireEvent.change(screen.getByLabelText("Confirmar nova senha"), { target: { value: "roleno" } });
+    fireEvent.click(screen.getByRole("button", { name: "Alterar senha" }));
+    await waitFor(() => expect(mocks.call).toHaveBeenCalledWith("complete-password-change", { currentPassword: "Temporary!3489", newPassword: "roleno" }));
+  });
 });

@@ -193,7 +193,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
     if (!formData.name.trim()) return "Diz teu nome pra gente.";
     const phoneProblem = validateWhatsappForAccount(formData.phone);
     if (phoneProblem) return phoneProblem;
-    if (formData.password.length < 8) return "A senha precisa de no mínimo 8 caracteres.";
+    if (formData.password.length < 6) return "A senha precisa de no mínimo 6 caracteres.";
     return null;
   };
 
@@ -290,7 +290,8 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
                   autoComplete="new-password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Mínimo 8 caracteres"
+                  minLength={6}
+                  placeholder="Mínimo 6 caracteres"
                 />
               </div>
             </div>

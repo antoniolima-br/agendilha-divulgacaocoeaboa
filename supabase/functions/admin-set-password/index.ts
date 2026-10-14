@@ -2,10 +2,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 
-const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 const BodySchema = z.object({
   user_id: z.string().uuid(),
-  new_password: z.string().regex(strongPassword, "A senha precisa ter maiúscula, minúscula, número e símbolo").max(72),
+  new_password: z.string().min(6, "Mínimo 6 caracteres").max(72),
   require_change: z.boolean().default(true),
 });
 

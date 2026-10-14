@@ -13,21 +13,18 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/PasswordInput";
-import { PasswordStrengthMeter, calculatePasswordScore } from "@/components/PasswordStrengthMeter";
+import { PasswordStrengthMeter } from "@/components/PasswordStrengthMeter";
 import { callEdge } from "@/lib/edge";
 import { getErrorMessage } from "@/lib/error-handler";
 import { toast } from "sonner";
 import type { UserWithRole } from "./types";
 
 const passwordSchema = z.object({
-  password: z.string().min(8, "A senha precisa ter pelo menos 8 caracteres.").max(72),
+  password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres.").max(72),
   confirmation: z.string(),
 }).superRefine((data, ctx) => {
   if (data.password !== data.confirmation) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["confirmation"], message: "As senhas não coincidem." });
-  }
-  if (calculatePasswordScore(data.password) < 5) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["password"], message: "Use maiúscula, minúscula, número e símbolo." });
   }
 });
 

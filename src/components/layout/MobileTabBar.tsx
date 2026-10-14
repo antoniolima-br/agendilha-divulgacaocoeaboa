@@ -37,7 +37,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
   return (
     <nav
       aria-label="Navegação principal"
-      className={cn("fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl", pathname !== ROUTES.LANDING && "md:hidden")}
+      className={cn("app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]", pathname !== ROUTES.LANDING && "md:hidden")}
     >
       <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
         {items.map((item) => {

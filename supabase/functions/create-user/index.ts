@@ -3,7 +3,6 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 
 const phonePattern = /^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/;
-const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 
 const BodySchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -11,7 +10,7 @@ const BodySchema = z.object({
   phone: z.string().trim().max(20).refine((value) => !value || phonePattern.test(value), "Telefone inválido"),
   neighborhood: z.string().trim().max(100),
   access_type: z.enum(["publico", "divulgador", "artista", "admin"]),
-  password: z.string().regex(strongPassword, "A senha precisa ter maiúscula, minúscula, número e símbolo").max(72),
+  password: z.string().min(6, "Mínimo 6 caracteres").max(72),
 });
 
 function json(body: unknown, status = 200) {

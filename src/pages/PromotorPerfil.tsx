@@ -95,7 +95,7 @@ export default function PromotorPerfil() {
           <CardDescription>
             Esses dados vão pré-preencher os campos de divulgador nos próximos eventos que você divulgar.
             {isEditingOther && (isAdmin || isMaster) && (
-              <span className="block mt-1 text-amber-600">Editando perfil de outro usuário (curadoria).</span>
+              <span className="block mt-1 text-foreground">Editando perfil de outro usuário (curadoria).</span>
             )}
           </CardDescription>
         </CardHeader>

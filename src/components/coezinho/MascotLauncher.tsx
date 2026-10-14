@@ -16,7 +16,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const positionRef = useRef<Point | null>(null);
   const reservedBottom = useCallback(() => {
     const { width, height } = viewport();
-    const rect = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"]')?.getBoundingClientRect();
+    const rect = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"] > ul')?.getBoundingClientRect();
     return rect && rect.height > 0 ? height - rect.top + 12 : width < 768 ? 88 : 16;
   }, []);
   const place = useCallback((point: Point, avoid: boolean) => {
@@ -62,7 +62,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     return () => { navigationObserver.disconnect(); window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
   }, [pathname, place, reservedBottom]);
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
-    className="coezinho-fab fixed z-50 h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
+    className="coezinho-fab fixed z-[45] h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
     data-dragging={dragging} data-idle={idle} onFocus={() => setIdle(false)} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
     onPointerDown={(e) => {
       if (e.button !== 0 || !e.isPrimary) return;
