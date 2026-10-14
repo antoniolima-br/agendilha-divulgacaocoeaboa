@@ -7,7 +7,7 @@
 - opening_hours is free text; performance schedules validate separately.
 - One venue category; ViaCEP suggests editable addresses.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes, query keys, permissions and shared formatting against drift and duplication.
+- Centralize routes, query keys, permissions, formatting, pagination and derived event data against drift and rerenders.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
