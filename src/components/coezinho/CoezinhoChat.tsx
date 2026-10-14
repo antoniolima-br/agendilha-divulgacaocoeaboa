@@ -193,7 +193,7 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
                 setInput(event.target.value);
                 resizeComposer(event.currentTarget);
               }} placeholder="Pergunte ao Coezinho…" aria-label="Sua mensagem"
-                className="h-auto min-h-12 max-h-36 overflow-y-hidden px-4 py-3 text-base leading-6 transition-[height] duration-150 ease-out" />
+                className="h-auto min-h-12 max-h-36 flex-none overflow-y-hidden px-4 py-3 text-base leading-6 transition-[height] duration-150 ease-out" />
               <PromptInputFooter className="justify-end px-3 pb-3">
                 <PromptInputSubmit status={status} onStop={() => stop()} disabled={!busy && !input.trim()}
                   aria-label={busy ? "Parar" : "Enviar"} title={busy ? "Parar resposta" : "Enviar mensagem"}
