@@ -53,7 +53,7 @@ describe("Coezinho fresh conversations", () => {
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
     fireEvent.change(screen.getByRole("textbox", { name: "Sua mensagem" }), { target: { value: question } });
     fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
-    await waitFor(() => expect(screen.getByText((_, element) => element?.tagName === "DIV" && answer.test(element.textContent ?? ""))).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("log").textContent).toMatch(answer));
     expect(screen.queryByText(/Não rolou falar/)).not.toBeInTheDocument();
     chatState.failNext = false;
   });
