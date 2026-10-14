@@ -24,6 +24,9 @@ body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) { padding-bot
 .app-bottom-navigation { padding-top: 0; }
 body:has(.coezinho-fab) { padding-bottom: calc(var(--bottom-navigation-height) + env(safe-area-inset-bottom)); }
 .site-footer { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+@media (max-width: 767px) {
+  .site-footer > div { padding-right: 4.5rem; }
+}
 /* Legacy public footer keeps its markup; hide the retired brand block. */
 footer div:has(> img[alt="Coé a Boa?"]) { display: none; }
 footer .grid:has(> div > img[alt="Coé a Boa?"]) {
