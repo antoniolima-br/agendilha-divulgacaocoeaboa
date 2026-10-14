@@ -92,7 +92,20 @@ Deno.serve(async (req) => {
         }),
       });
     }
-    if (!apiKey) return json({ error: "A conversa livre tá indisponível agora. Você ainda pode perguntar sobre cadastro, publicidade, conta, Radar ou eventos de hoje." }, 503);
+    if (!apiKey) {
+      const answer = confirmedGuideAnswer("navigation", typedEvents, establishments ?? [], today, { name: teamName, phone: teamPhone });
+      return createUIMessageStreamResponse({
+        headers: cors,
+        stream: createUIMessageStream({
+          originalMessages: messages,
+          execute: ({ writer }) => {
+            writer.write({ type: "text-start", id: "safe-fallback" });
+            writer.write({ type: "text-delta", id: "safe-fallback", delta: answer });
+            writer.write({ type: "text-end", id: "safe-fallback" });
+          },
+        }),
+      });
+    }
     const waLink = teamPhone ? `https://wa.me/${teamPhone.startsWith("55") ? teamPhone : "55" + teamPhone}?text=${encodeURIComponent("Coé! Quero anunciar/destacar meu evento no Coé a Boa?")}` : "";
     const comercial = teamPhone
       ? `Atendente: **${teamName}**. Sempre que a pessoa perguntar preço, valores, pacotes, quiser anunciar, destacar ou patrocinar, entregue os DOIS links: [chamar no WhatsApp](${waLink}) e [Anunciar](/anuncios/novo).`
