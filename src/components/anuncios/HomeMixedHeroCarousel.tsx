@@ -145,6 +145,12 @@ export function HomeMixedHeroCarousel({
                 {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
                 {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
+                {slideDate && (
+                  <span className="pointer-events-none absolute left-3 top-3 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-full border border-primary/70 bg-background/95 px-3 py-2 text-xs font-bold text-foreground shadow-lg backdrop-blur-sm sm:left-4 sm:top-4 sm:px-4 sm:text-sm">
+                    <CalendarDays className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="truncate">{slideDate}</span>
+                  </span>
+                )}
                 {active && (
                   <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-primary/70 bg-background/90 px-4 py-2 text-xs font-bold uppercase text-foreground shadow-lg backdrop-blur-sm">
                     <Eye className="h-4 w-4 text-primary" aria-hidden="true" /> Ver detalhes
@@ -154,9 +160,6 @@ export function HomeMixedHeroCarousel({
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl break-words font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
                 <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 justify-center text-sm text-muted-foreground">
-                  {slideDate && (
-                    <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4 shrink-0" aria-hidden="true" />{slideDate}</span>
-                  )}
                   {slideLocation && (
                     <span className="flex min-w-0 max-w-full items-center gap-1.5"><MapPin className="h-4 w-4 shrink-0" aria-hidden="true" /><span className="truncate">{slideLocation}</span></span>
                   )}

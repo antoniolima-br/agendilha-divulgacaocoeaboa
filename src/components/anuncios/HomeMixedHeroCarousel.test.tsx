@@ -108,6 +108,24 @@ describe("Home event carousel interactions", () => {
     expect(openEvent).toHaveBeenLastCalledWith("1");
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
   });
+  it("shows each flyer's own registered date at the top of its image", () => {
+    render(
+      <HomeMixedHeroCarousel
+        events={[
+          { ...event("1"), date: "2026-10-14", start_time: "18:00" },
+          { ...event("2"), date: "2026-10-15", start_time: "21:30" },
+        ]}
+        onOpenEvent={vi.fn()}
+      />,
+    );
+
+    const slides = document.querySelectorAll<HTMLButtonElement>('button[aria-label^="Abrir evento Rolê"]');
+    const firstFlyer = slides[0]?.querySelector("[data-flyer]");
+    const secondFlyer = slides[1]?.querySelector("[data-flyer]");
+    expect(firstFlyer).toHaveTextContent("Qua., 14 de Out. às 18:00");
+    expect(secondFlyer).toHaveTextContent("Qui., 15 de Out. às 21:30");
+    expect(firstFlyer?.firstElementChild).not.toContainHTML("14 de Out");
+  });
   it("supports keyboard navigation and suppresses taps after swiping", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
     fireEvent.keyDown(screen.getByRole("region"), { key: "ArrowRight" });
