@@ -1,5 +1,5 @@
 
-- Administrative authority comes only from protected user_roles; SQL and client checks match to prevent escalation.
+- Authority comes only from protected user_roles; SQL/client checks match to prevent escalation.
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
