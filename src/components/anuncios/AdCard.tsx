@@ -30,10 +30,11 @@ interface Props {
   showStatus?: boolean;
   to?: string;
   sponsored?: boolean;
+  commercialLabel?: "Patrocinado" | "Destaque" | "Destaque da Região";
 }
 
 /** Card compacto de anúncio, clicável para os detalhes. */
-export function AdCard({ ad, showStatus = false, to, sponsored = false }: Props) {
+export function AdCard({ ad, showStatus = false, to, sponsored = false, commercialLabel = "Patrocinado" }: Props) {
   const cover = useAdCoverUrl(ad.photos);
   const destino = to ?? `/anuncios/${ad.id}`;
   const local = [ad.neighborhood, ad.city].filter(Boolean).join(" · ");
@@ -58,7 +59,7 @@ export function AdCard({ ad, showStatus = false, to, sponsored = false }: Props)
 
       <div className="min-w-0 flex-1 space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
-          {sponsored && <Badge variant="secondary">Patrocinado</Badge>}
+          {sponsored && <Badge variant="secondary">{commercialLabel}</Badge>}
           {ad.is_highlight && (
             <Badge className="gap-1">
               <Sparkles className="h-3 w-3" />

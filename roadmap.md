@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Neutralizar os selos comerciais do Meu Radar e preservar anúncios nativos regionais após cada cinco rolês.
 - [x] Remover do cabeçalho os acessos redundantes “Divulgar evento” e “Divulgar”, mantendo a ação na navegação inferior.
 - [x] Ajustar o carrossel principal: laterais navegam e o centro abre diretamente os detalhes completos do evento.
 - [x] Dar protagonismo ao Coezinho na leitura de flyer, validações, avisos e ajuda geral, removendo termos técnicos das telas.

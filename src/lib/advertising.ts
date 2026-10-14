@@ -24,3 +24,11 @@ export function matchesAdAudience(ad: { product_id: string | null; target_region
   const audience = REGIONS.find((item) => normalizeGeography(item) === normalizeGeography(region));
   return Boolean(audience && ad.target_regions.includes(audience));
 }
+
+export function matchesAnyAdAudience(
+  ad: Parameters<typeof matchesAdAudience>[0],
+  regions: readonly string[],
+  placement?: AdPlacement,
+): boolean {
+  return regions.some((region) => matchesAdAudience(ad, region, placement));
+}

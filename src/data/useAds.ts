@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { qk } from "@/data/queryKeys";
-import { canonicalAdRegions, matchesAdAudience, safeAdDestination, type AdPlacement } from "@/lib/advertising";
+import { canonicalAdRegions, matchesAdAudience, matchesAnyAdAudience, safeAdDestination, type AdPlacement } from "@/lib/advertising";
 
 export type AdStatus = "pendente" | "publicado" | "recusado";
 
@@ -69,6 +69,28 @@ export function usePublishedAds(region = "all", placement?: AdPlacement) {
     staleTime: 60 * 1000,
     refetchInterval: 60 * 1000,
     select: (ads) => ads.filter((ad) => matchesAdAudience(ad, region, placement)),
+  });
+}
+
+/** Anúncios publicados compatíveis com uma ou mais regiões do Radar. */
+export function usePublishedRadarAds(regions: readonly string[]) {
+  return useQuery({
+    queryKey: qk.ads.published(),
+    queryFn: async (): Promise<Ad[]> => {
+      const { data, error } = await supabase
+        .from("ads")
+        .select(AD_COLUMNS)
+        .eq("status", "publicado")
+        .or(`highlight_until.is.null,highlight_until.gt.${new Date().toISOString()}`)
+        .order("is_highlight", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(1000);
+      if (error) throw error;
+      return normalizeAds(data);
+    },
+    staleTime: 60 * 1000,
+    refetchInterval: 60 * 1000,
+    select: (ads) => ads.filter((ad) => matchesAnyAdAudience(ad, regions, "agenda_card")),
   });
 }
 
