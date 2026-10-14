@@ -9,7 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ButtonProps } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -36,15 +37,15 @@ export function ConfirmModal({
 }: ConfirmModalProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="rounded-3xl border-none shadow-2xl">
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-xl font-black tracking-tight">{title}</AlertDialogTitle>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:gap-0">
-          <AlertDialogCancel disabled={loading} className="rounded-full font-bold border-none hover:bg-muted">
+          <AlertDialogCancel disabled={loading}>
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction
@@ -53,11 +54,7 @@ export function ConfirmModal({
               e.preventDefault();
               onConfirm();
             }}
-            className={`rounded-full font-bold shadow-lg ${
-              variant === "destructive" 
-                ? "bg-rose-600 hover:bg-rose-700 text-white shadow-rose-600/20" 
-                : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20"
-            }`}
+            className={cn(buttonVariants({ variant: variant === "destructive" ? "destructive" : "default" }))}
           >
             {loading ? "Processando..." : confirmText}
           </AlertDialogAction>

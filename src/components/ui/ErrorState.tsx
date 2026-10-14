@@ -1,7 +1,6 @@
-import { AlertCircle, RefreshCcw } from "lucide-react";
+import { AlertTriangle, RefreshCcw } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
-import { Alert, AlertDescription, AlertTitle } from "./alert";
 
 interface ErrorStateProps {
   title?: string;
@@ -17,22 +16,19 @@ export function ErrorState({
   className
 }: ErrorStateProps) {
   return (
-    <div className={cn("space-y-6 animate-fade-in", className)}>
-      <Alert variant="destructive" className="bg-rose-50 border-rose-200">
-        <AlertCircle className="h-5 w-5 text-rose-600" />
-        <AlertTitle className="text-rose-800 font-bold">{title}</AlertTitle>
-        <AlertDescription className="text-rose-700">
-          {message}
-        </AlertDescription>
-      </Alert>
-      
+    <div className={cn("flex min-h-48 flex-col items-center justify-center gap-4 rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center animate-fade-in sm:p-8", className)}>
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-destructive/25 bg-destructive/10 text-destructive">
+        <AlertTriangle className="h-7 w-7" />
+      </div>
+      <div className="max-w-md space-y-1.5">
+        <h3 className="text-lg font-semibold leading-tight text-foreground">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">{message}</p>
+      </div>
       {onRetry && (
-        <div className="flex justify-center py-4">
-          <Button onClick={onRetry} variant="outline" className="gap-2 rounded-full border-slate-200 hover:bg-slate-50">
-            <RefreshCcw className="h-4 w-4" />
-            Tentar novamente
-          </Button>
-        </div>
+        <Button onClick={onRetry} variant="outline" className="gap-2">
+          <RefreshCcw className="h-4 w-4" />
+          Tentar novamente
+        </Button>
       )}
     </div>
   );

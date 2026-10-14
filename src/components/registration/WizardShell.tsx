@@ -39,24 +39,21 @@ export function WizardShell({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-background to-background">
-      <div className="mx-auto max-w-md px-4 py-6 sm:py-10 space-y-6">
-        <button
-          onClick={handleBack}
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-lg space-y-7 px-4 py-6 sm:px-6 sm:py-10">
+        <Button type="button" variant="ghost" size="sm" onClick={handleBack} className="-ml-3 w-fit text-muted-foreground">
           <ArrowLeft className="h-4 w-4" />
           Voltar
-        </button>
+        </Button>
 
         <StepProgress current={step} total={totalSteps} />
 
         <div className="space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-black font-display text-foreground leading-tight">
+          <h1 className="text-2xl font-semibold leading-tight text-foreground text-balance sm:text-3xl">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-base text-muted-foreground">{subtitle}</p>
+            <p className="text-base leading-relaxed text-muted-foreground">{subtitle}</p>
           )}
         </div>
 
@@ -65,7 +62,7 @@ export function WizardShell({
         <Button
           onClick={onNext}
           disabled={!canGoNext || loading}
-          className="w-full h-14 text-base font-bold rounded-full gradient-sunset shadow-lg"
+          className="h-12 w-full text-base sm:h-14"
         >
           {loading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
