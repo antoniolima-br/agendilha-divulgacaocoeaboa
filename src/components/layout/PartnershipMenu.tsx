@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export function PartnershipMenu({ compact = false, onNavigate }: { compact?: boolean; onNavigate?: () => void }) {
   return <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="ghost" title="Divulgar/Contratar" className={cn("w-full rounded-none text-muted-foreground hover:text-foreground", compact ? "h-16 flex-col gap-1 px-1" : "justify-start gap-3 px-3")}>
+      <Button variant="ghost" title="Divulgar/Contratar" className={cn("w-full rounded-none text-muted-foreground hover:text-foreground", compact ? "h-[var(--bottom-navigation-height)] flex-col gap-0.5 px-1 py-0" : "justify-start gap-3 px-3")}>
         <Megaphone className="h-5 w-5 shrink-0" />
         <span className={compact ? "text-center text-[10px] font-semibold leading-tight" : "text-sm"}>Divulgar/Contratar</span>
       </Button>

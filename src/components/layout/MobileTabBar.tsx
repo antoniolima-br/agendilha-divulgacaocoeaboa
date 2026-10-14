@@ -49,7 +49,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
                 to={item.path}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-16 flex-col items-center justify-center gap-1 px-2 transition-colors",
+                  "flex h-[var(--bottom-navigation-height)] flex-col items-center justify-center gap-0.5 px-2 transition-colors",
                   active ? "text-primary" : "text-muted-foreground"
                 )}
               >
@@ -68,7 +68,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             type="button"
             onClick={onMenuClick}
             aria-label="Abrir menu"
-            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
+            className="flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
           >
             <Menu className="h-5 w-5 shrink-0" />
             <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
@@ -81,5 +81,5 @@ export function MobileTabBar({ onMenuClick }: Props) {
 
 /** Espaçador para o conteúdo não ficar embaixo da barra inferior. */
 export function MobileTabBarSpacer() {
-  return <div className="md:hidden h-16 pb-[env(safe-area-inset-bottom)]" aria-hidden="true" />;
+  return <div className="md:hidden h-[calc(var(--bottom-navigation-height)+env(safe-area-inset-bottom))]" aria-hidden="true" />;
 }
