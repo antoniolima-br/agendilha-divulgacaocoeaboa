@@ -1,23 +1,9 @@
-export interface Event {
-  id: string;
-  event_title: string | null;
-  date: string | null;
-  start_time: string | null;
-  end_time: string | null;
-  location: string | null;
-  address_neighborhood: string | null;
-  address_street: string | null;
-  description: string | null;
-  category: string | null;
-}
+import { formatEventAddress, ShareableEvent, buildEventShareText } from "./event-utils";
 
-export function buildFullAddress(ev: Event): string {
-  const parts = [
-    ev.location,
-    ev.address_street,
-    ev.address_neighborhood,
-  ].filter(Boolean);
-  return parts.join(" – ");
+export type Event = ShareableEvent;
+
+export function buildFullAddress(ev: ShareableEvent): string {
+  return formatEventAddress(ev);
 }
 
 export const getShareUrl = (eventId?: string) => {
@@ -25,32 +11,28 @@ export const getShareUrl = (eventId?: string) => {
   return eventId ? `${base}?event=${eventId}` : base;
 };
 
-// URL que gera OG preview no WhatsApp/Facebook (edge function server-side)
-// e redireciona o usuário real para /evento/:slug na SPA.
 export const getEventOgShareUrl = (slug: string) => {
-  const projectRef =
-    import.meta.env?.VITE_SUPABASE_PROJECT_ID || "xwuyzqahfoyhdbmtspwf";
+  const projectRef = import.meta.env?.VITE_SUPABASE_PROJECT_ID || "xwuyzqahfoyhdbmtspwf";
   return `https://${projectRef}.supabase.co/functions/v1/evento-og?slug=${encodeURIComponent(slug)}`;
 };
 
-export const getShareData = (ev?: Event) => {
+export const getShareData = (ev?: ShareableEvent) => {
   const isAgenda = !ev;
-  const eventTitle = ev?.event_title || ev?.location || "Evento";
+  const eventTitle = ev?.event_title || "Evento";
   const title = isAgenda ? "Agenda Cultural da Ilha" : `Evento: ${eventTitle}`;
   const url = getShareUrl(ev?.id);
   
-  let text = isAgenda 
-    ? "Confira a programação completa do Rio de Janeiro!" 
-    : `Confira este evento e a agenda completa no Coé a Boa?!`;
-
-  if (ev) {
-    const time = ev.start_time ? `${ev.start_time}` : "";
-    const addr = buildFullAddress(ev);
-    const eventDetails = `🗓️ *${eventTitle}*${time ? `\n⏰ ${time}` : ""}${addr ? `\n📍 ${addr}` : ""}`;
-    text = `${eventDetails}\n\n🌴 Veja os detalhes no Coé a Boa?:`;
-  } else {
-    text = `🌴 *Confira a Agenda Cultural do Rio de Janeiro!* 🌴\n\nVeja a programação completa e atualizada em:`;
+  if (!ev) {
+    return {
+      title,
+      text: "🌴 *Confira a Agenda Cultural do Rio de Janeiro!* 🌴\n\nVeja a programação completa e atualizada em:",
+      url
+    };
   }
+
+  const text = buildEventShareText(ev, { 
+    url: "Veja os detalhes no Coé a Boa?:",
+  });
 
   return { title, text, url };
 };

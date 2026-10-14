@@ -74,7 +74,7 @@ export const DiscoveryEventCard = memo(({
   const cachedThumb = useThumbnailCache(event.id, isCompact && sourceImage ? sourceImage : undefined);
   const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
   const showGeneratedArtwork = !officialImage || hasError;
-  const shareData = getShareData({ ...event, end_time: null, address_street: null, description: null });
+  const shareData = getShareData({ ...event, address_street: null, description: null });
 
   return (
     <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300">

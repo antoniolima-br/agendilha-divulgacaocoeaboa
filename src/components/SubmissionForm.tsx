@@ -40,11 +40,19 @@ import { prepareUploadImage } from "@/lib/uploadImage";
 import { FlyerAutofill } from "./submission-form/FlyerAutofill";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
+import {
+  SUBMISSION_DRAFT_KEY,
+  SUBMISSION_ERROR_STEPS,
+  SUBMISSION_FIELD_LABELS,
+  SUBMISSION_STEPS,
+  cleanOptional,
+  fieldsForSubmissionStep,
+  resolveAtrativoCategory,
+  toEventDateOnly,
+} from "./submission-form/formConfig";
 
 const formSchema = submissionFormSchema;
 type FormData = SubmissionFormData;
-
-const DRAFT_KEY = "agendilha_event_submission_draft";
 
 export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
@@ -137,7 +145,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       // Limpa do localStorage os campos de contato salvos no rascunho —
       // assim, se o usuário atualizar o perfil, o rascunho não sobrescreve com dado velho.
       try {
-        const saved = localStorage.getItem(DRAFT_KEY);
+        const saved = localStorage.getItem(SUBMISSION_DRAFT_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed?.data) {
@@ -145,7 +153,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
             parsed.data.basicPhone = profile.phone || "";
             parsed.data.companyName = profile.company_name || profile.responsible_name || parsed.data.companyName || "";
             parsed.data.email = profile.email || "";
-            localStorage.setItem(DRAFT_KEY, JSON.stringify(parsed));
+            localStorage.setItem(SUBMISSION_DRAFT_KEY, JSON.stringify(parsed));
           }
         }
       } catch (e) {
@@ -189,7 +197,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       draftLoadedRef.current = true;
       return;
     }
-    const saved = localStorage.getItem(DRAFT_KEY);
+    const saved = localStorage.getItem(SUBMISSION_DRAFT_KEY);
     if (saved) {
       try {
         const { data, step, savedAt } = JSON.parse(saved);
@@ -213,7 +221,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       timer = setTimeout(() => {
         const now = new Date();
         try {
-          localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          localStorage.setItem(SUBMISSION_DRAFT_KEY, JSON.stringify({
             data: value,
             step: currentStep,
             savedAt: now.toISOString(),
@@ -230,11 +238,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     };
   }, [form.watch, currentStep]);
 
-  const steps = [
-    { id: 1, title: "Informações do evento" },
-    { id: 2, title: "Termos e contato" },
-    { id: 3, title: "Revisão" },
-  ];
+  const steps = SUBMISSION_STEPS;
 
   useEffect(() => {
     stepTimerRef.current?.finish({ outcome: "success" });
@@ -249,34 +253,8 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   }, []);
 
 
-  const FIELD_LABELS: Record<string, string> = {
-    nickName: "Seu nome",
-    basicPhone: "WhatsApp para contato",
-    companyName: "Nome completo / Empresa",
-    email: "E-mail",
-    date: "Data do evento",
-    startTime: "Horário de início",
-    ageRating: "Classificação",
-    eventTitle: "Nome do evento",
-    endTime: "Horário previsto para término",
-    atrativoName: "Nome do atrativo",
-    atrativoContact: "WhatsApp do atrativo",
-    atrativoEmail: "E-mail do atrativo",
-    atrativoCategory: "Categoria do atrativo",
-    locationName: "Nome do local/estabelecimento",
-    eventAddress: "Endereço resumido do local",
-    locationType: "Categoria do espaço",
-    locationContact: "Contato do local/estabelecimento",
-    locationCep: "CEP do local",
-    localTipo: "Tipo de local",
-    addressNeighborhood: "Bairro do local",
-    legalAcceptance: "Aceite dos termos",
-    duvidasWhatsapp: "WhatsApp do responsável pelas informações",
-    duvidasAuthorized: "Autorização de uso do WhatsApp",
-  };
-
   const nextStep = async () => {
-    const fields = getFieldsForStep(currentStep);
+    const fields = fieldsForSubmissionStep(currentStep);
     const validationTimer = startFlowMeasure("event-submission", "step-validation", currentStep);
     let isValid = false;
     try {
@@ -311,7 +289,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     const errors = form.formState.errors as any;
     const firstInvalid = (fields as string[]).find((f) => errors?.[f]);
     if (firstInvalid) {
-      const label = FIELD_LABELS[firstInvalid] ?? firstInvalid;
+      const label = SUBMISSION_FIELD_LABELS[firstInvalid] ?? firstInvalid;
       const msg = errors[firstInvalid]?.message || "Preencha esse campo pra continuar.";
       toast.error(`Falta preencher: ${label}`, { description: String(msg) });
       form.setFocus(firstInvalid as any);
@@ -319,23 +297,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       toast.error("Alguns campos precisam de ajuste antes de continuar.");
     }
   };
-
-  const getFieldsForStep = (step: number) => {
-    switch (step) {
-      // Etapa 1 — só nome/data/horário bloqueiam o avanço; o restante é complementar.
-      case 1: return [
-        "date", "startTime",
-        "atrativoName",
-        "additionalEvents",
-      ];
-      // Etapa 2 — apenas o aceite legal continua obrigatório no envio final.
-      case 2: return [
-        "legalAcceptance",
-      ];
-      default: return [];
-    }
-  };
-
 
   const onSubmit = async (values: FormData) => {
     // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
@@ -434,13 +395,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
         }
       }
 
-      const clean = (v?: string | null) => {
-        if (v == null) return null;
-        const s = String(v).trim();
-        if (!s) return null;
-        if (/^não informado$/i.test(s)) return null;
-        return s;
-      };
+      const clean = cleanOptional;
 
       const eventTitle = values.eventTitle?.trim() || null;
 
@@ -696,7 +651,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
         logger.warn("[SubmissionForm] upsert promotor_profile falhou", e);
       }
 
-      localStorage.removeItem(DRAFT_KEY);
+      localStorage.removeItem(SUBMISSION_DRAFT_KEY);
       submissionTimer.finish({ outcome: "success" });
       toast.success(
         insertedSubmissionIds.length > 1 ? `${insertedSubmissionIds.length} eventos enviados!` : "Evento enviado!",
@@ -752,25 +707,12 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     const firstMsg = errors[firstKey]?.message || "Verifique os campos obrigatórios";
     toast.error("Não foi possível finalizar o envio", { description: String(firstMsg) });
     // Jump to the first step that has an error
-    const stepMap: Record<string, number> = {
-      date: 1, startTime: 1, endTime: 1, eventTitle: 1, description: 1,
-      atrativoSourceId: 1, atrativoName: 1, atrativoType: 1, atrativoStyle: 1, atrativoDescription: 1, atrativoContact: 1, atrativoEmail: 1,
-      locationName: 1, eventAddress: 1, locationCep: 1, addressNeighborhood: 1,
-      category: 1, ageRating: 1, atrativoCategory: 1, localTipo: 1,
-      locationType: 1, locationContact: 1, duvidasWhatsapp: 1,
-      nickName: 2, basicPhone: 2, companyName: 2, email: 2,
-      addressZip: 2, addressStreet: 2, addressNumber: 2,
-      legalAcceptance: 2, responsavelNome: 2,
-      duvidasAuthorized: 2,
-      additionalEvents: 1,
-    };
-
-    const target = stepMap[firstKey];
+    const target = SUBMISSION_ERROR_STEPS[firstKey];
     if (target) setCurrentStep(target);
   };
 
   const resetDraft = () => {
-    localStorage.removeItem(DRAFT_KEY);
+    localStorage.removeItem(SUBMISSION_DRAFT_KEY);
     form.reset({
       nickName: profile?.responsible_name || "",
       basicPhone: profile?.phone || "",
@@ -978,22 +920,4 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       </Form>
     </div>
   );
-}
-
-
-/** Categoria final do atrativo: usa o texto digitado quando a opção é "Outra categoria". */
-function resolveAtrativoCategory(values: { atrativoCategory?: string; atrativoCategoryOther?: string }) {
-  const cat = (values.atrativoCategory ?? "").trim();
-  if (cat === "Outros") return (values.atrativoCategoryOther ?? "").trim() || "Outros";
-  return cat || null;
-}
-
-/** Grava sempre a data do evento como "yyyy-MM-dd" (dia de São Paulo), mesmo vinda de rascunho antigo em ISO. */
-function toEventDateOnly(value?: string | null): string | null {
-  const v = (value ?? "").trim();
-  if (!v) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  const d = new Date(v);
-  if (Number.isNaN(d.getTime())) return v;
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
 }

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
-import { administrativeRole } from "@/lib/access";
+import { administrativeRole, isAdministrativeRole } from "@/lib/access";
 import { qk } from "@/data/queryKeys";
 import { intranetSectors } from "@/lib/intranet";
 
@@ -86,7 +86,7 @@ export function computePermissions(input: {
   if (intranetSectors(roleNames).length) permissions.add("intranet.read");
   if (!roleNames.some((role) => ["master", "senior"].includes(role)) && roleNames.some((role) => ["comercial", "marketing", "administracao", "desenvolvimento"].includes(role))) return { roles: roleNames, permissions };
   const staffRole = administrativeRole(roleNames);
-  const isAdminRole = staffRole === "admin" || staffRole === "senior" || staffRole === "master";
+  const isAdminRole = isAdministrativeRole(staffRole);
 
   if (isAdminRole) {
     ADMIN_PERMISSIONS.forEach((p) => permissions.add(p));
@@ -203,7 +203,7 @@ export function useAppPermissions() {
 
   const isMaster = roles.includes("master");
    const staffRole = administrativeRole(roles);
-   const isAdmin = staffRole === "admin" || staffRole === "senior" || isMaster;
+   const isAdmin = isAdministrativeRole(staffRole);
   const isPromoter = roles.includes("promoter");
   // Níveis administrativos: Sênior (moderação ampla) e Financeiro (único que dá baixa).
   const isSenior = roles.includes("senior") || isMaster;

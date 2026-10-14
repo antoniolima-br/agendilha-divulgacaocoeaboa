@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeAccessRole, administrativeRole, canOrganize } from "./access";
+import { activeAccessRole, administrativeRole, canOrganize, isAdministrativeRole } from "./access";
 import { computePermissions } from "@/hooks/useAppPermissions";
 import { filterSidebarSections, type SidebarItem } from "@/components/layout/sidebarItems";
 import { ROUTE_PERMISSIONS } from "@/routes/access";
@@ -17,6 +17,13 @@ describe("effective workspaces", () => {
     expect(administrativeRole(["admin", "financeiro"])).toBe("financeiro");
     expect(administrativeRole(["financeiro", "senior"])).toBe("senior");
     expect(administrativeRole(["senior", "master"])).toBe("master");
+  });
+  it("identifies administrative authority without granting it to finance", () => {
+    expect(isAdministrativeRole("admin")).toBe(true);
+    expect(isAdministrativeRole("senior")).toBe(true);
+    expect(isAdministrativeRole("master")).toBe(true);
+    expect(isAdministrativeRole("financeiro")).toBe(false);
+    expect(isAdministrativeRole(null)).toBe(false);
   });
   it("guest sees public events and account entry, not contracted ads or private tools", () => {
     const paths = menu([], false).map((item) => item.path);

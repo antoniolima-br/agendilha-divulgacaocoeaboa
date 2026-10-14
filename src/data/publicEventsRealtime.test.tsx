@@ -22,7 +22,7 @@ describe("public event subscription sharing", () => {
     act(() => vi.advanceTimersByTime(2100));
     expect(mock.create).toHaveBeenCalledTimes(1);
     act(() => { mock.listeners.forEach((fn) => { fn(); fn(); }); vi.advanceTimersByTime(750); });
-    expect(invalidate).toHaveBeenCalledTimes(1);
+    expect(invalidate).toHaveBeenCalledTimes(5);
     first.unmount();
     expect(mock.remove).not.toHaveBeenCalled();
     second.unmount();

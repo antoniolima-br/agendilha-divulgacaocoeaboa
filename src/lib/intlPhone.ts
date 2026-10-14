@@ -25,7 +25,7 @@ export const DDIS: Ddi[] = [
 ];
 
 export const DEFAULT_DDI = "55";
-const digits = (v: string) => (v ?? "").replace(/\D/g, "");
+import { onlyDigits as digits } from "./phone";
 
 export const findDdi = (code: string) => DDIS.find((d) => d.code === code) ?? DDIS[0];
 

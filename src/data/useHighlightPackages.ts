@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { formatDurationDays } from "@/lib/commercialFormatting";
+export { formatPriceBRL } from "@/lib/commercialFormatting";
 
 export interface HighlightPackage {
   id: string;
@@ -34,16 +36,7 @@ export function useHighlightPackages(includeInactive = false) {
   });
 }
 
-/** Formata centavos como moeda brasileira. */
-export function formatPriceBRL(cents: number): string {
-  return (cents / 100).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  });
-}
-
 /** "7 dias" / "1 dia" */
 export function formatDuration(days: number): string {
-  return days === 1 ? "1 dia" : `${days} dias`;
+  return formatDurationDays(days);
 }

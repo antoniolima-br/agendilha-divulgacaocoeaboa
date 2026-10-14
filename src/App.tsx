@@ -19,6 +19,7 @@ import { installGlobalErrorHandlers } from "@/lib/globalErrorHandlers";
 import { ROUTES } from "@/routes/config";
 import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { PromotorRoute } from "@/components/auth/PromotorRoute";
+import { FullPageSpinner } from "@/components/auth/FullPageSpinner";
 import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 
 // Critical (above-the-fold) — keep eager
@@ -167,11 +168,7 @@ export function ProtectedRoute({
   const location = useLocation();
   
   if (authLoading || permsLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <FullPageSpinner />;
   }
   
   if (!user) {

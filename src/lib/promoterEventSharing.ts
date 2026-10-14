@@ -1,19 +1,10 @@
 import { eventDateISO, saoPauloTodayISO, isPublicEventStatus } from "@/lib/eventDate";
-import { formatBrazilianDate } from "@/lib/date-utils";
+import { buildEventShareText, ShareableEvent } from "./event-utils";
 
-export interface PromoterShareEvent {
-  id: string;
+export interface PromoterShareEvent extends ShareableEvent {
   user_id: string | null;
-  slug: string | null;
-  event_title: string | null;
-  date: string | null;
-  start_time: string | null;
-  location: string | null;
-  address_street: string | null;
-  address_neighborhood: string | null;
-  description: string | null;
-  image_url: string | null;
   status: string | null;
+  image_url: string | null;
 }
 
 export function eligiblePromoterEvents(events: PromoterShareEvent[], ownerId: string | undefined, today = saoPauloTodayISO()) {
@@ -22,18 +13,15 @@ export function eligiblePromoterEvents(events: PromoterShareEvent[], ownerId: st
 }
 
 export function buildPromoterEventShare(event: PromoterShareEvent, origin: string) {
-  const title = event.event_title?.trim() || event.location?.trim() || "Evento";
-  const date = eventDateISO(event.date);
-  const location = [event.location, event.address_street, event.address_neighborhood].filter(Boolean).join(" — ");
-  const description = event.description?.replace(/\s+/g, " ").trim() || "";
-  const brief = description.length > 280 ? `${description.slice(0, 277).trimEnd()}…` : description;
   const url = `${new URL(origin).origin}/evento/${encodeURIComponent(event.slug || event.id)}?src=whatsapp`;
-  const text = [
-    `*${title}*`,
-    date ? `📅 ${formatBrazilianDate(date)}${event.start_time ? ` · ${event.start_time.slice(0, 5)}` : ""}` : "",
-    location ? `📍 ${location}` : "",
-    brief ? `\n${brief}` : "",
-    `\nMais informações: ${url}`,
-  ].filter(Boolean).join("\n");
-  return { title, text, url };
+  const text = buildEventShareText(event, {
+    includeBrief: true,
+    url: `\nMais informações: ${url}`
+  });
+  
+  return {
+    title: event.event_title || event.location || "Evento",
+    text,
+    url,
+  };
 }

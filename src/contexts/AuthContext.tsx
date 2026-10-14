@@ -4,7 +4,7 @@ import type { User, Session } from "@supabase/supabase-js";
 import { toAuthEmail, toLegacyAuthEmail, toE164Digits, validateWhatsappForAccount } from "@/lib/phone";
 import { handleError } from "@/lib/error-handler";
 import { logger } from "@/lib/logger";
-import { administrativeRole } from "@/lib/access";
+import { administrativeRole, isAdministrativeRole } from "@/lib/access";
 
 export type SignUpAdditionalData = {
   profile?: Record<string, unknown>;
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (rolesResponse.error) handleError(rolesResponse.error, { silent: true, context: "AuthContext:roles" });
     if (profileResponse.error) handleError(profileResponse.error, { silent: true, context: "AuthContext:passwordState" });
     const staffRole = administrativeRole(rolesResponse.data?.map(({ role }) => role) ?? []);
-    setIsAdmin(staffRole === "admin" || staffRole === "senior" || staffRole === "master");
+    setIsAdmin(isAdministrativeRole(staffRole));
     setMustChangePassword(profileResponse.error ? true : !!profileResponse.data?.must_change_password);
     } catch (error) {
       if (sequence !== authCheckSequence.current) return;
