@@ -10,7 +10,12 @@ header > div > .grid.mt-1\.5:has(> .btn-gold) {
   display: flex;
   justify-content: flex-end;
   margin-top: 0;
+  position: absolute;
+  bottom: 4px;
+  right: 12px;
 }
+header > div:has(> .grid.mt-1\.5 > .btn-gold) { position: relative; }
+header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:first-child { min-width: 80px; }
 body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) {
   padding-bottom: calc(4rem + env(safe-area-inset-bottom));
 }
