@@ -51,7 +51,7 @@ const ArtistCard = memo(({ artist, className }: ArtistCardProps) => {
           />
         </div>
         {artist.is_approved && (
-          <div className="absolute bottom-0 right-0 bg-primary text-white p-0.5 rounded-full border-2 border-card">
+          <div className="absolute bottom-0 right-0 rounded-full border-2 border-card bg-primary p-0.5 text-primary-foreground">
             <CheckCircle2 className="h-3 w-3" />
           </div>
         )}

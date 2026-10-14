@@ -70,7 +70,7 @@ export function EventDetailDialog({
                   variant="secondary"
                   size="icon"
                   aria-label="Fechar detalhes do evento"
-                  className="rounded-full bg-black/40 backdrop-blur-md text-white border-white/20 hover:bg-black/60 transition-colors shadow-lg"
+                  className="rounded-full border border-foreground/25 bg-[hsl(var(--overlay)/0.72)] text-foreground shadow-lg backdrop-blur-md transition-colors hover:bg-[hsl(var(--overlay)/0.88)]"
                   onClick={onClose}
                 >
                   <X className="h-5 w-5" />
@@ -78,7 +78,7 @@ export function EventDetailDialog({
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <Badge className="bg-[#F6EEEA] text-[#2F5D46] border-[#E6D6CF] border px-3 py-1.5 font-semibold text-[10px] tracking-[0.15em] uppercase rounded-full shadow-sm">
+                  <Badge className="rounded-full border border-primary/35 bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-primary-foreground shadow-sm">
                     {categoryIcons[event.category || ""] || "📌"}{" "}
                     {categoryLabels[event.category || ""] || "Evento"}
                   </Badge>
