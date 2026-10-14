@@ -21,8 +21,10 @@ header > div:has(> .grid.mt-1\.5 > .btn-gold) { position: relative; }
 header > div:has(> .grid.mt-1\.5 > .btn-gold) > .grid:first-child > a:last-child { align-self: start; margin-top: 10px; }
 header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:first-child { min-width: 80px; }
 body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) {
-  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  padding-bottom: calc(4rem + var(--mascot-lane) + env(safe-area-inset-bottom));
 }
+.app-bottom-navigation { padding-top: var(--mascot-lane); }
+body:has(.coezinho-fab) { padding-bottom: calc(4rem + var(--mascot-lane) + env(safe-area-inset-bottom)); }
 /* Legacy public footer keeps its markup; hide the retired brand block. */
 footer div:has(> img[alt="Coé a Boa?"]) { display: none; }
 footer .grid:has(> div > img[alt="Coé a Boa?"]) {
@@ -252,20 +254,22 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 
 /* Shared theme: comfortable butter-gold controls; vivid yellow reserved for brand accents. */
 :root, .theme-coeaboa {
+  --mascot-lane: 100px;
+  --readable-secondary: 214 32% 91%;
   --brand-vibrant: 60 100% 51%;
   --brand-highlight: 48 72% 72%;
   --background: 224 45% 8%;
-  --foreground: 40 40% 94%;
+  --foreground: 0 0% 100%;
   --card: 224 38% 12%;
-  --card-foreground: 40 40% 94%;
+  --card-foreground: 0 0% 100%;
   --popover: 224 38% 12%;
-  --popover-foreground: 40 40% 94%;
+  --popover-foreground: 0 0% 100%;
   --primary: var(--brand-highlight);
   --primary-foreground: 224 45% 8%;
   --secondary: var(--brand-highlight);
   --secondary-foreground: 224 45% 8%;
   --muted: 224 30% 16%;
-  --muted-foreground: 40 18% 70%;
+  --muted-foreground: var(--readable-secondary);
   --accent: var(--brand-highlight);
   --accent-foreground: 224 45% 8%;
   --border: var(--brand-highlight) / 0.22;
@@ -278,7 +282,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   --gradient-sunset: linear-gradient(hsl(var(--brand-highlight)), hsl(var(--brand-highlight)));
   --gradient-pumpkin-strip: linear-gradient(90deg, transparent 0%, hsl(var(--brand-highlight) / 0.4) 25%, hsl(var(--brand-highlight)) 50%, hsl(var(--brand-highlight) / 0.4) 75%, transparent 100%);
   --sidebar-background: 224 45% 7%;
-  --sidebar-foreground: 40 30% 88%;
+  --sidebar-foreground: var(--readable-secondary);
   --sidebar-primary: var(--brand-highlight);
   --sidebar-primary-foreground: 224 45% 8%;
   --sidebar-accent: var(--brand-highlight);
@@ -293,6 +297,13 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   background: var(--gradient-gold);
   color: hsl(var(--primary-foreground));
   box-shadow: var(--shadow-gold);
+}
+/* Secondary copy stays readable; disabled controls retain their distinct state. */
+:is([class*="text-muted-foreground/"], [class*="text-foreground/"]):not(:disabled):not([data-disabled]) {
+  color: hsl(var(--readable-secondary));
+}
+@media (min-width: 768px) {
+  :root, .theme-coeaboa { --mascot-lane: 128px; }
 }
 .home-action-clarity header .btn-gold:nth-last-child(3),
 .home-action-clarity header .btn-gold:nth-last-child(2) {

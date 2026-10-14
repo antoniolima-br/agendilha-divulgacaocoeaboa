@@ -345,7 +345,7 @@ export default function Landing() {
        {/* ── Faixa de dias ── */}
        <div style={{ paddingTop: headerH }}>
          {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-2 sm:px-6">
-           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-11 w-11 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
              <ChevronLeft className="h-4 w-4" />
            </Button>
            <div className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
@@ -361,7 +361,7 @@ export default function Landing() {
                );
              })}
            </div>
-           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-11 w-11 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
              <ChevronRight className="h-4 w-4" />
            </Button>
          </nav>}
@@ -371,9 +371,9 @@ export default function Landing() {
          />
        </div>
 
-       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-5 sm:px-6 sm:pb-24 sm:pt-8">
+       <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
          {/* Filtros Local / Categoria */}
-         <div className="mb-8 grid grid-cols-2 gap-2" aria-label="Filtros de local e categoria">
+         <div className="mb-8 grid grid-cols-2 gap-3" aria-label="Filtros de local e categoria">
            <Select value={homeBairro} onValueChange={setHomeBairro}>
              <SelectTrigger aria-label="Filtrar por local" className="h-16 min-w-0 gap-1 rounded-lg border-primary/70 bg-card/60 px-3 font-display text-xs font-bold uppercase text-primary sm:h-11 sm:text-sm">
                <span className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2"><span className="flex shrink-0 items-center gap-1 text-foreground/70"><MapPin className="h-4 w-4 shrink-0" />Local:</span><span className="block min-w-0 w-full truncate sm:w-auto"><SelectValue /></span></span>
@@ -405,11 +405,11 @@ export default function Landing() {
            </Select>
          </div>
 
-         <div className="mb-6 flex flex-wrap items-center gap-3">
+         <div className="mb-10 flex flex-wrap items-center gap-3">
             <EventDateFilter value={globalFilters.date} onChange={(date) => setGlobalFilters({ date, period: date ? "custom" : "all" })} />
          </div>
          {/* Seções por categoria */}
-         <div className="mb-10 space-y-8" aria-label="Categorias">
+         <div className="mb-12 space-y-12" aria-label="Categorias">
            {HOME_CATEGORIES.filter((c) => homeCat === "all" || c.key === homeCat).map((c) => {
              const evs = homeFiltered.filter((ev: any) => c.match.includes(String(ev?.category || "").toLowerCase().trim()));
               if (evs.length === 0) return null;
