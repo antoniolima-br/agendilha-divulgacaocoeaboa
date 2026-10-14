@@ -1,6 +1,6 @@
+# Roadmap
 - [x] Distribuir convidados e convites personalizados na Curadoria, rastreamento individual no Marketing e conversões consolidadas no BI.
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
-# Roadmap
 - [x] Ajustar o carrossel principal para autoplay de cinco segundos com pausa somente durante pressão, abrir o flyer limpo na Home, remover downloads/contagens públicas e preservar a arte inteira na ampliação.
 - [x] Conectar a Curadoria a aberturas reais por rolê e canal, favoritos e leads/conversões relacionados, com painel de impacto responsivo e atualização periódica.
 - [x] Integrar ao BI e Marketing um painel consolidado de aberturas por setor e um funil real de origens, leads e conversões, sem inventar presença não coletada.
