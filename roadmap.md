@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Blindar o Guia do Coé com fallback útil para agenda, divulgação e navegação quando a conexão falhar, preservando sessão limpa a cada abertura.
 - [x] Acesso por WhatsApp com máscara; calendário com Todas as datas; menus fecham ao navegar e reabrem; contraste compartilhado corrigido. 19 testes e navegação real desktop/mobile conferidos; cadastro/login completo não executado sem credenciais.
 - [x] Revisar contraste compartilhado, Home, Radar e Perfil; melhorar respiros e reservar faixa do Coezinho acima da navegação. Sessão ativa conferida, botões amarelos com texto escuro e 16 testes aprovados.
 - [ ] Confirmar regra hospedada de senha mínima de seis caracteres sem complexidade — validações do app e funções atualizadas e testadas; ajuste reservado ao usuário em Cloud → Users → Auth settings → Email → Password rules.
