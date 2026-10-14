@@ -6,6 +6,7 @@ import Landing from "./Landing";
 import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
 import { clearGlobalEventFilters, getGlobalEventFilters, setGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 const eventMocks = vi.hoisted(() => ({ data: [] as Record<string, unknown>[] }));
+const authMocks = vi.hoisted(() => ({ user: { id: "user-without-profile" } as { id: string } | null }));
 vi.mock("@/data/usePublicEvents", () => ({ usePublicEvents: () => ({ data: eventMocks.data }) }));
 
 class IntersectionObserverMock implements IntersectionObserver {
@@ -22,7 +23,7 @@ class IntersectionObserverMock implements IntersectionObserver {
 vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
 
 vi.mock("@/contexts/AuthContext", () => ({
-  useAuth: () => ({ user: { id: "user-without-profile" } }),
+  useAuth: () => ({ user: authMocks.user }),
 }));
 
 vi.mock("@/hooks/useProfile", () => ({
@@ -72,7 +73,14 @@ vi.mock("@/components/PersonalizationDialog", () => ({ PersonalizationDialog: ()
 vi.mock("@/components/ShareDialog", () => ({ ShareDialog: () => null }));
 
 describe("Landing sem dados", () => {
-  beforeEach(() => { eventMocks.data = []; clearGlobalEventFilters(); });
+  beforeEach(() => { eventMocks.data = []; authMocks.user = { id: "user-without-profile" }; clearGlobalEventFilters(); });
+  it("mostra a programação para visitante sem cadastro", () => {
+    authMocks.user = null;
+    eventMocks.data = [{ id: "publico", status: "publicado", event_title: "Rolê aberto ao público", date: "2099-01-01", location: "Praça", start_time: "19:00", category: "musica" }];
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    expect(screen.getAllByText("Rolê aberto ao público").length).toBeGreaterThan(0);
+    expect(screen.getByRole("link", { name: "Ver tudo" })).toHaveAttribute("href", "/agenda");
+  });
   it("mantém local e categoria em duas colunas", () => {
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
     const filters = screen.getByLabelText("Filtros de local e categoria");
