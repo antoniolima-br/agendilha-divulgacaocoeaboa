@@ -10,13 +10,13 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, subtitle, rightElement, className }: SectionHeaderProps) {
   return (
-    <div className={cn("mb-6 flex min-w-0 flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between", className)}>
-      <div className="space-y-1.5 min-w-0">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-foreground uppercase leading-[1.1] break-words">
+    <div className={cn("mb-6 flex min-w-0 flex-col gap-4 border-b border-border/60 pb-5 sm:mb-8 sm:pb-6 md:flex-row md:items-end md:justify-between", className)}>
+      <div className="min-w-0 space-y-2">
+        <h1 className="break-words text-2xl font-semibold leading-tight text-foreground text-balance sm:text-3xl">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-xs sm:text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-2xl">
+          <p className="max-w-2xl text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
             {subtitle}
           </p>
         )}

@@ -24,17 +24,17 @@ const config: Record<RoleType, { label: string; icon: LucideIcon; styles: string
   collaborator: {
     label: "Divulgador",
     icon: ShieldCheck,
-    styles: "border-emerald-500/30 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400",
+    styles: "border-success/30 bg-success/10 text-success",
   },
   artist: {
     label: "Músico / Banda",
     icon: User,
-    styles: "border-blue-500/30 text-blue-600 bg-blue-50 dark:bg-blue-950/30 dark:text-blue-400",
+    styles: "border-primary/30 bg-primary/10 text-primary",
   },
   user: {
     label: "Público",
     icon: User,
-    styles: "border-slate-300 text-slate-600 bg-slate-50 dark:bg-slate-800/40 dark:text-slate-400",
+    styles: "border-border bg-muted/60 text-muted-foreground",
   },
 };
 
@@ -45,7 +45,7 @@ export function StatusBadge({ role, className, variant = "outline" }: StatusBadg
     <Badge
       variant="outline"
       className={cn(
-        "text-[10px] font-bold uppercase tracking-widest gap-1 py-0.5 px-2 rounded-full transition-colors",
+        "gap-1 px-2 py-0.5 text-[10px] font-bold uppercase transition-colors",
         styles,
         className
       )}

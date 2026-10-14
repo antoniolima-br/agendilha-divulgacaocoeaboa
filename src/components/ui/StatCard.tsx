@@ -123,7 +123,7 @@ export function StatCard({
                 {value}
               </div>
               {variation !== undefined && (
-                <div className={cn("text-[10px] font-black flex items-center gap-0.5 mb-1", variation >= 0 ? 'text-emerald-600' : 'text-rose-600')}>
+                <div className={cn("mb-1 flex items-center gap-0.5 text-[10px] font-black", variation >= 0 ? "text-success" : "text-destructive")}>
                   {variation >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                   {Math.abs(variation)}%
                 </div>

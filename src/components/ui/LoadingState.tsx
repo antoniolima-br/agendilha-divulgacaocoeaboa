@@ -14,15 +14,14 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-4 animate-fade-in",
-      fullPage ? "min-h-[60vh] w-full" : "py-12",
+      "flex flex-col items-center justify-center gap-4 rounded-lg border border-border/60 bg-card/35 px-6 text-center animate-fade-in",
+      fullPage ? "min-h-[60vh] w-full" : "min-h-40 py-10",
       className
     )}>
-      <div className="relative">
-        <Loader2 className="h-10 w-10 animate-spin text-primary opacity-20" />
-        <Loader2 className="h-10 w-10 animate-spin text-primary absolute inset-0" style={{ animationDuration: '3s' }} />
+      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/20 bg-primary/10">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
-      <p className="text-sm font-medium text-muted-foreground animate-pulse">{message}</p>
+      <p className="max-w-sm text-sm font-medium leading-relaxed text-muted-foreground">{message}</p>
     </div>
   );
 }
