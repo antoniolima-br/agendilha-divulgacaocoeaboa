@@ -45,6 +45,11 @@ export const CURATION_ACTIVITY_LABELS: Record<CurationImpactActivity["kind"], st
   conversion: "Converteu",
 };
 
+export function normalizeCurationChannel(value: string | null) {
+  const allowed = ["curation_link", "curation_qr", "curation_whatsapp", "curation_share"];
+  return value && allowed.includes(value) ? value : undefined;
+}
+
 export function curationImpactRange(days: number, now = new Date()) {
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(now);
   const start = new Date(`${today}T12:00:00Z`);

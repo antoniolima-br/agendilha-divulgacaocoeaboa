@@ -9,6 +9,7 @@ export const qk = {
     records: (owner: string | null, table: string) => [...qk.intranet.all, owner, table] as const,
     flyerEngagement: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "flyer-engagement", startAt, endAt] as const,
     engagementFunnel: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "engagement-funnel", startAt, endAt] as const,
+    curationImpact: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "curation-impact", startAt, endAt] as const,
   },
   permissions: {
     all: ["app-permissions"] as const,
