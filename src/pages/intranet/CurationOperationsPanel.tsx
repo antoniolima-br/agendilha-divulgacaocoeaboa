@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QRCodeSVG } from "qrcode.react";
-import { Copy, Download, ImagePlus, Loader2, MessageCircle, Pencil, Plus, Search, Share2, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, Copy, Download, ImagePlus, Loader2, MessageCircle, Pencil, Plus, Search, Share2, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
@@ -11,6 +11,7 @@ import { curationEventInvite, curationEventLink, emptyCurationEventForm, validat
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,6 +26,7 @@ type CurationEvent = {
   start_time: string | null;
   video_link: string | null;
   image_url: string | null;
+  artist_history: string | null;
   status: string;
   slug: string | null;
 };
@@ -56,7 +58,7 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
     enabled: !!user,
     refetchInterval: 30_000,
     queryFn: async (): Promise<CurationEvent[]> => {
-      const { data, error } = await supabase.rpc("intranet_curation_events");
+      const { data, error } = await supabase.rpc("intranet_curation_event_editor");
       if (error) throw error;
       return (data ?? []) as CurationEvent[];
     },
@@ -81,13 +83,14 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         if (uploadError) throw uploadError;
         imageUrl = supabase.storage.from("event-flyers").getPublicUrl(path).data.publicUrl;
       }
-      const { data, error } = await supabase.rpc("intranet_save_curation_event", {
+      const { data, error } = await supabase.rpc("intranet_save_curation_event_v2", {
         p_id: form.id,
         p_title: form.title.trim(),
         p_date: form.date,
         p_start_time: form.startTime,
         p_video_link: form.registrationUrl.trim() || undefined,
         p_image_url: imageUrl || undefined,
+        p_artist_history: form.artistHistory.trim() || undefined,
       });
       if (error) throw error;
       return data;
@@ -122,7 +125,7 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
   }
 
   function edit(event: CurationEvent) {
-    setForm({ id: event.id, title: event.event_title ?? "", date: event.date?.slice(0, 10) ?? "", startTime: event.start_time?.slice(0, 5) ?? "", registrationUrl: event.video_link ?? "", flyerUrl: event.image_url ?? "" });
+    setForm({ id: event.id, title: event.event_title ?? "", date: event.date?.slice(0, 10) ?? "", startTime: event.start_time?.slice(0, 5) ?? "", registrationUrl: event.video_link ?? "", flyerUrl: event.image_url ?? "", artistHistory: event.artist_history ?? "" });
     setFile(null);
     setTab("register");
   }
@@ -148,21 +151,24 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         </TabsList>
 
         <TabsContent value="register" className="pt-4">
-          {!canEdit ? <p className="border-y py-8 text-sm text-muted-foreground">Você pode consultar os rolês. A edição fica com a pessoa responsável pela Curadoria, Sênior ou Master.</p> : <form className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(220px,320px)]" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
+          {!canEdit ? <p className="border-y py-8 text-sm text-muted-foreground">Você pode consultar os rolês. A edição fica com a pessoa responsável pela Curadoria, Sênior ou Master.</p> : <form className="mx-auto grid w-full max-w-3xl min-w-0 gap-5" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
+            {form.id && <div className="flex items-center justify-between gap-3"><Button type="button" variant="ghost" onClick={() => { setForm(emptyCurationEventForm()); setFile(null); setTab("manage"); }}><ArrowLeft />Voltar aos rolês</Button><Badge variant="outline">Editando um rolê</Badge></div>}
+            {form.id && <EventImpactCounters impact={impactByEvent.get(form.id)} />}
+            <div className="flex min-h-80 items-center justify-center overflow-hidden rounded-md border border-border bg-card/40 p-3 sm:min-h-[28rem]">
+              {preview || form.flyerUrl ? <img src={preview || form.flyerUrl} alt="Flyer do evento selecionado" className="max-h-[70vh] w-full rounded-md object-contain" /> : <div className="text-center text-muted-foreground"><ImagePlus className="mx-auto mb-2 h-8 w-8" /><p className="text-sm">A prévia do flyer aparece aqui.</p></div>}
+            </div>
+            <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card/40 px-4 text-sm font-semibold hover:border-primary/55 hover:bg-accent"><Upload className="h-4 w-4" />{file ? file.name : form.id ? "Substituir flyer" : "Enviar flyer"}<input className="sr-only" type="file" accept="image/*" onChange={(event) => chooseFile(event.target.files?.[0] ?? null)} /></label>
             <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+              <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-artist-history">Histórico da atração principal</Label><Textarea id="curation-artist-history" value={form.artistHistory} maxLength={4000} rows={6} placeholder="Casas de show, festivais, cidades e palcos onde a atração já se apresentou" onChange={(event) => setForm((current) => ({ ...current, artistHistory: event.target.value }))} /><p className="text-right text-xs text-muted-foreground">{form.artistHistory.length}/4.000</p></div>
               <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-title">Nome do evento</Label><Input id="curation-title" value={form.title} maxLength={120} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} required /></div>
               <div className="min-w-0 space-y-2"><Label htmlFor="curation-date">Data</Label><Input id="curation-date" type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required /></div>
               <div className="min-w-0 space-y-2"><Label htmlFor="curation-time">Horário</Label><Input id="curation-time" type="time" value={form.startTime} onChange={(event) => setForm((current) => ({ ...current, startTime: event.target.value }))} required /></div>
               <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-link">Link de inscrição / saiba mais</Label><Input id="curation-link" type="url" inputMode="url" placeholder="https://" value={form.registrationUrl} onChange={(event) => setForm((current) => ({ ...current, registrationUrl: event.target.value }))} /></div>
               <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-flyer-url">Link do flyer</Label><Input id="curation-flyer-url" type="url" inputMode="url" placeholder="https://" value={form.flyerUrl} onChange={(event) => setForm((current) => ({ ...current, flyerUrl: event.target.value }))} /></div>
-              <div className="flex flex-col gap-2 sm:col-span-2 sm:flex-row">
-                <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card/40 px-4 text-sm font-semibold hover:border-primary/55 hover:bg-accent"><Upload className="h-4 w-4" />{file ? file.name : "Enviar flyer"}<input className="sr-only" type="file" accept="image/*" onChange={(event) => chooseFile(event.target.files?.[0] ?? null)} /></label>
-                <Button type="submit" disabled={save.isPending} className="sm:ml-auto">{save.isPending ? <Loader2 className="animate-spin" /> : form.id ? <Pencil /> : <Plus />}{form.id ? "Salvar alterações" : "Publicar rolê"}</Button>
-                {form.id && <Button type="button" variant="ghost" onClick={() => { setForm(emptyCurationEventForm()); setFile(null); }}>Cancelar</Button>}
+              <div className="grid gap-2 sm:col-span-2 sm:grid-cols-2">
+                <Button type="submit" disabled={save.isPending} className="w-full">{save.isPending ? <Loader2 className="animate-spin" /> : form.id ? <Pencil /> : <Plus />}{form.id ? "Salvar alterações" : "Publicar rolê"}</Button>
+                {form.id && <Button type="button" variant="destructive" className="w-full" disabled={archive.isPending} onClick={() => { const current = events.find((event) => event.id === form.id); if (current) confirmArchive(current); }}><Trash2 />Excluir evento</Button>}
               </div>
-            </div>
-            <div className="flex min-h-56 items-center justify-center overflow-hidden rounded-md border border-border bg-card/40 p-3">
-              {preview || form.flyerUrl ? <img src={preview || form.flyerUrl} alt="Prévia do flyer" className="max-h-80 w-full rounded-md object-contain" /> : <div className="text-center text-muted-foreground"><ImagePlus className="mx-auto mb-2 h-8 w-8" /><p className="text-sm">A prévia do flyer aparece aqui.</p></div>}
             </div>
           </form>}
         </TabsContent>

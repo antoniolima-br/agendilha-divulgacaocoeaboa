@@ -5,6 +5,7 @@ export type CurationEventForm = {
   startTime: string;
   registrationUrl: string;
   flyerUrl: string;
+  artistHistory: string;
 };
 
 export type CurationEventLink = {
@@ -22,12 +23,14 @@ export const emptyCurationEventForm = (): CurationEventForm => ({
   startTime: "",
   registrationUrl: "",
   flyerUrl: "",
+  artistHistory: "",
 });
 
 export function validateCurationEventForm(form: CurationEventForm): string | null {
   if (!form.title.trim() || !form.date || !form.startTime) return "Informe nome, data e horário do rolê.";
   if (form.registrationUrl && !isSafeHttpsUrl(form.registrationUrl)) return "O link de inscrição precisa começar com https://";
   if (form.flyerUrl && !isSafeHttpsUrl(form.flyerUrl)) return "O link do flyer precisa começar com https://";
+  if (form.artistHistory.length > 4000) return "O histórico artístico pode ter até 4.000 caracteres.";
   return null;
 }
 

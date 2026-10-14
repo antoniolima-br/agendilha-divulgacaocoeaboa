@@ -11,6 +11,11 @@ describe("curationEvents", () => {
     expect(validateCurationEventForm(form)).toBe("O link de inscrição precisa começar com https://");
   });
 
+  it("limita o histórico artístico a 4.000 caracteres", () => {
+    const form = { ...emptyCurationEventForm(), title: "Samba", date: "2026-10-20", startTime: "20:00", artistHistory: "a".repeat(4001) };
+    expect(validateCurationEventForm(form)).toBe("O histórico artístico pode ter até 4.000 caracteres.");
+  });
+
   it("gera link compacto e convite de WhatsApp com os dados do rolê", () => {
     const event = { id: "abc", slug: "samba-na-praca", event_title: "Samba na Praça", date: "2026-10-20", start_time: "20:00" };
     const link = curationEventLink(event, "https://coeaboa.online");
