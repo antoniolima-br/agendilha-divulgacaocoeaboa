@@ -3,12 +3,12 @@ import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
-  buttonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   icon?: LucideIcon;
   title: string;
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
+  buttonVariant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   className?: string;
 }
 
@@ -18,6 +18,7 @@ export function EmptyState({
   description,
   actionLabel,
   onAction,
+  buttonVariant = "default",
   className
 }: EmptyStateProps) {
   return (

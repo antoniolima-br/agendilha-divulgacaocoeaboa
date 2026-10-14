@@ -25,20 +25,21 @@ export function isTabBarHidden(pathname: string) {
   );
 }
 
-/**
- * Barra de navegação inferior — só no mobile.
- * Fica escondida em telas que já têm barra de ação fixa (detalhe do evento, impressão).
- */
 export function MobileTabBar({ onMenuClick }: Props) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   if (isTabBarHidden(pathname)) return null;
 
+  const isProfileActive = pathname === ROUTES.PERFIL;
+
   return (
     <nav
       aria-label="Navegação principal"
-      className={cn("app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]", pathname !== ROUTES.LANDING && "md:hidden")}
+      className={cn(
+        "app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]", 
+        pathname !== ROUTES.LANDING && "md:hidden"
+      )}
     >
       <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
         {items.map((item) => {
@@ -54,7 +55,10 @@ export function MobileTabBar({ onMenuClick }: Props) {
                   active ? "text-primary font-bold" : "text-muted-foreground"
                 )}
               >
-                <div className="relative flex flex-col items-center"><Icon className={cn("h-5 w-5 shrink-0 transition-transform", active && "fill-primary/10 scale-110")} />{active && <div className="absolute -bottom-1 h-1 w-1 rounded-full bg-primary" /></div>
+                <div className="relative flex flex-col items-center">
+                  <Icon className={cn("h-5 w-5 shrink-0 transition-transform", active && "fill-primary/10 scale-110")} />
+                  {active && <div className="absolute -bottom-1.5 h-1 w-1 rounded-full bg-primary animate-in zoom-in duration-300" />}
+                </div>
                 <span className="w-full truncate text-center text-[10px] font-semibold leading-none">
                   {item.label}
                 </span>
@@ -69,9 +73,15 @@ export function MobileTabBar({ onMenuClick }: Props) {
             type="button"
             onClick={() => navigate(ROUTES.PERFIL)}
             aria-label="Abrir perfil"
-            className="flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
+            className={cn(
+              "flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 transition-colors",
+              isProfileActive ? "text-primary font-bold" : "text-muted-foreground"
+            )}
           >
-            <User className="h-5 w-5 shrink-0" />
+            <div className="relative flex flex-col items-center">
+              <User className={cn("h-5 w-5 shrink-0 transition-transform", isProfileActive && "fill-primary/10 scale-110")} />
+              {isProfileActive && <div className="absolute -bottom-1.5 h-1 w-1 rounded-full bg-primary animate-in zoom-in duration-300" />}
+            </div>
             <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
           </Button>
         </li>
@@ -80,7 +90,6 @@ export function MobileTabBar({ onMenuClick }: Props) {
   );
 }
 
-/** Espaçador para o conteúdo não ficar embaixo da barra inferior. */
 export function MobileTabBarSpacer() {
   return <div className="md:hidden h-[calc(var(--bottom-navigation-height)+env(safe-area-inset-bottom))]" aria-hidden="true" />;
 }
