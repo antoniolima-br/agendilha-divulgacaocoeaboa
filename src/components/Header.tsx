@@ -1,27 +1,22 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { 
-  CalendarDays, 
+import {
   ClipboardList, 
   Heart,
-  LogOut, 
-  Users, 
   Menu, 
   X, 
   ArrowLeft, 
   CheckCircle, 
   Shield, 
   Settings, 
-  UserCog, 
   Crown, 
-  Trophy, 
   Sun, 
   Moon,
   ExternalLink
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { MapPin, UserRound } from "lucide-react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
  import logoCoeABoa from "@/assets/coeaboa-logo.webp";
 import { Button } from "@/components/ui/button";
 import { useSubmissions } from "@/contexts/SubmissionContext";
@@ -51,13 +46,6 @@ import {
   SheetHeader, 
   SheetTitle 
 } from "@/components/ui/sheet";
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function useCurrentDate() {
   const [now, setNow] = useState(new Date());
@@ -136,13 +124,12 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
       window.removeEventListener("agendilha:favorites", updateCount);
     };
   }, []);
-   const { user, signOut, isAdmin } = useAuth();
+   const { user, isAdmin } = useAuth();
    const { theme, toggleTheme } = useTheme();
   const { profile } = useProfile();
   const perms = useAppPermissions();
   const { status, name: badgeName, initials } = useUserBadge();
   const isMaster = status === "master";
-  const navigate = useNavigate();
   const currentDate = useCurrentDate();
   const [menuOpen, setMenuOpen] = useState(false);
   // Fallback: when no toggle is provided by the parent (e.g. Landing page),
@@ -237,7 +224,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
         <MobileTabBar onMenuClick={handleMobileMenu} />
         {!onMobileMenuToggle && (
           <Sheet open={internalMobileOpen} onOpenChange={setInternalMobileOpen}>
-            <SheetContent side="left" className="p-0 w-[280px] sm:w-80 bg-sidebar border-r border-border">
+            <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
               <SidebarMenu onClose={() => setInternalMobileOpen(false)} />
             </SheetContent>
           </Sheet>
@@ -280,8 +267,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
             )}
             {user && !isAgenda && (() => {
             // Use centralized name resolution from useUserBadge (profile → company → collaborator → metadata → email/phone)
-            const fullName = badgeName && badgeName !== "Usuário" ? badgeName : "Divulgador";
-            const firstName = fullName.split(" ")[0];
             return (
              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               <UpdateAppButton compact />
@@ -354,7 +339,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
       <MobileTabBar onMenuClick={handleMobileMenu} />
       {!onMobileMenuToggle && (
         <Sheet open={internalMobileOpen} onOpenChange={setInternalMobileOpen}>
-          <SheetContent side="left" className="p-0 w-[280px] sm:w-80 bg-sidebar border-r border-border">
+          <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0">
             <SidebarMenu onClose={() => setInternalMobileOpen(false)} />
           </SheetContent>
         </Sheet>

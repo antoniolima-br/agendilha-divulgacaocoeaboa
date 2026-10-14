@@ -63,7 +63,7 @@ export function DayEventCard({
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {icon} {categoryLabels[ev.category!] || ev.category || "Evento"}
               </span>
-              <FavoriteButton eventId={ev.id} className="h-8 w-8 shrink-0" />
+              <FavoriteButton eventId={ev.id} className="h-11 w-11 shrink-0" />
             </div>
             <h3 className="line-clamp-2 font-semibold leading-snug text-foreground group-hover:text-primary sm:text-lg">{ev.event_title || ev.location || "Evento"}</h3>
             <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground/80"><Clock className="h-3.5 w-3.5 text-primary" />{ev.start_time?.slice(0, 5) || "Horário a confirmar"}</p>

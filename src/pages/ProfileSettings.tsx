@@ -395,7 +395,7 @@ export default function ProfileSettings() {
 
             <div className="space-y-3">
               <Label>Área de Cobertura Principais</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-3 border rounded-md">
+              <div className="grid max-h-64 grid-cols-1 gap-2 overflow-y-auto rounded-md border p-3 min-[380px]:grid-cols-2 sm:max-h-48 sm:grid-cols-3">
                 {NEIGHBORHOODS.map(n => (
                   <div key={n} className="flex items-center space-x-2">
                     <Checkbox 
@@ -566,9 +566,9 @@ export default function ProfileSettings() {
         </Card>
       )}
 
-      <div className="flex justify-end gap-3 pt-4">
-        <Button variant="outline" disabled={loading}>Cancelar</Button>
-        <Button onClick={handleSave} disabled={loading} className="gradient-sunset text-white w-full sm:min-w-[120px] sm:w-auto">
+      <div className="flex flex-col-reverse gap-3 pt-4 sm:flex-row sm:justify-end">
+        <Button variant="outline" disabled={loading} className="w-full sm:w-auto">Cancelar</Button>
+        <Button onClick={handleSave} disabled={loading} className="gradient-sunset w-full text-primary-foreground sm:min-w-[120px] sm:w-auto">
           {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
           Salvar Alterações
         </Button>

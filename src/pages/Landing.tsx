@@ -377,8 +377,8 @@ export default function Landing() {
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
                    className={cn("h-11 min-w-14 flex-1 flex-col gap-0 rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
-                   <span className="text-[8px] font-bold uppercase leading-none tracking-wide sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
-                   <span className="mt-0.5 text-[11px] font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
+                    <span className="text-[10px] font-bold uppercase leading-none sm:text-xs">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
+                   <span className="mt-0.5 text-xs font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
                  </Button>
                );
              })}
@@ -396,7 +396,7 @@ export default function Landing() {
 
        <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
          {/* Filtros Local / Categoria */}
-         <div className="mb-8 grid grid-cols-2 gap-3" aria-label="Filtros de local e categoria">
+         <div className="mb-8 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2" aria-label="Filtros de local e categoria">
            <Select value={homeBairro} onValueChange={setHomeBairro}>
              <SelectTrigger aria-label="Filtrar por local" className="h-16 min-w-0 gap-1 rounded-lg border-primary/70 bg-card/60 px-3 font-display text-xs font-bold uppercase text-primary sm:h-11 sm:text-sm">
                <span className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2"><span className="flex shrink-0 items-center gap-1 text-foreground/70"><MapPin className="h-4 w-4 shrink-0" />Local:</span><span className="block min-w-0 w-full truncate sm:w-auto"><SelectValue /></span></span>

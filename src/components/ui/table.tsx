@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div role="region" aria-label="Tabela com rolagem horizontal" tabIndex={0} className="relative w-full max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-lg border border-border/70 bg-card/45 pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [scrollbar-gutter:stable]">
-      <table ref={ref} className={cn("w-full min-w-[600px] caption-bottom text-sm md:min-w-full", className)} {...props} />
+      <table ref={ref} className={cn("w-full min-w-full caption-bottom text-sm", className)} {...props} />
     </div>
   ),
 );

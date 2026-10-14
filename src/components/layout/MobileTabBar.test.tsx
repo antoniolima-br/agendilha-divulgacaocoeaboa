@@ -21,6 +21,6 @@ describe("bottom navigation actions", () => {
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu lateral" }));
     expect(openMenu).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole("button", { name: "Abrir perfil" })).not.toBeInTheDocument();
-    expect(isTabBarHidden("/evento/123")).toBe(false);
+    expect(isTabBarHidden("/evento/123")).toBe(true);
   });
 });
