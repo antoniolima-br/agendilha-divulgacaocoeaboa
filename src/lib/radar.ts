@@ -19,3 +19,24 @@ export function radarEvents(events: AgendaEvent[], preferences: Partial<ProfileA
     return interest && geography;
   }).sort((a, b) => `${eventDateISO(a.date)} ${a.start_time || ""}`.localeCompare(`${eventDateISO(b.date)} ${b.start_time || ""}`));
 }
+
+export type RadarFeedItem<Event, Advertisement> =
+  | { kind: "event"; value: Event }
+  | { kind: "ad"; value: Advertisement };
+
+/** Insere publicidade nativa sem interromper a leitura: um anúncio após cada cinco rolês. */
+export function interleaveRadarAds<Event, Advertisement>(
+  events: readonly Event[],
+  ads: readonly Advertisement[],
+): RadarFeedItem<Event, Advertisement>[] {
+  if (!ads.length) return events.map((value) => ({ kind: "event", value }));
+
+  const mixed: RadarFeedItem<Event, Advertisement>[] = [];
+  events.forEach((event, index) => {
+    mixed.push({ kind: "event", value: event });
+    if ((index + 1) % 5 === 0) {
+      mixed.push({ kind: "ad", value: ads[Math.floor(index / 5) % ads.length] });
+    }
+  });
+  return mixed;
+}

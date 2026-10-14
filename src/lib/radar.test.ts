@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { radarEvents } from "./radar";
+import { interleaveRadarAds, radarEvents } from "./radar";
 import type { AgendaEvent } from "@/components/agenda/types";
 
 const now = new Date("2026-10-07T15:00:00Z");
@@ -24,5 +24,13 @@ describe("personal radar", () => {
     const before = JSON.stringify(events);
     radarEvents(events, {}, now);
     expect(JSON.stringify(events)).toBe(before);
+  });
+  it("places a regional commercial card after every five events", () => {
+    const mixed = interleaveRadarAds([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], ["regional"]);
+    expect(mixed.map((item) => item.kind)).toEqual([
+      "event", "event", "event", "event", "event", "ad",
+      "event", "event", "event", "event", "event", "ad",
+    ]);
+    expect(mixed.filter((item) => item.kind === "ad").map((item) => item.value)).toEqual(["regional", "regional"]);
   });
 });

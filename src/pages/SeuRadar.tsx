@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { CalendarDays, MapPin, Radar, Save, Settings2 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useEvents } from "@/data/events";
-import { radarEvents } from "@/lib/radar";
-import { REGIONS, REGION_NEIGHBORHOODS } from "@/lib/regions";
+import { usePublishedRadarAds } from "@/data/useAds";
+import { interleaveRadarAds, radarEvents } from "@/lib/radar";
+import { REGIONS, REGION_NEIGHBORHOODS, regionOf } from "@/lib/regions";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +14,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { AdCard } from "@/components/anuncios/AdCard";
 import { ROUTES } from "@/routes/config";
 
 const STYLES = ["Samba", "Pagode", "Rock", "MPB", "Funk", "Jazz", "Pop", "Sertanejo", "Eletrônica"];
@@ -57,6 +59,14 @@ export default function SeuRadar() {
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
 
+  const adRegions = useMemo(() => {
+    const neighborhoodRegions = neighborhoods
+      .map((neighborhood) => regionOf({ address_neighborhood: neighborhood }))
+      .filter((region): region is string => Boolean(region));
+    return [...new Set([...regions, ...neighborhoodRegions])];
+  }, [neighborhoods, regions]);
+  const { data: radarAds = [] } = usePublishedRadarAds(adRegions);
+
   useEffect(() => {
     if (!loaded) return;
     setCategories(Array.isArray(profile.event_type_preferences) ? profile.event_type_preferences : []);
@@ -66,6 +76,7 @@ export default function SeuRadar() {
   }, [loaded, profile]);
 
   const feed = useMemo(() => radarEvents(events, profile), [events, profile]);
+  const mixedFeed = useMemo(() => interleaveRadarAds(feed, radarAds), [feed, radarAds]);
   const toggle = (values: string[], value: string, setter: (next: string[]) => void) => {
     setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]);
   };
@@ -128,14 +139,18 @@ export default function SeuRadar() {
         <LoadingState message="Buscando seus rolês…" />
       ) : feed.length ? (
         <ul className="space-y-3" aria-label="Rolês do seu Radar">
-          {feed.map((event) => (
-            <li key={event.id} className="flex gap-4 rounded-lg border border-border/70 bg-card/45 p-3 shadow-card transition-colors hover:border-primary/30 sm:p-4">
-              {event.image_url && <img src={event.image_url} alt="" loading="lazy" className="h-24 w-20 shrink-0 rounded-md object-cover" />}
+          {mixedFeed.map((item, index) => item.kind === "ad" ? (
+            <li key={`ad-${item.value.id}-${index}`} aria-label="Conteúdo patrocinado">
+              <AdCard ad={item.value} sponsored commercialLabel="Destaque da Região" />
+            </li>
+          ) : (
+            <li key={item.value.id} className="flex gap-4 rounded-lg border border-border/70 bg-card/45 p-3 shadow-card transition-colors hover:border-primary/30 sm:p-4">
+              {item.value.image_url && <img src={item.value.image_url} alt="" loading="lazy" className="h-24 w-20 shrink-0 rounded-md object-cover" />}
               <div className="min-w-0 flex-1 space-y-2.5">
-                <h2 className="break-words text-base font-semibold leading-tight text-foreground sm:text-lg">{event.event_title || "Rolê sem título"}</h2>
-                <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{formatEventDateTimeBR(event.date, event.start_time)}</p>
-                <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{event.location || "Local a confirmar"}{event.address_neighborhood ? ` · ${event.address_neighborhood}` : ""}</p>
-                <Button asChild variant="outline" size="sm"><Link to={ROUTES.EVENTO_DETAIL.replace(":slug", event.id)}>Ver rolê</Link></Button>
+                <h2 className="break-words text-base font-semibold leading-tight text-foreground sm:text-lg">{item.value.event_title || "Rolê sem título"}</h2>
+                <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{formatEventDateTimeBR(item.value.date, item.value.start_time)}</p>
+                <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item.value.location || "Local a confirmar"}{item.value.address_neighborhood ? ` · ${item.value.address_neighborhood}` : ""}</p>
+                <Button asChild variant="outline" size="sm"><Link to={ROUTES.EVENTO_DETAIL.replace(":slug", item.value.id)}>Ver rolê</Link></Button>
               </div>
             </li>
           ))}
