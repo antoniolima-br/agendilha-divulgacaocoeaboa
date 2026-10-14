@@ -79,11 +79,11 @@ export function buildEventShareText(ev: ShareableEvent, options: { includeBrief?
     : "";
   
   const lines = [
-    `*$\{title}*`,
-    ev.date ? `📅 $\{ev.date}${time ? ` · $\{time}` : ""}` : "",
-    addr ? `📍 $\{addr}` : "",
+    `*${title}*`,
+    ev.date ? `📅 ${ev.date}${time ? ` · ${time}` : ""}` : "",
+    addr ? `📍 ${addr}` : "",
     brief,
-    options.url ? `\nMais informações: $\{options.url}` : ""
+    options.url ? `\nMais informações: ${options.url}` : ""
   ].filter(Boolean);
   
   return lines.join("\n");
