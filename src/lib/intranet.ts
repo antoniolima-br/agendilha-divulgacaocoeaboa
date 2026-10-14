@@ -1,13 +1,12 @@
 export const INTRANET_SECTORS = ["comercial", "marketing", "administracao", "financeiro", "desenvolvimento"] as const;
 export type IntranetSector = typeof INTRANET_SECTORS[number];
 export function canViewIntranetOverview(roles: string[]): boolean {
-  return roles.some(role => role === 'master' || role === 'senior');
+  return roles.some(role => ['master','senior','admin','comercial','marketing','administracao','financeiro','desenvolvimento'].includes(role));
 }
-export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comercial", marketing: "Marketing", administracao: "Administração", financeiro: "Financeiro", desenvolvimento: "Desenvolvimento" };
+export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comercial", marketing: "Marketing", administracao: "Curadoria", financeiro: "Financeiro", desenvolvimento: "Desenvolvimento" };
+export const sectorOwners: Record<IntranetSector, string> = { comercial: "Mauro Iorio", marketing: "Prof. Ana", administracao: "Cintya Coelho", financeiro: "Bia Pinha", desenvolvimento: "Equipe técnica" };
 export function intranetSectors(roles: string[]): IntranetSector[] {
-  if (roles.some((role) => ["master", "senior"].includes(role))) return [...INTRANET_SECTORS];
-  const assigned = INTRANET_SECTORS.filter((sector) => roles.includes(sector));
-  return assigned.length ? assigned.slice(0,1) : roles.includes("admin") ? ["administracao"] : [];
+  return canViewIntranetOverview(roles) ? [...INTRANET_SECTORS] : [];
 }
 export function isIntranetSector(value: string | undefined): value is IntranetSector { return INTRANET_SECTORS.some((sector) => sector === value); }
 export function campaignLink(id: string) { return `${window.location.origin}/campanha/${id}`; }
@@ -27,3 +26,4 @@ export type IntranetDashboard = {
   queue?: { id: string; event_title: string | null; date: string; start_time: string | null; location: string | null; promotion_choice: string }[];
   ads?: { title: string; status: string; product: string | null; highlight_until: string | null; target_regions: string[] }[];
 };
+export type SectorAccess = { can_view: boolean; editors: Record<IntranetSector, boolean> };
