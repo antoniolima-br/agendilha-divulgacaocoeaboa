@@ -20,7 +20,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   }, []);
   const place = useCallback((point: Point, avoid: boolean) => {
     const { width, height } = viewport();
-    const obstacles = avoid ? Array.from(document.querySelectorAll<HTMLElement>('button, a, input, textarea, select, [role="button"], [data-flyer]'))
+    const obstacles = avoid ? Array.from(document.querySelectorAll<HTMLElement>('button, a, input, textarea, select, [role="button"], [data-flyer], img'))
       .filter((el) => el !== buttonRef.current && !buttonRef.current?.contains(el))
       .map((el) => el.getBoundingClientRect())
       .filter((r) => r.width > 0 && r.height > 0 && r.top < height && r.bottom > 0 && r.left < width && r.right > 0) : [];
