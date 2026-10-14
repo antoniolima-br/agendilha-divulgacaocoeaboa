@@ -17,4 +17,16 @@ describe("Home event presentation", () => {
   it("never truncates the textual collection to eight events", () => {
     expect(splitHomeEventPresentation(Array.from({ length: 12 }, (_, id) => ({ id, image_url: null }))).textOnly).toHaveLength(12);
   });
+  it("includes today's sponsored and unsponsored flyers without future flyers", () => {
+    const rows = [
+      { id: "paid", date: "2026-10-14", image_url: "/paid.jpg", is_highlight: true },
+      { id: "free", date: "14/10/2026", image_url: "/free.jpg", is_highlight: false },
+      { id: "text", date: "2026-10-14", image_url: null },
+      { id: "future", date: "2026-10-15", image_url: "/future.jpg" },
+    ];
+    const split = splitHomeEventPresentation(rows, "2026-10-14");
+    expect(split.textOnly.map(e => e.id)).toEqual(["paid", "free", "text"]);
+    expect(split.visual.map(e => e.id)).toEqual(["paid", "free", "future"]);
+  });
+
 });

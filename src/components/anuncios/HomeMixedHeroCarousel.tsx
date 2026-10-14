@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { CalendarDays, ChevronLeft, ChevronRight, Clock3, ExternalLink, MapPin } from "lucide-react";
+import { CalendarDays, Clock3, ExternalLink, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -121,13 +121,22 @@ export function HomeMixedHeroCarousel({
               key={slide.id}
               type="button"
               variant="ghost"
-              onClick={(event) => { if (!event.defaultPrevented) setSelectedEvent(slide); }}
+              onClick={(event) => {
+                if (event.defaultPrevented || carousel?.clickAllowed() === false) return;
+                const flyer = event.target instanceof Element ? event.target.closest("[data-flyer]") : null;
+                if (event.detail > 0 && flyer && total > 1) {
+                  const bounds = flyer.getBoundingClientRect();
+                  goTo(index + (event.clientX < bounds.left + bounds.width / 2 ? -1 : 1));
+                  return;
+                }
+                setSelectedEvent(slide);
+              }}
               tabIndex={active ? 0 : -1}
               aria-hidden={!active}
               aria-label={`Abrir evento ${slideTitle}`}
               className="block h-auto min-w-0 flex-[0_0_100%] select-none whitespace-normal rounded-none p-0 text-left hover:bg-background md:h-auto"
             >
-              <div className="relative h-[min(60vh,42rem)] w-full overflow-hidden bg-muted">
+              <div data-flyer className="relative h-[min(60vh,42rem)] w-full overflow-hidden bg-muted">
                 {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
                 {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
@@ -149,16 +158,7 @@ export function HomeMixedHeroCarousel({
         </div>
         </div>
 
-        {total > 1 && (
-          <>
-            <Button type="button" variant="secondary" size="icon" className="absolute left-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index - 1)} aria-label="Destaque anterior">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button type="button" variant="secondary" size="icon" className="absolute right-3 top-[35%] z-20 h-11 w-11 -translate-y-1/2 rounded-full border-0 bg-background/20 text-foreground opacity-50 shadow-none backdrop-blur-sm hover:bg-background/40 hover:opacity-90" onClick={() => goTo(index + 1)} aria-label="Próximo destaque">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </>
-        )}
+
       </div>
       {(item.location || item.atrativo_style) && (
         <p className="mx-auto mt-2 max-w-6xl truncate px-4 text-center font-display text-sm font-semibold uppercase tracking-wide text-primary sm:text-base">
