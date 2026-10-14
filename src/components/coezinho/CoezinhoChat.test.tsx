@@ -55,7 +55,7 @@ describe("Coezinho fresh conversations", () => {
 
     Object.defineProperty(textarea, "scrollHeight", { configurable: true, value: 220 });
     fireEvent.change(textarea, { target: { value: "Linha 1\nLinha 2\nLinha 3\nLinha 4\nLinha 5\nLinha 6" } });
-    expect(textarea).toHaveStyle({ height: "144px", overflowY: "auto" });
+    expect(textarea).toHaveStyle({ height: "124px", overflowY: "auto" });
 
     Object.defineProperty(textarea, "scrollHeight", { configurable: true, value: 48 });
     fireEvent.change(textarea, { target: { value: "" } });
