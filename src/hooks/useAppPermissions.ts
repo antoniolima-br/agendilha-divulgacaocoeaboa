@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
 import { administrativeRole, isAdministrativeRole } from "@/lib/access";
 import { qk } from "@/data/queryKeys";
-import { intranetSectors } from "@/lib/intranet";
 
 const ADMIN_PERMISSIONS: PermissionName[] = [
   "events.create",
