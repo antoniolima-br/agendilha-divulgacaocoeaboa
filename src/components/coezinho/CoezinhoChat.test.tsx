@@ -47,8 +47,8 @@ describe("Coezinho fresh conversations", () => {
 
   it.each([
     ["Quais eventos estão rolando hoje?", /programação atual fica na Agenda/],
-    ["Como divulgar meu evento?", /abra Divulgar\/Contratar/],
-    ["Como funciona o app?", /reúne a programação na Agenda/],
+    ["Como divulgar meu evento?", /abra Publicar Evento/],
+    ["Como funciona o app?", /Eu te ajudo a encontrar a programação na Agenda/],
   ])("answers %s with a useful fallback when the connection fails", async (question, answer) => {
     chatState.failNext = true;
     render(<MemoryRouter><CoezinhoChat initiallyOpen /></MemoryRouter>);
