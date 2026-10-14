@@ -5,7 +5,6 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { usePublicEvents } from "@/data/usePublicEvents";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { availableEventDays } from "@/lib/eventCalendar";

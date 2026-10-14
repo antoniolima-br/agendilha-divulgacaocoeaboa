@@ -1,6 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
-- [ ] Acesso exclusivo por WhatsApp com máscara; Todas as datas explícito; menu fecha após navegação; revisão de contraste e testes.
+- [x] Acesso por WhatsApp com máscara; calendário com Todas as datas; menus fecham ao navegar e reabrem; contraste compartilhado corrigido. 19 testes e navegação real desktop/mobile conferidos; cadastro/login completo não executado sem credenciais.
 - [x] Revisar contraste compartilhado, Home, Radar e Perfil; melhorar respiros e reservar faixa do Coezinho acima da navegação. Sessão ativa conferida, botões amarelos com texto escuro e 16 testes aprovados.
 - [ ] Confirmar regra hospedada de senha mínima de seis caracteres sem complexidade — validações do app e funções atualizadas e testadas; ajuste reservado ao usuário em Cloud → Users → Auth settings → Email → Password rules.
 - [x] Conferir ausência de Divulgar no topo e confirmar respostas reais do Coezinho sobre cadastro, publicidade e agenda atual; dez testes aprovados, três perguntas respondidas no app, evento real com link de detalhes e conversa limpa ao reabrir. Respostas factuais funcionam sem chamada de IA.

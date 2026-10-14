@@ -26,8 +26,6 @@ import { getErrorMessage } from "@/lib/error-handler";
 import { toast } from "sonner";
 import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 
-const phonePattern = /^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/;
-
 const createUserSchema = z.object({
   name: z.string().trim().min(2, "Informe o nome completo.").max(120),
   phone: z.string().trim().refine((value) => !validateWhatsappForAccount(value), "Informe o WhatsApp com DDD."),
@@ -41,7 +39,7 @@ const createUserSchema = z.object({
   }
 });
 
-type FieldErrors = Partial<Record<"name" | "email" | "phone" | "neighborhood" | "accessType" | "password" | "confirmPassword", string>>;
+type FieldErrors = Partial<Record<"name" | "phone" | "neighborhood" | "accessType" | "password" | "confirmPassword", string>>;
 
 interface Props {
   open: boolean;
@@ -52,7 +50,6 @@ interface Props {
 
 const initialForm = {
   name: "",
-  email: "",
   phone: "",
   neighborhood: "",
   accessType: "publico" as const,
@@ -61,7 +58,7 @@ const initialForm = {
 };
 
 export function CreateUserDialog({ open, onOpenChange, isMaster, onCreated }: Props) {
-  const [form, setForm] = useState<{ name: string; email: string; phone: string; neighborhood: string; accessType: "publico" | "divulgador" | "artista" | "admin"; password: string; confirmPassword: string }>(initialForm);
+  const [form, setForm] = useState<{ name: string; phone: string; neighborhood: string; accessType: "publico" | "divulgador" | "artista" | "admin"; password: string; confirmPassword: string }>(initialForm);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
 
