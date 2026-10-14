@@ -7,6 +7,7 @@ export const qk = {
     all: ["intranet"] as const,
     dashboard: (owner: string | null, sector: string, days: number) => [...qk.intranet.all, owner, sector, days] as const,
     records: (owner: string | null, table: string) => [...qk.intranet.all, owner, table] as const,
+    flyerEngagement: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "flyer-engagement", startAt, endAt] as const,
   },
   permissions: {
     all: ["app-permissions"] as const,
