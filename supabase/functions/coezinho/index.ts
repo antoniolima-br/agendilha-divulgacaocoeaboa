@@ -1,12 +1,13 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { createOpenAI } from "npm:@ai-sdk/openai";
-import { convertToModelMessages, streamText, type UIMessage } from "npm:ai";
+import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, streamText, type UIMessage } from "npm:ai";
 import {
   createLovableAiGatewayRunIdFetch,
   getLovableAiGatewayRunId,
   withLovableAiGatewayRunIdHeader,
 } from "../_shared/run-id.ts";
 import { filterGuideEvents, buildGuideAgenda, type GuideEstablishment, type GuideEvent } from "./agenda.ts";
+import { confirmedGuideAnswer, guideIntent } from "./confirmedAnswers.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -24,7 +25,6 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   try {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) return json({ error: "O Guia tá fora do ar agora. Tenta daqui a pouco." }, 500);
 
     const body = await req.json().catch(() => ({}));
     const messages = Array.isArray(body?.messages) ? (body.messages as UIMessage[]).slice(-30) : [];
@@ -75,6 +75,24 @@ Deno.serve(async (req) => {
 
     const teamPhone = setting("team_whatsapp").replace(/\D/g, "");
     const teamName = setting("team_contact_name") || "a equipe comercial do Coé a Boa?";
+    const question = messages.findLast(message => message.role === "user")?.parts
+      .filter(part => part.type === "text").map(part => part.text).join(" ") || "";
+    const intent = guideIntent(question);
+    if (intent) {
+      const answer = confirmedGuideAnswer(intent, typedEvents, establishments ?? [], today, { name: teamName, phone: teamPhone });
+      return createUIMessageStreamResponse({
+        headers: cors,
+        stream: createUIMessageStream({
+          originalMessages: messages,
+          execute: ({ writer }) => {
+            writer.write({ type: "text-start", id: "confirmed-answer" });
+            writer.write({ type: "text-delta", id: "confirmed-answer", delta: answer });
+            writer.write({ type: "text-end", id: "confirmed-answer" });
+          },
+        }),
+      });
+    }
+    if (!apiKey) return json({ error: "A conversa livre tá indisponível agora. Você ainda pode perguntar sobre cadastro, publicidade, conta, Radar ou eventos de hoje." }, 503);
     const waLink = teamPhone ? `https://wa.me/${teamPhone.startsWith("55") ? teamPhone : "55" + teamPhone}?text=${encodeURIComponent("Coé! Quero anunciar/destacar meu evento no Coé a Boa?")}` : "";
     const comercial = teamPhone
       ? `Atendente: **${teamName}**. Sempre que a pessoa perguntar preço, valores, pacotes, quiser anunciar, destacar ou patrocinar, entregue os DOIS links: [chamar no WhatsApp](${waLink}) e [Anunciar](/anuncios/novo).`
