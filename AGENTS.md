@@ -15,7 +15,7 @@
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home rotates current/future flyers, today first; Embla unifies swipes, half-flyer taps and keyboard; titles open details and stable media bounds prevent shifts. Agenda promotion stays unchanged.
 - Event details share natively, with WhatsApp/copy fallback; Agenda closes clear selection and replace the event query, preserving filters to prevent reopen loops.
-- Idle launchers and intent-loaded Guide/routes reduce startup; public events share filters/realtime; date re-exports preserve São Paulo.
+- Lazy Guide/routes; shared public filters/realtime; São Paulo date re-exports. Read src/components/coezinho/AGENTS.md for FAB changes.
 - Authenticated flyer reads fill unchanged empty fields; preserve supplied art, generating downloadable missing sponsored art only before batch inserts.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
