@@ -76,6 +76,7 @@ export default function EventDetail() {
   const [searchParams] = useSearchParams();
   const acquisitionOrigin = normalizeEngagementOrigin(searchParams.get("src"));
   const acquisitionChannel = normalizeCurationChannel(searchParams.get("channel"));
+  const guestToken = searchParams.get("guest");
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -110,7 +111,10 @@ export default function EventDetail() {
         }
 
         setEvent(data as unknown as Event);
-        supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin, p_channel: acquisitionChannel }).then(({ error: viewError }) => {
+        const openRequest = guestToken
+          ? supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin, p_channel: acquisitionChannel ?? "curation_link", p_guest_token: guestToken })
+          : supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin, p_channel: acquisitionChannel });
+        openRequest.then(({ error: viewError }) => {
           if (viewError) logger.warn("[EventDetail] não deu pra contar a visualização", viewError);
         });
 
@@ -133,7 +137,7 @@ export default function EventDetail() {
     }
 
     fetchEvent();
-  }, [slug, acquisitionOrigin, acquisitionChannel]);
+  }, [slug, acquisitionOrigin, acquisitionChannel, guestToken]);
 
   if (loading) {
     return (

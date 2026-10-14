@@ -1403,6 +1403,7 @@ export type Database = {
       flyer_engagement_events: {
         Row: {
           event_id: string
+          guest_id: string | null
           id: number
           opened_at: string
           origin: string
@@ -1410,6 +1411,7 @@ export type Database = {
         }
         Insert: {
           event_id: string
+          guest_id?: string | null
           id?: number
           opened_at?: string
           origin?: string
@@ -1417,6 +1419,7 @@ export type Database = {
         }
         Update: {
           event_id?: string
+          guest_id?: string | null
           id?: number
           opened_at?: string
           origin?: string
@@ -1435,6 +1438,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flyer_engagement_events_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "intranet_event_guests"
             referencedColumns: ["id"]
           },
         ]
@@ -1614,6 +1624,69 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      intranet_event_guests: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          created_by: string
+          event_id: string
+          id: string
+          invite_token: string
+          invited_at: string
+          name: string
+          notes: string
+          origin: string
+          status: string
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          created_by?: string
+          event_id: string
+          id?: string
+          invite_token?: string
+          invited_at?: string
+          name: string
+          notes?: string
+          origin?: string
+          status?: string
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          created_by?: string
+          event_id?: string
+          id?: string
+          invite_token?: string
+          invited_at?: string
+          name?: string
+          notes?: string
+          origin?: string
+          status?: string
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intranet_event_guests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intranet_event_guests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       intranet_health_samples: {
         Row: {
@@ -3571,6 +3644,10 @@ export type Database = {
         Args: { p_end_at: string; p_start_at: string }
         Returns: Json
       }
+      intranet_guest_analytics: {
+        Args: { p_end_at: string; p_start_at: string }
+        Returns: Json
+      }
       intranet_health_probe: { Args: never; Returns: boolean }
       intranet_members: { Args: never; Returns: Json }
       intranet_moderate: {
@@ -3617,6 +3694,15 @@ export type Database = {
           }
         | {
             Args: { p_channel?: string; p_event_id: string; p_origin?: string }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_channel: string
+              p_event_id: string
+              p_guest_token: string
+              p_origin: string
+            }
             Returns: undefined
           }
       report_event: {

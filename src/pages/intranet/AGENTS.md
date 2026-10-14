@@ -1,3 +1,4 @@
 - Intranet BI is team-readable; writes require owner/Senior/Master. Cash uses settlements; flyer opens are guarded; never fake metrics.
 - Engagement BI shares one protected report across Consolidated and Marketing views; origins are allowlisted and physical attendance remains unreported until collected.
 - Curadoria impact uses channel-tagged event links and protected aggregate reports; anonymous opens and favorites never reveal personal identity, while leads may show only staff-entered contact data.
+- Guest invites use opaque per-event tokens; Curadoria owns registration, Marketing reads identified opens, and BI consolidates conversions without exposing invite data publicly.
