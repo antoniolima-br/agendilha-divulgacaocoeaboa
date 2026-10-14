@@ -6,7 +6,7 @@ interface Step {
 }
 
 interface StepIndicatorProps {
-  steps: Step[];
+  steps: readonly Step[];
   currentStep: number;
 }
 
