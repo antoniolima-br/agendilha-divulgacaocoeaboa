@@ -14,8 +14,8 @@ export function LoadingState({
 }: LoadingStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-4 rounded-xl border border-border/60 bg-card/35 px-6 text-center animate-fade-in relative overflow-hidden",
-      fullPage ? "min-h-[60vh] w-full" : "min-h-40 py-10",
+      "flex flex-col items-center justify-center gap-4 rounded-2xl border border-border/60 bg-card/35 px-6 text-center animate-fade-in relative overflow-hidden",
+      fullPage ? "min-h-[60vh] w-full" : "min-h-48 py-10",
       className
     )}>
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent animate-pulse pointer-events-none" />

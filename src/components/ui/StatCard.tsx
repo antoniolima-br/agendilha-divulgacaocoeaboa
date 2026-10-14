@@ -63,7 +63,7 @@ export function StatCard({
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{label}</div>
+          <div className="text-xs font-black uppercase tracking-widest text-muted-foreground">{label}</div>
           <div className="text-xl font-black text-foreground">{value}</div>
           {description && <div className="text-[10px] text-muted-foreground mt-0.5">{description}</div>}
         </div>
