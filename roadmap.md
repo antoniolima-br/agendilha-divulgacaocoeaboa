@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Otimizar a edição de rolês na Curadoria: foco exclusivo no selecionado, métricas ao vivo, flyer ampliado, histórico artístico persistente e ações mobile-first.
 - [x] Auditar e reforçar a responsividade integral entre 320 px e ultrawide: base compartilhada, navegação, Home, detalhes, Perfil, formulários, tabelas, Kanban e Gestão Setorial ajustados sem alterar funções.
 - [x] Simplificar o menu do perfil no canto superior direito, exibindo o título do acesso atual e mantendo apenas Ver/Editar Perfil e Sair.
 - [x] Restaurar Menu inferior e mover Perfil para o topo direito da Home, com cadastro público simples para visitantes; seis testes e navegação no celular/computador conferidos. Avatar conectado usa foto/iniciais; conferência com sessão real depende de login na prévia.
