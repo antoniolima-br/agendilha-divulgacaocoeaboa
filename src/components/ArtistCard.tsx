@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import { MapPin, Music, CheckCircle2, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
