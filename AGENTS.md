@@ -30,7 +30,7 @@
 
 - Pitch expires per account; disclosures keep summaries concise. Read src/pages/admin-pitch/AGENTS.md.
 - Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.
-- Home/Agenda share EventDateFilter and public events; availability ignores selected dates to prevent calendar lock-in.
+- Home/Agenda calendar and weekly strip share eventCalendar availability, ignoring selected dates; strip navigation skips empty weeks.
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.

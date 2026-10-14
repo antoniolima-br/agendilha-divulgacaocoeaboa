@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { availableEventDays } from "./eventCalendar";
+import { availableEventDays, eventDayStripWindow } from "./eventCalendar";
 import { DEFAULT_EVENT_FILTERS } from "./publicEventFilters";
 
 describe("dias disponíveis no calendário", () => {
@@ -25,5 +25,15 @@ describe("dias disponíveis no calendário", () => {
       { date: "2026-10-13", status: "publicado", category: "musica", address_neighborhood: "Copacabana", address_city: "Rio de Janeiro" },
     ], { ...DEFAULT_EVENT_FILTERS, region: "Zona Norte", category: "musica", period: "custom", date: today }, today);
     expect([...days]).toEqual(["2026-10-11"]);
+  });
+  it("oculta dias vazios e pula semanas sem programação", () => {
+    const days = new Set(["2026-10-10", "2026-10-12", "2026-10-31"]);
+    expect(eventDayStripWindow(days, today, today)).toEqual({ days: [today, "2026-10-12"], previous: undefined, next: "2026-10-31" });
+    expect(eventDayStripWindow(days, "2026-10-31", today)).toEqual({ days: ["2026-10-31"], previous: today, next: undefined });
+    expect(eventDayStripWindow(new Set(), today, today).days).toEqual([]);
+  });
+  it("reposiciona a semana quando os filtros removem os dias exibidos", () => {
+    expect(eventDayStripWindow(new Set(["2026-10-31"]), today, today).days).toEqual(["2026-10-31"]);
+    expect(eventDayStripWindow(new Set([today]), "2026-10-31", today).days).toEqual([today]);
   });
 });

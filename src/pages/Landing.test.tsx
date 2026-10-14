@@ -1,8 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Landing from "./Landing";
+import { addDaysToISO, saoPauloTodayISO } from "@/lib/eventDate";
+import { clearGlobalEventFilters, getGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 const eventMocks = vi.hoisted(() => ({ data: [] as Record<string, unknown>[] }));
 vi.mock("@/data/usePublicEvents", () => ({ usePublicEvents: () => ({ data: eventMocks.data }) }));
 
@@ -70,7 +72,26 @@ vi.mock("@/components/PersonalizationDialog", () => ({ PersonalizationDialog: ()
 vi.mock("@/components/ShareDialog", () => ({ ShareDialog: () => null }));
 
 describe("Landing sem dados", () => {
-  beforeEach(() => { eventMocks.data = []; });
+  beforeEach(() => { eventMocks.data = []; clearGlobalEventFilters(); });
+  it("mostra apenas dias com eventos públicos, inclusive sem flyer, e aplica a data ao clicar", () => {
+    const today = saoPauloTodayISO();
+    const later = addDaysToISO(today, 2);
+    eventMocks.data = [
+      { id: 'today', date: today, status: 'publicado', image_url: null },
+      { id: 'later', date: later, status: 'aprovado', image_url: null },
+      { id: 'pending', date: addDaysToISO(today, 1), status: 'pendente', image_url: null },
+    ];
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    const strip = within(screen.getByRole('navigation', { name: 'Dias com rolês' }));
+    const days = strip.getAllByRole('button').filter(button => button.hasAttribute('aria-pressed'));
+    expect(days).toHaveLength(2);
+    fireEvent.click(days[1]);
+    expect(getGlobalEventFilters()).toMatchObject({ period: 'custom', date: later });
+  });
+  it("oculta a barra quando não existe nenhuma data disponível", () => {
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    expect(screen.queryByRole('navigation', { name: 'Dias com rolês' })).not.toBeInTheDocument();
+  });
   it("oferece cada evento sem flyer somente uma vez, na programação textual", () => {
     eventMocks.data = [{ id: "text-only", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
