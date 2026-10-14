@@ -117,6 +117,24 @@ describe("Landing sem dados", () => {
     expect(list.queryByText("Ainda em revisão")).not.toBeInTheDocument();
     expect(list.queryByText("Arquivo privado")).not.toBeInTheDocument();
   });
+  it("ordena as outras programações da mais próxima para a mais distante e mostra data, horário e local", () => {
+    const today = saoPauloTodayISO();
+    const tomorrow = addDaysToISO(today, 1);
+    eventMocks.data = [
+      { id: "later", status: "publicado", date: tomorrow, start_time: "21:30", event_title: "Rolê de amanhã", location: "Praça Nova", address_neighborhood: "Ramos" },
+      { id: "today-late", status: "aprovado", date: today, start_time: "20:00", event_title: "Rolê hoje à noite", location: "Casa Dois" },
+      { id: "today-early", status: "publicado", date: today, start_time: "18:00", event_title: null, atrativo_style: "Samba da Praça", location: "Coreto", address_neighborhood: "Olaria" },
+    ];
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
+    const list = within(screen.getByRole("list", { name: "Outras programações" }));
+    expect(list.getAllByRole("heading").map((heading) => heading.textContent)).toEqual([
+      "Samba da Praça",
+      "Rolê hoje à noite",
+      "Rolê de amanhã",
+    ]);
+    expect(list.getByText(/às 18:00/)).toBeInTheDocument();
+    expect(list.getByText("Coreto · Olaria")).toBeInTheDocument();
+  });
   it("oferece cada evento sem flyer somente uma vez, na programação textual", () => {
     eventMocks.data = [{ id: "text-only", status: "publicado", event_title: "Rolê sem flyer", date: "2099-01-01", location: "Praça", start_time: "19:00", image_url: null, category: "musica", is_free: false, is_highlight: true }];
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
