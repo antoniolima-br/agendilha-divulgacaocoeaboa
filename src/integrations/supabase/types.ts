@@ -1406,18 +1406,21 @@ export type Database = {
           id: number
           opened_at: string
           origin: string
+          source_channel: string
         }
         Insert: {
           event_id: string
           id?: number
           opened_at?: string
           origin?: string
+          source_channel?: string
         }
         Update: {
           event_id?: string
           id?: number
           opened_at?: string
           origin?: string
+          source_channel?: string
         }
         Relationships: [
           {
@@ -1715,6 +1718,7 @@ export type Database = {
           created_at: string
           created_by: string
           ends_on: string | null
+          event_id: string | null
           id: string
           monthly_cents: number
           notes: string
@@ -1728,6 +1732,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           ends_on?: string | null
+          event_id?: string | null
           id?: string
           monthly_cents?: number
           notes?: string
@@ -1741,6 +1746,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           ends_on?: string | null
+          event_id?: string | null
           id?: string
           monthly_cents?: number
           notes?: string
@@ -1748,7 +1754,22 @@ export type Database = {
           stage?: string
           starts_on?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "intranet_leads_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intranet_leads_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       intranet_operations: {
         Row: {
@@ -3533,6 +3554,10 @@ export type Database = {
           video_link: string
         }[]
       }
+      intranet_curation_impact: {
+        Args: { p_end_at: string; p_start_at: string }
+        Returns: Json
+      }
       intranet_dashboard: {
         Args: { p_days?: number; p_sector: string }
         Returns: Json
@@ -3585,10 +3610,15 @@ export type Database = {
           registro_id: string
         }[]
       }
-      record_event_open: {
-        Args: { p_event_id: string; p_origin?: string }
-        Returns: undefined
-      }
+      record_event_open:
+        | {
+            Args: { p_event_id: string; p_origin?: string }
+            Returns: undefined
+          }
+        | {
+            Args: { p_channel?: string; p_event_id: string; p_origin?: string }
+            Returns: undefined
+          }
       report_event: {
         Args: {
           report_description?: string
