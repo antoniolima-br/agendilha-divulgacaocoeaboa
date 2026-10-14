@@ -36,4 +36,4 @@
 - Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- Credit UI/PDF.
+- UI credits/PDF separate.
