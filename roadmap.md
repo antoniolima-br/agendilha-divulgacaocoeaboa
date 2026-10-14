@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [ ] Refinar Coezinho como guia/recepcionista, limpar conversa a cada fechamento, reduzir sugestões e acolher perguntas livres; renomear navegação para Divulgar/Contratar e verificar fechamento/reabertura.
 - [x] Remover ações do topo e integrar Meu Radar e Anunciar / Parcerias à navegação inferior/lateral, com submenu Cadastrar Evento e Espaço Publicitário; 20 testes aprovados, menus conferidos em 390/1280 px e três destinos abertos com sessão autenticada, preservando permissões.
 - [x] Compactar Coezinho com preto/amarelo fluorescente da marca, ampliar orientações reais do Guia e simplificar rodapé para um único crédito LimaX com X laranja; dez testes aprovados, celular/computador sem overflow, crédito único e ausência de logotipo conferidos. Respostas reais bloqueadas pela condição registrada abaixo.
 - [x] Ajustar Coezinho no canto inferior direito, esmaecer após seis segundos e renovar chat limpo com seis sugestões do app; canto, repouso, retorno, foco e fechamento conferidos em computador e celular, cinco testes aprovados.
