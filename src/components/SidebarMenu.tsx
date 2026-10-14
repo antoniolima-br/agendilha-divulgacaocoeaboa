@@ -97,6 +97,13 @@ export function SidebarMenu({ onClose }: Props) {
               </div>
             </div>
           </div>
+          {!user && (
+            <Button asChild size="sm" className="w-full font-bold">
+              <Link to={ROUTES.CADASTRO_PUBLICO} onClick={onClose}>
+                Personalizar preferências
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
