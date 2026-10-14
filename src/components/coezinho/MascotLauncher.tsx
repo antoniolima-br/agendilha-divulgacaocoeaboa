@@ -54,8 +54,12 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     if (!positionRef.current && lastPosition) initial = { x: lastPosition.x * width, y: lastPosition.y * height };
     place(initial, Boolean(lastPosition));
     const resize = () => { if (positionRef.current) place(positionRef.current, true); };
+    const keepAboveNavigation = () => { if (positionRef.current) place(positionRef.current, false); };
+    const navigation = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"]');
+    const navigationObserver = new ResizeObserver(keepAboveNavigation);
+    if (navigation) navigationObserver.observe(navigation);
     window.addEventListener("resize", resize); window.visualViewport?.addEventListener("resize", resize);
-    return () => { window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
+    return () => { navigationObserver.disconnect(); window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
   }, [pathname, place, reservedBottom]);
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
     className="coezinho-fab fixed z-50 h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
