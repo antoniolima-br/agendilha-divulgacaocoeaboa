@@ -23,7 +23,7 @@ export function AdditionalEventsSection({ form }: { form: UseFormReturn<Submissi
         <Button
           type="button"
           variant="outline"
-          className="gap-2"
+          className="w-full gap-2 whitespace-normal sm:w-auto"
           disabled={fields.length >= 10}
           onClick={() => append({ eventTitle: "", date: "", startTime: "", endTime: "", atrativoName: "", category: "", ageRating: "Livre", description: "" })}
         >

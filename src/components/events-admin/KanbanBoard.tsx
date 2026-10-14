@@ -30,7 +30,7 @@ export function KanbanBoard({ submissions, onSelect, selectedId }: Props) {
         {EDITORIAL_STAGES.filter(s => s.key !== "rejeitado").map(stage => {
           const items = byStage[stage.key] || [];
           return (
-            <div key={stage.key} className="flex-shrink-0 w-[280px] flex flex-col">
+            <div key={stage.key} className="flex w-[85vw] max-w-[280px] flex-shrink-0 flex-col">
               <div className={`rounded-t-xl border border-b-0 px-3 py-2 ${stage.color}`}>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider">{stage.label}</span>

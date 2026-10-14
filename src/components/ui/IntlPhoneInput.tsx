@@ -21,7 +21,7 @@ export const IntlPhoneInput = forwardRef<HTMLInputElement, Props>(
     return (
       <div className="flex w-full min-w-0 gap-2">
         <Select value={ddi} onValueChange={(code) => onChange(composePhone(code, national))}>
-          <SelectTrigger className="h-12 w-[108px] shrink-0" aria-label="Código do país (DDI)">
+          <SelectTrigger className="h-12 min-w-[108px] shrink-0" aria-label="Código do país (DDI)">
             <SelectValue>{`${info.flag} +${ddi}`}</SelectValue>
           </SelectTrigger>
           <SelectContent>

@@ -20,7 +20,8 @@ export function isTabBarHidden(pathname: string) {
   return (
     pathname.startsWith("/enviar-evento") ||
     pathname.startsWith("/auth") ||
-    pathname.startsWith("/cadastro")
+    pathname.startsWith("/cadastro") ||
+    pathname.startsWith("/evento/")
   );
 }
 

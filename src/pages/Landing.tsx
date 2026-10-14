@@ -377,8 +377,8 @@ export default function Landing() {
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
                    className={cn("h-11 min-w-14 flex-1 flex-col gap-0 rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
-                   <span className="text-[8px] font-bold uppercase leading-none tracking-wide sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
-                   <span className="mt-0.5 text-[11px] font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
+                    <span className="text-[10px] font-bold uppercase leading-none sm:text-xs">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
+                   <span className="mt-0.5 text-xs font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
                  </Button>
                );
              })}
