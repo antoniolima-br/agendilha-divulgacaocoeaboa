@@ -83,7 +83,7 @@ export function computePermissions(input: {
 }): { roles: string[]; permissions: Set<PermissionName> } {
   const roleNames = [...input.roleNames];
   const permissions = new Set<PermissionName>();
-  if (intranetSectors(roleNames).length) permissions.add("intranet.read");
+  if (roleNames.includes("master")) permissions.add("intranet.read");
   if (!roleNames.some((role) => ["master", "senior"].includes(role)) && roleNames.some((role) => ["comercial", "marketing", "administracao", "desenvolvimento"].includes(role))) return { roles: roleNames, permissions };
   const staffRole = administrativeRole(roleNames);
   const isAdminRole = isAdministrativeRole(staffRole);
