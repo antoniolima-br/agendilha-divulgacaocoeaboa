@@ -22,7 +22,7 @@ export function LoadingState({
       <div className="flex h-14 w-14 items-center justify-center rounded-full border border-primary/20 bg-primary/10 relative z-10">
         <Loader2 className="h-7 w-7 animate-spin text-primary" />
       </div>
-      <p className="max-w-sm text-sm font-semibold leading-relaxed text-muted-foreground relative z-10">{message}</p>
+      <p className="relative z-10 max-w-sm text-sm font-semibold leading-relaxed text-muted-foreground" role="status" aria-live="polite">{message}</p>
     </div>
   );
 }
