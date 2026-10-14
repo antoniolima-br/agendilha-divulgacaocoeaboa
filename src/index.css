@@ -4,6 +4,16 @@
 
 .coezinho-fab { cursor: grab; transition: opacity 450ms ease; }
 .limax-brand-x { color: hsl(var(--brand-limax)); }
+/* Legacy public footer keeps its markup; hide the retired brand block. */
+footer div:has(> img[alt="Coé a Boa?"]) { display: none; }
+footer .grid:has(> div > img[alt="Coé a Boa?"]) {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media (min-width: 640px) {
+  footer .grid:has(> div > img[alt="Coé a Boa?"]) { flex-direction: row; }
+}
 .coezinho-fab[data-idle="true"] { opacity: 0.22; }
 .coezinho-fab:focus-visible { opacity: 1; }
 .coezinho-composer [data-slot="input-group"] { height: auto; flex-direction: column; background: hsl(var(--card)); }
