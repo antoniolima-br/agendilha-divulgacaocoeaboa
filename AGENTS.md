@@ -35,5 +35,5 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
-- Intranet BI is management-readable; department writes are server-gated by owner/Senior/Master. Cash uses settled payments; never fake telemetry.
+- Intranet BI is team-readable; writes require owner/Senior/Master. Cash uses settlements; never fake telemetry.
 - Menus follow roles; Home omits header actions. Auth normalizes phones. Shared primitives own visual consistency.
