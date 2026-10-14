@@ -24,13 +24,13 @@ import {
 import { callEdge } from "@/lib/edge";
 import { getErrorMessage } from "@/lib/error-handler";
 import { toast } from "sonner";
+import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 
 const phonePattern = /^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/;
 
 const createUserSchema = z.object({
   name: z.string().trim().min(2, "Informe o nome completo.").max(120),
-  email: z.string().trim().email("Informe um e-mail válido.").max(255),
-  phone: z.string().trim().refine((value) => !value || phonePattern.test(value), "Informe DDD + número."),
+  phone: z.string().trim().refine((value) => !validateWhatsappForAccount(value), "Informe o WhatsApp com DDD."),
   neighborhood: z.string().trim().max(100),
   accessType: z.enum(["publico", "divulgador", "artista", "admin"]),
   password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres.").max(72),
@@ -90,7 +90,6 @@ export function CreateUserDialog({ open, onOpenChange, isMaster, onCreated }: Pr
     try {
       await callEdge("create-user", {
         name: parsed.data.name,
-        email: parsed.data.email,
         phone: parsed.data.phone,
         neighborhood: parsed.data.neighborhood,
         access_type: parsed.data.accessType,
@@ -129,14 +128,9 @@ export function CreateUserDialog({ open, onOpenChange, isMaster, onCreated }: Pr
               <Input id="new-user-name" value={form.name} maxLength={120} autoComplete="name" onChange={(e) => setForm((current) => ({ ...current, name: e.target.value }))} disabled={saving} />
               {fieldError("name")}
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="new-user-email">E-mail</Label>
-              <Input id="new-user-email" type="email" value={form.email} maxLength={255} autoComplete="email" onChange={(e) => setForm((current) => ({ ...current, email: e.target.value }))} disabled={saving} />
-              {fieldError("email")}
-            </div>
             <div className="space-y-2">
-              <Label htmlFor="new-user-phone">Telefone</Label>
-              <Input id="new-user-phone" value={form.phone} maxLength={16} inputMode="tel" autoComplete="tel" placeholder="(21) 99999-9999" onChange={(e) => setForm((current) => ({ ...current, phone: e.target.value }))} disabled={saving} />
+              <Label htmlFor="new-user-phone">WhatsApp</Label>
+              <Input id="new-user-phone" type="tel" required value={form.phone} maxLength={16} inputMode="tel" autoComplete="tel" placeholder="(21) 99999-9999" onChange={(e) => setForm((current) => ({ ...current, phone: maskBrPhone(e.target.value) }))} disabled={saving} />
               {fieldError("phone")}
             </div>
             <div className="space-y-2">
