@@ -183,7 +183,7 @@ export function LegalStep({ form, isPublished = false, submissionId }: { form: U
       </div>
 
       {/*
-        Seção "Responsável pelo evento" (Fase 7 – novo modelo).
+        Seção "Responsável pelo evento" (Fase 7 – estrutura atual).
         - responsavelNome vem do cadastro base (nickName), mas é editável.
         - usarMeuWhatsapp true → duvidasWhatsapp espelha basicPhone (só leitura).
         - usarMeuWhatsapp false → duvidasWhatsapp fica editável e obrigatório.

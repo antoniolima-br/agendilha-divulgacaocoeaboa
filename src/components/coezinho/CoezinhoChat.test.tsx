@@ -14,6 +14,7 @@ vi.mock("@ai-sdk/react", async () => {
     } };
   } };
 });
+vi.mock("./GuidePromotions", () => ({ GuidePromotions: () => null }));
 
 describe("Coezinho fresh conversations", () => {
   afterEach(() => {
