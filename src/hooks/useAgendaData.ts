@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useEvents } from "@/data/events";
 import { useCallback } from "react";
 
@@ -7,20 +7,19 @@ import { useCallback } from "react";
  * Proxies to the new unified useEvents hook.
  */
 export function useAgendaData() {
-  const [initialEventId, setInitialEventId] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   
   const { events, ratings, isLoading, trackView, trackShare } = useEvents({ includeRatings: false });
-  const clearInitialEventId = useCallback(() => setInitialEventId(null), []);
-
-  // Pick up ?event= from URL once events land.
-  useEffect(() => {
-    if (!events.length) return;
-    const params = new URLSearchParams(window.location.search);
-    const eventId = params.get("event");
-    if (eventId && events.find((e) => e.id === eventId)) {
-      setInitialEventId(eventId);
-    }
-  }, [events]);
+  const eventId = searchParams.get("event");
+  const initialEventId = events.some((event) => event.id === eventId) ? eventId : null;
+  // Consume the router deep link so refreshed data cannot reopen the dialog.
+  const clearInitialEventId = useCallback(() => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete("event");
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
 
   return {
     events,
