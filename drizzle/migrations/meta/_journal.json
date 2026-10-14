@@ -351,6 +351,13 @@
       "when": 1792019533614,
       "tag": "0049_master_only_intranet_and_curation_actions",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1792019906182,
+      "tag": "0050_require_event_title_for_approval",
+      "breakpoints": true
     }
   ]
 }

@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QRCodeSVG } from "qrcode.react";
-import { ArrowLeft, Check, Copy, Download, ImagePlus, Loader2, MessageCircle, PauseCircle, Pencil, Plus, Search, Share2, Trash2, Upload, X } from "lucide-react";
+import { AlertCircle, ArrowLeft, Check, Copy, Download, ImagePlus, Loader2, MessageCircle, PauseCircle, Pencil, Plus, Search, Share2, Trash2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
 import { usePublicEventsRealtime } from "@/data/publicEventsRealtime";
 import { prepareUploadImage } from "@/lib/uploadImage";
+import { extractFlyer } from "@/lib/flyerExtraction";
 import { curationEventInvite, curationEventLink, emptyCurationEventForm, validateCurationEventForm, type CurationEventForm } from "@/lib/curationEvents";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { Button } from "@/components/ui/button";
@@ -50,8 +51,12 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState("register");
+  const [readingFlyer, setReadingFlyer] = useState(false);
+  const [flyerNotice, setFlyerNotice] = useState("");
+  const flyerReadRequest = useMemo(() => new AbortController(), []);
   const preview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
+  useEffect(() => () => flyerReadRequest.abort(), [flyerReadRequest]);
 
   const eventsQuery = useQuery({
     queryKey: qk.intranet.records(user?.id ?? null, "curation-events"),
@@ -130,10 +135,32 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
     onError: (error) => toast.error(errorMessage(error, "Não deu pra concluir essa ação. Tente novamente.")),
   });
 
-  function chooseFile(next: File | null) {
+  async function chooseFile(next: File | null) {
     if (next && !next.type.startsWith("image/")) return toast.error("Escolha uma imagem JPG, PNG ou WEBP.");
     if (next && next.size > MAX_FLYER_MB * 1024 * 1024) return toast.error(`O flyer pode ter até ${MAX_FLYER_MB} MB.`);
     setFile(next);
+    setFlyerNotice("");
+    if (!next) return;
+    setReadingFlyer(true);
+    try {
+      const prepared = await prepareUploadImage(next);
+      const fields = await extractFlyer(prepared, flyerReadRequest.signal);
+      setForm((current) => ({
+        ...current,
+        title: current.title || fields.eventTitle || "",
+        date: current.date || fields.date || "",
+        startTime: current.startTime || fields.startTime || "",
+      }));
+      setFlyerNotice(fields.eventTitle
+        ? "O Coezinho leu o flyer. Confira o título, a data e o horário."
+        : "O Coezinho não encontrou o título. Preencha o nome do rolê manualmente antes de aprovar ou publicar.");
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        setFlyerNotice("O Coezinho não conseguiu ler o título. Preencha o nome do rolê manualmente antes de aprovar ou publicar.");
+      }
+    } finally {
+      setReadingFlyer(false);
+    }
   }
 
   function edit(event: CurationEvent) {
@@ -174,10 +201,11 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
             <div className="flex min-h-80 items-center justify-center overflow-hidden rounded-md border border-border bg-card/40 p-3 sm:min-h-[28rem]">
               {preview || form.flyerUrl ? <img src={preview || form.flyerUrl} alt="Flyer do evento selecionado" className="max-h-[70vh] w-full rounded-md object-contain" /> : <div className="text-center text-muted-foreground"><ImagePlus className="mx-auto mb-2 h-8 w-8" /><p className="text-sm">A prévia do flyer aparece aqui.</p></div>}
             </div>
-            <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card/40 px-4 text-sm font-semibold hover:border-primary/55 hover:bg-accent"><Upload className="h-4 w-4" />{file ? file.name : form.id ? "Substituir flyer" : "Enviar flyer"}<input className="sr-only" type="file" accept="image/*" onChange={(event) => chooseFile(event.target.files?.[0] ?? null)} /></label>
+            <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-border bg-card/40 px-4 text-sm font-semibold hover:border-primary/55 hover:bg-accent"><Upload className="h-4 w-4" />{readingFlyer ? "Coezinho lendo o flyer…" : file ? file.name : form.id ? "Substituir flyer" : "Enviar flyer"}<input className="sr-only" type="file" accept="image/*" disabled={readingFlyer} onChange={(event) => void chooseFile(event.target.files?.[0] ?? null)} /></label>
+            {flyerNotice && <p role="status" className="flex items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-3 text-sm"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{flyerNotice}</p>}
             <div className="grid min-w-0 gap-4 sm:grid-cols-2">
               <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-artist-history">Histórico da atração principal</Label><Textarea id="curation-artist-history" value={form.artistHistory} maxLength={4000} rows={6} placeholder="Casas de show, festivais, cidades e palcos onde a atração já se apresentou" onChange={(event) => setForm((current) => ({ ...current, artistHistory: event.target.value }))} /><p className="text-right text-xs text-muted-foreground">{form.artistHistory.length}/4.000</p></div>
-              <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-title">Nome do evento</Label><Input id="curation-title" value={form.title} maxLength={120} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} required /></div>
+              <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-title">Título do rolê</Label><Input id="curation-title" value={form.title} maxLength={120} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} required /><p className="text-xs text-muted-foreground">Obrigatório para aprovar ou publicar.</p></div>
               <div className="min-w-0 space-y-2"><Label htmlFor="curation-date">Data</Label><Input id="curation-date" type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required /></div>
               <div className="min-w-0 space-y-2"><Label htmlFor="curation-time">Horário</Label><Input id="curation-time" type="time" value={form.startTime} onChange={(event) => setForm((current) => ({ ...current, startTime: event.target.value }))} required /></div>
               <div className="min-w-0 space-y-2 sm:col-span-2"><Label htmlFor="curation-link">Link de inscrição / saiba mais</Label><Input id="curation-link" type="url" inputMode="url" placeholder="https://" value={form.registrationUrl} onChange={(event) => setForm((current) => ({ ...current, registrationUrl: event.target.value }))} /></div>
@@ -192,10 +220,10 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
 
         <TabsContent value="manage" className="pt-4">
           <div className="relative mb-4 max-w-md"><Search className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" /><Input aria-label="Buscar rolê" className="pl-9" placeholder="Buscar por nome ou data" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
-          {eventsQuery.isLoading ? <p className="py-8" role="status">Carregando rolês…</p> : eventsQuery.isError ? <div className="space-y-3 py-8"><p role="alert">Não deu pra carregar os rolês.</p><Button variant="outline" onClick={() => void eventsQuery.refetch()}>Tentar novamente</Button></div> : visibleEvents.length === 0 ? <p className="py-8 text-sm text-muted-foreground">Nenhum rolê encontrado. Use o cadastro rápido para começar.</p> : <ul className="grid gap-4 lg:grid-cols-2">{visibleEvents.map((event) => <li key={event.id} className="min-w-0 rounded-lg border bg-card p-4 shadow-sm">
-            <div className="grid min-w-0 gap-4 sm:grid-cols-[9rem_minmax(0,1fr)]">{event.image_url ? <img src={event.image_url} alt={`Flyer de ${event.event_title || "rolê"}`} className="aspect-[3/4] w-full rounded-md object-contain" /> : <div className="flex aspect-[3/4] w-full items-center justify-center rounded-md border bg-card/40"><ImagePlus className="h-7 w-7 text-muted-foreground" /></div>}
-            <div className="min-w-0"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="break-words text-lg font-semibold">{event.event_title || "Rolê sem título"}</h3><Badge variant="outline">{event.status === "cancelado" ? "suspenso" : event.status}</Badge></div><p className="mt-1 text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p><div className="mt-4 border-t pt-3"><p className="text-xs font-semibold uppercase text-muted-foreground">Histórico artístico</p><p className="mt-1 line-clamp-4 text-sm">{event.artist_history || "Ainda não informado."}</p></div><EventImpactCounters impact={impactByEvent.get(event.id)} /></div></div>
-            {canEdit && <div className="mt-4 grid grid-cols-2 gap-2 border-t pt-4 sm:grid-cols-4"><Button className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "approve")}><Check />Aprovar</Button><Button variant="outline" className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "reject")}><X />Rejeitar</Button><Button variant="secondary" className="min-h-11" disabled={moderation.isPending} onClick={() => decide(event, "suspend")}><PauseCircle />Suspender</Button><Button variant="outline" className="min-h-11" onClick={() => edit(event)}><Pencil />Editar</Button></div>}
+          {eventsQuery.isLoading ? <p className="py-8" role="status">Carregando rolês…</p> : eventsQuery.isError ? <div className="space-y-3 py-8"><p role="alert">Não deu pra carregar os rolês.</p><Button variant="outline" onClick={() => void eventsQuery.refetch()}>Tentar novamente</Button></div> : visibleEvents.length === 0 ? <p className="py-8 text-sm text-muted-foreground">Nenhum rolê encontrado. Use o cadastro rápido para começar.</p> : <ul className="grid gap-6">{visibleEvents.map((event) => <li key={event.id} className="min-w-0 rounded-lg border bg-card p-3 shadow-sm sm:p-5">
+            <div className="flex min-h-[26rem] w-full items-center justify-center overflow-hidden rounded-md border bg-background/40 sm:min-h-[38rem]">{event.image_url ? <img src={event.image_url} alt={`Flyer de ${event.event_title || "rolê"}`} className="max-h-[80vh] w-full object-contain" /> : <div className="flex min-h-[26rem] w-full items-center justify-center"><ImagePlus className="h-10 w-10 text-muted-foreground" /></div>}</div>
+            <div className="mt-4 min-w-0"><div className="flex flex-wrap items-start justify-between gap-2"><h3 className="break-words text-xl font-semibold">{event.event_title || "Rolê sem título"}</h3><Badge variant="outline">{event.status === "cancelado" ? "suspenso" : event.status}</Badge></div><p className="mt-1 text-sm text-muted-foreground">{formatEventDateTimeBR(event.date, event.start_time)}</p>{!event.event_title?.trim() && <p role="alert" className="mt-3 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-3 text-sm"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Preencha o título antes de aprovar este rolê.</p>}<div className="mt-4 border-t pt-3"><p className="text-xs font-semibold uppercase text-muted-foreground">Histórico artístico</p><p className="mt-1 line-clamp-4 text-sm">{event.artist_history || "Ainda não informado."}</p></div><EventImpactCounters impact={impactByEvent.get(event.id)} /></div>
+            {canEdit && <div className="mt-4 grid grid-cols-2 gap-3 border-t pt-4 sm:grid-cols-4"><Button className="min-h-12 text-base" disabled={moderation.isPending || !event.event_title?.trim()} onClick={() => decide(event, "approve")}><Check />Aprovar</Button><Button variant="outline" className="min-h-12 text-base" disabled={moderation.isPending} onClick={() => decide(event, "reject")}><X />Rejeitar</Button><Button variant="secondary" className="min-h-12 text-base" disabled={moderation.isPending} onClick={() => decide(event, "suspend")}><PauseCircle />Suspender</Button><Button variant="outline" className="min-h-12 text-base" onClick={() => edit(event)}><Pencil />Editar</Button></div>}
           </li>)}</ul>}
         </TabsContent>
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { curationEventInvite, curationEventLink, emptyCurationEventForm, validateCurationEventForm } from "./curationEvents";
 
 describe("curationEvents", () => {
-  it("exige nome, data e horário no cadastro rápido", () => {
+  it("exige título, data e horário no cadastro rápido", () => {
     expect(validateCurationEventForm(emptyCurationEventForm())).toBe("Informe nome, data e horário do rolê.");
   });
 
