@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
       { password: tempPassword },
     );
     if (updateError) {
-      return new Response(JSON.stringify({ error: updateError.message }), {
+      return new Response(JSON.stringify({ error: "Não foi possível gerar a senha temporária" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -153,7 +153,8 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
-    return new Response(JSON.stringify({ error: (err as Error).message }), {
+    console.error("admin-reset-password failed", err instanceof Error ? err.name : "UnknownError");
+    return new Response(JSON.stringify({ error: "Não foi possível concluir agora" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

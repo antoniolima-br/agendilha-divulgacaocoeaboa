@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     });
     if (createError || !created.user) {
       const duplicate = /already|registered|exists/i.test(createError?.message ?? "");
-      return json({ error: duplicate ? "Já existe uma conta com este WhatsApp" : createError?.message ?? "Não foi possível criar a conta" }, duplicate ? 409 : 400);
+      return json({ error: duplicate ? "Já existe uma conta com este WhatsApp" : "Não foi possível criar a conta" }, duplicate ? 409 : 400);
     }
 
     const userId = created.user.id;
@@ -99,6 +99,7 @@ Deno.serve(async (req) => {
 
     return json({ success: true, user_id: userId }, 201);
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Erro inesperado" }, 500);
+    console.error("create-user failed", error instanceof Error ? error.name : "UnknownError");
+    return json({ error: "Não foi possível concluir agora" }, 500);
   }
 });

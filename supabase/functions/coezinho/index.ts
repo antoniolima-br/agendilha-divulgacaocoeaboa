@@ -17,6 +17,28 @@ const cors = {
 const json = (b: unknown, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
+function validateMessages(value: unknown): UIMessage[] {
+  if (!Array.isArray(value)) return [];
+  return value.slice(-30).filter((message): message is UIMessage => {
+    if (!message || typeof message !== "object") return false;
+    const candidate = message as { role?: unknown; parts?: unknown };
+    if (candidate.role !== "user" && candidate.role !== "assistant") return false;
+    if (!Array.isArray(candidate.parts) || candidate.parts.length > 20) return false;
+    return candidate.parts.every((part) => {
+      if (!part || typeof part !== "object") return false;
+      const record = part as { type?: unknown; text?: unknown };
+      return record.type !== "text" || (typeof record.text === "string" && record.text.length <= 4000);
+    });
+  });
+}
+
+async function fingerprint(req: Request): Promise<string> {
+  const ip = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ua = req.headers.get("user-agent")?.slice(0, 160) ?? "unknown";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${ip}|${ua}`));
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function saoPauloToday() {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 }
@@ -27,13 +49,18 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
 
     const body = await req.json().catch(() => ({}));
-    const messages = Array.isArray(body?.messages) ? (body.messages as UIMessage[]).slice(-30) : [];
+    const messages = validateMessages(body?.messages);
     if (messages.length === 0) return json({ error: "Manda uma mensagem pra começar." }, 400);
 
     const today = saoPauloToday();
     const databaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY");
     if (!databaseKey) return json({ error: "O Guia tá fora do ar agora. Tenta daqui a pouco." }, 500);
     const sb = createClient(Deno.env.get("SUPABASE_URL")!, databaseKey);
+    const { data: allowed, error: quotaError } = await sb.rpc("consume_coezinho_quota", {
+      p_fingerprint: await fingerprint(req),
+    });
+    if (quotaError) console.error("coezinho quota unavailable", quotaError.code);
+    if (quotaError || !allowed) return json({ error: "Tô recebendo muita mensagem agora. Tenta de novo em alguns minutinhos." }, 429);
     const { data: events, error: eventsError } = await sb
       .from("public_submissions")
       .select("event_title, date, start_time, end_time, location, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, latitude, longitude, category, description, slug, id, is_highlight, highlight_active, highlight_hidden, highlight_until, image_url, is_free, age_rating, is_suitable_for_minors")
