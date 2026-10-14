@@ -1,6 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
-- [ ] Corrigir fechamento definitivo dos detalhes de eventos, limpando seleção e URL; validar X, botão fechar e clique fora.
+- [x] Corrigir fechamento definitivo dos detalhes de eventos, limpando seleção e URL sem perder filtros; três testes aprovados e evento público real conferido com X, Fechar Detalhes, clique fora e Escape, permanecendo fechado após recarregar.
 - [x] Ampliar temporariamente Outras Programações para todas as datas públicas disponíveis, mantendo rolagem e proteção de registros privados; dez testes aprovados, dez eventos reais de sete datas conferidos, rolagem/links funcionando e celular sem overflow. Arquivos privados e pendentes continuam protegidos.
 - [x] Unificar temporariamente a lista textual de hoje e navegar no carrossel por toque nas metades, sem setas; 17 testes aprovados, eventos públicos reais e detalhes conferidos, celular sem overflow; oito linhas simuladas somente no navegador confirmaram rolagem nativa após cinco visíveis.
 - [x] Filtrar a barra semanal da Home pela disponibilidade do calendário; ocultar dias vazios e pular semanas vazias. Dez testes aprovados; quatro datas reais exibidas, seleção abriu Explorar com a data e celular sem overflow.
