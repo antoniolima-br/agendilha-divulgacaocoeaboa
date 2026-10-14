@@ -79,7 +79,7 @@ describe("Landing sem dados", () => {
     eventMocks.data = [{ id: "publico", status: "publicado", event_title: "Rolê aberto ao público", date: "2099-01-01", location: "Praça", start_time: "19:00", category: "musica" }];
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
     expect(screen.getAllByText("Rolê aberto ao público").length).toBeGreaterThan(0);
-    expect(screen.getByRole("link", { name: "Ver tudo" })).toHaveAttribute("href", "/agenda");
+    expect(screen.getAllByRole("link", { name: "Ver tudo" }).every((link) => link.getAttribute("href") === "/agenda")).toBe(true);
   });
   it("mantém local e categoria em duas colunas", () => {
     render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><Landing /></MemoryRouter></QueryClientProvider>);
