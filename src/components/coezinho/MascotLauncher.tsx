@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import mascot from "@/assets/coezinho-mascot.png";
-import { clampMascot, MASCOT_SIZE, safeMascotPosition, type Point } from "./mascotPosition";
+import { clampMascot, mascotSize, safeMascotPosition, type Point } from "./mascotPosition";
 let lastPosition: Point | null = null;
 const viewport = () => ({ width: window.innerWidth, height: window.visualViewport?.height ?? window.innerHeight });
 export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
@@ -49,7 +49,8 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   }, []);
   useEffect(() => {
     const { width, height } = viewport();
-    let initial = positionRef.current ?? { x: width - MASCOT_SIZE - 16, y: height - MASCOT_SIZE - reservedBottom() - 12 };
+    const size = mascotSize(width);
+    let initial = positionRef.current ?? { x: width - size - 16, y: height - size - reservedBottom() - 12 };
     if (!positionRef.current && lastPosition) initial = { x: lastPosition.x * width, y: lastPosition.y * height };
     place(initial, Boolean(lastPosition));
     const resize = () => { if (positionRef.current) place(positionRef.current, true); };
@@ -57,7 +58,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     return () => { window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
   }, [pathname, place, reservedBottom]);
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
-    className="coezinho-fab fixed z-50 h-[104px] w-[104px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
+    className="coezinho-fab fixed z-50 h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
     data-dragging={dragging} data-idle={idle} onFocus={() => setIdle(false)} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
     onPointerDown={(e) => {
       if (e.button !== 0 || !e.isPrimary) return;
