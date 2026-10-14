@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { CalendarDays, Clock3, ExternalLink, MapPin } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { CalendarDays, Eye, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
+import { formatEventDateTimeBR } from "@/lib/eventDate";
 import { getEventFallbackImage } from "@/lib/event-utils";
 
 const AUTOPLAY_MS = 5_000;
@@ -37,7 +35,6 @@ export function HomeMixedHeroCarousel({
   const [focused, setFocused] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<HeroEvent | null>(null);
   const items = useMemo(() => {
     const seen = new Set<string>();
     return (Array.isArray(events) ? events : []).filter((event) => {
@@ -73,13 +70,13 @@ export function HomeMixedHeroCarousel({
   }, []);
 
   useEffect(() => {
-    if (!carousel || hovered || focused || dragging || selectedEvent || reduceMotion || total < 2) return;
+    if (!carousel || hovered || focused || dragging || reduceMotion || total < 2) return;
     const timer = window.setInterval(() => {
       if (document.hidden) return;
       goTo(carousel.selectedScrollSnap() + 1);
     }, AUTOPLAY_MS);
     return () => window.clearInterval(timer);
-  }, [carousel, hovered, focused, dragging, selectedEvent, reduceMotion, total, index, goTo]);
+  }, [carousel, hovered, focused, dragging, reduceMotion, total, index, goTo]);
 
   if (total === 0) return null;
   const item = items[index] ?? items[0];
@@ -125,12 +122,19 @@ export function HomeMixedHeroCarousel({
                 // Embla cancels clicks following a drag before they reach React.
                 if (event.defaultPrevented) return;
                 const flyer = event.target instanceof Element ? event.target.closest("[data-flyer]") : null;
-                if (event.detail > 0 && flyer && total > 1) {
+                if (event.detail > 0 && flyer) {
                   const bounds = flyer.getBoundingClientRect();
-                  goTo(index + (event.clientX < bounds.left + bounds.width / 2 ? -1 : 1));
-                  return;
+                  const position = (event.clientX - bounds.left) / bounds.width;
+                  if (total > 1 && position < 0.32) {
+                    goTo(index - 1);
+                    return;
+                  }
+                  if (total > 1 && position > 0.68) {
+                    goTo(index + 1);
+                    return;
+                  }
                 }
-                setSelectedEvent(slide);
+                onOpenEvent(slide.id);
               }}
               tabIndex={active ? 0 : -1}
               aria-hidden={!active}
@@ -141,6 +145,11 @@ export function HomeMixedHeroCarousel({
                 {near && <img src={slideImage} alt="" aria-hidden="true" draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority="low" className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center blur-xl" />}
                 <div aria-hidden="true" className="absolute inset-0 bg-background/30" />
                 {near && <img src={slideImage} alt={slideTitle} draggable={false} decoding="async" loading={active ? "eager" : "lazy"} fetchPriority={slideIndex === 0 && active ? "high" : "low"} onError={(event) => { const fallback = getEventFallbackImage(slide.category); if (event.currentTarget.getAttribute("src") !== fallback) event.currentTarget.src = fallback; }} className="relative h-full w-full object-contain object-center" />}
+                {active && (
+                  <span className="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border border-primary/70 bg-background/90 px-4 py-2 text-xs font-bold uppercase text-foreground shadow-lg backdrop-blur-sm">
+                    <Eye className="h-4 w-4 text-primary" aria-hidden="true" /> Ver detalhes
+                  </span>
+                )}
               </div>
               <div className="mx-auto flex min-h-[9.5rem] w-full max-w-6xl flex-col justify-center px-4 py-5 text-center text-foreground sm:px-8">
                 <h2 className="line-clamp-2 mx-auto max-w-3xl break-words font-display uppercase text-2xl font-bold leading-tight sm:text-4xl">{slideTitle}</h2>
@@ -166,54 +175,6 @@ export function HomeMixedHeroCarousel({
           {item.location || item.atrativo_style}
         </p>
       )}
-
-
-      <Dialog open={Boolean(selectedEvent)} onOpenChange={(open) => !open && setSelectedEvent(null)}>
-        {selectedEvent && (
-          <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto p-0">
-            <div className="relative w-full overflow-hidden bg-muted">
-              <img
-                src={selectedEvent.image_url || getEventFallbackImage(selectedEvent.category)}
-                alt={selectedEvent.event_title || selectedEvent.atrativo_style || "Evento"}
-                loading="lazy"
-                decoding="async"
-                className="block h-auto w-full"
-              />
-            </div>
-
-            <div className="space-y-5 p-5 sm:p-6">
-              <DialogHeader className="pr-7 text-left">
-                <div className="mb-1 flex flex-wrap gap-2">
-                  <Badge variant="secondary">{selectedEvent.is_highlight || selectedEvent.highlight_active ? "Em destaque" : "Evento"}</Badge>
-                  {selectedEvent.category && <Badge variant="outline">{selectedEvent.category}</Badge>}
-                </div>
-                <DialogTitle className="text-xl sm:text-2xl">
-                  {selectedEvent.event_title || selectedEvent.atrativo_style || selectedEvent.category || "Evento"}
-                </DialogTitle>
-                <DialogDescription>Confira as principais informações deste rolê.</DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-                {selectedEvent.date && (
-                  <p className="flex items-center gap-2"><CalendarDays className="h-4 w-4 shrink-0 text-secondary" />{new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${eventDateISO(selectedEvent.date)}T12:00:00Z`))}</p>
-                )}
-                {selectedEvent.start_time && (
-                  <p className="flex items-center gap-2"><Clock3 className="h-4 w-4 shrink-0 text-secondary" />{selectedEvent.start_time.slice(0, 5)}</p>
-                )}
-                {(selectedEvent.location || selectedEvent.address_street || selectedEvent.address_neighborhood) && (
-                  <p className="flex items-start gap-2 sm:col-span-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />{[selectedEvent.location, selectedEvent.address_street, selectedEvent.address_neighborhood].filter(Boolean).join(" · ")}</p>
-                )}
-              </div>
-
-              {selectedEvent.description && <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">{selectedEvent.description}</p>}
-
-              <Button type="button" className="w-full font-bold" onClick={() => onOpenEvent(selectedEvent.id)}>
-                <ExternalLink className="mr-2 h-4 w-4" /> Ver evento completo
-              </Button>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
 
     </section>
   );
