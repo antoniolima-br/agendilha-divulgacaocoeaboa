@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
-  ClipboardList, 
   Heart,
   Menu, 
   X, 
@@ -19,7 +18,6 @@ import { MapPin, UserRound } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
  import logoCoeABoa from "@/assets/coeaboa-logo.webp";
 import { Button } from "@/components/ui/button";
-import { useSubmissions } from "@/contexts/SubmissionContext";
  import { useAuth } from "@/contexts/AuthContext";
  import { useTheme } from "@/hooks/useTheme";
 import { useProfile } from "@/hooks/useProfile";
@@ -28,7 +26,6 @@ import { useUserBadge, type UserStatus } from "@/hooks/useUserBadge";
  import { Badge } from "@/components/ui/badge";
   import { HeaderUserMenu } from "@/components/HeaderUserMenu";
  import { SidebarMenu } from "@/components/SidebarMenu";
-import SubmissionsPanel from "@/components/SubmissionsPanel";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { UpdateAppButton } from "@/components/system/UpdateAppButton";
 import { MobileTabBar, MobileTabBarSpacer } from "@/components/layout/MobileTabBar";
@@ -103,7 +100,6 @@ function RoleBadge({
 }
 
 export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: () => void }) {
-  const { savedCount } = useSubmissions();
   const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
@@ -271,31 +267,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
              <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               <UpdateAppButton compact />
               <NotificationBell />
-              {/* Envios — desktop/tablet only */}
-              {perms.canSubmit && <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SubmissionsPanel>
-                      <Button
-                        size="sm"
-                       variant="ghost"
-                       aria-label="Ver meus envios"
-                       className="hidden sm:inline-flex text-foreground hover:text-foreground hover:bg-foreground/5 font-medium text-xs sm:text-sm px-2 sm:px-3"
-                     >
-                       <ClipboardList className="h-4 w-4 mr-1.5" />
-                       <span className="hidden sm:inline">Envios</span>
-                        {savedCount > 0 && (
-                          <Badge variant="secondary" className="ml-1 text-[10px] font-medium bg-foreground/10 text-foreground border-none">
-                            {savedCount}
-                          </Badge>
-                        )}
-                      </Button>
-                    </SubmissionsPanel>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>Meus envios e rascunhos</TooltipContent>
-              </Tooltip>}
-
               <HeaderUserMenu variant="desktop" />
 
               {/* Logout is inside the user dropdown above */}
@@ -304,7 +275,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
           })()}
           </div>
 
-          {/* Row 2 (mobile only): date + role + secondary actions */}
+          {/* Row 2 (mobile only): date + role */}
           {user && !isAgenda && (
             <div className="md:hidden flex items-center justify-between gap-2 pb-2.5 pt-0.5">
               <div className="flex flex-col min-w-0">
@@ -312,23 +283,6 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
                 {isAdminArea && (
                   <div className="mt-1"><RoleBadge status={status} isAdmin={isAdmin} perms={perms} /></div>
                 )}
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <SubmissionsPanel>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    aria-label="Ver meus envios"
-                    className="h-9 px-2.5 text-foreground hover:text-foreground hover:bg-foreground/5 font-medium text-xs"
-                  >
-                    <ClipboardList className="h-4 w-4" />
-                    {savedCount > 0 && (
-                      <Badge variant="secondary" className="ml-1 text-[10px] font-medium bg-foreground/10 text-foreground border-none">
-                        {savedCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </SubmissionsPanel>
               </div>
             </div>
           )}
