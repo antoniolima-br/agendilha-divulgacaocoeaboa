@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Heart, Loader2, RefreshCw, TrendingUp, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
@@ -56,12 +57,12 @@ export default function CurationImpactPanel() {
 
     {query.isError ? <div role="alert" className="space-y-3 border-y py-8"><p>Não deu pra reunir o impacto agora.</p><Button variant="outline" onClick={() => void query.refetch()}>Tentar novamente</Button></div> : !report ? <p role="status" className="py-10">Atualizando o impacto dos rolês…</p> : <>
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {[
+        {([
           ["Aberturas", report.summary.opens, Eye],
           ["Favoritos", report.summary.favorites, Heart],
           ["Leads", report.summary.leads, Users],
           ["Conversões", report.summary.conversions, TrendingUp],
-        ].map(([label, value, Icon]) => <div key={String(label)} className="rounded-md border border-border bg-card p-4"><dt className="flex items-center gap-2 text-xs font-semibold uppercase text-muted-foreground"><Icon className="h-4 w-4 text-primary" />{label}</dt><dd className="mt-2 text-3xl font-bold text-foreground">{value}</dd></div>)}
+        ] as Array<[string, number, LucideIcon]>).map(([label, value, Icon]) => <div key={label} className="rounded-md border border-border bg-card p-4"><dt className="flex items-center gap-2 text-xs font-semibold uppercase text-muted-foreground"><Icon className="h-4 w-4 text-primary" />{label}</dt><dd className="mt-2 text-3xl font-bold text-foreground">{value}</dd></div>)}
       </dl>
 
       <Tabs defaultValue="events" className="min-w-0">
