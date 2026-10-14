@@ -18,7 +18,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
-  const manualFallback = "Não foi possível ler o flyer automaticamente agora, mas preencha os campos abaixo rapidinho.";
+  const manualFallback = "Oi, sou o Coezinho! Não consegui ler seu flyer agora, mas deixei os campos abaixo livres pra você preencher rapidinho.";
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
@@ -41,7 +41,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
       for (const key of Object.keys(patch) as (keyof typeof patch)[]) {
         form.setValue(key, patch[key], { shouldDirty: true, shouldValidate: true });
       }
-      setStatus(Object.keys(patch).length ? "Dados preenchidos. Confira título, data, horário e endereço antes de continuar." : "Nenhum campo vazio foi preenchido. Confira os dados abaixo ou envie outro flyer.");
+      setStatus(Object.keys(patch).length ? "Prontinho! Eu preenchi os dados. Confira título, data, horário e endereço antes de continuar." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
     } catch (e) {
       if (!controller.signal.aborted) {
         setError(manualFallback);
@@ -52,7 +52,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
     }
   };
 
-  const cancel = () => { request.current?.abort(); request.current = null; setLoading(false); onLoading(false); setStatus("Leitura interrompida. Você pode preencher os dados abaixo."); };
+  const cancel = () => { request.current?.abort(); request.current = null; setLoading(false); onLoading(false); setStatus("Parei a leitura. Você pode preencher os dados abaixo."); };
 
   return (
     <section aria-labelledby="flyer-upload-title" className="space-y-4 rounded-lg border border-primary/40 bg-primary/5 p-4 sm:p-6">
@@ -74,7 +74,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
         <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <div aria-live="polite" aria-busy={loading}>
-        {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Lendo flyer com IA...</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><div aria-hidden="true" className="space-y-2"><div className="h-2 w-4/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /><div className="h-2 w-3/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /></div></div>}
+        {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><div aria-hidden="true" className="space-y-2"><div className="h-2 w-4/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /><div className="h-2 w-3/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /></div></div>}
         {!loading && status && <p className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{status}</p>}
       </div>
       {error && <p role="alert" className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{error}</p>}

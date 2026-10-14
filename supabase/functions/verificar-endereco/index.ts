@@ -66,7 +66,7 @@ Estabelecimento vinculado: ${estab ? JSON.stringify(estab) : "nenhum"}`;
       console.error("gateway", res.status, t);
       const msg =
         res.status === 429 ? "Muitas verificações agora. Tenta de novo em instantes." :
-        res.status === 402 ? "Os créditos de IA acabaram. Fala com a equipe." :
+        res.status === 402 ? "O Coezinho não conseguiu verificar agora. Fala com a equipe." :
         "Não deu pra verificar o endereço agora.";
       return json({ error: msg }, res.status);
     }

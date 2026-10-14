@@ -5,6 +5,7 @@ import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useF
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { MessageCircle } from "lucide-react";
 
 const Form = FormProvider;
 
@@ -118,8 +119,9 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
     }
 
     return (
-      <p ref={ref} id={formMessageId} className={cn("text-sm font-medium text-destructive", className)} {...props}>
-        {body}
+      <p ref={ref} id={formMessageId} role="alert" className={cn("flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-2.5 text-sm font-medium text-foreground", className)} {...props}>
+        <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+        <span><strong>Coezinho:</strong> {body}</span>
       </p>
     );
   },

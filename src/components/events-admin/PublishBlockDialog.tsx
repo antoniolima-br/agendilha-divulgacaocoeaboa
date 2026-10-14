@@ -28,11 +28,11 @@ export function PublishBlockDialog({
         <DialogHeader>
           <DialogTitle id="publish-block-title" className="flex items-center gap-2 text-destructive">
             <AlertCircle className="h-5 w-5" aria-hidden />
-            Ainda falta um pouquinho pra {info?.action ?? "publicar"}
+            Coezinho avisa: ainda falta um pouquinho pra {info?.action ?? "publicar"}
           </DialogTitle>
           <DialogDescription>
             {info?.eventTitle ? <>Evento: <strong>{info.eventTitle}</strong>. </> : null}
-            Complete os itens abaixo pra liberar a divulgação.
+            Eu marquei os itens pendentes abaixo pra você completar e liberar a divulgação.
           </DialogDescription>
         </DialogHeader>
         <ul className="space-y-2 py-2" aria-label="Campos obrigatórios">

@@ -47,7 +47,7 @@ export function InlineError({
       <AlertTriangle className={cn("text-destructive shrink-0", compact ? "h-4 w-4 mt-0.5" : "h-5 w-5 mt-0.5")} />
       <div className="flex-1 min-w-0 space-y-2">
         <div className="space-y-1">
-          <p className={cn("font-medium leading-tight", compact ? "text-sm" : "text-base")}>{message}</p>
+          <p className={cn("font-medium leading-tight", compact ? "text-sm" : "text-base")}><strong>Coezinho:</strong> {message}</p>
           {description && <p className="text-xs text-muted-foreground">{description}</p>}
         </div>
         {onRetry && (
