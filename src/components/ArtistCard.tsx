@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import { MapPin, Music, CheckCircle2, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +50,7 @@ const ArtistCard = memo(({ artist, className }: ArtistCardProps) => {
           />
         </div>
         {artist.is_approved && (
-          <div className="absolute bottom-0 right-0 bg-primary text-white p-0.5 rounded-full border-2 border-card">
+          <div className="absolute bottom-0 right-0 rounded-full border-2 border-card bg-primary p-0.5 text-primary-foreground">
             <CheckCircle2 className="h-3 w-3" />
           </div>
         )}

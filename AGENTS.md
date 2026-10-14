@@ -36,4 +36,4 @@
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet BI is team-readable; writes require owner/Senior/Master. Cash uses settlements; never fake telemetry.
-- Menus follow roles; Home omits header actions. Auth normalizes phones. Shared primitives own visual consistency.
+- Menus follow roles; Home omits header actions. Auth normalizes phones. Semantic tokens and shared primitives own visual consistency and contrast.

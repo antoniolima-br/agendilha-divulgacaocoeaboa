@@ -281,6 +281,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   --accent-foreground: 224 45% 8%;
   --border: var(--brand-highlight) / 0.22;
   --input: 224 30% 18%;
+  --field: 224 34% 14%;
   --ring: var(--brand-highlight);
   --destructive: 0 72% 72%;
   --destructive-foreground: 224 45% 8%;
@@ -313,6 +314,10 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 :is(a, button, input, textarea, select, [role="button"], [tabindex]):focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
+}
+/* Form surfaces remain distinct from the page in every theme. */
+:is(input, textarea, select):disabled {
+  color: hsl(var(--muted-foreground));
 }
 @media (hover: hover) {
   :is(a, button, [role="button"]):not(:disabled) { transition-duration: 180ms; }

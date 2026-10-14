@@ -74,7 +74,7 @@ export function SystemHealthBlock({ health }: SystemHealthProps) {
 
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground">
                 <Clock className="h-4 w-4" />
               </div>
               <div>

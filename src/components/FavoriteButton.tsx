@@ -20,7 +20,7 @@
        size={size}
        className={cn(
          "rounded-full transition-all active:scale-90 shadow-sm",
-         active ? "bg-primary text-white" : "bg-black/20 text-white hover:bg-white/20",
+         active ? "bg-primary text-primary-foreground" : "bg-[hsl(var(--overlay)/0.72)] text-foreground hover:bg-[hsl(var(--overlay)/0.88)]",
          className
        )}
        onClick={(e) => {
