@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurationImpactPanel, { EventImpactCounters, useCurationImpact } from "./CurationImpactPanel";
+import EventGuestsPanel from "./EventGuestsPanel";
 import { toast } from "sonner";
 
 type CurationEvent = {
@@ -138,10 +139,11 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         <p className="max-w-3xl text-sm text-muted-foreground">As mudanças salvas aqui chegam automaticamente ao carrossel e aos feeds públicos.</p>
       </header>
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-4">
+        <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-5">
           <TabsTrigger value="register">Cadastro</TabsTrigger>
           <TabsTrigger value="manage">Gerenciar</TabsTrigger>
           <TabsTrigger value="share">Divulgação</TabsTrigger>
+          <TabsTrigger value="guests">Convidados</TabsTrigger>
           <TabsTrigger value="impact">Impacto</TabsTrigger>
         </TabsList>
 
@@ -182,6 +184,7 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         </TabsContent>
 
         <TabsContent value="impact" className="pt-2"><CurationImpactPanel /></TabsContent>
+        <TabsContent value="guests" className="pt-2"><EventGuestsPanel canEdit={canEdit} events={events} /></TabsContent>
       </Tabs>
     </section>
   );
