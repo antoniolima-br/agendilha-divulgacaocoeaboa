@@ -25,9 +25,10 @@ describe("effective workspaces", () => {
     expect(paths).not.toContain(ROUTES.SEU_RADAR);
     expect(paths.some((path) => path.startsWith("/admin"))).toBe(false);
   });
-  it("public users see radar but no organizer or financial tools", () => {
+  it("public users see agenda and promoter registration, but no organizer or financial tools", () => {
     const paths = menu(["user"]).map((item) => item.path);
-    expect(paths).toContain(ROUTES.SEU_RADAR);
+    expect(paths).toEqual(expect.arrayContaining([ROUTES.AGENDA, ROUTES.CADASTRO_DIVULGADOR]));
+    expect(paths).not.toContain(ROUTES.SEU_RADAR);
     expect(paths).not.toContain(ROUTES.MEUS_EVENTOS);
     expect(paths).not.toContain(ROUTES.ADMIN_FINANCEIRO);
   });
@@ -41,7 +42,8 @@ describe("effective workspaces", () => {
   it.each(["admin", "senior", "master"])("%s sees operations, not public preferences", (role) => {
     const paths = menu([role]).map((item) => item.path);
     expect(paths).toContain(ROUTES.ADMIN_FINANCEIRO);
-    expect(paths).toContain(ROUTES.ADMIN_APROVAR_EVENTOS);
+    expect(paths).toContain(ROUTES.ADMIN_CENTRAL);
+    expect(paths).not.toContain(ROUTES.ADMIN_APROVAR_EVENTOS);
     expect(paths).not.toContain(ROUTES.SEU_RADAR);
   });
   it("finance-only remains isolated even with admin, profile and collaborator", () => {

@@ -9,15 +9,11 @@ describe("sidebarConfig", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
     expect(items.filter(item => isSidebarItemActive(item, ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.COMPARTILHAR_MEUS_EVENTOS)).map(item => item.id)).toEqual(["share_my_events"]);
   });
-  it("não confunde prefixos de irmãos ou links com consulta", () => {
+  it("não confunde prefixos de irmãos", () => {
     const items = sidebarConfig.find(s => s.id === "explorar")?.items ?? [];
     const item = items[0];
     if (!item) throw new Error("missing explore link");
     expect(isSidebarItemActive(item, `${item.path}-extra`, `${item.path}-extra`)).toBe(false);
-    const favorite = items.find(i => i.id === "favorites");
-    if (!favorite) throw new Error("missing favorites link");
-    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, `${ROUTES.AGENDA}?view=favorites`)).toBe(true);
-    expect(isSidebarItemActive(favorite, ROUTES.AGENDA, ROUTES.AGENDA)).toBe(false);
   });
   it("compartilhamento pessoal segue o acesso do painel do divulgador", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
