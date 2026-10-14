@@ -140,11 +140,11 @@ function DeferredAppFeatures() {
     };
   }, []);
 
-  if (!ready || loading || mustChangePassword || location.pathname.startsWith(ROUTES.INTRANET)) return null;
+  if (!ready || loading || mustChangePassword) return null;
   return (
     <>
       <GuideLauncher initiallyOpen={chatRequested} />
-      <Suspense fallback={null}><InstallBanner /></Suspense>
+      {!location.pathname.startsWith(ROUTES.INTRANET) && <Suspense fallback={null}><InstallBanner /></Suspense>}
     </>
   );
 }

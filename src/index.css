@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.coezinho-fab { cursor: grab; }
+.coezinho-fab[data-dragging="true"] { cursor: grabbing; }
+.coezinho-character { transition: transform 180ms ease; }
+.coezinho-fab:hover .coezinho-character { transform: translateY(-3px) rotate(-3deg); }
+.coezinho-fab[data-dragging="true"] .coezinho-character { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) {
+  .coezinho-character { transition: none; }
+  .coezinho-fab:hover .coezinho-character, .coezinho-fab[data-dragging="true"] .coezinho-character { transform: none; }
+}
+
 @layer base {
   /* Espaço para a barra de navegação inferior do mobile (evita cortes/sobreposição) */
   @media (max-width: 767px) {
