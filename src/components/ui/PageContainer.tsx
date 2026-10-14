@@ -38,7 +38,7 @@ export function PageContainer({
   return (
     <div
       className={cn(
-        "mx-auto w-full min-w-0 space-y-6 px-3 py-6 sm:space-y-8 sm:px-5 sm:py-9 lg:px-6 lg:py-10",
+        "mx-auto w-full min-w-0 space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-9 lg:px-8 lg:py-10",
         MAX_WIDTH_MAP[maxWidth],
         animate && "animate-fade-in",
         className,

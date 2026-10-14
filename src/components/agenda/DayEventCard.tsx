@@ -60,7 +60,7 @@ export function DayEventCard({
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
           <div className="min-w-0 space-y-1">
             <div className="flex items-start justify-between gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+              <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {icon} {categoryLabels[ev.category!] || ev.category || "Evento"}
               </span>
               <FavoriteButton eventId={ev.id} className="h-8 w-8 shrink-0" />

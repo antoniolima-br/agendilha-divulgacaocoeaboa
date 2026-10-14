@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Menu, Radar } from "lucide-react";
+import { Home, User, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/routes/config";
@@ -71,7 +71,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             aria-label="Abrir perfil"
             className="flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 text-muted-foreground transition-colors active:text-primary"
           >
-            <Menu className="h-5 w-5 shrink-0" />
+            <User className="h-5 w-5 shrink-0" />
             <span className="w-full truncate text-center text-[10px] font-semibold leading-none">Perfil</span>
           </Button>
         </li>

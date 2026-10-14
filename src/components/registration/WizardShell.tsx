@@ -41,7 +41,7 @@ export function WizardShell({
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg space-y-7 px-4 py-6 sm:px-6 sm:py-10">
-        <Button type="button" variant="ghost" size="sm" onClick={handleBack} className="-ml-3 w-fit text-muted-foreground">
+        <Button type="button" variant="ghost" size="sm" onClick={handleBack} className="w-fit px-0 text-muted-foreground">
           <ArrowLeft className="h-4 w-4" />
           Voltar
         </Button>
@@ -62,7 +62,7 @@ export function WizardShell({
         <Button
           onClick={onNext}
           disabled={!canGoNext || loading}
-          className="h-12 w-full text-base sm:h-14"
+          className="h-12 w-full text-base sm:h-13"
         >
           {loading ? (
             <Loader2 className="h-5 w-5 animate-spin" />

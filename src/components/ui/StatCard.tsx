@@ -47,10 +47,10 @@ export function StatCard({
     return (
       <Card className={cn("border-border", className)}>
         <CardContent className="p-3 sm:p-4">
-          <div className={cn("flex items-center gap-2 text-xs uppercase tracking-wider font-bold", tone.split(' ')[0])}>
+          <div className={cn("flex items-center gap-2 text-xs uppercase tracking-wider font-bold", tone)}>
             <Icon className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{label}</span>
           </div>
-          <div className={cn("text-xl sm:text-2xl font-extrabold mt-1", tone.split(' ')[0])}>{value}</div>
+          <div className={cn("text-xl sm:text-2xl font-extrabold mt-1", tone)}>{value}</div>
         </CardContent>
       </Card>
     );
