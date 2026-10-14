@@ -7,7 +7,7 @@ describe("bottom navigation actions", () => {
   it("shows a single partnership entry and the Radar destination", () => {
     render(<MemoryRouter><MobileTabBar onMenuClick={vi.fn()} /></MemoryRouter>);
     expect(screen.getByRole("link", { name: "Meu Radar" })).toHaveAttribute("href", "/seu-radar");
-    expect(screen.getByRole("button", { name: "Anunciar / Parcerias" })).toHaveAttribute("aria-haspopup", "menu");
+    expect(screen.getByRole("button", { name: "Divulgar/Contratar" })).toHaveAttribute("aria-haspopup", "menu");
     expect(screen.getByRole("navigation")).not.toHaveClass("md:hidden");
     expect(screen.queryByRole("button", { name: "Divulgar" })).not.toBeInTheDocument();
   });
