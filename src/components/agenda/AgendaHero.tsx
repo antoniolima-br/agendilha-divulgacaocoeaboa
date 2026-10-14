@@ -82,7 +82,7 @@ export function AgendaHero({
                     key={ev.id}
                     event={ev}
                     icon={Play}
-                    caption={`${ev.views_count || 0} visualizações`}
+                    caption={[ev.category, formatEventDateTimeBR(ev.date, ev.start_time)].filter(Boolean).join(" • ")}
                     onSelect={onSelectEvent}
                     onShare={onShare}
                   />

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   CalendarDays,
   Clock,
-  Download,
   Info,
   MapPin,
   X,
@@ -18,30 +17,11 @@ import { formatBrazilianDate } from "@/lib/date-utils";
 import { buildFullAddress, getShareData } from "@/lib/sharing";
 import { EventShareButton } from "@/components/EventShareButton";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 interface EventDetailDialogProps {
   event: AgendaEvent | null;
   onClose: () => void;
   trackShare: (id: string) => void;
-}
-
-async function downloadImage(url: string, filename: string, label: string) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const objectUrl = URL.createObjectURL(await response.blob());
-    const link = document.createElement("a");
-    link.href = objectUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(objectUrl);
-    toast.success(`Download iniciado (${label}).`);
-  } catch {
-    toast.error(`Não deu pra baixar o flyer de ${label}.`, { description: "Abra a imagem e salve pelo navegador." });
-  }
 }
 
 export function EventDetailDialog({
@@ -54,12 +34,13 @@ export function EventDetailDialog({
       <DialogContent className="max-w-2xl p-0 overflow-hidden rounded-t-[2rem] sm:rounded-[2rem] border-none bg-background h-[95vh] sm:h-[90vh] flex flex-col focus:outline-none">
         {event && (
           <>
-            <div className="relative aspect-[4/3] sm:aspect-video w-full bg-muted overflow-hidden shrink-0 group">
+            <div className="relative min-h-0 flex-[1.15] w-full bg-muted/40 overflow-hidden shrink-0 group">
               <EventImage
                 src={event.image_url}
                 alt={event.event_title}
                 category={event.category}
                 className="absolute inset-0 w-full h-full"
+                fit="contain"
               />
               <div className="absolute top-4 right-4 z-20 flex gap-2">
                 <FavoriteButton
@@ -212,57 +193,6 @@ export function EventDetailDialog({
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    {event.image_url && (
-                      <Button
-                        variant="ghost"
-                        className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          void downloadImage(
-                            event.image_url,
-                            `flyer-feed-${event.event_title}.jpg`,
-                            "Feed",
-                          );
-                        }}
-                      >
-                        <Download className="h-3 w-3 mr-1" /> Feed
-                      </Button>
-                    )}
-                    {(event as any).image_url_story && (
-                      <Button
-                        variant="ghost"
-                        className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          void downloadImage(
-                            (event as any).image_url_story,
-                            `flyer-story-${event.event_title}.jpg`,
-                            "Story",
-                          );
-                        }}
-                      >
-                        <Download className="h-3 w-3 mr-1" /> Story
-                      </Button>
-                    )}
-                    {(event as any).image_url_whatsapp && (
-                      <Button
-                        variant="ghost"
-                        className="h-10 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors border border-dashed border-border rounded-xl"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          void downloadImage(
-                            (event as any).image_url_whatsapp,
-                            `flyer-whatsapp-${event.event_title}.jpg`,
-                            "WhatsApp",
-                          );
-                        }}
-                      >
-                        <Download className="h-3 w-3 mr-1" /> WhatsApp
-                      </Button>
-                    )}
-                  </div>
-
                   <ReportButton eventId={event.id} eventTitle={event.event_title} />
 
                   <Button

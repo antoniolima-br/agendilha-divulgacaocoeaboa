@@ -47,6 +47,8 @@ import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
+import { EventDetailDialog } from "@/components/agenda/EventDetailDialog";
+import type { AgendaEvent } from "@/components/agenda/types";
 import { usePublishedFlyerAds } from "@/data/useAds";
 import { useAdPhotoUrls } from "@/data/useAdPhotoUrls";
 import { addDaysToISO, eventDateISO, formatEventDateTimeBR, PUBLIC_EVENT_STATUSES, saoPauloTodayISO } from "@/lib/eventDate";
@@ -244,6 +246,18 @@ export default function Landing() {
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
+  const [selectedCarouselEvent, setSelectedCarouselEvent] = useState<AgendaEvent | null>(null);
+
+  const openCarouselEvent = useCallback((id: string) => {
+    if (id.startsWith("ad:")) {
+      navigate(`/anuncios/${id.slice(3)}`);
+      return;
+    }
+    const selected = unfilteredHomeFlyerEvents.find((event) => event.id === id);
+    if (!selected) return;
+    setSelectedCarouselEvent(selected as AgendaEvent);
+    void supabase.rpc("record_event_open", { p_event_id: selected.id, p_origin: "direct", p_channel: "direct" });
+  }, [navigate, unfilteredHomeFlyerEvents]);
 
   const handleNewsletterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -375,7 +389,7 @@ export default function Landing() {
          </nav>}
          <HomeMixedHeroCarousel
            events={unfilteredHomeFlyerEvents.filter((event) => matchesPublicEventFilters(event, globalFilters))}
-           onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
+           onOpenEvent={openCarouselEvent}
            onActiveDateChange={syncCarouselDate}
          />
        </div>
@@ -703,6 +717,13 @@ export default function Landing() {
       </footer>
 
       {personalizationOpen && <Suspense fallback={null}><PersonalizationDialog open onOpenChange={setPersonalizationOpen} /></Suspense>}
+      {selectedCarouselEvent && (
+        <EventDetailDialog
+          event={selectedCarouselEvent}
+          onClose={() => setSelectedCarouselEvent(null)}
+          trackShare={() => undefined}
+        />
+      )}
     </div>
   );
 }
