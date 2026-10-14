@@ -1,4 +1,4 @@
-import { eventDateISO, isPublicEventStatus, saoPauloTodayISO } from "@/lib/eventDate";
+import { addDaysToISO, eventDateISO, isPublicEventStatus, saoPauloTodayISO } from "@/lib/eventDate";
 import { matchesPublicEventFilters, type FilterableEvent, type PublicEventFilters } from "@/lib/publicEventFilters";
 
 type CalendarEvent = FilterableEvent & { status?: string | null };
@@ -12,4 +12,18 @@ export function availableEventDays(events: readonly CalendarEvent[], filters: Pu
     if (day) days.add(day);
   }
   return days;
+}
+
+/** Occupied seven-day windows only; keep the same availability source as the calendar. */
+export function eventDayStripWindow(availableDays: ReadonlySet<string>, requestedStart: string, today = saoPauloTodayISO()) {
+  const days = [...availableDays].filter(day => day >= today).sort();
+  const dayOffset = (day: string) => Math.round((Date.parse(`${day}T12:00:00Z`) - Date.parse(`${today}T12:00:00Z`)) / 86_400_000);
+  const starts = [...new Set(days.map(day => addDaysToISO(today, Math.floor(dayOffset(day) / 7) * 7)))];
+  const start = starts.includes(requestedStart) ? requestedStart : starts.find(day => day >= requestedStart) ?? starts.at(-1);
+  const index = start ? starts.indexOf(start) : -1;
+  return {
+    days: start ? days.filter(day => day >= start && day <= addDaysToISO(start, 6)) : [],
+    previous: index > 0 ? starts[index - 1] : undefined,
+    next: index >= 0 ? starts[index + 1] : undefined,
+  };
 }

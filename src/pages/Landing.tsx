@@ -2,6 +2,7 @@ import { usePublicEvents } from "@/data/usePublicEvents";
 import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { EventDateFilter } from "@/components/agenda/EventDateFilter";
+import { availableEventDays, eventDayStripWindow } from "@/lib/eventCalendar";
 import { splitHomeEventPresentation } from "@/lib/homeEventPresentation";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { lazy, Suspense, useEffect, useRef, useState, useMemo } from "react";
@@ -30,7 +31,7 @@ import {
   Map as MapIcon,
   ChevronLeft
 } from "lucide-react";
-import { format, addDays, eachDayOfInterval, subWeeks } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -205,9 +206,7 @@ export default function Landing() {
          return limitHomeCarouselEvents(ordered, today);
     }, [allEvents, flyerAds, flyerUrls, heroSeed, promotionalFlyerEvents]);
 
-    const todayStart = useMemo(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); }, []);
-    const [weekStart, setWeekStart] = useState(() => { const [y, m, d] = saoPauloTodayISO().split("-").map(Number); return new Date(y, m - 1, d); });
-    const [customDate, setCustomDate] = useState<Date | undefined>(new Date());
+    const [weekStart, setWeekStart] = useState(() => saoPauloTodayISO());
 
     const todayStr = useMemo(() => saoPauloTodayISO(), []);
     const todayEvents = useMemo(
@@ -215,20 +214,8 @@ export default function Landing() {
       [visualEvents, todayStr],
     );
 
-    const weekDays = useMemo(() => {
-      return eachDayOfInterval({
-        start: weekStart,
-        end: addDays(weekStart, 6)
-      });
-    }, [weekStart]);
-
-    const daysWithEvents = useMemo(() => {
-      const set = new Set<string>();
-      visualEvents.forEach(ev => {
-        if (ev.date) set.add(ev.date);
-      });
-      return set;
-    }, [visualEvents]);
+    const daysWithEvents = useMemo(() => availableEventDays(eventsData ?? [], globalFilters), [eventsData, globalFilters]);
+    const dayStrip = useMemo(() => eventDayStripWindow(daysWithEvents, weekStart), [daysWithEvents, weekStart]);
     
     // Deduplicate: events in alta should not be in today if possible, or limited
     const trendingEvents = useMemo(() => visualEvents
@@ -350,27 +337,27 @@ export default function Landing() {
 
        {/* ── Faixa de dias ── */}
        <div style={{ paddingTop: headerH }}>
-         <div className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-2 sm:px-6">
-           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => setWeekStart((w) => { const prev = subWeeks(w, 1); return prev < todayStart ? todayStart : prev; })} disabled={weekStart <= todayStart}>
+         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-2 sm:px-6">
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
              <ChevronLeft className="h-4 w-4" />
            </Button>
-           <div className="grid flex-1 grid-cols-7 gap-0.5">
-             {weekDays.map((day) => {
-               const dayStr = format(day, "yyyy-MM-dd");
-               const isSel = format(customDate || new Date(), "yyyy-MM-dd") === dayStr;
+           <div className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
+             {dayStrip.days.map((dayStr) => {
+               const day = parseISO(dayStr);
+               const isSel = (globalFilters.date || todayStr) === dayStr;
                return (
-                 <button key={dayStr} onClick={() => { setCustomDate(day); setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
-                   className={cn("flex min-h-11 flex-col items-center justify-center rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
+                 <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
+                   className={cn("h-11 min-w-14 flex-1 flex-col gap-0 rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
                    <span className="text-[8px] font-bold uppercase leading-none tracking-wide sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
                    <span className="mt-0.5 text-[11px] font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
-                 </button>
+                 </Button>
                );
              })}
            </div>
-           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-9 w-9 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
              <ChevronRight className="h-4 w-4" />
            </Button>
-         </div>
+         </nav>}
          <HomeMixedHeroCarousel
            events={unfilteredHomeFlyerEvents.filter((event) => matchesPublicEventFilters(event, globalFilters))}
            onOpenEvent={(id) => navigate(id.startsWith("ad:") ? `/anuncios/${id.slice(3)}` : `/agenda?event=${id}`)}
