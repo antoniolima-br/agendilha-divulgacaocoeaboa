@@ -2520,6 +2520,7 @@ export type Database = {
           ai_moderation_score: number | null
           approved_at: string | null
           approved_by: string | null
+          artist_history: string | null
           artist_id: string | null
           atrativo_contact: string | null
           atrativo_id: string | null
@@ -2624,6 +2625,7 @@ export type Database = {
           ai_moderation_score?: number | null
           approved_at?: string | null
           approved_by?: string | null
+          artist_history?: string | null
           artist_id?: string | null
           atrativo_contact?: string | null
           atrativo_id?: string | null
@@ -2728,6 +2730,7 @@ export type Database = {
           ai_moderation_score?: number | null
           approved_at?: string | null
           approved_by?: string | null
+          artist_history?: string | null
           artist_id?: string | null
           atrativo_contact?: string | null
           atrativo_id?: string | null
@@ -3701,6 +3704,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      intranet_curation_event_editor: {
+        Args: never
+        Returns: {
+          artist_history: string
+          date: string
+          deleted_at: string
+          event_title: string
+          id: string
+          image_url: string
+          slug: string
+          start_time: string
+          status: string
+          video_link: string
+        }[]
+      }
       intranet_curation_events: {
         Args: never
         Returns: {
@@ -3745,6 +3763,18 @@ export type Database = {
       intranet_open_campaign: { Args: { p_id: string }; Returns: string }
       intranet_save_curation_event: {
         Args: {
+          p_date: string
+          p_id: string
+          p_image_url?: string
+          p_start_time: string
+          p_title: string
+          p_video_link?: string
+        }
+        Returns: Json
+      }
+      intranet_save_curation_event_v2: {
+        Args: {
+          p_artist_history?: string
           p_date: string
           p_id: string
           p_image_url?: string
