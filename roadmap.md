@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Simplificar Marketing, Comercial/Convidados e Visão Geral com cartões mobile-first, linguagem direta e somente números realmente coletados.
 - [x] Otimizar a edição de rolês na Curadoria: foco exclusivo no selecionado, métricas ao vivo, flyer ampliado, histórico artístico persistente e ações mobile-first.
 - [x] Auditar e reforçar a responsividade integral entre 320 px e ultrawide: base compartilhada, navegação, Home, detalhes, Perfil, formulários, tabelas, Kanban e Gestão Setorial ajustados sem alterar funções.
 - [x] Simplificar o menu do perfil no canto superior direito, exibindo o título do acesso atual e mantendo apenas Ver/Editar Perfil e Sair.

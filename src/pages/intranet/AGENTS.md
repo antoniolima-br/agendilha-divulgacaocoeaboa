@@ -2,3 +2,4 @@
 - Engagement BI shares one protected report across Consolidated and Marketing views; origins are allowlisted and physical attendance remains unreported until collected.
 - Curadoria impact uses channel-tagged event links and protected aggregate reports; anonymous opens and favorites never reveal personal identity, while leads may show only staff-entered contact data.
 - Guest invites use opaque per-event tokens; Curadoria owns registration, Marketing reads identified opens, and BI consolidates conversions without exposing invite data publicly.
+- Keep the executive overview to three plain-language success metrics; registered reach means flyer plus campaign opens and must never be described as unique people.

@@ -11,6 +11,7 @@ export const qk = {
     engagementFunnel: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "engagement-funnel", startAt, endAt] as const,
     curationImpact: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "curation-impact", startAt, endAt] as const,
     guestAnalytics: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "guest-analytics", startAt, endAt] as const,
+    successOverview: (owner: string | null, startAt: string, endAt: string) => [...qk.intranet.all, owner, "success-overview", startAt, endAt] as const,
   },
   permissions: {
     all: ["app-permissions"] as const,
