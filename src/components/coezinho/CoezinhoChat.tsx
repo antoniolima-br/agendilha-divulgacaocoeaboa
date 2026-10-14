@@ -3,12 +3,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
-import { Link, useLocation } from "react-router-dom";
-import { isTabBarHidden, OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
-import { MessageCircle, X, Send, Square, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
+import { X, Send, Square, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { MascotLauncher } from "./MascotLauncher";
 
 const QUICK_PROMPTS = ["Rolês de hoje", "Música ao vivo", "Um barzinho"];
 
@@ -47,9 +47,6 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
     setInput("");
   };
 
-  const { pathname } = useLocation();
-  const inTabBar = !isTabBarHidden(pathname);
-
   useEffect(() => {
     const onOpen = () => setOpen(true);
     window.addEventListener(OPEN_KOE_EVENT, onOpen);
@@ -58,19 +55,7 @@ export function CoezinhoChat({ initiallyOpen = false }: { initiallyOpen?: boolea
 
   return (
     <>
-      {!open && (
-        <Button
-          onClick={() => setOpen(true)}
-          aria-label="Falar com o Guia do Coé"
-          className={cn(
-            "fixed bottom-6 right-4 z-50 items-center gap-2 rounded-full bg-primary px-4 py-3 font-semibold text-primary-foreground shadow-lg transition hover:scale-105",
-            inTabBar ? "hidden md:flex" : "flex",
-          )}
-        >
-          <MessageCircle className="h-5 w-5" />
-          <span className="text-sm">Guia do Coé</span>
-        </Button>
-      )}
+      {!open && <MascotLauncher onOpen={() => setOpen(true)} />}
 
       {open && (
         <div className="fixed inset-x-2 bottom-2 z-50 flex h-[75vh] flex-col overflow-hidden rounded-2xl border border-primary/30 bg-card text-card-foreground shadow-elevated sm:inset-x-auto sm:bottom-4 sm:right-4 sm:h-[560px] sm:w-[390px]">
