@@ -68,6 +68,10 @@ function AgendaCulturalInner() {
   } | null>(null);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
+  const closeEventDetails = useCallback(() => {
+    setSelectedEvent(null);
+    clearInitialEventId();
+  }, [clearInitialEventId]);
 
   const handleShare = useCallback((title: string, text: string, url: string, eventId?: string) =>
     setShareData({ title, text, url, eventId }), []);
@@ -309,7 +313,7 @@ function AgendaCulturalInner() {
 
       {selectedEvent && <EventDetailDialog
         event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
+        onClose={closeEventDetails}
         trackShare={trackShare}
       />}
       </Suspense>

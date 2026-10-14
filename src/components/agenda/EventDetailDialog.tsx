@@ -69,6 +69,7 @@ export function EventDetailDialog({
                 <Button
                   variant="secondary"
                   size="icon"
+                  aria-label="Fechar detalhes do evento"
                   className="rounded-full bg-black/40 backdrop-blur-md text-white border-white/20 hover:bg-black/60 transition-colors shadow-lg"
                   onClick={onClose}
                 >
