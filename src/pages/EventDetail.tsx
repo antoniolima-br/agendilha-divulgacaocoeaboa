@@ -26,6 +26,7 @@ import { EventWhatsAppCardExport } from "@/components/EventWhatsAppCard";
 import { getEventOgShareUrl } from "@/lib/sharing";
 import { EventShareButton } from "@/components/EventShareButton";
 import { normalizeEngagementOrigin } from "@/lib/engagementFunnel";
+import { normalizeCurationChannel } from "@/lib/curationImpact";
 
 interface Event {
   id: string;
@@ -74,6 +75,7 @@ export default function EventDetail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const acquisitionOrigin = normalizeEngagementOrigin(searchParams.get("src"));
+  const acquisitionChannel = normalizeCurationChannel(searchParams.get("channel"));
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -108,7 +110,7 @@ export default function EventDetail() {
         }
 
         setEvent(data as unknown as Event);
-        supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin }).then(({ error: viewError }) => {
+        supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin, p_channel: acquisitionChannel }).then(({ error: viewError }) => {
           if (viewError) logger.warn("[EventDetail] não deu pra contar a visualização", viewError);
         });
 
@@ -131,7 +133,7 @@ export default function EventDetail() {
     }
 
     fetchEvent();
-  }, [slug, acquisitionOrigin]);
+  }, [slug, acquisitionOrigin, acquisitionChannel]);
 
   if (loading) {
     return (

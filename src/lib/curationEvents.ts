@@ -40,8 +40,9 @@ function isSafeHttpsUrl(value: string): boolean {
   }
 }
 
-export function curationEventLink(event: Pick<CurationEventLink, "id" | "slug">, origin = window.location.origin): string {
-  return `${origin}/evento/${event.slug || event.id}`;
+export function curationEventLink(event: Pick<CurationEventLink, "id" | "slug">, origin = window.location.origin, channel?: string): string {
+  const base = `${origin}/evento/${event.slug || event.id}`;
+  return channel ? `${base}?src=campaign&channel=${encodeURIComponent(channel)}` : base;
 }
 
 export function curationEventInvite(event: CurationEventLink, link = curationEventLink(event)): string {

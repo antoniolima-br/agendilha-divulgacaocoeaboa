@@ -15,6 +15,7 @@ describe("curationEvents", () => {
     const event = { id: "abc", slug: "samba-na-praca", event_title: "Samba na Praça", date: "2026-10-20", start_time: "20:00" };
     const link = curationEventLink(event, "https://coeaboa.online");
     expect(link).toBe("https://coeaboa.online/evento/samba-na-praca");
+    expect(curationEventLink(event, "https://coeaboa.online", "curation_qr")).toBe("https://coeaboa.online/evento/samba-na-praca?src=campaign&channel=curation_qr");
     expect(curationEventInvite(event, link)).toContain("*Samba na Praça*\n📅 20/10/2026 às 20:00");
     expect(curationEventInvite(event, link)).toContain(link);
   });
