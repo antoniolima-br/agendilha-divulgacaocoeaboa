@@ -4,6 +4,7 @@ import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { qk } from "./queryKeys";
 import { emitEntityChanged } from "@/lib/entityEvents";
 import { handleError } from "@/lib/error-handler";
+import { fetchAllPages } from "./pagination";
 
 export interface EstabelecimentoRow {
   id: string;
@@ -67,13 +68,12 @@ export function useAllEstabelecimentos(enabled = true, listingKind: "event_venue
       })
     },
     queryFn: async () => {
-      const { data, error } = await supabase
+      return fetchAllPages((from, to) => supabase
         .from("estabelecimentos")
         .select(SELECT_ADMIN)
         .eq("listing_kind", listingKind)
-        .order("nome", { ascending: true });
-      if (error) throw error;
-      return data ?? [];
+        .order("nome", { ascending: true })
+        .range(from, to));
     },
   });
 }
