@@ -30,7 +30,6 @@ import {
   Check
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
 import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 
 const NEIGHBORHOODS = [
@@ -666,17 +665,9 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
         </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          {renderStep()}
-        </motion.div>
-      </AnimatePresence>
+      <div key={step} className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-right-2 motion-safe:duration-200">
+        {renderStep()}
+      </div>
     </div>
   );
 }

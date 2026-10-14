@@ -44,6 +44,7 @@ export function DayEventCard({
           : CalendarDays) as any;
 
   const addr = buildFullAddress(ev as any);
+  const shareData = getShareData(ev as any);
   const stop = (fn: () => void) => (e: React.MouseEvent) => { e.stopPropagation(); fn(); };
 
   return (
@@ -72,7 +73,7 @@ export function DayEventCard({
             <Button size="sm" variant="outline" className="h-9 rounded-full px-3 text-xs" onClick={stop(() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`, "_blank"))}>
               <MapPin className="mr-1 h-3.5 w-3.5" /> Mapa
             </Button>
-             {(() => { const d = getShareData(ev as any); return <EventShareButton title={d.title} text={d.text} url={d.url} onShared={() => trackShare(ev.id)} compact />; })()}
+            <EventShareButton title={shareData.title} text={shareData.text} url={shareData.url} onShared={() => trackShare(ev.id)} compact />
           </div>
         </div>
       </CardContent>
