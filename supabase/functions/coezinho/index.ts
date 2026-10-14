@@ -171,17 +171,13 @@ Hoje é ${today}.`;
         },
       },
     });
+    const gatewayFallback = confirmedGuideAnswer("navigation", typedEvents, establishments ?? [], today, { name: teamName, phone: teamPhone });
 
     return await withLovableAiGatewayRunIdHeader(
       result.toUIMessageStreamResponse({
         originalMessages: messages,
         sendReasoning: false,
-        onError: (err: any) => {
-          const status = err?.statusCode ?? err?.status;
-          if (status === 429) return "Muita gente falando comigo agora 😅 Tenta de novo em instantes.";
-          if (status === 402) return "O Guia deu uma pausa. Tenta mais tarde.";
-          return "Deu ruim aqui. Tenta de novo daqui a pouco.";
-        },
+        onError: () => gatewayFallback,
       }),
       runIdFetch,
       cors,

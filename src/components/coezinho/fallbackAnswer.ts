@@ -3,7 +3,7 @@ const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u0
 export function coezinhoFallbackAnswer(question: string) {
   const text = normalize(question);
 
-  if (/divulg|cadastr|evento|anunci|publicit|parceria|destaque/.test(text)) {
+  if (/divulg|cadastr|anunci|publicit|parceria|destaque/.test(text)) {
     return "Para divulgar, abra **Divulgar/Contratar** na navegação e escolha **Cadastrar Evento**. Você pode enviar o flyer ou preencher tudo manualmente, revisar e mandar para a curadoria. Para anunciar uma marca, escolha **Espaço Publicitário**.";
   }
 
