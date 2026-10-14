@@ -27,7 +27,7 @@ export function buildPromoterEventShare(event: PromoterShareEvent, origin: strin
   const location = [event.location, event.address_street, event.address_neighborhood].filter(Boolean).join(" — ");
   const description = event.description?.replace(/\s+/g, " ").trim() || "";
   const brief = description.length > 280 ? `${description.slice(0, 277).trimEnd()}…` : description;
-  const url = `${new URL(origin).origin}/evento/${encodeURIComponent(event.slug || event.id)}`;
+  const url = `${new URL(origin).origin}/evento/${encodeURIComponent(event.slug || event.id)}?src=whatsapp`;
   const text = [
     `*${title}*`,
     date ? `📅 ${formatBrazilianDate(date)}${event.start_time ? ` · ${event.start_time.slice(0, 5)}` : ""}` : "",

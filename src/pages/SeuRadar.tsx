@@ -150,7 +150,7 @@ export default function SeuRadar() {
                 <h2 className="break-words text-base font-semibold leading-tight text-foreground sm:text-lg">{item.value.event_title || "Rolê sem título"}</h2>
                 <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{formatEventDateTimeBR(item.value.date, item.value.start_time)}</p>
                 <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item.value.location || "Local a confirmar"}{item.value.address_neighborhood ? ` · ${item.value.address_neighborhood}` : ""}</p>
-                <Button asChild variant="outline" size="sm"><Link to={ROUTES.EVENTO_DETAIL.replace(":slug", item.value.id)}>Ver rolê</Link></Button>
+                <Button asChild variant="outline" size="sm"><Link to={`${ROUTES.EVENTO_DETAIL.replace(":slug", item.value.id)}?src=radar`}>Ver rolê</Link></Button>
               </div>
             </li>
           ))}

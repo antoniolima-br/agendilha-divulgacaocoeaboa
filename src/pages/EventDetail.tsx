@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import { getEventFallbackImage } from "@/lib/event-utils";
 import { EventWhatsAppCardExport } from "@/components/EventWhatsAppCard";
 import { getEventOgShareUrl } from "@/lib/sharing";
 import { EventShareButton } from "@/components/EventShareButton";
+import { normalizeEngagementOrigin } from "@/lib/engagementFunnel";
 
 interface Event {
   id: string;
@@ -71,6 +72,8 @@ export function eventLookupField(identifier: string): "id" | "slug" {
 export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const acquisitionOrigin = normalizeEngagementOrigin(searchParams.get("src"));
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -105,7 +108,7 @@ export default function EventDetail() {
         }
 
         setEvent(data as unknown as Event);
-        supabase.rpc('increment_views', { event_id: data.id }).then(({ error: viewError }) => {
+        supabase.rpc('record_event_open', { p_event_id: data.id, p_origin: acquisitionOrigin }).then(({ error: viewError }) => {
           if (viewError) logger.warn("[EventDetail] não deu pra contar a visualização", viewError);
         });
 
@@ -128,7 +131,7 @@ export default function EventDetail() {
     }
 
     fetchEvent();
-  }, [slug]);
+  }, [slug, acquisitionOrigin]);
 
   if (loading) {
     return (
