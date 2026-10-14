@@ -14,14 +14,14 @@ export function eligiblePromoterEvents(events: PromoterShareEvent[], ownerId: st
 
 export function buildPromoterEventShare(event: PromoterShareEvent, origin: string) {
   const url = `${new URL(origin).origin}/evento/${encodeURIComponent(event.slug || event.id)}?src=whatsapp`;
-  const text = buildEventShareText(event, { 
+  const text = buildEventShareText(event, {
     includeBrief: true,
     url: `\nMais informações: ${url}`
   });
   
-  return { 
-    title: event.event_title || event.location || "Evento", 
-    text, 
-    url 
+  return {
+    title: event.event_title || event.location || "Evento",
+    text,
+    url,
   };
 }
