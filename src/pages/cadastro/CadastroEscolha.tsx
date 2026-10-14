@@ -1,6 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Bell, Megaphone, Music, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const opcoes = [
   {
@@ -8,8 +9,6 @@ const opcoes = [
     titulo: "Quero receber eventos",
     descricao: "Receba novidades e eventos perto de você.",
     icon: Bell,
-    cor: "from-amber-100 to-orange-50",
-    iconBg: "bg-orange-500",
     rota: "/cadastro/publico",
   },
   {
@@ -17,8 +16,6 @@ const opcoes = [
     titulo: "Quero divulgar eventos",
     descricao: "Cadastre-se para divulgar os seus rolês.",
     icon: Megaphone,
-    cor: "from-rose-100 to-pink-50",
-    iconBg: "bg-rose-500",
     rota: "/cadastro-promotor",
   },
   {
@@ -26,26 +23,22 @@ const opcoes = [
     titulo: "Sou artista / banda / atração",
     descricao: "Crie seu perfil e fique disponível para oportunidades.",
     icon: Music,
-    cor: "from-violet-100 to-indigo-50",
-    iconBg: "bg-violet-500",
     rota: "/cadastro/artista",
   },
 ] as const;
 
 export default function CadastroEscolha() {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50/40 via-background to-background">
-      <div className="mx-auto max-w-md px-4 py-10 sm:py-16 space-y-8">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-md space-y-8 px-4 py-10 sm:py-16">
         <header className="text-center space-y-3">
-          <p className="text-sm font-bold uppercase tracking-wide text-primary">
+          <p className="text-sm font-bold uppercase text-primary">
             Coé a Boa?
           </p>
           <h1 className="text-2xl sm:text-4xl font-black font-display text-foreground leading-tight">
             Como você quer participar?
           </h1>
-          <p className="text-base text-muted-foreground">
+          <p className="text-base font-medium leading-relaxed text-foreground/85">
             Escolha o perfil que mais combina com você. É rapidinho.
           </p>
         </header>
@@ -54,45 +47,40 @@ export default function CadastroEscolha() {
           {opcoes.map((o) => {
             const Icon = o.icon;
             return (
-              <button
+              <Link
                 key={o.id}
-                onClick={() => navigate(o.rota)}
-                className="w-full text-left group"
+                to={o.rota}
+                className="group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <Card
-                  className={`p-5 border-2 rounded-2xl bg-gradient-to-br ${o.cor} hover:scale-[1.02] hover:shadow-xl transition-all duration-200`}
+                  className="border-primary/35 bg-card p-5 shadow-card transition-all duration-200 group-hover:border-primary/70 group-hover:bg-accent/35 group-hover:shadow-gold"
                 >
                   <div className="flex items-center gap-4">
-                    <div
-                      className={`h-14 w-14 rounded-2xl ${o.iconBg} flex items-center justify-center shadow-md shrink-0`}
-                    >
-                      <Icon className="h-7 w-7 text-white" />
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-primary/45 bg-primary text-primary-foreground shadow-sm">
+                      <Icon className="h-7 w-7" aria-hidden="true" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-lg font-bold text-foreground leading-tight">
+                      <h2 className="text-lg font-bold leading-tight text-card-foreground">
                         {o.titulo}
                       </h2>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="mt-1 text-sm font-medium leading-relaxed text-card-foreground/80">
                         {o.descricao}
                       </p>
                     </div>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform shrink-0" />
+                    <ArrowRight className="h-5 w-5 shrink-0 text-primary transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </div>
                 </Card>
-              </button>
+              </Link>
             );
           })}
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Já tem cadastro?{" "}
-          <button
-            onClick={() => navigate("/auth")}
-            className="font-bold text-primary underline-offset-2 hover:underline"
-          >
-            Entrar
-          </button>
-        </p>
+        <div className="flex flex-col items-center gap-2 text-center">
+          <p className="text-sm font-medium text-foreground/80">Já tem cadastro?</p>
+          <Button asChild variant="outline" className="min-h-11 min-w-32">
+            <Link to="/auth">Entrar</Link>
+          </Button>
+        </div>
       </div>
     </div>
   );
