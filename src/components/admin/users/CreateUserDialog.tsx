@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/PasswordInput";
-import { PasswordStrengthMeter, calculatePasswordScore } from "@/components/PasswordStrengthMeter";
+import { PasswordStrengthMeter } from "@/components/PasswordStrengthMeter";
 import {
   Select,
   SelectContent,
@@ -33,14 +33,11 @@ const createUserSchema = z.object({
   phone: z.string().trim().refine((value) => !value || phonePattern.test(value), "Informe DDD + número."),
   neighborhood: z.string().trim().max(100),
   accessType: z.enum(["publico", "divulgador", "artista", "admin"]),
-  password: z.string().min(8, "A senha precisa ter pelo menos 8 caracteres.").max(72),
+  password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres.").max(72),
   confirmPassword: z.string(),
 }).superRefine((data, ctx) => {
   if (data.password !== data.confirmPassword) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["confirmPassword"], message: "As senhas não coincidem." });
-  }
-  if (calculatePasswordScore(data.password) < 5) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["password"], message: "Use maiúscula, minúscula, número e símbolo." });
   }
 });
 

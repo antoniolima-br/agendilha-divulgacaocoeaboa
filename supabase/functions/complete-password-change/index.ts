@@ -2,7 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 
-const schema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(8).max(72) });
+const schema = z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(6).max(72) });
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 Deno.serve(async (req) => {
@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
     const { data: { user }, error: userError } = await client.auth.getUser();
     if (userError || !user?.email) return json({ error: "Sua sessão expirou. Entre novamente." }, 401);
     const input = schema.safeParse(await req.json());
-    if (!input.success) return json({ error: "Confira a senha atual e use de 8 a 72 caracteres na nova senha." }, 400);
+    if (!input.success) return json({ error: "Confira a senha atual e use de 6 a 72 caracteres na nova senha." }, 400);
     const { currentPassword, newPassword } = input.data;
     if (currentPassword === newPassword) return json({ error: "A nova senha precisa ser diferente da temporária ou atual." }, 400);
     // An isolated client verifies ownership without changing the caller's browser session.

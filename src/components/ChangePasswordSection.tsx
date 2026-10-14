@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/PasswordInput";
-import { PasswordStrengthMeter, calculatePasswordScore } from "@/components/PasswordStrengthMeter";
+import { PasswordStrengthMeter } from "@/components/PasswordStrengthMeter";
 import { toast } from "sonner";
 import { Loader2, KeyRound, ShieldCheck } from "lucide-react";
 import { callEdge } from "@/lib/edge";
@@ -29,14 +29,8 @@ export function ChangePasswordSection({ isTemporary = false, onSuccess }: Props)
       toast.error("Sessão inválida");
       return;
     }
-    if (newPassword.length < 8) {
-      toast.error("Senha muito curta", { description: "Use no mínimo 8 caracteres." });
-      return;
-    }
-    if (calculatePasswordScore(newPassword) < 3) {
-      toast.error("Senha muito fraca", {
-        description: "Atenda aos requisitos exibidos para criar uma senha mais segura.",
-      });
+    if (newPassword.length < 6) {
+      toast.error("Senha muito curta", { description: "Use no mínimo 6 caracteres." });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -102,9 +96,9 @@ export function ChangePasswordSection({ isTemporary = false, onSuccess }: Props)
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
-          minLength={8}
+          minLength={6}
           autoComplete="new-password"
-          placeholder="Mínimo 8 caracteres"
+          placeholder="Mínimo 6 caracteres"
         />
         <PasswordStrengthMeter password={newPassword} />
       </div>
@@ -116,7 +110,7 @@ export function ChangePasswordSection({ isTemporary = false, onSuccess }: Props)
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          minLength={8}
+          minLength={6}
           autoComplete="new-password"
           placeholder="Repita a nova senha"
         />
