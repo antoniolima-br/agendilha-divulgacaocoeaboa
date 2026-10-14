@@ -75,6 +75,7 @@ export const ROUTES = {
   MEUS_ANUNCIOS: "/meus-anuncios",
   ADMIN_ANUNCIOS: "/admin/anuncios",
   ADMIN_PLANOS_ANUNCIO: "/admin/planos-anuncio",
+  PLANOS_ANUNCIOS: "/planos-anuncios",
   ADMIN_ROLANDO_AGORA: "/admin/rolando-agora",
   ADMIN_APROVAR_EVENTOS: "/admin/aprovar-eventos",
   ADMIN_NEGOCIOS: "/admin/negocios",

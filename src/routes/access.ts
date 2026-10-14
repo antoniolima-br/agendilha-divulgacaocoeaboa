@@ -28,5 +28,6 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionName> = {
   [ROUTES.ADMIN_ATRATIVOS]: "events.update",
   [ROUTES.ADMIN_ANUNCIOS]: "ads.manage",
   [ROUTES.ADMIN_PLANOS_ANUNCIO]: "ads.manage",
+  [ROUTES.ADMIN_AUDIT]: "audit_logs.read",
   [ROUTES.CARROSSEL]: "reports.read",
 };
