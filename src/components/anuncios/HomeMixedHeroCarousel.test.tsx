@@ -15,7 +15,11 @@ const engine = vi.hoisted(() => {
     },
     off: (name: string, fn: () => void) => { listeners.get(name)?.delete(fn); return api; },
   };
-  return { api, reset: () => { index = 0; listeners.clear(); } };
+  return {
+    api,
+    emit: (name: string) => listeners.get(name)?.forEach(fn => fn()),
+    reset: () => { index = 0; listeners.clear(); },
+  };
 });
 vi.mock("embla-carousel-react", () => ({ default: () => [vi.fn(), engine.api] }));
 
@@ -80,15 +84,10 @@ describe("Home event carousel interactions", () => {
 
   it("resumes five seconds after touch ends", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
-    engine.api.on("pointerDown", () => undefined);
-    const pointerDown = new Event("pointerdown");
-    Object.defineProperty(pointerDown, "pointerType", { value: "touch" });
-    fireEvent(screen.getByRole("region"), pointerDown);
+    act(() => engine.emit("pointerDown"));
     act(() => vi.advanceTimersByTime(10000));
     expect(engine.api.scrollTo).not.toHaveBeenCalled();
-    const pointerUp = new Event("pointerup");
-    Object.defineProperty(pointerUp, "pointerType", { value: "touch" });
-    fireEvent(screen.getByRole("region"), pointerUp);
+    act(() => engine.emit("pointerUp"));
     act(() => vi.advanceTimersByTime(5000));
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
   });

@@ -721,7 +721,7 @@ export default function Landing() {
         <EventDetailDialog
           event={selectedCarouselEvent}
           onClose={() => setSelectedCarouselEvent(null)}
-          trackShare={() => undefined}
+          trackShare={(id) => { void supabase.rpc("increment_shares", { event_id: id }); }}
         />
       )}
     </div>

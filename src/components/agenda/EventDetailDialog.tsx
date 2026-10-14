@@ -34,7 +34,7 @@ export function EventDetailDialog({
       <DialogContent className="max-w-2xl p-0 overflow-hidden rounded-t-[2rem] sm:rounded-[2rem] border-none bg-background h-[95vh] sm:h-[90vh] flex flex-col focus:outline-none">
         {event && (
           <>
-            <div className="relative min-h-0 flex-[1.15] w-full bg-muted/40 overflow-hidden shrink-0 group">
+            <div className="relative h-[52vh] min-h-72 max-h-[34rem] w-full shrink-0 overflow-hidden bg-muted/40 group">
               <EventImage
                 src={event.image_url}
                 alt={event.event_title}
