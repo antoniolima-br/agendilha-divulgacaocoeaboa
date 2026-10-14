@@ -31,7 +31,7 @@ export function useEvents(options: {
 } = {}) {
   const eventsQuery = usePublicEvents(options);
 
-  const events = normalizeEvents(eventsQuery.data);
+  const events = useMemo(() => normalizeEvents(eventsQuery.data), [eventsQuery.data]);
 
   const ratingIds = useMemo(() => events.map((event) => event.id).sort(), [events]);
   const ratingsQuery = useQuery({

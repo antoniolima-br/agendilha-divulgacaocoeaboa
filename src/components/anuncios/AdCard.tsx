@@ -48,6 +48,8 @@ export function AdCard({ ad, showStatus = false, to, sponsored = false, commerci
           <img
             src={cover}
             alt={ad.title}
+            width={96}
+            height={96}
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover group-hover:scale-105 transition-transform"

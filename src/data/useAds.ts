@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllPages } from "./pagination";
 import { qk } from "@/data/queryKeys";
 import { canonicalAdRegions, matchesAdAudience, matchesAnyAdAudience, safeAdDestination, type AdPlacement } from "@/lib/advertising";
 
@@ -143,11 +144,11 @@ export function useAllAds(enabled: boolean) {
     queryKey: qk.ads.list(),
     enabled,
     queryFn: async (): Promise<Ad[]> => {
-      const { data, error } = await supabase
+      const data = await fetchAllPages((from, to) => supabase
         .from("ads")
         .select(AD_COLUMNS)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+        .order("created_at", { ascending: false })
+        .range(from, to));
       return normalizeAds(data);
     },
   });

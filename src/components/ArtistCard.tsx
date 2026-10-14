@@ -31,6 +31,8 @@ const ArtistCard = memo(({ artist, className }: ArtistCardProps) => {
         <img 
           src={artist.cover_url || 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&q=80'} 
           alt={artist.name}
+          width={640}
+          height={360}
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -44,6 +46,8 @@ const ArtistCard = memo(({ artist, className }: ArtistCardProps) => {
           <img 
             src={artist.avatar_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80'} 
             alt={artist.name}
+            width={64}
+            height={64}
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover"

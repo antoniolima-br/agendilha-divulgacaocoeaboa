@@ -6,7 +6,7 @@ import { Conversation, ConversationContent, ConversationScrollButton } from "@/c
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
 import { PromptInput, PromptInputTextarea, PromptInputFooter, PromptInputSubmit } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
-import mascot from "@/assets/coezinho-mascot.png";
+import mascotAsset from "@/assets/coezinho-mascot.webp.asset.json";
 import { Link } from "react-router-dom";
 import { OPEN_KOE_EVENT } from "@/components/layout/MobileTabBar";
 import { X, CalendarDays, Ticket, ArrowUp } from "lucide-react";
@@ -129,7 +129,7 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
           <header className="shrink-0 border-b border-border px-4 py-3 sm:px-8">
             <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <img src={mascot} alt="Coezinho" className="h-12 w-12 object-contain" />
+                <img src={mascotAsset.url} alt="Coezinho" width={48} height={48} decoding="async" className="h-12 w-12 object-contain" />
                 <div>
                   <h1 id="coezinho-title" className="font-display text-base font-semibold">Guia do Coé</h1>
                   <p className="text-xs text-muted-foreground">Guia e recepcionista do Coé a Boa?</p>

@@ -55,7 +55,7 @@ export default function AdminAprovarEventos() {
   const row = (e: CurationEvent, actions: React.ReactNode) => (
     <Card key={e.id}>
       <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
-        {e.image_url && <img src={e.image_url} alt="" className="h-20 w-20 shrink-0 rounded-md object-cover" />}
+        {e.image_url && <img src={e.image_url} alt="" width={80} height={80} loading="lazy" decoding="async" className="h-20 w-20 shrink-0 rounded-md object-cover" />}
         <div className="min-w-0 flex-1">
           <p className="font-semibold">{e.event_title || "Rolê sem título"}</p>
           {e.responsible_name && <p className="text-xs text-muted-foreground">Enviado por {e.responsible_name}</p>}

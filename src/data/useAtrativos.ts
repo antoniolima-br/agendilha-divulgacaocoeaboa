@@ -4,6 +4,7 @@ import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { qk } from "./queryKeys";
 import { emitEntityChanged } from "@/lib/entityEvents";
 import { handleError } from "@/lib/error-handler";
+import { fetchAllPages } from "./pagination";
 
 export interface AtrativoRow {
   id: string;
@@ -69,14 +70,14 @@ export function useAllAtrativos(enabled: boolean) {
     queryFn: async (): Promise<AtrativoRow[]> => {
       // Usamos a view pública para garantir que os dados sensíveis fiquem protegidos
       // e que a política de SELECT seja aplicada corretamente.
-      const { data, error } = await supabase
+      const data = await fetchAllPages((from, to) => supabase
         .from("atrativos")
         .select(
           "id, name, type, description, opening_hours, estabelecimento_id, tipo_atrativo, estilos, pais, estado, cidade_regiao, membros_equipe, responsavel_nome, responsavel_telefone, responsavel_email, responsavel_redes, fotos, is_approved, responsavel_id, created_by, contact_info, category_other"
         )
-        .order("name");
-      if (error) throw error;
-      return ((data ?? []) as unknown) as AtrativoRow[];
+        .order("name")
+        .range(from, to));
+      return (data as unknown) as AtrativoRow[];
     },
   });
 }

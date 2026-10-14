@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import mascot from "@/assets/coezinho-mascot.png";
+import mascotAsset from "@/assets/coezinho-mascot.webp.asset.json";
 import { clampMascot, mascotSize, safeMascotPosition, type Point } from "./mascotPosition";
 let lastPosition: Point | null = null;
 const viewport = () => ({ width: window.innerWidth, height: window.visualViewport?.height ?? window.innerHeight });
@@ -92,6 +92,6 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
       if (e.detail !== 0 && suppressClick.current) { suppressClick.current = false; return; }
       onOpen();
     }}>
-    <img src={mascot} alt="" aria-hidden="true" loading="lazy" draggable={false} width={1024} height={1024} className="coezinho-character h-full w-full object-contain" />
+    <img src={mascotAsset.url} alt="" aria-hidden="true" loading="lazy" decoding="async" draggable={false} width={384} height={384} className="coezinho-character h-full w-full object-contain" />
   </Button>;
 }
