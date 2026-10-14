@@ -18,6 +18,8 @@ export interface DivulgadorRequest {
   admin_notes: string | null;
   reviewed_at: string | null;
   created_at: string;
+  verification_status: "aguardando_integracao" | "codigo_enviado" | "confirmado" | "expirado" | "bloqueado";
+  identity_verified_at: string | null;
 }
 
 /**
@@ -46,7 +48,7 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
           .maybeSingle(),
         supabase
           .from("divulgador_requests")
-          .select("id, user_id, nome, whatsapp, tipo_divulgador, motivo, status, admin_notes, reviewed_at, created_at")
+          .select("id, user_id, nome, whatsapp, tipo_divulgador, motivo, status, admin_notes, reviewed_at, created_at, verification_status, identity_verified_at")
           .eq("user_id", userId)
           .order("created_at", { ascending: false })
           .limit(1)

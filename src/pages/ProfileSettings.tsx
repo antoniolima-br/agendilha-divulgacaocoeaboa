@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { BAIRROS } from "@/lib/neighborhoods";
+import { DivulgadorUpgradeCard } from "@/components/divulgador/DivulgadorUpgradeCard";
 
 // Mask "DD NNNNN-NNNN" (aceita 10 ou 11 dígitos; até 11)
 function formatPhoneMask(raw: string): string {
@@ -256,6 +257,8 @@ export default function ProfileSettings() {
         title="Meu Perfil"
         subtitle="Complemente suas informações e personalize sua experiência."
       />
+
+      <DivulgadorUpgradeCard />
 
       <Card>
         <CardHeader>

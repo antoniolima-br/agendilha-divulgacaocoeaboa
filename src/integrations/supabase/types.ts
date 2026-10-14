@@ -905,6 +905,7 @@ export type Database = {
           admin_notes: string | null
           created_at: string
           id: string
+          identity_verified_at: string | null
           motivo: string | null
           nome: string | null
           reviewed_at: string | null
@@ -913,12 +914,14 @@ export type Database = {
           tipo_divulgador: string | null
           updated_at: string
           user_id: string
+          verification_status: string
           whatsapp: string | null
         }
         Insert: {
           admin_notes?: string | null
           created_at?: string
           id?: string
+          identity_verified_at?: string | null
           motivo?: string | null
           nome?: string | null
           reviewed_at?: string | null
@@ -927,12 +930,14 @@ export type Database = {
           tipo_divulgador?: string | null
           updated_at?: string
           user_id: string
+          verification_status?: string
           whatsapp?: string | null
         }
         Update: {
           admin_notes?: string | null
           created_at?: string
           id?: string
+          identity_verified_at?: string | null
           motivo?: string | null
           nome?: string | null
           reviewed_at?: string | null
@@ -941,9 +946,54 @@ export type Database = {
           tipo_divulgador?: string | null
           updated_at?: string
           user_id?: string
+          verification_status?: string
           whatsapp?: string | null
         }
         Relationships: []
+      }
+      divulgador_verification_challenges: {
+        Row: {
+          attempts: number
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          phone_e164: string
+          request_id: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          phone_e164: string
+          request_id: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone_e164?: string
+          request_id?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "divulgador_verification_challenges_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "divulgador_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       divulgadores: {
         Row: {

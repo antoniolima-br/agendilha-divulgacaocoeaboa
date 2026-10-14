@@ -2,69 +2,46 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { WizardShell } from "@/components/registration/WizardShell";
 import { FormField } from "@/components/registration/FormField";
-import { NeighborhoodSelect } from "@/components/registration/NeighborhoodSelect";
-import { isBairroValido } from "@/lib/neighborhoods";
-import {
-  FREQUENCIAS,
-  isWhatsappValido,
-  maskPhone,
-  saveUsuarioPublico,
-} from "@/lib/registration";
+import { useAuth } from "@/contexts/AuthContext";
+import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 import { handleError } from "@/lib/error-handler";
-import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
-
-const TOTAL = 2;
+import { ROUTES } from "@/routes/config";
 
 export default function CadastroPublico() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const { signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [interesses, setInteresses] = useState<string[]>([]);
-  const [geography, setGeography] = useState<string[]>(["all"]);
-  const [aceita, setAceita] = useState(true);
-  const [frequencia, setFrequencia] = useState("semanal");
+  const [aceita, setAceita] = useState(false);
 
-  const validateStep1 = () => {
+  const validate = () => {
     const e: Record<string, string> = {};
     if (!nome.trim() || nome.trim().length < 2) e.nome = "Informe seu nome.";
-    if (!isWhatsappValido(whatsapp))
-      e.whatsapp = "WhatsApp inválido. Use DDD + número.";
-    if (!isBairroValido(bairro)) e.bairro = "Selecione um bairro.";
+    const phoneProblem = validateWhatsappForAccount(whatsapp);
+    if (phoneProblem) e.whatsapp = phoneProblem;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const handleNext = async () => {
-    if (step === 1) {
-      if (validateStep1()) setStep(2);
-      return;
-    }
+  const handleSubmit = async () => {
+    if (!validate()) return;
     setLoading(true);
     try {
-      await saveUsuarioPublico({
-        nome,
-        whatsapp,
-        bairro,
-        interesses,
-        geography,
-        aceita_notificacoes: aceita,
-        frequencia_notificacao: frequencia,
-      });
-      navigate("/cadastro/sucesso?perfil=publico", { replace: true });
+      const { error } = await signUp(whatsapp, crypto.randomUUID(), nome.trim(), {
+        profile: {
+          user_type: "publico",
+          whatsapp_phone: whatsapp,
+          push_notifications_enabled: aceita,
+          onboarding_completed: true,
+        },
+      }, "publico");
+      if (error) throw error;
+      navigate(ROUTES.PERFIL, { replace: true });
     } catch (err) {
       handleError(err, "Não foi possível concluir o cadastro.");
     } finally {
@@ -74,94 +51,23 @@ export default function CadastroPublico() {
 
   return (
     <WizardShell
-      title={
-        step === 1
-          ? "Vamos começar pelo básico"
-          : "O que você curte?"
-      }
-      subtitle={
-        step === 1
-          ? "Só pra te avisar dos eventos certos."
-          : "Escolha seus interesses (opcional)."
-      }
-      step={step}
-      totalSteps={TOTAL}
-      onBack={() => setStep((s) => Math.max(1, s - 1))}
-      onNext={handleNext}
+      title="Seu perfil começa por aqui"
+      subtitle="Só o essencial. Você completa o resto quando quiser."
+      step={1}
+      totalSteps={1}
+      onBack={() => navigate(ROUTES.PERFIL)}
+      onNext={handleSubmit}
       loading={loading}
-      isLast={step === TOTAL}
-      nextLabel={step === TOTAL ? "Concluir cadastro" : "Continuar"}
+      isLast
+      nextLabel="Criar minha conta"
     >
-      {step === 1 && (
-        <>
-          <FormField
-            id="nome"
-            label="Seu nome"
-            value={nome}
-            onChange={setNome}
-            placeholder="Como você quer ser chamado"
-            autoComplete="name"
-            required
-            error={errors.nome}
-          />
-          <FormField
-            id="whatsapp"
-            label="WhatsApp"
-            value={whatsapp}
-            onChange={(v) => setWhatsapp(maskPhone(v))}
-            placeholder="(21) 99999-9999"
-            inputMode="tel"
-            autoComplete="tel"
-            maxLength={15}
-            required
-            error={errors.whatsapp}
-          />
-          <NeighborhoodSelect
-            value={bairro}
-            onChange={setBairro}
-            error={errors.bairro}
-          />
-        </>
-      )}
-
-      {step === 2 && (
-        <>
-          <NotificationPreferences geographies={geography} onGeographiesChange={setGeography} interests={interesses} onInterestsChange={setInteresses} />
-
-          <div className="flex items-start gap-3 rounded-2xl border-2 border-border p-4 bg-card">
-            <Checkbox
-              id="aceita"
-              checked={aceita}
-              onCheckedChange={(v) => setAceita(v === true)}
-              className="mt-1"
-            />
-            <Label
-              htmlFor="aceita"
-              className="text-sm font-medium leading-relaxed cursor-pointer"
-            >
-              Aceito receber notificações, sugestões e novidades pelo WhatsApp.
-            </Label>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="freq" className="text-base font-semibold">
-              Frequência das notificações
-            </Label>
-            <Select value={frequencia} onValueChange={setFrequencia}>
-              <SelectTrigger id="freq" className="h-12 text-base">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {FREQUENCIAS.map((f) => (
-                  <SelectItem key={f.value} value={f.value} className="text-base py-3">
-                    {f.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </>
-      )}
+      <FormField id="nome" label="Seu nome" value={nome} onChange={setNome} placeholder="Como você quer ser chamado" autoComplete="name" required error={errors.nome} />
+      <FormField id="whatsapp" label="WhatsApp" value={whatsapp} onChange={(value) => setWhatsapp(maskBrPhone(value))} placeholder="(21) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} required error={errors.whatsapp} />
+      <div className="flex items-start gap-3 rounded-md border border-border bg-card p-4">
+        <Checkbox id="aceita" checked={aceita} onCheckedChange={(value) => setAceita(value === true)} className="mt-0.5" />
+        <Label htmlFor="aceita" className="cursor-pointer text-sm font-medium leading-relaxed">Autorizo receber novidades e sugestões de rolês pelo WhatsApp.</Label>
+      </div>
+      <p className="text-xs leading-relaxed text-muted-foreground">Você pode mudar essa autorização depois no seu perfil.</p>
     </WizardShell>
   );
 }

@@ -56,7 +56,7 @@ const PrintEvent = lazy(() => import("./pages/PrintEvent"));
 const EstabelecimentoDetail = lazy(() => import("./pages/EstabelecimentoDetail"));
 const Settings = lazy(() => import("./pages/Settings"));
 const MustChangePassword = lazy(() => import("./pages/MustChangePassword"));
-const ProfileSettings = lazy(() => import("./pages/ProfileSettings"));
+const ProfileGateway = lazy(() => import("./pages/ProfileGateway"));
 const CadastroEscolha = lazy(() => import("./pages/cadastro/CadastroEscolha"));
 const CadastroPublico = lazy(() => import("./pages/cadastro/CadastroPublico"));
 const CadastroArtista = lazy(() => import("./pages/cadastro/CadastroArtista"));
@@ -313,7 +313,7 @@ export const AppRoutes = () => {
         <Route path={ROUTES.TROCAR_SENHA} element={<ProtectedRoute><MustChangePassword /></ProtectedRoute>} />
         <Route element={<AppShell maxWidth="md"><Outlet /></AppShell>}>
           <Route path={ROUTES.CONFIGURACOES} element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-          <Route path={ROUTES.PERFIL} element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+          <Route path={ROUTES.PERFIL} element={<ProfileGateway />} />
           <Route path={ROUTES.TERMOS} element={<TermosPage />} />
           <Route path={ROUTES.PRIVACIDADE} element={<PrivacidadePage />} />
           <Route path={ROUTES.IMPULSIONAMENTO} element={<ImpulsionamentoPage />} />
