@@ -21,7 +21,7 @@ describe('executive KPI panel', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Definir metas' }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText('Novos contatos comerciais'), { target: { value: '-1' } });
+    fireEvent.change(screen.getByRole('dialog').querySelector('#target-leads') as HTMLInputElement, { target: { value: '-1' } });
     fireEvent.click(screen.getByRole('button', { name: 'Salvar metas' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Confira a meta');
   });
