@@ -62,7 +62,7 @@ export default function SeuRadar() {
   const adRegions = useMemo(() => {
     const neighborhoodRegions = neighborhoods
       .map((neighborhood) => regionOf({ address_neighborhood: neighborhood }))
-      .filter((region): region is string => Boolean(region));
+      .filter((region) => region !== null);
     return [...new Set([...regions, ...neighborhoodRegions])];
   }, [neighborhoods, regions]);
   const { data: radarAds = [] } = usePublishedRadarAds(adRegions);
