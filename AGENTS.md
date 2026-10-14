@@ -2,19 +2,19 @@
 - Authority comes only from protected user_roles; SQL/client checks match to prevent escalation.
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
-- Attraction schedules validate in client and database; known gaps below two hours block, missing end times warn.
+- Schedules validate client/database; gaps under two hours block, missing ends warn.
 - WhatsApp confirmations use prepared links; automation requires an authenticated provider.
 - opening_hours is free text; performance schedules validate separately.
-- Establishments have one category; ViaCEP suggests editable street/neighborhood.
+- One venue category; ViaCEP suggests editable addresses.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes, query keys/defaults and permissions to prevent cache/access drift.
+- Centralize routes, query keys/defaults and permissions against cache/access drift.
 - Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; shared venue/contact data retains separate moderation records without partial batches.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation for daily text and flyer selection.
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home rotates current/future flyers, today first; Embla unifies swipes, half-flyer taps and keyboard; titles open details and stable media bounds prevent shifts. Agenda promotion stays unchanged.
-- Event details share natively, with WhatsApp/copy fallback; Agenda closes clear selection and replace the event query, preserving filters to prevent reopen loops.
+- Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; shared public filters/realtime; São Paulo date re-exports. Read src/components/coezinho/AGENTS.md for FAB changes.
 - Authenticated flyer reads fill unchanged empty fields; preserve supplied art, generating downloadable missing sponsored art only before batch inserts.
 - Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
@@ -36,4 +36,4 @@
 - Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- UI credits/PDF separate.
+- PartnershipMenu shares destinations; CSS retires header actions; UI/PDF credits separate.

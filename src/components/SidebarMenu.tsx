@@ -20,6 +20,9 @@ import logoCoeABoa from "@/assets/coeaboa-logo.webp";
 import { filterSidebarSections, isSidebarItemActive, SidebarItem, Role } from "./layout/sidebarItems";
 import { activeAccessRole } from "@/lib/access";
 import { routeExists } from "@/routes/config";
+import { PartnershipMenu } from "./layout/PartnershipMenu";
+import { ROUTES } from "@/routes/config";
+import { Radar } from "lucide-react";
 
 interface Props {
   onClose?: () => void;
@@ -132,6 +135,10 @@ export function SidebarMenu({ onClose }: Props) {
 
       {/* Footer - Sair da Conta is isolated here */}
       <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] mt-auto border-t border-sidebar-border bg-sidebar-accent/5 shrink-0 space-y-2">
+        <Button asChild variant="ghost" className="w-full justify-start gap-3 rounded-none px-3 text-muted-foreground">
+          <Link to={ROUTES.SEU_RADAR} onClick={onClose}><Radar className="h-5 w-5" />Meu Radar</Link>
+        </Button>
+        <PartnershipMenu onNavigate={onClose} />
         
         {/* PWA Install Entry in Menu */}
         <PwaInstallButton />

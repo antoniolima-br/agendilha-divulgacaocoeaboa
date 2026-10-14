@@ -4,6 +4,22 @@
 
 .coezinho-fab { cursor: grab; transition: opacity 450ms ease; }
 .limax-brand-x { color: hsl(var(--brand-limax)); }
+/* Retire the three legacy header actions; their destinations live in navigation. */
+header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:not(:first-child) { display: none; }
+header > div > .grid.mt-1\.5:has(> .btn-gold) {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0;
+  position: absolute;
+  bottom: 4px;
+  right: 12px;
+}
+header > div:has(> .grid.mt-1\.5 > .btn-gold) { position: relative; }
+header > div:has(> .grid.mt-1\.5 > .btn-gold) > .grid:first-child > a:last-child { align-self: start; margin-top: 10px; }
+header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:first-child { min-width: 80px; }
+body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
 /* Legacy public footer keeps its markup; hide the retired brand block. */
 footer div:has(> img[alt="Coé a Boa?"]) { display: none; }
 footer .grid:has(> div > img[alt="Coé a Boa?"]) {
