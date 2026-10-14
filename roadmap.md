@@ -1,5 +1,6 @@
 - [x] Adicionar criação de usuário e alteração direta de senha na Gestão de Usuários, exclusivas para administradores.
 # Roadmap
+- [x] Unificar temporariamente a lista textual de hoje e navegar no carrossel por toque nas metades, sem setas; 17 testes aprovados, eventos públicos reais e detalhes conferidos, celular sem overflow; oito linhas simuladas somente no navegador confirmaram rolagem nativa após cinco visíveis.
 - [x] Filtrar a barra semanal da Home pela disponibilidade do calendário; ocultar dias vazios e pular semanas vazias. Dez testes aprovados; quatro datas reais exibidas, seleção abriu Explorar com a data e celular sem overflow.
 - [ ] Adicionar painel executivo por setor com resultados reais, metas mensais persistidas e comparação mensal; validar acesso e edição de metas na Visão Consolidada.
 - [x] Separar BI exclusivo Master/Sênior das operações setoriais; integrar caixa real e despesas, adicionar atividades administrativas/técnicas e coleta diária de aberturas de campanhas. 21 testes aprovados; atividade criada/editada/relida no BI e excluída com sessão Master; visitante bloqueado, todos os setores sem overflow em 390/833/1280 px. Formulário de despesas conferido sem lançar custos fictícios; nova baixa real depende de cobrança autorizada.

@@ -21,25 +21,36 @@ vi.mock("embla-carousel-react", () => ({ default: () => [vi.fn(), engine.api] })
 
 const event = (id: string) => ({ id, event_title: `Rolê ${id}`, date: "2026-10-10", start_time: "19:00", location: "Local", address_neighborhood: "Ramos", category: "Shows" });
 
+function tapFlyer(side: "left" | "right") {
+  const slide = screen.getByRole("button", { name: /Abrir evento Rolê/ });
+  const flyer = slide.querySelector("[data-flyer]");
+  if (!flyer) throw new Error("Flyer missing");
+  vi.spyOn(flyer, "getBoundingClientRect").mockReturnValue({ left: 0, width: 1000 } as DOMRect);
+  fireEvent.click(flyer, { detail: 1, clientX: side === "left" ? 100 : 900 });
+}
+
 describe("Home event carousel interactions", () => {
   beforeEach(() => { vi.useFakeTimers(); engine.reset(); vi.clearAllMocks(); });
   afterEach(() => { cleanup(); vi.useRealTimers(); });
 
-  it("wraps next and previous arrows through the same slide state", () => {
+  it("wraps half-flyer taps through the same state without arrows", () => {
     render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Destaque anterior" }));
+    tapFlyer("left");
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
     expect(screen.getByRole("button", { name: "Abrir evento Rolê 2" })).toHaveAttribute("aria-hidden", "false");
     expect(screen.queryByLabelText("Escolher destaque")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Próximo destaque" }));
+    tapFlyer("right");
     expect(engine.api.scrollTo).toHaveBeenLastCalledWith(0);
+    expect(screen.queryByRole("button", { name: "Destaque anterior" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Próximo destaque" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("handles missing, empty, single and shrinking lists", () => {
     const view = render(<HomeMixedHeroCarousel events={null} onOpenEvent={vi.fn()} />);
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
     view.rerender(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: "Próximo destaque" }));
+    tapFlyer("right");
     view.rerender(<HomeMixedHeroCarousel events={[event("1")]} onOpenEvent={vi.fn()} />);
     expect(screen.getByRole("region")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Próximo destaque" })).not.toBeInTheDocument();
@@ -78,13 +89,30 @@ describe("Home event carousel interactions", () => {
     fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 1" }), suppressedClick);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+  it("opens details from title activation", () => {
+    render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
+    fireEvent.click(screen.getByRole("heading", { name: "Rolê 1" }), { detail: 1 });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(engine.api.scrollTo).not.toHaveBeenCalled();
+  });
+  it("supports keyboard navigation and suppresses taps after swiping", () => {
+    render(<HomeMixedHeroCarousel events={[event("1"), event("2")]} onOpenEvent={vi.fn()} />);
+    fireEvent.keyDown(screen.getByRole("region"), { key: "ArrowRight" });
+    expect(engine.api.scrollTo).toHaveBeenLastCalledWith(1);
+    engine.api.scrollTo.mockClear();
+    const click = new MouseEvent("click", { bubbles: true, cancelable: true, detail: 1, clientX: 900 });
+    click.preventDefault();
+    fireEvent(screen.getByRole("button", { name: "Abrir evento Rolê 2" }), click);
+    expect(engine.api.scrollTo).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
   it("keeps slide bounds but mounts images only for active and neighboring flyers", () => {
     const { container } = render(<HomeMixedHeroCarousel events={[1, 2, 3, 4, 5, 6].map((id) => ({ ...event(String(id)), image_url: `/flyer-${id}.webp` }))} onOpenEvent={vi.fn()} />);
     expect(container.querySelectorAll('button[aria-label^="Abrir evento"]')).toHaveLength(6);
     expect(container.querySelectorAll("img")).toHaveLength(6);
     expect(container.querySelectorAll('img[fetchpriority="high"]')).toHaveLength(1);
     expect(container.querySelector('img[src="/flyer-3.webp"]')).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Próximo destaque" }));
+    tapFlyer("right");
     expect(container.querySelector('img[src="/flyer-3.webp"]')).toBeInTheDocument();
     expect(container.querySelector('img[src="/flyer-6.webp"]')).toBeNull();
   });
