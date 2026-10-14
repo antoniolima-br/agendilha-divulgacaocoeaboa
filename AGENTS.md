@@ -36,4 +36,4 @@
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- Shared PartnershipMenu; home omits header actions. Auth shares phone normalization to prevent identity drift.
+- Shared menus; Home omits header actions. Auth normalizes phones. Admin Home reuses guarded writes.

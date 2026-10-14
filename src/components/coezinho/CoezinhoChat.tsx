@@ -13,6 +13,7 @@ import { X, CalendarDays, Ticket, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MascotLauncher } from "./MascotLauncher";
 import { coezinhoFallbackAnswer } from "./fallbackAnswer";
+import { GuidePromotions } from "./GuidePromotions";
 
 const QUICK_PROMPTS = [
   { label: "O que tá rolando hoje?", icon: CalendarDays, text: "Quais eventos estão rolando hoje?" },
@@ -138,6 +139,7 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
                       </Button>
                     ))}
                   </div>
+                  <GuidePromotions />
                 </div>
               )}
               {messages.map((message) => (

@@ -20,11 +20,13 @@ header > div > .grid.mt-1\.5:has(> .btn-gold) {
 header > div:has(> .grid.mt-1\.5 > .btn-gold) { position: relative; }
 header > div:has(> .grid.mt-1\.5 > .btn-gold) > .grid:first-child > a:last-child { align-self: start; margin-top: 10px; }
 header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:first-child { min-width: 80px; }
-body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) {
-  padding-bottom: calc(var(--bottom-navigation-height) + var(--mascot-lane) + env(safe-area-inset-bottom));
-}
+body:has(nav[aria-label="Navegação principal"]:not(.md\:hidden)) { padding-bottom: calc(var(--bottom-navigation-height) + env(safe-area-inset-bottom)); }
 .app-bottom-navigation { padding-top: 0; }
-body:has(.coezinho-fab) { padding-bottom: calc(var(--bottom-navigation-height) + var(--mascot-lane) + env(safe-area-inset-bottom)); }
+body:has(.coezinho-fab) { padding-bottom: calc(var(--bottom-navigation-height) + env(safe-area-inset-bottom)); }
+.site-footer { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+@media (max-width: 767px) {
+  .site-footer > div { padding-right: 4.5rem; }
+}
 /* Legacy public footer keeps its markup; hide the retired brand block. */
 footer div:has(> img[alt="Coé a Boa?"]) { display: none; }
 footer .grid:has(> div > img[alt="Coé a Boa?"]) {
@@ -52,9 +54,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 @layer base {
   /* Espaço para a barra de navegação inferior do mobile (evita cortes/sobreposição) */
   @media (max-width: 767px) {
-    body {
-      padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
-    }
+    body { padding-bottom: calc(var(--bottom-navigation-height) + env(safe-area-inset-bottom)); }
   }
 
   :root {
