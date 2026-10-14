@@ -18,7 +18,13 @@ export function usePublicEventsRealtime(enabled = true) {
       let channel: ReturnType<typeof supabase.channel> | undefined;
       const connect = () => {
         channel = supabase.channel(`public-events:${++sequence}`)
-          .on("postgres_changes", { event: "*", schema: "public", table: "submissions" }, () => batch.schedule(qk.agenda.events()))
+          .on("postgres_changes", { event: "*", schema: "public", table: "submissions" }, () => {
+            batch.schedule(qk.agenda.all);
+            batch.schedule(qk.home.all);
+            batch.schedule(qk.submissions.all);
+            batch.schedule(qk.curation.all);
+            batch.schedule(qk.intranet.all);
+          })
           .subscribe();
       };
       const idle = window.requestIdleCallback?.(connect, { timeout: 2000 });
