@@ -291,4 +291,4 @@
 - [x] Remover o campo separado de complemento e permitir informá-lo junto ao número.
 - [x] Auditar e reforçar segurança, integridade e desempenho do banco, autenticação, funções, uploads e integrações; revalidar produção.
 
-- [ ] Restringir Gestão Setorial exclusivamente ao Master e revisar simplicidade dos fluxos de flyer, Curadoria, Marketing, Comercial e Financeiro.
+- [x] Restringir Gestão Setorial exclusivamente ao Master em todas as camadas; confirmar leitura automática do flyer e simplificar Curadoria, Marketing, Comercial e Financeiro em cartões e listas mobile-first.
