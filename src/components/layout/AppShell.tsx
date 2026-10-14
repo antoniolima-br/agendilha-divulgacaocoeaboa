@@ -6,9 +6,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+
+let desktopSidebarVisible = true;
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -25,6 +29,8 @@ export function AppShell({
   const { user } = useAuth();
   const { isAdmin, isMaster, isPromoter } = useAppPermissions();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(desktopSidebarVisible);
+  const setDesktopSidebar = (open: boolean) => { desktopSidebarVisible = open; setDesktopMenuOpen(open); };
   const location = useLocation();
 
   // Automatically show sidebar for admins/masters if not explicitly false
@@ -34,7 +40,7 @@ export function AppShell({
   // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, [location.pathname, isMobile]);
+  }, [location.pathname, location.search, isMobile]);
 
   const maxWidthClasses = {
     sm: "max-w-3xl",
@@ -45,21 +51,23 @@ export function AppShell({
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground selection:bg-primary/10 overflow-x-hidden relative">
+    <div className="flex min-h-dvh bg-background text-foreground selection:bg-primary/10 overflow-x-hidden relative">
       {/* Sidebar for Desktop */}
-      {hasSidebar && (
+      {hasSidebar && (isMobile || desktopMenuOpen) && (
         <aside aria-label="Menu principal" className="fixed inset-y-0 left-0 z-40 hidden w-72 overflow-y-auto border-r border-border bg-sidebar shadow-sm md:block">
-          <SidebarMenu />
+          <SidebarMenu onClose={() => setDesktopSidebar(false)} />
         </aside>
       )}
 
       {/* Main Container */}
       <div className={cn(
         "flex-1 flex flex-col min-w-0 transition-all duration-300 w-full",
-        hasSidebar ? "md:pl-72" : "pl-0"
+        hasSidebar && desktopMenuOpen ? "md:pl-72" : "pl-0"
       )}>
         {/* Unified Header */}
         <Header onMobileMenuToggle={() => setMobileMenuOpen(true)} />
+
+        {hasSidebar && !desktopMenuOpen && <div className="hidden px-4 pt-3 md:block"><Button variant="outline" aria-label="Abrir menu lateral" onClick={() => setDesktopSidebar(true)}><Menu className="h-4 w-4" />Menu</Button></div>}
 
         {/* Page Content */}
         <main className={cn(
@@ -78,6 +86,7 @@ export function AppShell({
       {/* Mobile Menu Drawer */}
       <Sheet open={mobileMenuOpen && isMobile} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="w-[min(20rem,calc(100vw-1rem))] border-r border-border bg-sidebar p-0 md:hidden">
+          <SheetTitle className="sr-only">Menu principal</SheetTitle>
           <SidebarMenu onClose={() => setMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>

@@ -270,7 +270,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
               </div>
               {(type === "promoter" || type === "artist") && (
                 <div className="space-y-2">
-                  <Label htmlFor="email">E-mail (Para contato comercial)</Label>
+                  <Label htmlFor="email">E-mail comercial (opcional)</Label>
                   <Input
                     id="email"
                     name="email"
@@ -386,7 +386,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
                 <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
               </Button>
               <Button 
-                className="flex-1 gradient-sunset text-white" 
+                className="flex-1 gradient-sunset text-primary-foreground" 
                 onClick={handleSignUp}
                 disabled={loading}
               >

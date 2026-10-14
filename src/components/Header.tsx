@@ -174,8 +174,8 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
   // open an internal Sheet drawer so the hamburger always works.
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const handleMobileMenu = onMobileMenuToggle ?? (() => setInternalMobileOpen(true));
-  const { pathname: _p } = useLocation();
-  useEffect(() => { setInternalMobileOpen(false); }, [_p]);
+  const { pathname: _p, search: menuSearch } = useLocation();
+  useEffect(() => { setInternalMobileOpen(false); }, [_p, menuSearch]);
    const { pathname } = useLocation();
    const isHome = pathname === "/" || pathname === "/lp" || pathname === "/landing";
    const isAgenda = pathname === "/agenda";
@@ -232,7 +232,7 @@ export default function Header({ onMobileMenuToggle }: { onMobileMenuToggle?: ()
     if (isAgenda) {
       return (
         <>
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur-xl transition-all duration-300 shadow-sm">
+        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-xl transition-all duration-300 shadow-sm">
           <div className="mx-auto flex h-16 sm:h-18 max-w-5xl items-center justify-between px-4 sm:px-6 gap-2">
             <div className="flex items-center gap-2">
               {/* Mobile Menu Trigger for Agenda - Always show trigger */}

@@ -216,7 +216,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (phone: string, password: string) => {
     const identifier = phone.trim();
-    const email = identifier.includes("@") ? identifier.toLowerCase() : toAuthEmail(identifier);
+    const problem = validateWhatsappForAccount(identifier);
+    if (problem) return { error: new Error(problem) };
+    const email = toAuthEmail(identifier);
     if (!email) {
       return { error: new Error("Informe o WhatsApp com DDD. Ex: (21) 98765-4321") };
     }
@@ -228,7 +230,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Contas criadas antes da correção de normalização usam outro e-mail sintético.
-    const legacyEmail = identifier.includes("@") ? null : toLegacyAuthEmail(phone);
+    const legacyEmail = toLegacyAuthEmail(phone);
     if (legacyEmail && legacyEmail !== email) {
       const legacy = await supabase.auth.signInWithPassword({ email: legacyEmail, password });
       if (!legacy.error && legacy.data.user) {

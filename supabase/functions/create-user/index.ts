@@ -2,12 +2,16 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3.23.8";
 
-const phonePattern = /^\(?\d{2}\)?\s?9?\d{4}-?\d{4}$/;
+const phonePattern = /^[1-9]\d9\d{8}$/;
 
 const BodySchema = z.object({
   name: z.string().trim().min(2).max(120),
-  email: z.string().trim().email().max(255),
-  phone: z.string().trim().max(20).refine((value) => !value || phonePattern.test(value), "Telefone inválido"),
+  phone: z.string().trim().max(20).transform(value => {
+    let digits = value.replace(/\D/g, "");
+    if (digits.startsWith("00")) digits = digits.slice(2);
+    if (digits.length > 11 && digits.startsWith("55")) digits = digits.slice(2);
+    return digits;
+  }).refine(value => phonePattern.test(value) && !/^(\d)\1+$/.test(value), "WhatsApp inválido"),
   neighborhood: z.string().trim().max(100),
   access_type: z.enum(["publico", "divulgador", "artista", "admin"]),
   password: z.string().min(6, "Mínimo 6 caracteres").max(72),
@@ -47,8 +51,8 @@ Deno.serve(async (req) => {
       if (!callerIsMaster) return json({ error: "Somente Master pode criar outro administrador" }, 403);
     }
 
-    const email = input.email.toLowerCase();
-    const phone = input.phone.replace(/\D/g, "") || null;
+    const email = `55${input.phone}@phone.agendilha.app`;
+    const phone = `+55${input.phone}`;
     const userType = input.access_type === "publico" || input.access_type === "admin" ? "usuario" : input.access_type === "artista" ? "artist" : "divulgador";
     const { data: created, error: createError } = await admin.auth.admin.createUser({
       email,
@@ -58,7 +62,7 @@ Deno.serve(async (req) => {
     });
     if (createError || !created.user) {
       const duplicate = /already|registered|exists/i.test(createError?.message ?? "");
-      return json({ error: duplicate ? "Já existe uma conta com este e-mail" : createError?.message ?? "Não foi possível criar a conta" }, duplicate ? 409 : 400);
+      return json({ error: duplicate ? "Já existe uma conta com este WhatsApp" : createError?.message ?? "Não foi possível criar a conta" }, duplicate ? 409 : 400);
     }
 
     const userId = created.user.id;
@@ -66,7 +70,7 @@ Deno.serve(async (req) => {
       const { error: profileError } = await admin.from("profiles").upsert({
         user_id: userId,
         responsible_name: input.name,
-        email,
+        email: null,
         phone,
         address_neighborhood: input.neighborhood || null,
         user_type: userType,

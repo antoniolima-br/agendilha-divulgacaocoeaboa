@@ -33,7 +33,7 @@
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
-- Sidebar activity is segment-aware; CSS fixes desktop/PWA menus with matching content offsets; drawers stay mobile-only.
+- Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet BI is manager-only; sector writes refresh aggregates. Cash uses settled payments, not deals; never fake telemetry.
-- Shared PartnershipMenu; home header omits actions (not CSS); UI/PDF credits split.
+- Shared PartnershipMenu; home omits header actions. Auth shares phone normalization to prevent identity drift.

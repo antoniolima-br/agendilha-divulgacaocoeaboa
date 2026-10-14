@@ -5,7 +5,6 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { usePublicEvents } from "@/data/usePublicEvents";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { availableEventDays } from "@/lib/eventCalendar";
@@ -31,13 +30,19 @@ export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
         <Button
           variant="outline"
           aria-label="Data dos rolês"
-          className={cn("h-11 w-full justify-start gap-2 text-left font-normal sm:w-48", !selected && "text-muted-foreground")}
+          className="h-11 w-full justify-start gap-2 text-left font-normal text-foreground hover:text-accent-foreground sm:w-48"
         >
           <CalendarIcon className="h-4 w-4 shrink-0" />
-          <span>{selected ? format(selected, "dd/MM/yyyy") : "Calendário"}</span>
+          <span>{selected ? format(selected, "dd/MM/yyyy") : "Todas as datas"}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="theme-coeaboa w-auto p-0" align="start">
+        <div className="border-b border-border p-3">
+          <Button variant={selected ? "outline" : "secondary"} className="min-h-11 w-full" aria-pressed={!selected} onClick={() => {
+            onChange("");
+            setOpen(false);
+          }}>Todas as datas</Button>
+        </div>
         <Calendar
           mode="single"
           locale={ptBR}

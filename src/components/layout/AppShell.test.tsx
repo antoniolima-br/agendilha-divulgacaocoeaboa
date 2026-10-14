@@ -8,12 +8,13 @@ vi.mock('@/hooks/use-mobile', () => ({ useIsMobile: () => state.mobile }));
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'owner' } }) }));
 vi.mock('@/hooks/useAppPermissions', () => ({ useAppPermissions: () => ({ isAdmin: true }) }));
 vi.mock('@/components/Header', () => ({ default: ({ onMobileMenuToggle }: { onMobileMenuToggle: () => void }) => <button onClick={onMobileMenuToggle}>Menu</button> }));
-vi.mock('@/components/SidebarMenu', () => ({ SidebarMenu: () => <nav>Navigation</nav> }));
+vi.mock('@/components/SidebarMenu', () => ({ SidebarMenu: ({ onClose }: { onClose?: () => void }) => <nav><button onClick={onClose}>Destino</button></nav> }));
 vi.mock('@/components/AppErrorBoundary', () => ({ AppErrorBoundary: ({ children }: { children: React.ReactNode }) => children }));
 vi.mock('./SiteFooter', () => ({ SiteFooter: () => null }));
 vi.mock('@/components/ui/sheet', () => ({
   Sheet: ({ open, children }: { open: boolean; children: React.ReactNode }) => open ? <div role="dialog">{children}</div> : null,
   SheetContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SheetTitle: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
 }));
 
 afterEach(() => { cleanup(); state.mobile = false; });
@@ -41,5 +42,12 @@ describe('AppShell sidebar layout', () => {
     state.mobile = true;
     view.rerender(shell());
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+  it('closes the desktop menu on a destination click and can reopen it', () => {
+    render(shell());
+    fireEvent.click(screen.getByText('Destino'));
+    expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir menu lateral' }));
+    expect(screen.getByRole('complementary')).toBeInTheDocument();
   });
 });
