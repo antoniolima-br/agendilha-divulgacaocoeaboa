@@ -34,7 +34,7 @@ export function FormField({
 }: Base) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="text-base font-semibold">
+      <Label htmlFor={id} className="text-sm font-semibold text-foreground">
         {label}
         {required && <span className="text-destructive ml-1">*</span>}
       </Label>
@@ -48,10 +48,12 @@ export function FormField({
         placeholder={placeholder}
         inputMode={inputMode}
         maxLength={maxLength}
-        className={cn("h-12 text-base", error && "border-destructive")}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+        className={cn("h-12 text-base", error && "border-destructive focus-visible:ring-destructive/40")}
       />
-      {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {hint && !error && <p id={`${id}-hint`} className="text-xs leading-relaxed text-muted-foreground">{hint}</p>}
+      {error && <p id={`${id}-error`} className="text-sm font-medium text-destructive">{error}</p>}
     </div>
   );
 }
@@ -70,7 +72,7 @@ export function FormTextarea({
 }: Base & { rows?: number }) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="text-base font-semibold">
+      <Label htmlFor={id} className="text-sm font-semibold text-foreground">
         {label}
         {required && <span className="text-destructive ml-1">*</span>}
       </Label>
@@ -81,10 +83,12 @@ export function FormTextarea({
         placeholder={placeholder}
         rows={rows}
         maxLength={maxLength}
-        className={cn("text-base", error && "border-destructive")}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+        className={cn("text-base", error && "border-destructive focus-visible:ring-destructive/40")}
       />
-      {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {hint && !error && <p id={`${id}-hint`} className="text-xs leading-relaxed text-muted-foreground">{hint}</p>}
+      {error && <p id={`${id}-error`} className="text-sm font-medium text-destructive">{error}</p>}
     </div>
   );
 }
