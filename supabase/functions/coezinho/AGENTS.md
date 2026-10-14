@@ -1,0 +1,3 @@
+- Route general app FAQ and broad agenda questions through confirmedAnswers using fresh filtered public data on every message; this keeps factual reception available without an AI call.
+- Keep specific or free-form questions on the existing gateway model and transport; deterministic routing must not guess matches for a genre, place, price or live-time request.
+- Never persist conversations, expose private records or invent commercial prices; commercial contact comes from current app settings.
