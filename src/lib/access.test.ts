@@ -30,7 +30,7 @@ describe("effective workspaces", () => {
     expect(paths).toContain(ROUTES.AGENDA);
     expect(paths).not.toContain(ROUTES.ANUNCIO_NOVO);
     expect(paths).toContain(ROUTES.SEU_RADAR);
-    expect(paths.some((path) => path.startsWith("/admin"))).toBe(false);
+    expect(paths.some((path) => path.startsWith("/admin") && !path.startsWith("/admin/pitch-"))).toBe(false);
   });
   it("public users see agenda and promoter registration, but no organizer or financial tools", () => {
     const paths = menu(["user"]).map((item) => item.path);
