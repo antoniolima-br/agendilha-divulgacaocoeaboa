@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Flyer 368: imagem confirmada no envio, título/data/horário/local preenchidos quando lidos e avanço sem título bloqueado; 14 testes aprovados.
+- [ ] Flyer 368: conferir leitura real autenticada — bloqueada por créditos de IA insuficientes no workspace.
 - [x] Pitch 364: Anunciantes só com retorno no topo e WhatsApp/PDF no final, sem “Confirme e acompanhe”; Sócios e preços preservados; 10 testes aprovados, retorno e download conferidos em 390/1280 px; PDF revisado visualmente e separação entre período/preço corrigida.
 - [x] Pitch 363: Sócios atualizado com Visão de Negócio & Futuro e único PDF final com preços/detalhes; acesso e Anunciantes preservados, 10 testes aprovados, download conferido em 390/1280 px.
 - [x] Pitch 362: Anunciantes reorganizado com foco hiperlocal responsável e um único contato final no WhatsApp; preços, acesso público e Pitch para Sócios preservados.

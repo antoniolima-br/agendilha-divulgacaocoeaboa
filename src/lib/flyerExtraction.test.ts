@@ -1,7 +1,26 @@
-import { describe, expect, it } from "vitest";
-import { sanitizeFlyerFields, safeFlyerPatch, readFlyerStream } from "./flyerExtraction";
+import { describe, expect, it, vi } from "vitest";
+import { sanitizeFlyerFields, safeFlyerPatch, readFlyerStream, missingFlyerTitle, extractFlyer } from "./flyerExtraction";
+
+vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { getSession: async () => ({ data: { session: { access_token: "test-session" } } }) } } }));
 
 describe("flyer extraction", () => {
+  it("requires a manually supplied title after selecting a flyer, but allows titleless drafts without one", () => {
+    expect(missingFlyerTitle(true, "")).toBe(true);
+    expect(missingFlyerTitle(true, "  ")).toBe(true);
+    expect(missingFlyerTitle(true, null)).toBe(true);
+    expect(missingFlyerTitle(true, "Samba de Teste")).toBe(false);
+    expect(missingFlyerTitle(false, "")).toBe(false);
+  });
+  it("sends the actual image bytes as a MIME-tagged base64 image", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('data: {"type":"response.output_text.delta","delta":"{\\"eventTitle\\":\\"Samba de Teste\\"}"}\n\ndata: {"type":"response.completed"}\n\n'));
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      await expect(extractFlyer(new File(["flyer bytes"], "flyer.png", { type: "image/png" }), new AbortController().signal)).resolves.toEqual({ eventTitle: "Samba de Teste" });
+      const request = fetchMock.mock.calls[0]?.[1];
+      expect(JSON.parse(request.body)).toEqual({ image: "data:image/png;base64,Zmx5ZXIgYnl0ZXM=" });
+      expect(request.headers.Authorization).toBe("Bearer test-session");
+    } finally { vi.unstubAllGlobals(); }
+  });
   it("allowlists content and rejects impossible dates and times", () => {
     expect(sanitizeFlyerFields({ eventTitle: " Samba ", date: "2026-02-30", startTime: "25:70", description: "a".repeat(600), status: "publicado", legalAcceptance: true })).toEqual({ eventTitle: "Samba", description: "a".repeat(500) });
     expect(sanitizeFlyerFields({ date: "2026-10-25", startTime: "20:30" })).toEqual({ date: "2026-10-25", startTime: "20:30" });
