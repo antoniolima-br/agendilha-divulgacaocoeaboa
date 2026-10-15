@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Solicitação 389: orientar a recarga real de créditos da leitura automática e conferir o flyer na arte oficial, sem saldo fictício.
 - [x] Preferências 388: opções e tags com fundo sólido, borda marcada e check contrastante; dez testes, lint e validação automática OK. Seleção/remoção por teclado e chips conferidas em 390/1280 px; contraste 13,08:1 no tema atual e 18,97:1 com tokens claros simulados. Sem salvar dados; captura da opção Olaria em 390 px limitada pelo posicionamento da lista, Samba conferida visualmente nos dois tamanhos.
 - [x] Preferências 387: destaque/check derivados das escolhas, foco neutro independente e transição de cores; dez testes e lint aprovados, validação automática OK. Marcação/remoção de bairros e interesses conferidas no formulário público em 390 px sem envio; conferência completa em 1280 px limitada pelo posicionamento da lista durante a automação.
 - [x] Navegação 386: Agenda central com seleção destacada, cinco atalhos equilibrados e legenda Divulgar compacta preservando o submenu; quatro testes aprovados e navegação real em 320/390/1280 px sem transbordar ou cortar legendas. Validação automática OK.
