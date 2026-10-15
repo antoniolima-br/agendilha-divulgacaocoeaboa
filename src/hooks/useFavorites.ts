@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import { qk } from "@/data/queryKeys";
 
 const pendingOperations = new WeakMap<QueryClient, Set<string>>();
+const ownerQueues = new WeakMap<QueryClient, Map<string, Promise<unknown>>>();
 type FavoriteChange = { eventId: string; userId: string; remove: boolean };
 
 export function useFavorites() {
   const { user } = useAuth();
+  const userId = user?.id;
   const queryClient = useQueryClient();
   const channelInstanceId = useRef(Math.random().toString(36).slice(2));
 
@@ -29,7 +31,11 @@ export function useFavorites() {
   });
 
   const toggleFavoriteMutation = useMutation({
-    mutationFn: async ({ eventId, userId, remove }: FavoriteChange) => {
+    mutationFn: ({ eventId, userId, remove }: FavoriteChange) => {
+      const queues = ownerQueues.get(queryClient) ?? new Map<string, Promise<unknown>>();
+      ownerQueues.set(queryClient, queues);
+      const previous = queues.get(userId) ?? Promise.resolve();
+      const operation = previous.catch(() => undefined).then(async () => {
       if (remove) {
         const { error } = await supabase
           .from("user_favorites")
@@ -45,6 +51,12 @@ export function useFavorites() {
         if (error) throw error;
         return { eventId, action: "added" as const };
       }
+      });
+      queues.set(userId, operation);
+      void operation.finally(() => {
+        if (queues.get(userId) === operation) queues.delete(userId);
+      }).catch(() => undefined);
+      return operation;
     },
     onMutate: async ({ eventId, userId, remove }) => {
       await queryClient.cancelQueries({ queryKey: qk.favorites.byUser(userId) });
@@ -57,11 +69,14 @@ export function useFavorites() {
         return old.includes(eventId) ? old : [...old, eventId];
       });
 
-      return { previousFavorites };
+      return { wasFavorite: previousFavorites.includes(eventId) };
     },
-    onError: (error, { userId }, context) => {
-      if (context?.previousFavorites !== undefined) {
-        queryClient.setQueryData(qk.favorites.byUser(userId), context.previousFavorites);
+    onError: (error, { userId, eventId }, context) => {
+      if (context) {
+        queryClient.setQueryData<string[]>(qk.favorites.byUser(userId), (current = []) => {
+          const withoutEvent = current.filter(id => id !== eventId);
+          return context.wasFavorite ? [...withoutEvent, eventId] : withoutEvent;
+        });
       }
       toast.error(error instanceof Error && error.message === "AUTH_REQUIRED"
         ? "Você precisa entrar para favoritar eventos."
@@ -72,29 +87,32 @@ export function useFavorites() {
       toast.success(result.action === "removed" ? "Removido dos favoritos" : "Adicionado aos favoritos");
     },
     onSettled: async (_result, _error, { userId, eventId }) => {
-      try {
+      const pending = pendingOperations.get(queryClient);
+      pending?.delete(`${userId}:${eventId}`);
+      if (!Array.from(pending ?? []).some(key => key.startsWith(`${userId}:`))) {
         await queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) });
-      } finally {
-        pendingOperations.get(queryClient)?.delete(`${userId}:${eventId}`);
       }
     },
   });
 
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
 
     const channel = supabase
-      .channel(`user_favorites_${user.id}_${channelInstanceId.current}`)
+      .channel(`user_favorites_${userId}_${channelInstanceId.current}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "user_favorites",
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(user.id) });
+          const pending = pendingOperations.get(queryClient);
+          if (!Array.from(pending ?? []).some(key => key.startsWith(`${userId}:`))) {
+            void queryClient.invalidateQueries({ queryKey: qk.favorites.byUser(userId) });
+          }
         }
       )
       .subscribe();
@@ -102,7 +120,7 @@ export function useFavorites() {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [user?.id, queryClient]);
+  }, [userId, queryClient]);
 
   const isFavorite = (eventId: string) => favorites.includes(eventId);
 
