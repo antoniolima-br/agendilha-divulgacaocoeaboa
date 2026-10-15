@@ -284,7 +284,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   --muted-foreground: var(--readable-secondary);
   --accent: var(--brand-highlight);
   --accent-foreground: 224 45% 8%;
-  --border: var(--brand-highlight) / 0.22;
+  --border: 220 22% 28%;
   --input: 224 30% 18%;
   --field: 224 34% 14%;
   --ring: var(--brand-highlight);
@@ -300,7 +300,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   --sidebar-primary-foreground: 224 45% 8%;
   --sidebar-accent: var(--brand-highlight);
   --sidebar-accent-foreground: 224 45% 8%;
-  --sidebar-border: var(--brand-highlight) / 0.18;
+  --sidebar-border: 220 22% 24%;
   --sidebar-ring: var(--brand-highlight);
   --glass-bg: hsl(224 45% 8% / 0.75);
   --glass-border: hsl(var(--brand-highlight) / 0.18);
@@ -366,9 +366,20 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
 .home-action-clarity header .btn-gold:nth-last-child(2)::after {
   content: "Espaço publicitário";
 }
-/* Rolagem limpa em todo o app: sem barras visíveis, toque e mouse seguem funcionando */
-html, body, * { scrollbar-width: none; -ms-overflow-style: none; }
-html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+/* Quiet scroll affordances, without altering intentionally hidden carousels. */
+* { scrollbar-width: thin; scrollbar-color: hsl(var(--border)) transparent; }
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: var(--radius); }
+*::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+/* Shared rhythm applies to legacy presentation too. */
+:is(h1, h2, h3, h4, h5, h6, button, a, label, p, span) { letter-spacing: 0; }
+main { overflow-wrap: break-word; }
+main :is(h1, h2, h3) { text-wrap: balance; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 

@@ -6,7 +6,7 @@
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes/permissions/data; shared UI owns sizing, menu collisions and touch scrolling.
+- Centralize routes/permissions/data; shared UI owns type, surfaces, focus and sizing for consistency.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
