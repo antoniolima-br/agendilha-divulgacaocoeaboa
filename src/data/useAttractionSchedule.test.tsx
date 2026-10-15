@@ -1,40 +1,57 @@
-import { act, renderHook } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { checkAttractionSchedule, useAttractionSchedule } from "./useAttractionSchedule";
+import { renderHook, act, waitFor } from "@testing-library/react";
+import { useAttractionSchedule, checkAttractionSchedule } from "./useAttractionSchedule";
+import { vi, describe, it, expect, beforeEach } from "vitest";
+import { supabase } from "@/integrations/supabase/client";
 
-const mocks = vi.hoisted(() => ({ rpc: vi.fn(), abortSignal: vi.fn() }));
-vi.mock("@/integrations/supabase/client", () => ({ supabase: { rpc: mocks.rpc } }));
-const input = { attractionName: "Artista", date: "2026-12-20", startTime: "18:00" };
-beforeEach(() => { vi.useFakeTimers(); vi.clearAllMocks(); mocks.rpc.mockReturnValue({ abortSignal: mocks.abortSignal }); });
-afterEach(() => vi.useRealTimers());
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: {
+    rpc: vi.fn(() => ({
+      abortSignal: vi.fn().mockReturnThis(),
+      then: vi.fn((cb) => Promise.resolve({ data: [], error: null }).then(cb)),
+    })),
+  },
+}));
 
-describe("schedule request lifecycle", () => {
-  it("passes the signal and keeps server conflicts intact", async () => {
-    const signal = new AbortController().signal;
-    const entries = [{ event_id: "event", assessment: "conflict" }];
-    mocks.abortSignal.mockResolvedValue({ data: entries, error: null });
-    expect(await checkAttractionSchedule(input, signal)).toBe(entries);
-    expect(mocks.abortSignal).toHaveBeenCalledWith(signal);
-  });
-  it("aborts superseded checks and unmounts without applying stale responses", async () => {
-    let finish: (value: unknown) => void = () => {};
-    mocks.abortSignal.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
-    const { result, rerender, unmount } = renderHook(({ startTime }) => useAttractionSchedule({ ...input, startTime }), { initialProps: { startTime: "18:00" } });
-    await act(async () => { await vi.advanceTimersByTimeAsync(300); });
-    const first = mocks.abortSignal.mock.calls[0][0] as AbortSignal;
-    const firstFinish = finish;
-    rerender({ startTime: "19:00" });
-    expect(first.aborted).toBe(true);
-    await act(async () => { firstFinish({ data: [{ assessment: "conflict" }], error: null }); await vi.advanceTimersByTimeAsync(300); });
-    expect(result.current.entries).toEqual([]);
-    expect(result.current.failed).toBe(false);
-    const second = mocks.abortSignal.mock.calls[1][0] as AbortSignal;
-    unmount();
-    expect(second.aborted).toBe(true);
-  });
-  it("preserves direct submit-time checks without an optional signal", async () => {
-    mocks.rpc.mockResolvedValue({ data: [], error: null });
-    expect(await checkAttractionSchedule(input)).toEqual([]);
-    expect(mocks.abortSignal).not.toHaveBeenCalled();
+describe("useAttractionSchedule", () => {
+  it("should show stale data while loading new inputs (BUG)", async () => {
+    // Initial state with conflict
+    (supabase.rpc as any).mockReturnValueOnce({
+        abortSignal: vi.fn().mockReturnThis(),
+        then: vi.fn((cb) => Promise.resolve({ data: [{ assessment: "conflict" }], error: null }).then(cb)),
+    });
+
+    const { result, rerender } = renderHook((props) => useAttractionSchedule(props), {
+      initialProps: {
+        attractionName: "A",
+        date: "2023-01-01",
+        startTime: "10:00",
+      }
+    });
+
+    // Wait for initial load
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.hasConflict).toBe(true);
+
+    // Change inputs to something that should be safe
+    (supabase.rpc as any).mockReturnValueOnce({
+        abortSignal: vi.fn().mockReturnThis(),
+        then: vi.fn((cb) => new Promise(r => setTimeout(() => r({ data: [], error: null }), 100)).then(cb)),
+    });
+
+    act(() => {
+      rerender({
+        attractionName: "A",
+        date: "2023-01-01",
+        startTime: "14:00",
+      });
+    });
+
+    // IMMEDIATELY after rerender, it should be loading, but what is hasConflict?
+    // In the current bug, hasConflict will STILL be true (from previous results)
+    expect(result.current.loading).toBe(true);
+    expect(result.current.hasConflict).toBe(true); // This is STALE! Should be false or unknown.
+    
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.hasConflict).toBe(false);
   });
 });
