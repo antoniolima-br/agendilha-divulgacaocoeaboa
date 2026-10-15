@@ -15,7 +15,7 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
-- Promoter FlyerUpload is visual-only beside manual event/location fields; shared date defaults preserve drafts, avoiding inference. Pair thumbnails; retry official art once on failure; generate missing sponsored art first.
+- Promoter flyer vision uses authenticated streaming and five allowlisted fields; preserve manual edits/drafts and linked identities to avoid overwrites. Pair thumbnails; retry official art once; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.

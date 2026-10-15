@@ -71,6 +71,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   const [currentStep, setCurrentStep] = useState(1);
   const [draftSavedAt, setDraftSavedAt] = useState<Date | null>(null);
   const draftLoadedRef = useRef(false);
+  const flyerPreserveDateRef = useRef(false);
   const stepTimerRef = useRef<ReturnType<typeof startFlowMeasure> | null>(null);
 
   const form = useForm<FormData>({
@@ -191,6 +192,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   // Handle draft loading
   useEffect(() => {
     if (initialValues) {
+      flyerPreserveDateRef.current = Boolean(initialValues.date);
       form.reset({ ...form.getValues(), ...initialValues, date: suggestedSubmissionDate(initialValues.date) });
       setCurrentStep(1);
       draftLoadedRef.current = true;
@@ -200,6 +202,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     if (saved) {
       try {
         const { data, step, savedAt } = JSON.parse(saved);
+        flyerPreserveDateRef.current = Boolean(data?.date);
         form.reset({ ...data, date: suggestedSubmissionDate(data?.date) });
         setCurrentStep(step === 2 ? 2 : 1);
         if (savedAt) setDraftSavedAt(new Date(savedAt));
@@ -700,6 +703,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   };
 
   const resetDraft = () => {
+    flyerPreserveDateRef.current = false;
     localStorage.removeItem(SUBMISSION_DRAFT_KEY);
     form.reset({
       nickName: profile?.responsible_name || "",
@@ -766,7 +770,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
               </div>
 
               <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
-                <FlyerUpload image={eventImage || form.watch("eventImageUrl") || null} onImage={setEventImage} />
+                <FlyerUpload image={eventImage || form.watch("eventImageUrl") || null} onImage={setEventImage} form={form} preserveDate={flyerPreserveDateRef.current} />
                 <div id="manual-event-fields" className="min-w-0 space-y-6">
                   <EventStep form={form} section="core" />
                   <LocationStep form={form} />

@@ -1,15 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ImagePlus, Upload } from "lucide-react";
+import { AlertCircle, ImagePlus, Upload, Loader2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { extractVisionFlyer, safeVisionPatch } from "@/lib/visionFlyer";
+import type { UseFormReturn } from "react-hook-form";
+import type { SubmissionFormData } from "./schema";
+import mascotAsset from "@/assets/coezinho-mascot.webp.asset.json";
 
-export function FlyerUpload({ image, onImage }: {
+export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
   image: File | string | null;
   onImage: (file: File) => void;
+  form?: UseFormReturn<SubmissionFormData>;
+  preserveDate?: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
+  const request = useRef<AbortController | null>(null);
   const [preview, setPreview] = useState("");
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => { if (!image) { request.current?.abort(); setReading(false); setFeedback(""); } }, [image]);
   useEffect(() => {
     if (image instanceof File) {
       const url = URL.createObjectURL(image);
@@ -26,7 +37,31 @@ export function FlyerUpload({ image, onImage }: {
       return;
     }
     setError("");
+    setFeedback("");
+    request.current?.abort();
     onImage(file);
+    if (!form) return;
+    const controller = new AbortController();
+    request.current = controller;
+    const before = { ...form.getValues() };
+    const protectedFields = new Set<string>();
+    if (preserveDate || form.getFieldState("date").isDirty) protectedFields.add("date");
+    const subscription = form.watch((_values, { name }) => { if (name) protectedFields.add(name); });
+    setReading(true);
+    void extractVisionFlyer(file, controller.signal).then((fields) => {
+      if (controller.signal.aborted || request.current !== controller) return;
+      subscription.unsubscribe();
+      const patch = safeVisionPatch(fields, before, form.getValues(), protectedFields);
+      for (const key of Object.keys(patch) as (keyof typeof patch)[]) {
+        form.setValue(key, patch[key], { shouldDirty: true, shouldValidate: true });
+      }
+      setFeedback(Object.keys(fields).length ? "Li o flyer! Confira os dados do rolê e ajuste o que precisar." : "Não consegui identificar os dados. Você pode preencher tudo manualmente.");
+    }).catch((failure: unknown) => {
+      if (!controller.signal.aborted && request.current === controller) setError(failure instanceof Error ? failure.message : "Não consegui ler o flyer. Preencha os dados manualmente.");
+    }).finally(() => {
+      subscription.unsubscribe();
+      if (request.current === controller) { request.current = null; setReading(false); }
+    });
   };
 
   return (
@@ -41,6 +76,13 @@ export function FlyerUpload({ image, onImage }: {
         <input ref={input} aria-label="Enviar flyer do evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <p className="text-xs text-muted-foreground">Opcional · JPG, PNG ou WEBP · até 8 MB</p>
+      {reading && <div role="status" className="flex items-center gap-2 text-sm text-foreground">
+        <img src={mascotAsset.url} alt="Coezinho" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+        <Loader2 aria-hidden="true" className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none text-primary" />
+        <span className="min-w-0 flex-1">Coezinho analisando o flyer...</span>
+        <Button type="button" variant="ghost" size="icon" aria-label="Parar leitura" title="Parar leitura" onClick={() => request.current?.abort()}><Square className="h-4 w-4" /></Button>
+      </div>}
+      {feedback && <p role="status" className="text-sm text-muted-foreground">{feedback}</p>}
       {error && <p role="alert" className="flex items-start gap-2 text-sm text-foreground"><AlertCircle className="h-4 w-4 shrink-0 text-primary" />{error}</p>}
     </section>
   );
