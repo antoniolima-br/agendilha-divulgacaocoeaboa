@@ -8,6 +8,7 @@ import { PitchContentView } from "./PitchContentView";
 
 const mocks = vi.hoisted(() => ({ call: vi.fn() }));
 vi.mock("@/lib/edge", () => ({ callPublicEdge: mocks.call }));
+vi.mock("@/data/useAppSettings", () => ({ SETTING_KEYS: { teamWhatsapp: "team_whatsapp" }, settingOr: () => "21998554322", useAppSettings: () => ({ data: {} }) }));
 const page = (audience: "investor" | "advertiser" = "investor") => <HelmetProvider><AdminPitchComercial audience={audience} /></HelmetProvider>;
 
 describe("pitch comercial", () => {
@@ -134,7 +135,7 @@ describe("pitch comercial", () => {
     const { formats, pushTicket, push } = buildPitchContent();
     mocks.call.mockResolvedValue({ content: { formats, pushTicket, push }, expiresInSeconds: 900 });
     render(page("advertiser"));
-    await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
+    await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
@@ -144,6 +145,9 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
     expect(screen.getByRole("link", { name: /Divulgar meu evento/ })).toHaveAttribute("href", "/meus-eventos");
     expect(screen.getByText(/Aberturas não são pessoas únicas/)).toBeVisible();
+    const sales = screen.getAllByRole("link", { name: /Fale com o Comercial no WhatsApp/ });
+    expect(sales).toHaveLength(2);
+    expect(sales[0].getAttribute("href")).toContain("wa.me/5521998554322");
     expect(screen.getByText(/R\$\s*800,00 a R\$\s*1.000,00/)).toBeVisible();
     const share = screen.getAllByRole("link", { name: "WhatsApp" })[0];
     const href = decodeURIComponent(share.getAttribute("href") || "");
@@ -156,7 +160,7 @@ describe("pitch comercial", () => {
   it("não reaproveita conteúdo de anunciantes para sócios", async () => {
     mocks.call.mockResolvedValueOnce({ content: { formats: buildPitchContent().formats, pushTicket: 150, push: buildPitchContent().push } }).mockResolvedValueOnce({ content: buildPitchContent() });
     const view = render(page("advertiser"));
-    await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
+    await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     view.rerender(page("investor"));
     await screen.findByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
@@ -167,7 +171,7 @@ describe("pitch comercial", () => {
     render(page("advertiser")); await screen.findByRole("alert");
     mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
     fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
-    await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
+    await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
   });
 
 });
