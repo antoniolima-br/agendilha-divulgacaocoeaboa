@@ -1,0 +1,2 @@
+GRANT SELECT (is_free) ON public.submissions TO anon;
+COMMENT ON POLICY submissions_visitor_public_read ON public.submissions IS 'Visitors may read only active approved/public events; private records and mutation privileges remain protected.';
