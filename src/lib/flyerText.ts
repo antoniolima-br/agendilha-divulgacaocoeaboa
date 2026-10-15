@@ -40,7 +40,7 @@ export function parseFlyerText(text: string, now = new Date()): FlyerFields {
     if (sanitizeFlyerFields({ startTime: value }).startTime && !times.includes(value)) times.push(value);
   }
   if (times.length === 1) fields.startTime = times[0];
-  const venueLabel = /^(?:local|onde|local do evento)\s*[:\-–]?\s+/i;
+  const venueLabel = /^(?:local do evento|local|onde)\s*[:\-–]?\s+/i;
   const venue = lines.find(line => venueLabel.test(line)) ?? lines.find(line => /^(?:bar|restaurante|espaco|espaço|casa|clube|arena|teatro|centro cultural)\s+\S/i.test(line));
   if (venue) fields.locationName = venue.replace(venueLabel, "");
   const title = lines.find(line => /^(?:evento|titulo|título)\s*[:\-]/i.test(line)) ?? lines.find(line => {
