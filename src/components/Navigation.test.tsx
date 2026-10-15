@@ -83,10 +83,11 @@ describe('Admin/Master Route Protection Integration', () => {
     });
   });
 
-  it('requires sign-in for personal radar', async () => {
+  it('keeps radar discovery public without sign-in', async () => {
     setupMocks(null, [], false, false);
     renderAt('/seu-radar');
-    await waitFor(() => expect(screen.getByTestId('auth')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('radar')).toBeInTheDocument());
+    expect(screen.queryByTestId('auth')).not.toBeInTheDocument();
   });
   it('keeps regular users out of organizer history', async () => {
     setupMocks({ id: 'public' }, ['user'], false, false);
