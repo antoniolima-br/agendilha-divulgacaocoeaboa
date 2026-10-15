@@ -1,17 +1,17 @@
 import { BriefcaseBusiness, Megaphone, ClipboardCheck, Wallet, Code2, ShieldCheck } from "lucide-react";
 
 const pillars = [
-  { title: "Comercial", description: "Prospecção, pacotes personalizados, negociação e pós-venda ativo.", icon: BriefcaseBusiness },
-  { title: "Marketing", description: "Anúncios, banners de marcas, promoções e acompanhamento do engajamento regional.", icon: Megaphone },
-  { title: "Administração", description: "Curadoria de eventos, revisão dos dados e governança da operação.", icon: ClipboardCheck },
-  { title: "Financeiro", description: "Conciliação rastreável, pagamentos comprovados e liberação integrada à publicação.", icon: Wallet },
-  { title: "Desenvolvimento", description: "Coezinho, leitura inteligente de flyers e evolução da experiência mobile-first.", icon: Code2 },
+  { title: "Curadoria & Moderação", description: "Excelência, organização e integridade na agenda de eventos.", icon: ClipboardCheck },
+  { title: "Marketing", description: "Marca, espaços publicitários e conexões visuais com públicos regionais.", icon: Megaphone },
+  { title: "Comercial", description: "Captação de parceiros, pacotes de publicidade e pós-venda ativo.", icon: BriefcaseBusiness },
+  { title: "Financeiro", description: "Conciliação rigorosa, registros rastreáveis e transparência na operação.", icon: Wallet },
+  { title: "Desenvolvimento & Inovação", description: "Coezinho, automação inteligente e evolução contínua da experiência mobile-first.", icon: Code2 },
 ];
 
 export function CorporatePillars() {
   return <section aria-labelledby="pitch-corporate" className="space-y-6">
-    <div className="space-y-2"><h3 id="pitch-corporate" className="text-xl font-semibold">Uma empresa. Cinco pilares integrados.</h3>
-      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Estrutura corporativa com responsabilidades claras e painéis inteligentes de gestão por setor.</p></div>
+    <div className="space-y-2"><h3 id="pitch-corporate" className="text-xl font-semibold">Governança e Organização Corporativa</h3>
+      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Uma estrutura de gestão coordenada, com responsabilidades claras e áreas de atuação especializadas.</p></div>
     <ul className="divide-y divide-border">{pillars.map(({ title, description, icon: Icon }) =>
       <li key={title} className="flex min-w-0 items-start gap-4 py-4">
         <Icon aria-hidden="true" className="h-5 w-5 text-primary" />

@@ -85,16 +85,16 @@ function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
   return <div className="min-w-0">
       <div className="min-w-0 space-y-10 pb-10 pt-4 sm:pb-14">
         <section aria-labelledby="pitch-overview" className="space-y-5">
-          <p className="text-xs font-medium uppercase text-primary">Coé a Boa? · Visão executiva</p>
-          <h2 id="pitch-overview" className="max-w-3xl text-3xl font-semibold leading-tight">Visão Geral e Qualidades do Ecossistema</h2>
-          <p className="max-w-2xl leading-relaxed text-muted-foreground">Coé a Boa? conecta os rolês do Rio de Janeiro a marcas que querem ser vistas na região certa. Coezinho agiliza o cadastro; Marketing entrega visibilidade; dados registrados orientam a próxima decisão comercial.</p>
-          <p className="max-w-3xl leading-relaxed text-muted-foreground">Uma proposta de negócio para o entretenimento carioca: receita de publicidade regional, responsabilidades separadas e automação com revisão humana. Sustentabilidade e expansão dependem da validação comercial e do controle dos custos.</p>
+          <p className="text-xs font-medium uppercase text-primary">Coé a Boa? · Visão societária</p>
+          <h2 id="pitch-overview" className="max-w-3xl text-3xl font-semibold leading-tight">Conectando Pessoas, Negócios e Diversão em Grande Escala.</h2>
+          <p className="max-w-2xl leading-relaxed text-muted-foreground">O Coé a Boa? nasceu para transformar a forma como as pessoas descobrem o que fazer e como comércios e produtores locais encontram seu público. Mais que uma agenda de entretenimento, é um ecossistema hiperlocal que aproxima lazer, produção cultural e negócios.</p>
+          <p className="max-w-3xl leading-relaxed text-muted-foreground">A proposta combina publicidade regional, responsabilidades bem definidas, automação com revisão humana e dados para orientar decisões. Crescimento, rentabilidade e expansão dependem da validação comercial de cada praça e do controle dos custos.</p>
           <PitchShare audience="investor" />
           <ul className="divide-y divide-border">{[
-            { title: "Segurança e Governança", description: "Anti-duplicidade, cotas e revisão antes da publicação.", icon: ShieldCheck },
+            { title: "O Poder da Hiperlocalidade", description: "Campanhas direcionadas a pessoas na área de influência de cada negócio, reduzindo dispersão de verba e aproximando oferta e público local.", icon: MapPin },
             { title: "Visibilidade Publicitária Regional", description: "Espaços dedicados, banners de marcas e promoções geridos pelo Marketing, com região, período e destino definidos para cada campanha.", icon: Megaphone },
-            { title: "Usabilidade Premium", description: "Mobile-first: enviar o flyer, revisar os dados sugeridos pelo Coezinho e compartilhar o rolê por link ou WhatsApp.", icon: Smartphone },
-            { title: "Escalabilidade", description: "Expansão planejada a partir da Ilha do Governador, após validação do piloto.", icon: Layers3 },
+            { title: "Tecnologia Leve e Modular", description: "Experiência mobile-first: enviar o flyer, revisar os dados sugeridos pelo Coezinho e compartilhar o rolê por link ou WhatsApp.", icon: Smartphone },
+            { title: "Escalabilidade Planejada", description: "Modelo preparado para replicação praça a praça no Brasil e, futuramente, em outros mercados, sempre após validação local.", icon: Layers3 },
           ].map(({ title, description, icon: Icon }) => <li key={title} className="flex min-w-0 items-start gap-4 py-4"><Icon aria-hidden="true" className="h-5 w-5 text-primary" /><div className="space-y-2"><h3 className="text-lg font-semibold">{title}</h3><p className="text-sm leading-relaxed text-muted-foreground">{description}</p></div></li>)}</ul>
         </section>
         <CorporatePillars />
@@ -197,11 +197,11 @@ function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
       </section>
       </PitchDetails>
     </PitchChapter>
-    <PitchChapter value="singularity" number="05" title="Conclusão · Por que Investir no Coé a Boa?" eyebrow="Encerramento · Resumo executivo" icon={Sparkles}>
-      <section className="space-y-3"><h3 id="pitch-investment-differential" tabIndex={-1} className={headingClass}>Diferencial do Produto</h3>
-      <p className="max-w-3xl text-lg font-medium leading-relaxed">Um ecossistema seguro e inteligente para o entretenimento local.</p></section>
-      <p className="max-w-3xl leading-relaxed text-muted-foreground">IA para reduzir o trabalho de cadastro, publicidade no contexto local e dados para sustentar o pós-venda. Uma parceria com entregas claras, acompanhamento e expansão condicionada à validação de cada praça.</p>
-      <section aria-labelledby="pitch-partnership" className="space-y-4 border-t border-border pt-6"><h3 id="pitch-partnership" className="text-xl font-semibold">Próximo passo · Conversa societária</h3><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Alinhar participação, responsabilidades, investimento e critérios de validação. As projeções são cenários de receita, não lucro líquido ou promessa de retorno.</p><PitchShare audience="investor" /></section>
+    <PitchChapter value="singularity" number="05" title="Conclusão · Propósito, Futuro e Expansão" eyebrow="Encerramento · Visão societária" icon={Sparkles}>
+      <section className="space-y-3"><h3 id="pitch-investment-differential" tabIndex={-1} className={headingClass}>Muito Além do Retorno Financeiro: O Propósito</h3>
+      <p className="max-w-3xl text-lg font-medium leading-relaxed">Construir o Coé a Boa? é aproximar pessoas de experiências e fortalecer a economia real dos pequenos e médios negócios.</p></section>
+      <p className="max-w-3xl leading-relaxed text-muted-foreground">A proposta une planejamento, tecnologia e propósito cultural. O potencial de crescimento será comprovado com resultados atribuíveis, custos completos e validação de cada praça — nunca apenas por cliques ou projeções.</p>
+      <section aria-labelledby="pitch-partnership" className="space-y-4 border-t border-border pt-6"><h3 id="pitch-partnership" className="text-xl font-semibold">O Futuro é Agora</h3><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Estamos estruturando a operação para escalar com responsabilidade. O próximo passo é alinhar participação, responsabilidades, investimento e critérios de validação para construir esse legado em conjunto.</p><PitchShare audience="investor" /></section>
       <PitchDetails>
       <section className="space-y-3"><h3 id="pitch-investment-ecosystem" tabIndex={-1} className={headingClass}>Ecossistema Hiperlocal</h3>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Curadoria, cadastro rápido e publicidade de bairro conectam público, produtores e comerciantes. Preparado para escalar praça a praça, com governança e validação do piloto.</p></section>
