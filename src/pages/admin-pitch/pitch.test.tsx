@@ -142,7 +142,7 @@ describe("pitch comercial", () => {
     await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Voltar ao app" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Voltar para o app" })).toHaveAttribute("href", "/");
     expect(screen.queryByRole("heading", { name: "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro." })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Governança e Organização Corporativa" })).not.toBeInTheDocument();
