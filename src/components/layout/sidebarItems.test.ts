@@ -130,7 +130,8 @@ describe("sidebarConfig", () => {
     expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "pitch_socios", "pitch_anunciantes", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
     expect(promoterItems.some(item => item.id === "my_submissions")).toBe(true);
-    expect(promoterItems.some(item => ["send_event", "ad_plans_catalog", "share_my_events"].includes(item.id))).toBe(false);
+    expect(promoterItems.some(item => item.id === "send_event")).toBe(false);
+    expect(promoterItems.filter(item => ["share_my_events", "ad_plans_catalog"].includes(item.id))).toHaveLength(2);
     expect(publicItems.find(item => item.id === "seu_radar")?.path).toBe(ROUTES.SEU_RADAR);
   });
 });

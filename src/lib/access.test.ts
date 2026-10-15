@@ -43,7 +43,7 @@ describe("effective workspaces", () => {
     const paths = menu(["promoter"]).map((item) => item.path);
     expect(paths).toContain(ROUTES.MEUS_EVENTOS);
     expect(paths).not.toContain(ROUTES.ENVIAR_EVENTO);
-    expect(paths).not.toContain(ROUTES.COMPARTILHAR_MEUS_EVENTOS);
+    expect(paths).toEqual(expect.arrayContaining([ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.PLANOS_ANUNCIOS]));
     expect(paths).not.toContain(ROUTES.ADMIN_FINANCEIRO);
     expect(paths).not.toContain(ROUTES.ADMIN_APROVAR_EVENTOS);
   });
