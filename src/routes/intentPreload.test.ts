@@ -30,4 +30,24 @@ describe("public route intent", () => {
     stop();
     Reflect.deleteProperty(navigator, "connection");
   });
+  it("shares in-flight public prefetch, allows cache freshness checks later, and excludes protected data", async () => {
+    const load = vi.fn().mockResolvedValue({});
+    let finish: (() => void) | undefined;
+    const prefetch = vi.fn(() => new Promise<void>((resolve) => { finish = resolve; }));
+    const protectedPrefetch = vi.fn();
+    const stop = installIntentPreload({ "/agenda": load }, { "/agenda": prefetch, "/admin/events": protectedPrefetch });
+    document.body.innerHTML = '<a href="/agenda">Agenda</a><a href="/admin/events">Admin</a>';
+    const anchor = document.querySelector("a");
+    anchor?.dispatchEvent(new Event("pointerover", { bubbles: true }));
+    anchor?.dispatchEvent(new Event("focusin", { bubbles: true }));
+    document.querySelectorAll("a")[1]?.dispatchEvent(new Event("pointerover", { bubbles: true }));
+    expect(prefetch).toHaveBeenCalledTimes(1);
+    expect(protectedPrefetch).not.toHaveBeenCalled();
+    finish?.();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    anchor?.dispatchEvent(new Event("focusin", { bubbles: true }));
+    expect(prefetch).toHaveBeenCalledTimes(2);
+    expect(load).toHaveBeenCalledTimes(1);
+    stop();
+  });
 });

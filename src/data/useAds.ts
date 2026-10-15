@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllPages } from "./pagination";
 import { qk } from "@/data/queryKeys";
+import { usePublicAdsRefresh } from "./publicAdsRefresh";
 import { canonicalAdRegions, matchesAdAudience, matchesAnyAdAudience, safeAdDestination, type AdPlacement } from "@/lib/advertising";
 
 export type AdStatus = "pendente" | "publicado" | "recusado";
@@ -51,47 +52,38 @@ const AD_COLUMNS =
 
 export const ADS_KEY = qk.ads.all;
 
+async function fetchPublishedAds({ signal }: { signal: AbortSignal }): Promise<Ad[]> {
+  const expiresAfter = new Date().toISOString();
+  const data = await fetchAllPages((from, to) => supabase
+    .from("ads").select(AD_COLUMNS).eq("status", "publicado")
+    .or(`highlight_until.is.null,highlight_until.gt.${expiresAfter}`)
+    .order("is_highlight", { ascending: false })
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: true }).range(from, to).abortSignal(signal));
+  return normalizeAds(data);
+}
+
 /** Anúncios publicados (vitrine pública). */
 export function usePublishedAds(region = "all", placement?: AdPlacement) {
+  usePublicAdsRefresh();
+  const select = useCallback((ads: Ad[]) => ads.filter((ad) => matchesAdAudience(ad, region, placement)), [region, placement]);
   return useQuery({
     queryKey: qk.ads.published(),
-    queryFn: async (): Promise<Ad[]> => {
-      const { data, error } = await supabase
-        .from("ads")
-        .select(AD_COLUMNS)
-        .eq("status", "publicado")
-        .or(`highlight_until.is.null,highlight_until.gt.${new Date().toISOString()}`)
-        .order("is_highlight", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1000);
-      if (error) throw error;
-      return normalizeAds(data);
-    },
+    queryFn: fetchPublishedAds,
     staleTime: 60 * 1000,
-    refetchInterval: 60 * 1000,
-    select: (ads) => ads.filter((ad) => matchesAdAudience(ad, region, placement)),
+    select,
   });
 }
 
 /** Anúncios publicados compatíveis com uma ou mais regiões do Radar. */
 export function usePublishedRadarAds(regions: readonly string[]) {
+  usePublicAdsRefresh();
+  const select = useCallback((ads: Ad[]) => ads.filter((ad) => matchesAnyAdAudience(ad, regions, "agenda_card")), [regions]);
   return useQuery({
     queryKey: qk.ads.published(),
-    queryFn: async (): Promise<Ad[]> => {
-      const { data, error } = await supabase
-        .from("ads")
-        .select(AD_COLUMNS)
-        .eq("status", "publicado")
-        .or(`highlight_until.is.null,highlight_until.gt.${new Date().toISOString()}`)
-        .order("is_highlight", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1000);
-      if (error) throw error;
-      return normalizeAds(data);
-    },
+    queryFn: fetchPublishedAds,
     staleTime: 60 * 1000,
-    refetchInterval: 60 * 1000,
-    select: (ads) => ads.filter((ad) => matchesAnyAdAudience(ad, regions, "agenda_card")),
+    select,
   });
 }
 
