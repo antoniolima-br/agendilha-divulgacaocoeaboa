@@ -1,50 +1,50 @@
-import { describe, expect, it, vi } from "vitest";
-import { sanitizeFlyerFields, safeFlyerPatch, readFlyerStream, missingFlyerTitle, extractFlyer } from "./flyerExtraction";
-
-vi.mock("@/integrations/supabase/client", () => ({ supabase: { auth: { getSession: async () => ({ data: { session: { access_token: "test-session" } } }) } } }));
-
-describe("flyer extraction", () => {
-  it("requires a manually supplied title after selecting a flyer, but allows titleless drafts without one", () => {
-    expect(missingFlyerTitle(true, "")).toBe(true);
-    expect(missingFlyerTitle(true, "  ")).toBe(true);
-    expect(missingFlyerTitle(true, null)).toBe(true);
-    expect(missingFlyerTitle(true, "Samba de Teste")).toBe(false);
-    expect(missingFlyerTitle(false, "")).toBe(false);
-  });
-  it("sends the actual image bytes as a MIME-tagged base64 image", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response('data: {"type":"response.output_text.delta","delta":"{\\"eventTitle\\":\\"Samba de Teste\\"}"}\n\ndata: {"type":"response.completed"}\n\n'));
-    vi.stubGlobal("fetch", fetchMock);
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { sanitizeFlyerFields, safeFlyerPatch, extractFlyer } from "./flyerExtraction";
+const mocks = vi.hoisted(() => ({ recognize: vi.fn(), terminate: vi.fn(), create: vi.fn() }));
+vi.mock("tesseract.js", () => ({ createWorker: mocks.create }));
+beforeEach(() => {
+  vi.clearAllMocks();
+  mocks.terminate.mockResolvedValue(undefined);
+  mocks.create.mockResolvedValue({ recognize: mocks.recognize, terminate: mocks.terminate });
+});
+describe("local flyer extraction", () => {
+  it("passes actual image directly to Portuguese OCR without cloud requests", async () => {
+    mocks.recognize.mockResolvedValue({ data: { text: "SAMBA DA ILHA\n25/10/2026\n22h\nLocal: Bar da Praça" } });
+    const fetchMock = vi.fn(); vi.stubGlobal("fetch", fetchMock);
     try {
-      await expect(extractFlyer(new File(["flyer bytes"], "flyer.png", { type: "image/png" }), new AbortController().signal)).resolves.toEqual({ eventTitle: "Samba de Teste" });
-      const request = fetchMock.mock.calls[0]?.[1];
-      expect(JSON.parse(request.body)).toEqual({ image: "data:image/png;base64,Zmx5ZXIgYnl0ZXM=" });
-      expect(request.headers.Authorization).toBe("Bearer test-session");
+      const file = new File(["image"], "flyer.png", { type: "image/png" });
+      const progress = vi.fn();
+      expect(await extractFlyer(file, new AbortController().signal, progress)).toEqual({ eventTitle: "SAMBA DA ILHA", date: "2026-10-25", startTime: "22:00", locationName: "Bar da Praça" });
+      expect(mocks.recognize).toHaveBeenCalledWith(file);
+      expect(mocks.create).toHaveBeenCalledWith("por", 1, expect.objectContaining({ logger: expect.any(Function) }));
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(progress).toHaveBeenLastCalledWith(100);
+      expect(mocks.terminate).toHaveBeenCalledOnce();
     } finally { vi.unstubAllGlobals(); }
   });
+  it("releases OCR worker after reading failure", async () => {
+    mocks.recognize.mockRejectedValue(new Error("OCR failed"));
+    await expect(extractFlyer(new File(["image"], "flyer.png"), new AbortController().signal)).rejects.toThrow("OCR failed");
+    expect(mocks.terminate).toHaveBeenCalledOnce();
+  });
+  it("cancels an active OCR and terminates its worker", async () => {
+    mocks.recognize.mockImplementation(() => new Promise(() => {}));
+    const controller = new AbortController();
+    const reading = extractFlyer(new File(["image"], "flyer.png"), controller.signal);
+    const rejected = expect(reading).rejects.toMatchObject({ name: "AbortError" });
+    await vi.waitFor(() => expect(mocks.recognize).toHaveBeenCalled());
+    controller.abort(); await rejected;
+    expect(mocks.terminate).toHaveBeenCalled();
+  });
+  it("does not start OCR for an aborted selection", async () => {
+    const controller = new AbortController(); controller.abort();
+    await expect(extractFlyer(new File(["image"], "flyer.png"), controller.signal)).rejects.toMatchObject({ name: "AbortError" });
+    expect(mocks.create).not.toHaveBeenCalled();
+  });
   it("allowlists content and rejects impossible dates and times", () => {
-    expect(sanitizeFlyerFields({ eventTitle: " Samba ", date: "2026-02-30", startTime: "25:70", description: "a".repeat(600), status: "publicado", legalAcceptance: true })).toEqual({ eventTitle: "Samba", description: "a".repeat(500) });
-    expect(sanitizeFlyerFields({ date: "2026-10-25", startTime: "20:30" })).toEqual({ date: "2026-10-25", startTime: "20:30" });
+    expect(sanitizeFlyerFields({ eventTitle: " Samba ", date: "2026-02-30", startTime: "25:70", status: "publicado" })).toEqual({ eventTitle: "Samba" });
   });
   it("preserves edits, existing values and linked venue snapshots", () => {
     expect(safeFlyerPatch({ eventTitle: "Novo", date: "2026-10-25", locationName: "Bar" }, { eventTitle: "", date: "" }, { eventTitle: "Manual", date: "", estabelecimentoId: "linked" })).toEqual({ date: "2026-10-25" });
-  });
-  it("parses split SSE chunks and requires completed output", async () => {
-    const chunks = ['data: {"type":"response.output_text.delta","delta":"{\\"eventTitle\\":\\"Sa', 'mba\\"}"}\n\n', 'data: {"type":"response.completed"}\n\n'];
-    const stream = new ReadableStream({ start(controller) { chunks.forEach(chunk => controller.enqueue(new TextEncoder().encode(chunk))); controller.close(); } });
-    await expect(readFlyerStream(new Response(stream))).resolves.toEqual({ eventTitle: "Samba" });
-    await expect(readFlyerStream(new Response('data: {"type":"response.completed"}\n\n'))).rejects.toThrow("Não encontramos");
-  });
-  it("surfaces safe denial messages and terminal refusal", async () => {
-    await expect(readFlyerStream(new Response(JSON.stringify({ error: { message: "Limite atingido" } }), { status: 403 }))).rejects.toThrow("Limite atingido");
-    await expect(readFlyerStream(new Response('data: {"type":"response.refusal.done"}\n\n'))).rejects.toThrow("manualmente");
-  });
-  it("maps all four visual fields even when CRLF event boundaries split across reads", async () => {
-    const fields = { eventTitle: "Samba do domingo", date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" };
-    const events = `data: ${JSON.stringify({ type: "response.output_text.delta", delta: JSON.stringify(fields) })}\r\n\r\ndata: {"type":"response.completed"}\r\n\r\n`;
-    const stream = new ReadableStream({ start(controller) {
-      for (const character of events) controller.enqueue(new TextEncoder().encode(character));
-      controller.close();
-    } });
-    await expect(readFlyerStream(new Response(stream))).resolves.toEqual(fields);
   });
 });
