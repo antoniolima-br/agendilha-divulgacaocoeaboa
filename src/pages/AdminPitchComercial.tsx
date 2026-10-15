@@ -7,8 +7,8 @@ import { PitchContentView } from "./admin-pitch/PitchContentView";
 import type { AdvertiserPitchContent, PitchContent } from "./admin-pitch/types";
 
 export default function AdminPitchComercial({ audience = "investor" }: { audience?: "investor" | "advertiser" }) {
-  const title = audience === "advertiser" ? "Pitch para Anunciantes" : "Coé a Boa? | Visão Societária & Expansão";
-  const subtitle = audience === "advertiser" ? "Marcas, patrocinadores e divulgadores · Publicidade regional" : "Conectando Pessoas, Negócios e Diversão em Grande Escala.";
+  const title = audience === "advertiser" ? "Pitch para Anunciantes" : "Coé a Boa? | Visão de Negócio & Futuro";
+  const subtitle = audience === "advertiser" ? "Marcas, patrocinadores e divulgadores · Publicidade regional" : "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro.";
   const [content, setContent] = useState<PitchContent | AdvertiserPitchContent | null>(null);
   const [retry, setRetry] = useState(0);
   const [pending, setPending] = useState(false);

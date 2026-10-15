@@ -38,7 +38,7 @@ describe("pitch comercial", () => {
     expect(content.projectionBasis).toContain("não taxas simbólicas");
     expect(content.scenarios.every((s) => s.placementRevenue > s.marketing)).toBe(true);
   });
-  async function openInvestor(heading = "Conectando Pessoas, Negócios e Diversão em Grande Escala.") {
+  async function openInvestor(heading = "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro.") {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     render(page());
     await screen.findByRole("heading", { name: heading });
@@ -46,10 +46,13 @@ describe("pitch comercial", () => {
   it("abre diretamente e apresenta capítulos em sequência", async () => {
     await openInvestor();
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "investor" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
-    expect(screen.getByRole("heading", { level: 1, name: "Coé a Boa? | Visão Societária & Expansão" })).toBeVisible();
+    expect(screen.getByRole("heading", { level: 1, name: "Coé a Boa? | Visão de Negócio & Futuro" })).toBeVisible();
     expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
-    expect(screen.getByRole("heading", { name: "O Poder da Hiperlocalidade" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "O Poder da Vizinhança (Hiperlocalidade)" })).toBeVisible();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Baixar a Apresentação em PDF" })).toBeEnabled());
+    expect(screen.getAllByRole("button", { name: "Baixar a Apresentação em PDF" })).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: "WhatsApp" })).not.toBeInTheDocument();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
     fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
@@ -96,7 +99,7 @@ describe("pitch comercial", () => {
       fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Recolher detalhes"));
       expect(screen.getAllByRole("navigation")).toHaveLength(1);
       expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).not.toBeVisible();
-      expect(screen.getByRole("heading", { name: "Muito Além do Retorno Financeiro: O Propósito" })).toBeVisible();
+      expect(screen.getByRole("heading", { name: "Muito Além do Resultado: O Propósito de Construir Juntos" })).toBeVisible();
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
   });
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
@@ -106,7 +109,7 @@ describe("pitch comercial", () => {
       { tab: "Plano de Marketing · B2C & Aceleração", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
       { tab: "Plano Comercial · Abordagem B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
       { tab: "Estratégia de Lançamento e Expansão Regional", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },
-      { tab: "Conclusão · Propósito, Futuro e Expansão", summary: "Muito Além do Retorno Financeiro: O Propósito", detail: "Oportunidade e Validação" },
+      { tab: "Conclusão · Propósito e Futuro", summary: "Muito Além do Resultado: O Propósito de Construir Juntos", detail: "Oportunidade e Validação" },
     ];
     for (const chapter of chapters) {
       const region = within(screen.getByRole("region", { name: chapter.tab }));
@@ -139,7 +142,7 @@ describe("pitch comercial", () => {
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
-    expect(screen.queryByRole("heading", { name: "Conectando Pessoas, Negócios e Diversão em Grande Escala." })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro." })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Governança e Organização Corporativa" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
@@ -165,7 +168,7 @@ describe("pitch comercial", () => {
     const view = render(page("advertiser"));
     await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     view.rerender(page("investor"));
-    await screen.findByRole("heading", { name: "Conectando Pessoas, Negócios e Diversão em Grande Escala." });
+    await screen.findByRole("heading", { name: "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro." });
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
   });
 
