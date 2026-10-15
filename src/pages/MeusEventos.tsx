@@ -57,7 +57,7 @@ export default function MeusEventos() {
   const { user } = useAuth();
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
-  const { canApprove, isAdmin } = useAppPermissions();
+  const { canApprove, canSubmit, isAdmin } = useAppPermissions();
   const [sharing, setSharing] = useState<PromoterShareEvent | null>(null);
   const { data: clickCounts = {} } = useMyEventClicks();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
@@ -111,7 +111,7 @@ export default function MeusEventos() {
           <div className="flex flex-col gap-2 sm:items-end">
           <Button asChild variant="outline" className="min-h-11"><Link to={ROUTES.COMPARTILHAR_MEUS_EVENTOS}><Share2 className="mr-2 h-4 w-4" />Compartilhar meus eventos</Link></Button>
           {isAdmin && canApprove && <Button asChild variant="outline"><Link to={ROUTES.ADMIN_APROVAR_EVENTOS}><ShieldCheck className="mr-2 h-4 w-4" />Curadoria geral</Link></Button>}
-          {isDivulgador && (
+          {canSubmit && (
             <Button
               asChild
               className="min-h-11 w-full font-semibold sm:w-auto"
@@ -155,7 +155,7 @@ export default function MeusEventos() {
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center space-y-3 border border-dashed border-foreground/15 rounded-2xl">
             <p className="text-muted-foreground text-sm">Nada por aqui ainda.</p>
-            {isDivulgador ? (
+            {canSubmit ? (
               <Button
                 asChild
                 variant="outline"

@@ -103,7 +103,7 @@ export default function SeuRadar() {
   return (
     <PageContainer maxWidth="3xl">
       <SectionHeader
-        title="Seu Radar"
+        title="Meu Radar"
         subtitle="Rolês combinando com seus gostos e lugares preferidos."
         rightElement={
           <Button variant={editing ? "secondary" : "outline"} onClick={() => setEditing((current) => !current)}>

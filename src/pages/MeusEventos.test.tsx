@@ -9,7 +9,7 @@ vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: "owner"
 vi.mock("@/data/useMyEventClicks", () => ({ useMyEventClicks: () => ({ data: { approved: 7 } }) }));
 vi.mock("@/data/useMyEventHistory", () => ({ useMyEventHistory: (id: string) => mocks.history(id) }));
 vi.mock("@/data/useDivulgadorStatus", () => ({ useDivulgadorStatus: () => ({ isDivulgador: true }) }));
-vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ canApprove: true, isAdmin: true }) }));
+vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ canApprove: true, canSubmit: true, isAdmin: true }) }));
 vi.mock("@/components/divulgador/EditarMeuEventoDialog", () => ({ EditarMeuEventoDialog: () => null }));
 vi.mock("@/components/divulgador/SolicitarDivulgadorCard", () => ({ SolicitarDivulgadorCard: () => null }));
 
