@@ -20,7 +20,9 @@ import {
   UserRound,
   BriefcaseBusiness,
   Wallet,
-  Radar
+  Radar,
+  Share2,
+  Tag
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { type AccessRole } from "@/lib/access";
@@ -110,7 +112,8 @@ export const sidebarConfig: SidebarSection[] = [
         icon: ClipboardList, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
-
+      { id: "share_my_events", label: "Compartilhar meus eventos", path: ROUTES.COMPARTILHAR_MEUS_EVENTOS, exact: true, icon: Share2, roles: ["promoter", "collaborator", "admin", "senior", "master"] },
+      { id: "ad_plans_catalog", label: "Valores para anunciar", path: ROUTES.PLANOS_ANUNCIOS, exact: true, icon: Tag, roles: ["promoter", "collaborator", "admin", "senior", "master"] },
     ]
   },
   {

@@ -134,10 +134,10 @@ export default function MeusEventos() {
               Todos <span className="ml-1.5 opacity-60">{counts.todos}</span>
             </TabsTrigger>
             <TabsTrigger value="pendente" className="shrink-0 rounded-full px-4">
-              Em análise <span className="ml-1.5 opacity-60">{counts.pendente}</span>
+              Aguardando aprovação <span className="ml-1.5 opacity-60">{counts.pendente}</span>
             </TabsTrigger>
             <TabsTrigger value="aprovado" className="shrink-0 rounded-full px-4">
-              Aprovados <span className="ml-1.5 opacity-60">{counts.aprovado}</span>
+              Publicados <span className="ml-1.5 opacity-60">{counts.aprovado}</span>
             </TabsTrigger>
             <TabsTrigger value="rejeitado" className="shrink-0 rounded-full px-4">
               Rejeitados <span className="ml-1.5 opacity-60">{counts.rejeitado}</span>

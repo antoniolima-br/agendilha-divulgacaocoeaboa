@@ -7,7 +7,7 @@ import { computePermissions } from "@/hooks/useAppPermissions";
 describe("sidebarConfig", () => {
   it("consolida a jornada em Meus eventos", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
-    expect(items.map(item => item.id)).toEqual(["my_submissions"]);
+    expect(items.map(item => item.id)).toEqual(["my_submissions", "share_my_events", "ad_plans_catalog"]);
     expect(items[0]?.path).toBe(ROUTES.MEUS_EVENTOS);
   });
   it("não confunde prefixos de irmãos", () => {
@@ -19,7 +19,7 @@ describe("sidebarConfig", () => {
   it("divulgador não vê atalhos gerenciais mesmo com permissões fornecidas", () => {
     const visible = filterSidebarSections("promoter", () => true, routeExists);
     expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "apresentacoes", "conta"]);
-    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "pitch_socios", "pitch_anunciantes", "profile"]);
+    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "share_my_events", "ad_plans_catalog", "pitch_socios", "pitch_anunciantes", "profile"]);
     expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/intranet"))).toBe(false);
   });
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("abre os pitches no menu para %s", (role) => {
@@ -33,7 +33,7 @@ describe("sidebarConfig", () => {
   it("mantém Meus eventos do admin separado e esconde a Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
-    expect(personal?.items).toHaveLength(1);
+    expect(personal?.items).toHaveLength(3);
     expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
     const intranet = sidebarConfig.find((section) => section.id === "intranet");
     expect(intranet?.roles).toEqual(["master"]);
@@ -130,7 +130,8 @@ describe("sidebarConfig", () => {
     expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "pitch_socios", "pitch_anunciantes", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
     expect(promoterItems.some(item => item.id === "my_submissions")).toBe(true);
-    expect(promoterItems.some(item => ["send_event", "ad_plans_catalog", "share_my_events"].includes(item.id))).toBe(false);
+    expect(promoterItems.some(item => item.id === "send_event")).toBe(false);
+    expect(promoterItems.filter(item => ["share_my_events", "ad_plans_catalog"].includes(item.id))).toHaveLength(2);
     expect(publicItems.find(item => item.id === "seu_radar")?.path).toBe(ROUTES.SEU_RADAR);
   });
 });

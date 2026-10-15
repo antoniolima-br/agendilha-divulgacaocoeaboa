@@ -30,7 +30,7 @@ describe("effective workspaces", () => {
     expect(paths).toContain(ROUTES.AGENDA);
     expect(paths).not.toContain(ROUTES.ANUNCIO_NOVO);
     expect(paths).toContain(ROUTES.SEU_RADAR);
-    expect(paths.some((path) => path.startsWith("/admin"))).toBe(false);
+    expect(paths.some((path) => path.startsWith("/admin") && !path.startsWith("/admin/pitch-"))).toBe(false);
   });
   it("public users see agenda and promoter registration, but no organizer or financial tools", () => {
     const paths = menu(["user"]).map((item) => item.path);
@@ -43,7 +43,7 @@ describe("effective workspaces", () => {
     const paths = menu(["promoter"]).map((item) => item.path);
     expect(paths).toContain(ROUTES.MEUS_EVENTOS);
     expect(paths).not.toContain(ROUTES.ENVIAR_EVENTO);
-    expect(paths).not.toContain(ROUTES.COMPARTILHAR_MEUS_EVENTOS);
+    expect(paths).toEqual(expect.arrayContaining([ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.PLANOS_ANUNCIOS]));
     expect(paths).not.toContain(ROUTES.ADMIN_FINANCEIRO);
     expect(paths).not.toContain(ROUTES.ADMIN_APROVAR_EVENTOS);
   });
