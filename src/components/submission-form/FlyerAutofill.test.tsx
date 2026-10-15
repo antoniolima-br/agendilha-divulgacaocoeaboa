@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FlyerAutofill } from "./FlyerAutofill";
 import type { SubmissionFormData } from "./schema";
+import { parseFlyerText } from "@/lib/flyerText";
 const mocks = vi.hoisted(() => ({ extract: vi.fn(), image: vi.fn(), loading: vi.fn() }));
 vi.mock("@/lib/flyerExtraction", async importOriginal => ({ ...await importOriginal<typeof import("@/lib/flyerExtraction")>(), extractFlyer: mocks.extract }));
 vi.mock("@/lib/uploadImage", () => ({ prepareUploadImage: async (file: File) => file }));
@@ -12,6 +13,17 @@ function Harness() {
 }
 beforeEach(() => { vi.clearAllMocks(); URL.createObjectURL = vi.fn(() => "blob:preview"); URL.revokeObjectURL = vi.fn(); });
 describe("flyer first flow", () => {
+  it("fills all form fields from interpreted OCR text and leaves uncertain fields empty", async () => {
+    mocks.extract.mockResolvedValue(parseFlyerText("SAMBA DA ILHA\n24 de outubro de 2027\nàs 20\nLocal do evento: Bar da Praça"));
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["image"], "flyer.png", { type: "image/png" })] } });
+    await waitFor(() => expect(screen.getByLabelText("Título")).toHaveValue("SAMBA DA ILHA"));
+    expect(screen.getByLabelText("Data")).toHaveValue("2027-10-24");
+    expect(screen.getByLabelText("Horário")).toHaveValue("20:00");
+    expect(screen.getByLabelText("Local")).toHaveValue("Bar da Praça");
+    fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Meu samba" } });
+    expect(screen.getByLabelText("Título")).toHaveValue("Meu samba");
+  });
   it("keeps blank OCR results editable without marking title invalid", async () => {
     mocks.extract.mockResolvedValue({});
     render(<Harness />);
