@@ -12,6 +12,16 @@ function Harness() {
 }
 beforeEach(() => { vi.clearAllMocks(); URL.createObjectURL = vi.fn(() => "blob:preview"); URL.revokeObjectURL = vi.fn(); });
 describe("flyer first flow", () => {
+  it("keeps blank OCR results editable without marking title invalid", async () => {
+    mocks.extract.mockResolvedValue({});
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.jpg", { type: "image/jpeg" })] } });
+    await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
+    expect(screen.getByLabelText("Título inválido")).toHaveTextContent("não");
+    fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Título manual" } });
+    expect(screen.getByLabelText("Título")).toHaveValue("Título manual");
+    expect(screen.getByLabelText("Enviar flyer para preencher evento")).toBeEnabled();
+  });
   it("reads immediately, fills empty fields and preserves manual access", async () => {
     mocks.extract.mockResolvedValue({ eventTitle: "Samba do domingo", date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" });
     render(<Harness />);

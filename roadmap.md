@@ -1,10 +1,10 @@
 # Roadmap
-- [ ] Flyer 372: substituir leitura em nuvem por Tesseract.js local, sugerir campos com padrões, mostrar progresso e liberar fallback manual; verificar OCR real e regressões.
+- [x] Flyer 372: OCR Tesseract.js local em português, sugestões editáveis com padrões, progresso e fallback sem trava de título. OCR real autenticado preencheu título/data/horário/local; nenhuma chamada de IA, sem salvar evento. Downloads iniciais do leitor/idioma exigem internet.
 - [x] Coezinho 371: avatar oculto nos formulários e edição, arraste e abertura explícita preservados; 28 testes aprovados. Formulário autenticado, arraste, abertura/fechamento e retorno à Agenda conferidos em 390/1280 px.
 - [x] Flyer 370: imagem base64 e JSON estruturado conferidos; leituras simultâneas bloqueadas e retorno fragmentado tratado; 17 testes aprovados e formulário autenticado conferido com resposta controlada, sem salvar evento. Leitura real segue bloqueada pelos créditos já registrados.
 - [x] PWA 369: checagem ao abrir/retomar e durante uso, aviso discreto e ativação após confirmação; oito testes aprovados, aviso/toque em 390/1280 px com worker simulado e prévia sem registro. Troca real entre versões depende de publicação.
 - [x] Flyer 368: imagem confirmada no envio, título/data/horário/local preenchidos quando lidos e avanço sem título bloqueado; 14 testes aprovados.
-- [ ] Flyer 368: conferir leitura real autenticada — bloqueada por créditos de IA insuficientes no workspace.
+- [x] Flyer 368: leitura real autenticada conferida na rodada 372 com OCR local, sem créditos de IA.
 - [x] Pitch 364: Anunciantes só com retorno no topo e WhatsApp/PDF no final, sem “Confirme e acompanhe”; Sócios e preços preservados; 10 testes aprovados, retorno e download conferidos em 390/1280 px; PDF revisado visualmente e separação entre período/preço corrigida.
 - [x] Pitch 363: Sócios atualizado com Visão de Negócio & Futuro e único PDF final com preços/detalhes; acesso e Anunciantes preservados, 10 testes aprovados, download conferido em 390/1280 px.
 - [x] Pitch 362: Anunciantes reorganizado com foco hiperlocal responsável e um único contato final no WhatsApp; preços, acesso público e Pitch para Sócios preservados.

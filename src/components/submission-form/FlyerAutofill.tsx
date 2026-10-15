@@ -42,7 +42,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
       for (const key of Object.keys(patch) as (keyof typeof patch)[]) {
         form.setValue(key, patch[key], { shouldDirty: true, shouldValidate: true });
       }
-      setStatus(Object.keys(patch).length ? "Prontinho! Confira as sugestões de título, data, horário e local." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
+      setStatus(Object.keys(patch).length ? "Prontinho! Confira as sugestões de título, data, horário e local. Datas sem ano usam a próxima ocorrência." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
     } catch (e) {
       if (!controller.signal.aborted) {
         setError(manualFallback);
