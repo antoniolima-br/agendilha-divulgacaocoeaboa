@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { normalizeGeography } from '@/lib/regions';
+import { cn } from '@/lib/utils';
 
 export interface MultiSelectOption { value: string; label: string }
 export function CompactMultiSelect({ id, label, values, groups, onChange, placeholder, exclusiveValue }: {
@@ -27,10 +28,19 @@ export function CompactMultiSelect({ id, label, values, groups, onChange, placeh
       <PopoverContent align="start" className="w-[var(--radix-popover-trigger-width)] min-w-60 overflow-hidden p-0">
         <Command filter={(value, search) => normalizeGeography(value).includes(normalizeGeography(search)) ? 1 : 0}>
           <CommandInput placeholder="Buscar..." aria-label={`Buscar ${label.toLowerCase()}`} />
-          <CommandList className="max-h-56 overscroll-contain"><CommandEmpty>Nada encontrado. Tente outro nome.</CommandEmpty>
-            {groups.map(group => <CommandGroup key={group.label} heading={group.label}>{group.options.map(option => <CommandItem key={option.value} value={`${option.label} ${option.value}`} onSelect={() => toggle(option.value)} className="min-h-10 gap-2 cursor-pointer" aria-label={option.label}>
-              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-input">{values.includes(option.value) && <Check className="h-3 w-3 text-primary" />}</span><span className="min-w-0 break-words">{option.label}</span>
-            </CommandItem>)}</CommandGroup>)}
+          <CommandList className="max-h-56 overscroll-contain" aria-multiselectable="true"><CommandEmpty>Nada encontrado. Tente outro nome.</CommandEmpty>
+            {groups.map(group => <CommandGroup key={group.label} heading={group.label}>{group.options.map(option => {
+              const checked = values.includes(option.value);
+              return <CommandItem key={option.value} value={`${option.label} ${option.value}`} onSelect={() => toggle(option.value)} aria-checked={checked} className={cn(
+                "min-h-10 gap-2 cursor-pointer border transition-colors duration-150 motion-reduce:transition-none",
+                checked
+                  ? "border-primary/40 bg-primary/15 text-foreground data-[selected=true]:bg-primary/15 data-[selected=true]:text-foreground"
+                  : "border-transparent bg-transparent data-[selected=true]:bg-muted data-[selected=true]:text-foreground",
+                "data-[selected=true]:ring-1 data-[selected=true]:ring-inset data-[selected=true]:ring-border"
+              )} aria-label={option.label}>
+                <span aria-hidden="true" className={cn("flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border transition-colors duration-150 motion-reduce:transition-none", checked ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background")}><Check className={cn("h-3 w-3", checked ? "opacity-100" : "opacity-0")} /></span><span className="min-w-0 break-words">{option.label}</span>
+              </CommandItem>;
+            })}</CommandGroup>)}
           </CommandList>
         </Command>
         <div className="flex items-center justify-between border-t border-border px-2 py-1"><Button type="button" variant="ghost" size="sm" onClick={() => onChange([])}>Limpar</Button><Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>Concluir</Button></div>
