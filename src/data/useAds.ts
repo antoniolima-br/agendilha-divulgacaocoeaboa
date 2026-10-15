@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { qk } from "@/data/queryKeys";
 import { usePublicAdsRefresh } from "./publicAdsRefresh";
 import { matchesAdAudience, matchesAnyAdAudience, type AdPlacement } from "@/lib/advertising";
-import { normalizeAds, type Ad, type AdInput } from "./ads/model";
+import { normalizeAds, type Ad, type AdInput, type AdStatus } from "./ads/model";
 import { AD_COLUMNS, fetchPublishedAds, fetchMyAds, fetchAllAds, fetchAd, fetchPublishedFlyerAds } from "./ads/queries";
 
 export { AD_CATEGORIES, normalizeAds } from "./ads/model";
