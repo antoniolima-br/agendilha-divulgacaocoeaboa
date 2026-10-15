@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, MapPin, Radar, Save, Settings2 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
-import { useEvents } from "@/data/events";
 import { usePublishedRadarAds } from "@/data/useAds";
 import { interleaveRadarAds, radarEvents } from "@/lib/radar";
 import { REGIONS, REGION_NEIGHBORHOODS, regionOf } from "@/lib/regions";
@@ -17,6 +16,9 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { ROUTES } from "@/routes/config";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePublicEventIndex, usePublicEventBatch } from "@/data/pagedPublicEvents";
+import { EventBatchNavigation } from "@/components/agenda/EventBatchNavigation";
+import { flyerListingUrl } from "@/lib/flyerImages";
 
 const STYLES = ["Samba", "Pagode", "Rock", "MPB", "Funk", "Jazz", "Pop", "Sertanejo", "Eletrônica"];
 const CATEGORIES = ["Música", "Gastronomia", "Cultura", "Esporte", "Promoções"];
@@ -53,7 +55,7 @@ function ChoiceGroup({ title, options, values, onToggle }: ChoiceGroupProps) {
 export default function SeuRadar() {
   const { user } = useAuth();
   const { profile, loaded, saveProfile } = useProfile();
-  const { events, isLoading, isError, refetch } = useEvents({ includeRatings: false });
+  const { data: events = [], isLoading, isError, refetch } = usePublicEventIndex();
   const [categories, setCategories] = useState<string[]>([]);
   const [styles, setStyles] = useState<string[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
@@ -78,7 +80,8 @@ export default function SeuRadar() {
   }, [loaded, profile]);
 
   const feed = useMemo(() => radarEvents(events, { event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods, followed_regions: regions }), [events, categories, styles, neighborhoods, regions]);
-  const mixedFeed = useMemo(() => interleaveRadarAds(feed, radarAds), [feed, radarAds]);
+  const batch = usePublicEventBatch(feed);
+  const mixedFeed = useMemo(() => interleaveRadarAds(batch.events, radarAds), [batch.events, radarAds]);
   const toggle = (values: string[], value: string, setter: (next: string[]) => void) => {
     setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]);
   };
@@ -135,9 +138,10 @@ export default function SeuRadar() {
         </section>
       )}
 
-      {isError ? (
-        <ErrorState title="Não deu pra carregar seu Radar" message="Tente novamente em instantes." onRetry={() => void refetch()} />
-      ) : isLoading ? (
+      <div id="event-batch-start" className="scroll-mt-24" />
+      {isError || batch.isError ? (
+        <ErrorState title="Não deu pra carregar seu Radar" message="Tente novamente em instantes." onRetry={() => { void refetch(); void batch.refetch(); }} />
+      ) : isLoading || batch.isLoading ? (
         <LoadingState message="Buscando seus rolês…" />
       ) : feed.length ? (
         <ul className="space-y-3" aria-label="Rolês do seu Radar">
@@ -147,7 +151,7 @@ export default function SeuRadar() {
             </li>
           ) : (
             <li key={item.value.id} className="flex gap-4 rounded-lg border border-border/70 bg-card/45 p-3 shadow-card transition-colors hover:border-primary/30 sm:p-4">
-              {item.value.image_url && <img src={item.value.image_url} alt="" loading="lazy" className="h-24 w-20 shrink-0 rounded-md object-cover" />}
+              {item.value.image_url && <img src={flyerListingUrl(item.value.image_url)} alt="" loading="lazy" decoding="async" className="h-24 w-20 shrink-0 rounded-md object-cover" />}
               <div className="min-w-0 flex-1 space-y-2.5">
                 <h2 className="break-words text-base font-semibold leading-tight text-foreground sm:text-lg">{item.value.event_title || "Rolê sem título"}</h2>
                 <p className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"><CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{formatEventDateTimeBR(item.value.date, item.value.start_time)}</p>
@@ -160,6 +164,7 @@ export default function SeuRadar() {
       ) : (
         <EmptyState icon={Radar} title="Seu Radar está quietinho agora" description="Ajuste seus gostos ou confira a agenda completa pra encontrar um rolê." actionLabel="Ver agenda" onAction={() => { window.location.href = ROUTES.AGENDA; }} />
       )}
+      <EventBatchNavigation batch={batch} />
     </PageContainer>
   );
 }

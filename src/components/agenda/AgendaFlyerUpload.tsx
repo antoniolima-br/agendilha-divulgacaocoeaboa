@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { prepareUploadImage } from "@/lib/uploadImage";
+import { uploadFlyerImage } from "@/lib/flyerImages";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -35,13 +35,10 @@ export function AgendaFlyerUpload({ events, userId }: { events: AgendaEvent[]; u
     if (!eventId || !file) return;
     setSaving(true);
     try {
-      const optimized = await prepareUploadImage(file);
-      const ext = optimized.name.split(".").pop() || "jpg";
+      const ext = file.name.split(".").pop() || "jpg";
       const path = `${userId}/flyer-${eventId}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("event-flyers").upload(path, optimized, { contentType: optimized.type });
-      if (upErr) throw upErr;
-      const { data } = supabase.storage.from("event-flyers").getPublicUrl(path);
-      const { error } = await supabase.from("submissions").update({ image_url: data.publicUrl }).eq("id", eventId);
+      const imageUrl = await uploadFlyerImage(file, path);
+      const { error } = await supabase.from("submissions").update({ image_url: imageUrl }).eq("id", eventId);
       if (error) throw error;
       toast.success("Flyer no ar! Já aparece na agenda.");
       setFile(null);

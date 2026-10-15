@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getEventFallbackPalette } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
+import { flyerListingUrl } from "@/lib/flyerImages";
 
 interface EventImageProps {
   src?: string | null;
@@ -37,7 +38,7 @@ export const EventImage = memo(function EventImage({ src, alt, category, classNa
           </span>
         </div>
       ) : <img
-        src={src || undefined}
+        src={fit === "contain" ? src || undefined : flyerListingUrl(src)}
         alt={alt}
         key={src || "fallback"}
         className={cn(

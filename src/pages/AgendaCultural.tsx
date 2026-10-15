@@ -1,4 +1,7 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { qk } from "@/data/queryKeys";
 import { useNavigate } from "react-router-dom";
 import { CalendarDays, Users } from "lucide-react";
 import { eventDateISO, formatEventDateTimeBR } from "@/lib/eventDate";
@@ -30,6 +33,9 @@ import { getShareUrl } from "@/lib/sharing";
 import { isHighlightActive } from "@/lib/highlights";
 import { AgendaSponsoredCards } from "@/components/anuncios/AgendaSponsoredCards";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePublicEventBatch } from "@/data/pagedPublicEvents";
+import { EventBatchNavigation } from "@/components/agenda/EventBatchNavigation";
+import { InlineError } from "@/components/errors/InlineError";
 
 export default function AgendaCultural() {
   return (
@@ -59,6 +65,29 @@ function AgendaCulturalInner() {
   const { artists, shortVideos } = useAgendaArtists(activeTab === "artists");
 
   const filters = useAgendaFilters({ events, profile, isFavorite, favorites });
+  const batch = usePublicEventBatch([...filters.filteredEvents].sort((a, b) => {
+    const priority = Number(isHighlightActive(b)) - Number(isHighlightActive(a));
+    return priority || (filters.sortOrder === "asc" ? 1 : -1) * `${a.date ?? ""} ${a.start_time ?? ""}`.localeCompare(`${b.date ?? ""} ${b.start_time ?? ""}`);
+  }));
+  const visible = useMemo(() => {
+    const byId = new Map(batch.events.map(event => [event.id, event]));
+    const hydrate = (items: AgendaEvent[]) => items.flatMap(event => { const row = byId.get(event.id); return row ? [row] : []; });
+    const grouped = Object.fromEntries(Object.entries(filters.grouped).map(([day, group]) => [day, { ...group, items: hydrate(group.items) }]));
+    return { ...filters, filteredEvents: batch.events, grouped,
+      sortedDays: filters.sortedDays.filter(day => grouped[day].items.length > 0),
+      freeEvents: hydrate(filters.freeEvents), trendingEvents: hydrate(filters.trendingEvents),
+      recommendedEvents: hydrate(filters.recommendedEvents), nearYouEvents: hydrate(filters.nearYouEvents) };
+  }, [batch.events, filters]);
+  const linkedEvent = useQuery({
+    queryKey: [...qk.agenda.events(), "linked", initialEventId],
+    enabled: !!initialEventId,
+    queryFn: async ({ signal }) => {
+      if (!initialEventId) return null;
+      const { data, error } = await supabase.from("public_submissions").select("*").eq("id", initialEventId).abortSignal(signal).maybeSingle();
+      if (error) throw error;
+      return data as AgendaEvent | null;
+    },
+  });
 
   const [shareData, setShareData] = useState<{
     title: string;
@@ -84,13 +113,13 @@ function AgendaCulturalInner() {
   // Abre o evento vindo da URL quando os dados chegam
   useEffect(() => {
     if (!initialEventId) return;
-    const ev = events.find((e) => e.id === initialEventId);
+    const ev = linkedEvent.data ?? batch.events.find((e) => e.id === initialEventId);
     if (ev) {
       setSelectedEvent(ev);
       trackView(ev.id);
       clearInitialEventId();
     }
-  }, [initialEventId, events, trackView, clearInitialEventId]);
+  }, [initialEventId, linkedEvent.data, batch.events, trackView, clearInitialEventId]);
 
   const goToDivulgar = () => {
     if (!user) {
@@ -115,9 +144,9 @@ function AgendaCulturalInner() {
       <main className="mx-auto max-w-4xl px-4 py-8 sm:py-12 md:py-16">
         <AgendaHero
           isLoggedIn={!!user}
-          nearYouEvents={filters.nearYouEvents}
-          trendingEvents={filters.trendingEvents}
-          recommendedEvents={filters.recommendedEvents}
+          nearYouEvents={visible.nearYouEvents}
+          trendingEvents={visible.trendingEvents}
+          recommendedEvents={visible.recommendedEvents}
           onSelectEvent={setSelectedEvent}
           onShare={handleShare}
           onDivulgar={goToDivulgar}
@@ -178,7 +207,8 @@ function AgendaCulturalInner() {
 
             <AgendaSponsoredCards region={filters.regionFilter} />
 
-            {loading ? (
+            <div id="event-batch-start" className="scroll-mt-24" />
+            {batch.error ? <InlineError error={batch.error} onRetry={() => void batch.refetch()} /> : loading || batch.isLoading ? (
               <AgendaListSkeleton />
             ) : filters.filteredEvents.length === 0 ? (
               <AgendaEmptyState
@@ -188,7 +218,7 @@ function AgendaCulturalInner() {
               />
             ) : (
               <div className="space-y-12">
-                {filters.filteredEvents.some((event) => isHighlightActive(event)) && (
+                {visible.filteredEvents.some((event) => isHighlightActive(event)) && (
                   <section>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-3 w-3 rounded-full bg-orange-500 animate-pulse" />
@@ -196,7 +226,7 @@ function AgendaCulturalInner() {
                     </div>
                     <div className="space-y-6">
                       {Object.entries(
-                        filters.filteredEvents
+                        visible.filteredEvents
                           .filter((event) => isHighlightActive(event))
                           .slice()
                           .sort((a, b) => `${eventDateISO(a.date)} ${a.start_time ?? ""}`.localeCompare(`${eventDateISO(b.date)} ${b.start_time ?? ""}`))
@@ -228,18 +258,18 @@ function AgendaCulturalInner() {
                   </section>
                 )}
 
-                {filters.sortedDays.map((dayKey) => (
+                {visible.sortedDays.map((dayKey) => (
                   <section key={dayKey} className="space-y-8">
                     <div className="flex items-center gap-4 sticky top-16 bg-background/80 backdrop-blur-md py-4 z-10 border-b border-border/50">
                       <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 shadow-sm">
                         <CalendarDays className="h-6 w-6 text-primary" />
                       </div>
                       <h2 className="text-2xl font-black text-foreground tracking-tight">
-                        {filters.grouped[dayKey].label}
+                        {visible.grouped[dayKey].label}
                       </h2>
                     </div>
                     <div className="grid grid-cols-1 gap-3">
-                      {(filters.grouped[dayKey]?.items ?? []).map((ev) => (
+                      {(visible.grouped[dayKey]?.items ?? []).map((ev) => (
                         <DayEventCard
                           key={ev.id}
                           event={ev}
@@ -253,13 +283,13 @@ function AgendaCulturalInner() {
                   </section>
                 ))}
 
-                {filters.freeEvents.length > 0 && (
+                {visible.freeEvents.length > 0 && (
                   <section className="rounded-2xl border border-border/60 bg-card/40 p-4 sm:p-5">
                     <h2 className="text-sm font-bold uppercase tracking-[0.16em] text-muted-foreground mb-3">
                       Também rola por aí
                     </h2>
                     <ul className="divide-y divide-border/50 text-sm">
-                      {filters.freeEvents.map((ev) => (
+                      {visible.freeEvents.map((ev) => (
                         <li key={ev.id} className="py-2">
                           <button type="button" onClick={() => setSelectedEvent(ev)} className="text-left w-full hover:text-primary">
                             <span className="font-medium">{ev.event_title || "Rolê"}</span>
@@ -275,6 +305,7 @@ function AgendaCulturalInner() {
                 )}
               </div>
             )}
+            <EventBatchNavigation batch={batch} />
           </div>
         )}
       </main>

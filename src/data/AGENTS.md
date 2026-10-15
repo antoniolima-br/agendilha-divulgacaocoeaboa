@@ -9,3 +9,5 @@
 - Centralize cross-query invalidation for profile and collaborator writes so derived permission and promoter views cannot drift.
 - Ads keep models/read adapters in ads/; useAds.ts preserves hook exports and cache contracts, separating transport from consumers.
 - CEP transport lives in cep.ts; forms retain validation, request ownership, field policy and feedback to preserve distinct journeys.
+
+- Public discovery separates a filter/calendar index from bounded detail pages, preserving complete filter availability without retaining all full event records.

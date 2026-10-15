@@ -15,7 +15,7 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
-- Flyer OCR: lazy browser Tesseract, Portuguese pattern parsing, abort cleanup; preserve edits, no draft gate. Preserve art; generate missing sponsored art first.
+- Flyer OCR: lazy Tesseract, Portuguese parsing, abort cleanup; preserve edits, no draft gate. Pair official art with thumbnails; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
@@ -32,7 +32,7 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
 - Intranet: Master-only; read src/pages/intranet/AGENTS.md.
-- Read nested AGENTS.md. sharedResource shares lifetimes, not timing; userGrouping never grants access.
+- Read nested AGENTS.md. sharedResource shares lifetimes only; userGrouping never grants access.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay separate from public/promoter/artist flows.
-- PWA guards registration and awaits control before reload; user confirms updates.
+- PWA guards registration, awaits control before reload and user confirmation; cache core chunks, not flyers.

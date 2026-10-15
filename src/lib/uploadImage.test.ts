@@ -1,11 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { prepareUploadImage } from "./uploadImage";
+import { prepareUploadImage, isAnimatedWebp } from "./uploadImage";
 import { compressImage } from "./mediaCompression";
 vi.mock("./mediaCompression", () => ({ compressImage: vi.fn() }));
 
 describe("upload compression adapter", () => {
   beforeEach(() => vi.clearAllMocks());
-  it.each(["image/gif", "image/webp", "image/svg+xml"])("preserves %s without flattening animation", async (type) => {
+  it("preserves animated WebP instead of flattening the official artwork", async () => {
+    const bytes = new Uint8Array(20);
+    bytes.set([65, 78, 73, 77], 12);
+    const file = new File([bytes], "animated.webp", { type: "image/webp" });
+    Object.defineProperty(file, "arrayBuffer", { value: async () => bytes.buffer });
+    expect(await isAnimatedWebp(file)).toBe(true);
+    expect(await prepareUploadImage(file)).toBe(file);
+    expect(compressImage).not.toHaveBeenCalled();
+  });
+  it.each(["image/gif", "image/svg+xml"])("preserves %s without flattening animation", async (type) => {
     const file = new File(["media"], "media", { type });
     expect(await prepareUploadImage(file)).toBe(file);
     expect(compressImage).not.toHaveBeenCalled();

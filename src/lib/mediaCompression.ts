@@ -1,6 +1,5 @@
 // Compressão client-side de imagens antes do upload.
-// Alvo: até 1600px no lado maior, JPEG qualidade 0.82. Mantém PNG só quando
-// há transparência; caso contrário converte para JPEG (5-8x menor).
+// Alvo: até 1600px no lado maior, WebP com transparência preservada.
 
 const MAX_SIDE = 1600;
 const JPEG_QUALITY = 0.82;
@@ -30,7 +29,7 @@ async function fileToImage(file: File): Promise<HTMLImageElement> {
   }
 }
 
-export async function compressImage(file: File): Promise<CompressedFile> {
+export async function compressImage(file: File, options: { maxSide?: number; quality?: number; outputType?: string } = {}): Promise<CompressedFile> {
   const originalSize = file.size;
   // GIFs animados: não comprime (perderia animação)
   if (file.type === "image/gif") {
@@ -48,7 +47,8 @@ export async function compressImage(file: File): Promise<CompressedFile> {
     const img = await fileToImage(file);
     const { width, height } = img;
     const largest = Math.max(width, height);
-    const scale = largest > MAX_SIDE ? MAX_SIDE / largest : 1;
+    const maxSide = options.maxSide ?? MAX_SIDE;
+    const scale = largest > maxSide ? maxSide / largest : 1;
     const targetW = Math.round(width * scale);
     const targetH = Math.round(height * scale);
 
@@ -59,11 +59,13 @@ export async function compressImage(file: File): Promise<CompressedFile> {
     if (!ctx) throw new Error("Canvas indisponível");
     ctx.drawImage(img, 0, 0, targetW, targetH);
 
-    const outType = file.type === "image/png" ? "image/png" : "image/jpeg";
+    const outType = options.outputType ?? "image/webp";
     const blob: Blob | null = await new Promise((resolve) =>
-      canvas.toBlob(resolve, outType, JPEG_QUALITY)
+      canvas.toBlob(resolve, outType, options.quality ?? JPEG_QUALITY)
     );
-    if (!blob || blob.size >= originalSize) {
+    canvas.width = 0;
+    canvas.height = 0;
+    if (!blob || (blob.size >= originalSize && scale === 1)) {
       // se não ganhou nada, mantém o original
       return {
         file,
@@ -74,9 +76,9 @@ export async function compressImage(file: File): Promise<CompressedFile> {
         type: "image",
       };
     }
-    const ext = outType === "image/png" ? "png" : "jpg";
+    const ext = blob.type === "image/webp" ? "webp" : blob.type === "image/png" ? "png" : "jpg";
     const base = file.name.replace(/\.[^.]+$/, "");
-    const compressed = new File([blob], `${base}.${ext}`, { type: outType });
+    const compressed = new File([blob], `${base}.${ext}`, { type: blob.type });
     return {
       file: compressed,
       preview: URL.createObjectURL(compressed),

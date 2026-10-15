@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
 import { usePublicEventsRealtime } from "@/data/publicEventsRealtime";
 import { prepareUploadImage } from "@/lib/uploadImage";
+import { uploadFlyerImage } from "@/lib/flyerImages";
 import { extractFlyer } from "@/lib/flyerExtraction";
 import { curationEventInvite, curationEventLink, emptyCurationEventForm, validateCurationEventForm, type CurationEventForm } from "@/lib/curationEvents";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
@@ -82,12 +83,9 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
       if (!user) throw new Error("Sua sessão expirou. Entre novamente.");
       let imageUrl = form.flyerUrl.trim() || null;
       if (file) {
-        const optimized = await prepareUploadImage(file);
-        const extension = optimized.name.split(".").pop() || "jpg";
+        const extension = file.name.split(".").pop() || "jpg";
         const path = `${user.id}/curadoria-${form.id ?? "novo"}-${Date.now()}.${extension}`;
-        const { error: uploadError } = await supabase.storage.from("event-flyers").upload(path, optimized, { contentType: optimized.type, upsert: false });
-        if (uploadError) throw uploadError;
-        imageUrl = supabase.storage.from("event-flyers").getPublicUrl(path).data.publicUrl;
+        imageUrl = await uploadFlyerImage(file, path);
       }
       const { data, error } = await supabase.rpc("intranet_save_curation_event_v2", {
         p_id: form.id,

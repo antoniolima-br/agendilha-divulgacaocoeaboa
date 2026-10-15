@@ -1,4 +1,5 @@
-import { usePublicEvents } from "@/data/usePublicEvents";
+import { usePublicEventIndex, usePublicEventBatch } from "@/data/pagedPublicEvents";
+import { EventBatchNavigation } from "@/components/agenda/EventBatchNavigation";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { isHighlightActive } from "@/lib/highlights";
@@ -86,7 +87,7 @@ function ExplorarInner() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { locale: ptBR }));
 
-  const { data: events = [], isLoading, error, refetch } = usePublicEvents();
+  const { data: events = [], isLoading, error, refetch } = usePublicEventIndex();
 
   useEffect(() => {
     const categoryParam = params.get("category");
@@ -170,6 +171,7 @@ function ExplorarInner() {
       return (a.start_time || "").localeCompare(b.start_time || "");
     });
   }, [events, datePreset, customDate, neighborhood, region, category, term, isArchive, globalFilters]);
+  const batch = usePublicEventBatch(filtered);
 
   const activeFiltersCount =
     (datePreset !== "all" ? 1 : 0) +
@@ -417,21 +419,21 @@ function ExplorarInner() {
         </div>
 
         {/* Grid */}
-        <h2 className="text-xl sm:text-2xl font-bold font-display tracking-tight mb-4">
+        <h2 id="event-batch-start" className="scroll-mt-24 text-xl sm:text-2xl font-bold font-display tracking-tight mb-4">
           {isArchive ? "Arquivo de eventos" : "Eventos no Rio de Janeiro"}
         </h2>
-        {isLoading ? (
+        {isLoading || batch.isLoading ? (
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="aspect-square rounded-3xl bg-muted/40 animate-pulse" />
             ))}
           </div>
-        ) : error ? (
+        ) : error || batch.error ? (
           <InlineError
-            error={error}
+            error={error || batch.error}
             title="Não deu pra carregar os rolês agora."
             description="Confere tua conexão e tenta de novo."
-            onRetry={() => refetch()}
+            onRetry={() => { void refetch(); void batch.refetch(); }}
           />
         ) : filtered.length === 0 ? (
           <div className="bg-muted/30 rounded-3xl p-12 text-center border border-dashed border-primary/15">
@@ -446,7 +448,7 @@ function ExplorarInner() {
           </div>
         ) : (
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-            {filtered.map(ev => (
+            {batch.events.map(ev => (
               <DiscoveryEventCard
                 key={ev.id}
                 event={ev as any}
@@ -457,6 +459,7 @@ function ExplorarInner() {
             ))}
           </div>
         )}
+        <EventBatchNavigation batch={batch} />
       </section>
     </div>
   );
