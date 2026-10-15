@@ -1,5 +1,32 @@
 # Performance — resultado e limites
 
+## Revisão complementar 354 — 15/10/2026
+
+Revisão da estrutura, navegação, hooks, estados, consultas, integração de dados, imagens, CSS, scripts e configuração de divisão de código/PWA, somada à auditoria anterior. Arquivos excluídos pelo solicitante não foram inspecionados. Não é uma certificação de todos os fluxos, vazamentos ou gargalos.
+
+| Prioridade | Gargalo confirmado | Ação e impacto |
+|---|---|---|
+| Alta | Miniaturas compactas iniciavam download/decodificação por `new Image()` no momento da montagem, mesmo fora da tela. | Preparação só depois do carregamento da imagem lazy nativa. Evita antecipar decodificação de cartões distantes; o navegador pode reutilizar a imagem já carregada. Estado associado à URL impede exibir miniatura de uma arte anterior. |
+| Média | Cache de autocomplete retinha todos os termos e páginas de uma sessão de formulário. | Limite de 30 termos recentes por campo, descarte do menos usado e reinicialização quando muda o tamanho da página. A busca completa e a paginação permanecem disponíveis. O limite é de termos, não uma garantia de bytes máximos. |
+| Média | Verificações de agenda substituídas continuavam aguardando respostas antigas. | AbortController cancelado na mudança dos campos/desmontagem, preservando debounce, avaliação e checagem final do envio. Cancelar o transporte não garante interromper SQL já em execução no servidor. |
+| Média | Imagens de descoberta transitavam blur, escala e todas as propriedades por 1,2 s. | Transição de opacidade/transformação de 300 ms e respeito a movimento reduzido; arte e enquadramento mantidos. |
+
+### Validação
+
+- 121 arquivos e **562 testes aprovados**, incluindo cache recente/expulsão, mudança da paginação, cancelamento de agenda, resposta atrasada de miniaturas, flyer oficial e compartilhamento.
+- Validação automática da prévia: OK.
+- Agenda/Explorar conferidas em 390/1280 px sem overflow. Um cartão real abriu `/evento/ernesto-duarte`, com título, data e local visíveis na página pública; nenhuma alteração de registros.
+- Agenda em desenvolvimento: antes 245/237 recursos e 8.541.598 bytes, depois aproximadamente 245/237 recursos e 8.542.345 bytes. **Não houve redução medida de bytes do carregamento inicial da Agenda nesta etapa**; o ganho é trabalho evitado em miniaturas, pesquisas prolongadas e respostas obsoletas. DOM permaneceu 1195/1209 elementos. Essas medições não são bundle de produção ou Core Web Vitals.
+
+### Prioridades restantes e limites
+
+- Callbacks inline em listas podem neutralizar memoização, principalmente no relógio de CuradoriaHoje; requer perfilar renderizações e estabilizar os seletores sem capturar eventos antigos. Não aplicada comparação customizada que ignore callbacks, pois poderia abrir dados obsoletos.
+- Grandes listas administrativas ainda exigem uma estratégia de paginação que preserve busca, totais, seleção e exportação; não foram truncadas para parecer rápidas.
+- PNGs principais já tinham compressão sem perdas pouco promissora na auditoria anterior; assets sem certeza de uso não foram removidos. Não foram alterados chunks, CSS global, serviços de instalação ou índices sem evidência mensurável de ganho seguro.
+- Lighthouse, FPS, heap e percentis de Core Web Vitals em produção não medidos. Fluxos privados de upload/cadastro permanecem dependentes de sessão autorizada; esta revisão não afrouxa acessos nem aprovações.
+
+---
+
 ## Nova análise e melhorias — 15/10/2026
 
 ### Cobertura e prioridades

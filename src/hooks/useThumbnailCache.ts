@@ -54,8 +54,8 @@ async function manageCacheLimit() {
  * Falls back to the original URL while building / on failure.
  * Uses IndexedDB for storage to avoid localStorage size limits.
  */
-export function useThumbnailCache(eventId: string, url?: string | null): string | undefined {
-  const [thumb, setThumb] = useState<string | undefined>(undefined);
+export function useThumbnailCache(eventId: string, url?: string | null, enabled = true): string | undefined {
+  const [thumb, setThumb] = useState<{ url: string; value: string } | undefined>(undefined);
 
   useEffect(() => {
     if (!url) {
@@ -65,9 +65,11 @@ export function useThumbnailCache(eventId: string, url?: string | null): string 
 
     // Don't cache dataURLs (already generated fallbacks)
     if (url.startsWith("data:")) {
-      setThumb(url);
+      setThumb({ url, value: url });
       return;
     }
+    // The native lazy image must load first; never decode off-screen cards eagerly.
+    if (!enabled) return;
 
     const key = `thumb_${eventId}_${url}`;
     let cancelled = false;
@@ -76,7 +78,7 @@ export function useThumbnailCache(eventId: string, url?: string | null): string 
       try {
         const cached = await get(key);
         if (cached && !cancelled) {
-          setThumb(cached);
+          setThumb({ url, value: cached });
           return;
         }
       } catch (err) {
@@ -84,14 +86,14 @@ export function useThumbnailCache(eventId: string, url?: string | null): string 
       }
 
       if (cancelled) return;
-      setThumb(url); // Show original while building
+      setThumb({ url, value: url }); // Show original while building
 
       const data = await buildThumbnail(url);
       if (cancelled || !data) return;
 
       try {
         await set(key, data);
-        setThumb(data);
+        setThumb({ url, value: data });
         await manageCacheLimit();
       } catch (err) {
         logger.warn("[useThumbnailCache] falha ao salvar no cache local", err);
@@ -103,7 +105,7 @@ export function useThumbnailCache(eventId: string, url?: string | null): string 
     return () => {
       cancelled = true;
     };
-  }, [eventId, url]);
+  }, [eventId, url, enabled]);
 
-  return thumb;
+  return thumb?.url === url ? thumb?.value : url || undefined;
 }
