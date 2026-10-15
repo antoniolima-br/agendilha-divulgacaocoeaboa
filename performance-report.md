@@ -25,7 +25,7 @@ Revisão independente de infraestrutura/rotas/contextos, dados/queries/backend e
 
 ### Validação e limites
 
-- 85 testes focados aprovados antes da suíte de regressão; novos testes cobrem compartilhamento, pausa/retomada, cancelamento, filtros, arte oficial e limite de espera em rajadas.
+- 85 testes focados e 553 testes de regressão em 118 arquivos aprovados (teste da página excluída pelo solicitante não executado); novos testes cobrem compartilhamento, pausa/retomada, cancelamento, filtros, arte oficial e limite de espera em rajadas. Validação automática final OK.
 - Home → Agenda com dados públicos reais: uma leitura de eventos antes, após intenção e após navegação, em 390 e 1280 px. A Agenda reaproveita os eventos, sem leitura adicional; ambas as larguras sem overflow.
 - Medição inicial local em desenvolvimento: 216 recursos e 8.246.098 bytes de transferência; DOM 852 elementos. Não é tamanho de pacote de produção, Lighthouse ou resultado de Core Web Vitals.
 - Logos PNG foram testados com compressão sem perdas: principais ícones de 512 px já não encolheram; não foram substituídos por imagens com perda nem removidos assets que possam ser referenciados em arquivos excluídos.
