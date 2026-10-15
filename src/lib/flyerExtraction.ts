@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { parseFlyerText } from "./flyerText";
 import { sanitizeFlyerFields, type FlyerFields } from "../../supabase/functions/_shared/flyerFields";
 export { sanitizeFlyerFields, type FlyerFields };
 
@@ -52,19 +52,27 @@ export async function readFlyerStream(response: Response): Promise<FlyerFields> 
   } finally { await reader.cancel().catch(() => {}); reader.releaseLock(); }
 }
 
-export async function extractFlyer(file: File, signal: AbortSignal): Promise<FlyerFields> {
-  const image = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Imagem inválida."));
-    reader.onerror = () => reject(new Error("Não deu pra abrir a imagem."));
-    reader.readAsDataURL(file);
+export async function extractFlyer(file: File, signal: AbortSignal, onProgress?: (progress: number) => void): Promise<FlyerFields> {
+  const cancelled = () => new DOMException("Cancelado", "AbortError");
+  if (signal.aborted) throw cancelled();
+  // Loaded only on image selection. Image processing stays in the browser.
+  const { createWorker } = await import("tesseract.js");
+  if (signal.aborted) throw cancelled();
+  const worker = await createWorker("por", 1, {
+    logger: ({ status, progress }) => {
+      if (!signal.aborted) onProgress?.(status === "recognizing text" ? Math.round(progress * 100) : 0);
+    },
   });
-  if (signal.aborted) throw new DOMException("Cancelado", "AbortError");
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error("Entre na sua conta para ler o flyer.");
-  return readFlyerStream(await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-flyer`, {
-    method: "POST", signal,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
-    body: JSON.stringify({ image }),
-  }));
+  const abort = () => { void worker.terminate().catch(() => {}); };
+  signal.addEventListener("abort", abort, { once: true });
+  try {
+    if (signal.aborted) throw cancelled();
+    const { data } = await worker.recognize(file);
+    if (signal.aborted) throw cancelled();
+    onProgress?.(100);
+    return parseFlyerText(data.text);
+  } finally {
+    signal.removeEventListener("abort", abort);
+    await worker.terminate().catch(() => {});
+  }
 }
