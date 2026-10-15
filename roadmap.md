@@ -298,6 +298,7 @@
 - [x] Remover definitivamente o atalho de Envios do topo em celular e computador, preservando o menu lateral.
 - [x] Garantir leitura de toda a programação pública, flyers e detalhes sem cadastro, preservando os dados privados e o Perfil opcional.
 
-- [ ] Consolidar a Área do Divulgador em Meus Eventos com criação, compartilhamento, status e métricas.
-- [ ] Bloquear edição do divulgador após aprovação, na interface e no backend.
-- [ ] Restringir áreas gerenciais a administradores e manter descoberta pública aberta.
+- [x] Consolidar a Área do Divulgador em Meus Eventos com criação, compartilhamento, status e métricas.
+- [x] Bloquear edição do divulgador após aprovação, na interface e no backend.
+- [ ] Verificar mutação pós-aprovação com sessão de divulgador: bloqueado pela ausência de evento próprio na sessão disponível e pela falta de autorização para alterar perfis de teste.
+- [x] Restringir áreas gerenciais a administradores e manter descoberta pública aberta.
