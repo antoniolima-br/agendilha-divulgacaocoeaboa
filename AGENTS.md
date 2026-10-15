@@ -35,4 +35,4 @@
 - Read nested AGENTS.md; sharedResource shares lifetimes, userGrouping never grants access.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay separate from public/promoter/artist flows.
-- PWA guards registration, awaits control before reload and user confirmation; cache core chunks, not flyers.
+- PWA guards registration, confirms updates; caches core, not flyers. Public manifest owns install metadata to avoid drift.
