@@ -31,8 +31,8 @@
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
-- Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
-- Read nested AGENTS.md. sharedResource shares lifetimes, not timing; userGrouping is presentation-only to preserve authority.
+- Intranet: Master-only client/server; read src/pages/intranet/AGENTS.md.
+- Read nested AGENTS.md. sharedResource shares lifetimes, not timing; userGrouping never grants access.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay isolated from public/promoter/artist flows.
 - PWA guards registration and awaits control before reload; user confirms updates.
