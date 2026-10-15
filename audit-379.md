@@ -27,7 +27,7 @@ Revisão por domínios: rotas, componentes compartilhados, formulários, hooks/d
 ## Validação
 - Baseline: 644 testes/133 arquivos. Final: **654 testes/134 arquivos aprovados**; regressões de CEP, arquivos, imagem, datas e consulta administrativa mantidas no projeto.
 - Revisão focalizada dos arquivos alterados: sem erros nem avisos. Verificação automática atual: build OK.
-- 68 destinos estáticos em 320/768/1280/2560 px: 272 navegações sem overflow horizontal observado. `/ranking` teve uma falha transitória na navegação; requer nova conferência.
+- 68 destinos estáticos em 320/768/1280/2560 px: 272 navegações sem overflow horizontal observado. `/ranking` teve uma falha transitória; nova tentativa como visitante navegou com sucesso para o destino de proteção, sem overflow.
 - Sessão real em 390/1280 px: Agenda com 15 eventos, próxima/anterior funcionando, detalhes nomeados e fechamento com Escape. Área de conteúdo dos detalhes: 238px no celular e 663px no computador.
 - Perfil, Meus eventos, Radar, Explorar, anúncios, intranet, pitch e cadastro de estabelecimento abertos nos dois tamanhos, sem overflow.
 - Migração validada por SQL: DELETE de perfil negado a anon/authenticated; SELECT/UPDATE autenticados e DELETE do serviço confiável preservados.
