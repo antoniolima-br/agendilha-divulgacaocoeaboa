@@ -11,7 +11,7 @@ export function flyerListingUrl(url?: string | null): string | undefined {
 export async function uploadFlyerImage(file: File, path: string): Promise<string> {
   const bucket = supabase.storage.from("event-flyers");
   const prepared = await prepareUploadImage(file);
-  const base = path.replace(/\.[^.\/]+$/, "");
+  const base = path.replace(/\.[^./]+$/, "");
   let thumbnail: File | undefined;
   if (["image/jpeg", "image/png", "image/webp"].includes(prepared.type) && !(await isAnimatedWebp(prepared))) {
     const result = await compressImage(prepared, { maxSide: 480, quality: 0.72, outputType: "image/webp" });
