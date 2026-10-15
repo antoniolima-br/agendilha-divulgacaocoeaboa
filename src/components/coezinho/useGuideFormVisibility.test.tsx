@@ -10,7 +10,7 @@ function Harness() {
   return <><output aria-label="Avatar">{hidden ? "oculto" : "visível"}</output><button onClick={() => navigate("/agenda")}>Listagem</button></>;
 }
 describe("Guide form visibility", () => {
-  it.each(["/enviar-evento", "/anuncios/novo", "/anuncios/abc/editar", "/cadastro/publico", "/cadastro/artista", "/perfil", "/promotor/perfil"])("hides on the form route %s", path => {
+  it.each(["/cadastro", "/evento-enviado/abc/contratar-destaque", "/admin/whatsapp-templates", "/enviar-evento", "/anuncios/novo", "/anuncios/abc/editar", "/cadastro/publico", "/cadastro/artista", "/perfil", "/promotor/perfil"])("hides on the form route %s", path => {
     expect(isGuideFormRoute(path)).toBe(true);
   });
   it.each(["/agenda", "/meus-eventos", "/explorar", "/anuncios/abc", "/cadastro/sucesso"])("keeps discovery available on %s", path => {

@@ -7,10 +7,11 @@ const formRoutes = [
   ROUTES.CONFIGURAR_ARTISTA, ROUTES.PERFIL, ROUTES.PROMOTOR_PERFIL,
   ROUTES.AUTH, ROUTES.FORGOT_PASSWORD, ROUTES.TROCAR_SENHA,
   ROUTES.CONFIGURACOES, ROUTES.ADMIN_CONFIGURACOES,
+  ROUTES.EVENTO_CONTRATAR_DESTAQUE, ROUTES.ADMIN_WHATSAPP_TEMPLATES,
 ];
 
 export function isGuideFormRoute(pathname: string) {
-  return pathname === ROUTES.CADASTRO_PROMOTOR ||
+  return pathname === ROUTES.CADASTRO || pathname === ROUTES.CADASTRO_PROMOTOR ||
     (pathname.startsWith(`${ROUTES.CADASTRO}/`) && pathname !== ROUTES.CADASTRO_SUCESSO) ||
     formRoutes.some(path => Boolean(matchPath({ path, end: true }, pathname)));
 }
@@ -28,12 +29,14 @@ export function useGuideFormVisibility() {
     let frame: number | undefined;
     const check = () => {
       const controls = document.querySelectorAll<HTMLElement>(
-        'form textarea, form input:not([type="hidden"]):not([type="search"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]), [role="dialog"] textarea, [role="dialog"] input, main input[type="file"]',
+        'form textarea, form select, form [role="combobox"], form [contenteditable="true"], form input:not([type="hidden"]):not([type="search"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]), [role="dialog"] textarea, [role="dialog"] input, [role="dialog"] select, [role="dialog"] [role="combobox"], [role="dialog"] [contenteditable="true"], input[type="file"]',
       );
       const next = Array.from(controls).some(control => {
         if (control.closest('[aria-labelledby="coezinho-title"]')) return false;
+        if (control.closest('[role="search"]') && !control.matches('input[type="file"]')) return false;
         const container = control.closest('form, [role="dialog"]') ?? control.parentElement;
-        return Boolean(container && !container.closest('[hidden], [aria-hidden="true"], [data-state="closed"]') && container.getClientRects().length);
+        const visibleTarget = control.matches('input[type="file"]') ? container : control;
+        return Boolean(visibleTarget && !visibleTarget.closest('[hidden], [aria-hidden="true"], [data-state="closed"]') && visibleTarget.getClientRects().length);
       });
       setHasForm(previous => previous === next ? previous : next);
     };
