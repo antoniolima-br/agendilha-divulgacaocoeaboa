@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div role="region" aria-label="Tabela com rolagem horizontal" tabIndex={0} className="relative w-full max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-lg border border-border/70 bg-card/45 pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [scrollbar-gutter:stable]">
-      <table ref={ref} className={cn("w-full min-w-full caption-bottom text-sm", className)} {...props} />
+    <div role="region" aria-label="Tabela com rolagem horizontal" tabIndex={0} className="relative w-full min-w-0 max-w-full touch-auto overflow-x-auto overscroll-x-contain rounded-lg border border-border/70 bg-card/45 pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [scrollbar-gutter:stable]">
+      <table ref={ref} className={cn("w-full min-w-max caption-bottom text-sm", className)} {...props} />
     </div>
   ),
 );
@@ -46,7 +46,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        "h-11 px-4 text-left align-middle text-xs font-semibold uppercase text-muted-foreground [&:has([role=checkbox])]:pr-0",
+        "h-11 px-4 text-left align-middle text-xs font-semibold uppercase text-muted-foreground whitespace-nowrap [&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}

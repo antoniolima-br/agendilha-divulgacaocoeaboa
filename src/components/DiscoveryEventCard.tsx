@@ -137,7 +137,7 @@ export const DiscoveryEventCard = memo(({
            <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 from-[12%] via-foreground/30 via-[45%] to-transparent to-[78%] pointer-events-none" />
            
            {/* Top Badges Left */}
-           <div className="absolute left-4 top-4 flex flex-wrap gap-2 z-20">
+           <div className="absolute left-4 top-4 flex flex-wrap gap-2 z-20 max-w-[calc(100%-100px)]">
              {(() => {
                const cat = CATEGORY_MAP[event.category || "outros"] || CATEGORY_MAP.outros;
                const Icon = cat.icon;

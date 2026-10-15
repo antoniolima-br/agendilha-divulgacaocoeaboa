@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Responsividade 373: 414 verificações de 69 destinos em 320/480/768/1024/1280/2560 px sem overflow de página; telefone, opções, menus e tabelas ajustados. Navegação/formulários autenticados, cadastros públicos e opções em landscape conferidos; 52 testes aprovados. Limites em responsive-373.md.
 - [x] Flyer 372: OCR Tesseract.js local em português, sugestões editáveis com padrões, progresso e fallback sem trava de título. OCR real autenticado preencheu título/data/horário/local; nenhuma chamada de IA, sem salvar evento. Downloads iniciais do leitor/idioma exigem internet.
 - [x] Coezinho 371: avatar oculto nos formulários e edição, arraste e abertura explícita preservados; 28 testes aprovados. Formulário autenticado, arraste, abertura/fechamento e retorno à Agenda conferidos em 390/1280 px.
 - [x] Flyer 370: imagem base64 e JSON estruturado conferidos; leituras simultâneas bloqueadas e retorno fragmentado tratado; 17 testes aprovados e formulário autenticado conferido com resposta controlada, sem salvar evento. Leitura real segue bloqueada pelos créditos já registrados.

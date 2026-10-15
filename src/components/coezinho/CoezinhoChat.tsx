@@ -149,7 +149,7 @@ function CoezinhoSession({ onClose }: { onClose: () => void }) {
                     <h2 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">Qual é a boa?</h2>
                     <p className="max-w-xl text-base leading-relaxed text-muted-foreground">Sou o Coezinho, guia do Coé a Boa? Posso acompanhar você na busca, no cadastro, na divulgação ou na contratação de planos. Pergunte à vontade.</p>
                   </div>
-                  <div className="grid gap-3" aria-label="Sugestões rápidas">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" aria-label="Sugestões rápidas">
                     {QUICK_PROMPTS.map(({ label, text, icon: Icon }) => (
                       <Button key={label} type="button" variant="ghost" onClick={() => send(text)} disabled={busy}
                         className="h-auto min-h-11 justify-start gap-3 whitespace-normal rounded-md px-3 py-3 text-left text-sm font-medium text-foreground shadow-none hover:bg-muted">
