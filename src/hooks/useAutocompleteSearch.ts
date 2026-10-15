@@ -20,6 +20,7 @@ export interface UseAutocompleteSearchOptions<T> {
   refreshKey?: unknown;
   /** Desliga a busca (ex.: dropdown fechado). */
   enabled?: boolean;
+  maxCachedTerms?: number;
 }
 
 /**
@@ -35,6 +36,7 @@ export function useAutocompleteSearch<T>({
   minChars = 1,
   refreshKey,
   enabled = true,
+  maxCachedTerms = 30,
 }: UseAutocompleteSearchOptions<T>) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
@@ -54,11 +56,21 @@ export function useAutocompleteSearch<T>({
     [term],
   );
   const effectiveTerm = normalized.length >= minChars ? normalized : "";
+  const remember = useCallback((key: string, page: AutocompletePage<T>) => {
+    cache.current.delete(key);
+    cache.current.set(key, page);
+    const limit = Math.max(1, Math.floor(maxCachedTerms) || 30);
+    while (cache.current.size > limit) {
+      const oldest = cache.current.keys().next();
+      if (oldest.done) break;
+      cache.current.delete(oldest.value);
+    }
+  }, [maxCachedTerms]);
 
   // Invalida o cache quando a fonte de dados muda.
   useEffect(() => {
     cache.current.clear();
-  }, [refreshKey]);
+  }, [refreshKey, pageSize]);
 
   const fetchRef = useRef(fetchPage);
   fetchRef.current = fetchPage;
@@ -77,6 +89,7 @@ export function useAutocompleteSearch<T>({
 
     const cached = cache.current.get(effectiveTerm);
     if (cached) {
+      remember(effectiveTerm, cached);
       setItems(cached.rows);
       setHasMore(cached.hasMore);
       pageRef.current = Math.max(0, Math.ceil(cached.rows.length / pageSize) - 1);
@@ -102,7 +115,7 @@ export function useAutocompleteSearch<T>({
         
         const more = rows.length > pageSize;
         const page = { rows: more ? rows.slice(0, pageSize) : rows, hasMore: more };
-        cache.current.set(effectiveTerm, page);
+        remember(effectiveTerm, page);
         pageRef.current = 0;
         setItems(page.rows);
         setHasMore(page.hasMore);
@@ -122,7 +135,7 @@ export function useAutocompleteSearch<T>({
       window.clearTimeout(timer);
       cleanup();
     };
-  }, [effectiveTerm, normalized, enabled, pageSize, debounceMs, refreshKey]);
+  }, [effectiveTerm, normalized, enabled, pageSize, debounceMs, refreshKey, remember]);
 
   const loadMore = useCallback(async () => {
     if (!enabled || loading || !hasMore || morePendingRef.current) return;
@@ -145,7 +158,7 @@ export function useAutocompleteSearch<T>({
       const more = rows.length > pageSize;
       const merged = [...items, ...(more ? rows.slice(0, pageSize) : rows)];
       pageRef.current = nextPage;
-      cache.current.set(effectiveTerm, { rows: merged, hasMore: more });
+      remember(effectiveTerm, { rows: merged, hasMore: more });
       setItems(merged);
       setHasMore(more);
     } catch (err: unknown) {
@@ -158,7 +171,7 @@ export function useAutocompleteSearch<T>({
         setLoadingMore(false);
       }
     }
-  }, [effectiveTerm, enabled, hasMore, items, loading, pageSize]);
+  }, [effectiveTerm, enabled, hasMore, items, loading, pageSize, remember]);
 
   return { items, loading, loadingMore, hasMore, loadMore, error };
 }

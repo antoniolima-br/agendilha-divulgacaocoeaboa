@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Star, Heart, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useEffect } from "react";
 import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useThumbnailCache } from "@/hooks/useThumbnailCache";
@@ -66,12 +66,13 @@ export const DiscoveryEventCard = memo(({
 
   const fallbackImage = useMemo(() => getEventFallbackImage(event.category), [event.category]);
   const officialImage = event.image_url || event.imageUrl;
+  useEffect(() => { setIsLoaded(false); setHasError(false); }, [officialImage]);
   const palette = useMemo(
     () => getEventFallbackPalette(`${event.id}:${event.category || "outros"}`),
     [event.category, event.id],
   );
   const sourceImage = hasError ? fallbackImage : officialImage;
-  const cachedThumb = useThumbnailCache(event.id, isCompact && sourceImage ? sourceImage : undefined);
+  const cachedThumb = useThumbnailCache(event.id, isCompact && officialImage && !hasError ? officialImage : undefined);
   const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
   const showGeneratedArtwork = !officialImage || hasError;
   const shareData = getShareData({ ...event, address_street: null, description: null });
@@ -128,8 +129,8 @@ export const DiscoveryEventCard = memo(({
                   setIsLoaded(true);
                 }}
                 className={cn(
-                  "h-full w-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-[1.06]",
-                  !isLoaded ? "opacity-0 scale-105 blur-sm" : "opacity-100 scale-100 blur-0"
+                  "h-full w-full object-cover motion-safe:transition-[opacity,transform] motion-safe:duration-300 motion-safe:group-hover:scale-[1.06]",
+                  !isLoaded ? "opacity-0" : "opacity-100"
                 )}
               />
             )}

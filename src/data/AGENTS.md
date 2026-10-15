@@ -5,3 +5,4 @@
 - Upload-only image preparation reuses compression, revokes unused previews and leaves animated/unsupported formats unchanged, reducing transfer without flattening media.
 - Public navigation prefetch shares publicEventsQuery options and abort signals with mounted readers; never prefetch personal or staff data.
 - Published-ad placements share one visible-tab refresh clock per QueryClient and one paginated request, avoiding duplicate polling while preserving audiences.
+- Abort superseded attraction-schedule checks while retaining submit-time validation and database guards, avoiding unused responses without weakening conflicts.

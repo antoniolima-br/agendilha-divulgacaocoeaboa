@@ -20,13 +20,13 @@ export type AttractionScheduleInput = {
   excludeSubmissionId?: string | null;
 };
 
-export async function checkAttractionSchedule(input: AttractionScheduleInput) {
+export async function checkAttractionSchedule(input: AttractionScheduleInput, signal?: AbortSignal) {
   const attractionName = input.attractionName?.trim();
   const date = input.date?.trim();
   const startTime = input.startTime?.trim();
   if (!attractionName || !date || !startTime) return [];
 
-  const { data, error } = await supabase.rpc("check_attraction_schedule", {
+  const request = supabase.rpc("check_attraction_schedule", {
     p_atrativo_id: (input.attractionType === "atrativo" ? input.attractionId : null) as unknown as string,
     p_artist_id: (input.attractionType === "artist" ? input.attractionId : null) as unknown as string,
     p_atrativo_name: attractionName,
@@ -35,6 +35,7 @@ export async function checkAttractionSchedule(input: AttractionScheduleInput) {
     p_end_time: input.endTime?.trim() || undefined,
     p_exclude_submission_id: (input.excludeSubmissionId || undefined) as string | undefined,
   });
+  const { data, error } = await (signal ? request.abortSignal(signal) : request);
   if (error) throw error;
   return (data ?? []) as AttractionScheduleEntry[];
 }
@@ -58,8 +59,9 @@ export function useAttractionSchedule(input: AttractionScheduleInput) {
 
     setLoading(true);
     setFailed(false);
+    const controller = new AbortController();
     const timer = window.setTimeout(() => {
-      void checkAttractionSchedule(input)
+      void checkAttractionSchedule(input, controller.signal)
         .then((next) => {
           if (active) setEntries(next);
         })
@@ -76,6 +78,7 @@ export function useAttractionSchedule(input: AttractionScheduleInput) {
 
     return () => {
       active = false;
+      controller.abort();
       window.clearTimeout(timer);
     };
   }, [input.attractionId, input.attractionName, input.attractionType, input.date, input.endTime, input.excludeSubmissionId, input.startTime]);
