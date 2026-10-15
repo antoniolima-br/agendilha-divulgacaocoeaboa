@@ -20,7 +20,7 @@
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
 - Public reads use the date-filtered view; personal queries use session ownership even for admins. Separate curation queries retain authorized oversight.
-- Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
+- Repeat uses a fresh form from allowlisted content, clearing schedule/media/approval/payment/consent to preserve history.
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
 - Curatorial editing uses protected RPCs, private artistic history, soft deletion and broad cache invalidation.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
