@@ -3,3 +3,4 @@
 - Use shared native PitchDetails disclosures after each chapter summary, initially closed, so executive reading stays concise with keyboard-accessible expansion.
 - Open contextual shortcut ancestor disclosures before focus and reduced-motion-aware scrolling so detailed content stays reachable.
 - Share only curated audience summaries without private URLs or credentials; keep each loaded document scoped to its requested audience.
+- Investor narrative and PDF share one copy source; prepare the PDF before the final click and delay URL revocation to preserve browser download activation.

@@ -49,7 +49,10 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Coé a Boa? | Visão de Negócio & Futuro" })).toBeVisible();
     expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
-    expect(screen.getByRole("heading", { name: "O Poder da Hiperlocalidade" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "O Poder da Vizinhança (Hiperlocalidade)" })).toBeVisible();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Baixar a Apresentação em PDF" })).toBeEnabled());
+    expect(screen.getAllByRole("button", { name: "Baixar a Apresentação em PDF" })).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: "WhatsApp" })).not.toBeInTheDocument();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
     fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
@@ -96,7 +99,7 @@ describe("pitch comercial", () => {
       fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Recolher detalhes"));
       expect(screen.getAllByRole("navigation")).toHaveLength(1);
       expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).not.toBeVisible();
-      expect(screen.getByRole("heading", { name: "Muito Além do Retorno Financeiro: O Propósito" })).toBeVisible();
+      expect(screen.getByRole("heading", { name: "Muito Além do Resultado: O Propósito de Construir Juntos" })).toBeVisible();
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
   });
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
