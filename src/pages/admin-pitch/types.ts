@@ -1,3 +1,5 @@
+export type AdvertiserPitchContent = Pick<PitchContent, "formats" | "pushTicket" | "push">;
+
 export interface PitchContent {
   inventoryImage?: string;
   technology?: { title: string; description: string };

@@ -4,7 +4,7 @@ import { z } from "npm:zod@3.23.8";
 import { buildPitchContent } from "./content.ts";
 import { inventoryImage } from "./inventory-image.ts";
 
-const BodySchema = z.object({ password: z.string().min(1).max(256) }).strict();
+const BodySchema = z.object({ audience: z.enum(["investor", "advertiser"]).default("investor"), password: z.string().min(1).max(256).optional() }).strict();
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -38,7 +38,12 @@ Deno.serve(async (req) => {
     if (profileError || !profile || profile.must_change_password)
       return json({ error: "Conclua a troca de senha da sua conta antes de continuar." }, 403);
     const parsed = BodySchema.safeParse(await req.json().catch(() => null));
-    if (!parsed.success) return json({ error: "Informe a senha do pitch." }, 400);
+    if (!parsed.success) return json({ error: "Confira os dados do pitch e tente novamente." }, 400);
+    if (parsed.data.audience === "advertiser") {
+      const { formats, pushTicket, push } = buildPitchContent();
+      return json({ content: { formats, pushTicket, push }, expiresInSeconds: 900 });
+    }
+    if (!parsed.data.password) return json({ error: "Informe a senha do pitch." }, 400);
     const password = Deno.env.get("COMMERCIAL_PITCH_PASSWORD");
     if (!password) return json({ error: "A senha do pitch ainda não foi configurada. Fale com o responsável." }, 503);
     if (!await samePassword(parsed.data.password, password)) return json({ error: "Senha incorreta. Confira e tente novamente." }, 403);

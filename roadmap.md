@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Pitch 357: remover apenas a senha adicional de Anunciantes, preservar acesso da equipe e senha de Sócios, testar abertura real.
 - [x] Auditoria 356: sessão obsoleta/estado entre contas, falha de logout, concorrência/rollback de favoritos e acessibilidade de submenus corrigidos; 561 testes atuais aprovados, compilação automática OK, oito telas em 390/1280 px sem overflow e favorito/saída reais conferidos. Achados e limites em audit-356.md.
 - [ ] Auditoria 356: entrega da imagem gerenciada do Coezinho na prévia local — recurso devolve HTML; depende da infraestrutura de assets, sem substituir a arte original.
 - [x] Pitches 355: atalhos e destinos próprios de Sócios/Anunciantes; senha/permissões/preços preservados. 30 testes aprovados, ambos os atalhos abertos com sessão real, destino antigo redirecionado e página em 390 px sem overflow. Conteúdo privado após senha permanece na pendência abaixo.
