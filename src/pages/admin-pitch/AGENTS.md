@@ -4,3 +4,4 @@
 - Open contextual shortcut ancestor disclosures before focus and reduced-motion-aware scrolling so detailed content stays reachable.
 - Share only curated audience summaries without private URLs or credentials; keep each loaded document scoped to its requested audience.
 - Investor narrative and PDF share one copy source; prepare the PDF before the final click and delay URL revocation to preserve browser download activation.
+- Advertiser PDF reads the rendered audience-only text, excluding controls; paginate lines and prepare downloads before clicking so prices stay in sync without altering investor output.

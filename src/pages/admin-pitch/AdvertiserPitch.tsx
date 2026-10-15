@@ -1,11 +1,9 @@
 import { ArrowRight, BadgeCheck, ChartNoAxesCombined, Crosshair, MapPin, Megaphone, MessageCircle, MousePointerClick, Palette, Smartphone, Sparkles, Users, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/routes/config";
 import { SETTING_KEYS, settingOr, useAppSettings } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { PitchChapter } from "./PitchChapter";
-import { PitchDetails } from "./PitchDetails";
-import { PitchShare } from "./PitchShare";
+import { AdvertiserPdfButton } from "./AdvertiserPdfButton";
 import type { AdvertiserPitchContent } from "./types";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -21,14 +19,13 @@ function CommercialWhatsappButton() {
 const item = (title: string, description: string, Icon: typeof MapPin) => <li key={title} className="flex min-w-0 items-start gap-4 py-5"><Icon aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-primary" /><div className="min-w-0 space-y-2"><h3 className="text-lg font-semibold">{title}</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{description}</p></div></li>;
 
 export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }) {
-  return <article className="min-w-0" aria-label="Apresentação para anunciantes e divulgadores">
+  return <article data-advertiser-pitch className="min-w-0" aria-label="Apresentação para anunciantes e divulgadores">
     <section className="space-y-5 py-8">
       <p className="text-xs font-medium uppercase text-primary">Marcas · Patrocinadores · Divulgadores</p>
       <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">Anuncie no Coé a Boa?</h2>
       <p className="max-w-3xl text-xl font-medium leading-relaxed">Onde o Rio de Janeiro vai, a sua marca está.</p>
       <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">O Coé a Boa? é um ecossistema digital de descoberta de eventos e entretenimento do Rio de Janeiro. Mais do que uma agenda, é um ponto de encontro para quem procura o próximo rolê.</p>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Se a sua marca busca visibilidade com contexto e conexão com quem vive a cultura carioca, este espaço foi pensado para você.</p>
-      <PitchShare audience="advertiser" />
     </section>
     <PitchChapter value="sales-visibility" number="01" title="Por que anunciar no Coé a Boa?" eyebrow="Público · Região" icon={MapPin}>
       <ul className="divide-y divide-border">
@@ -57,19 +54,22 @@ export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }
     <PitchChapter value="sales-packages" number="04" title="Um formato para sua campanha" eyebrow="Pacotes · Patrocínio" icon={Megaphone}>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Destaque seu evento ou mantenha sua marca na descoberta local. Comercial define a proposta; Marketing alinha as artes e acompanha a campanha.</p>
       <dl className="divide-y divide-border">{content.formats.map((format) => <div key={format.title} className="space-y-2 py-5"><dt className="text-lg font-semibold">{format.title}</dt><dd className="flex flex-wrap justify-between gap-3"><span className="text-sm text-muted-foreground">{format.cycle}</span><span className="font-semibold text-primary">{money(format.min)} a {money(format.max)} {format.priceSuffix}</span></dd></div>)}</dl>
-      <PitchDetails><p className="text-sm leading-relaxed text-muted-foreground">Preços sugeridos; confirme disponibilidade, região, período e entregas na proposta. Master e Sub-Masters seguem condições mensais. Formatos propostos não significam ativação automática.</p><p className="text-sm leading-relaxed text-muted-foreground">Push regional é uma proposta sujeita a implantação e consentimento: {money(content.pushTicket)} por envio; {content.push.packageSends} envios por {money(content.push.packagePrice)}. Não há disparos ativados por esta apresentação.</p></PitchDetails>
+      <p className="text-sm leading-relaxed text-muted-foreground">Preços sugeridos; confirme disponibilidade, região, período e entregas na proposta. Master e Sub-Masters seguem condições mensais. Formatos propostos não significam ativação automática.</p>
+      <p className="text-sm leading-relaxed text-muted-foreground">Push regional é uma proposta sujeita a implantação e consentimento: {money(content.pushTicket)} por envio; {content.push.packageSends} envios por {money(content.push.packagePrice)}. Não há disparos ativados por esta apresentação.</p>
     </PitchChapter>
     <PitchChapter value="sales-close" number="05" title="Vamos fechar essa parceria?" eyebrow="Contratação · Próximo passo" icon={MessageCircle}>
       <p className="max-w-3xl text-lg leading-relaxed">Converse com o Comercial para escolher região, período e formato e aproximar sua marca de quem procura o que fazer no Rio de Janeiro.</p>
-      <CommercialWhatsappButton />
       <ol className="space-y-5">{[
         ["Defina sua campanha", "Escolha região, período, formato e destino do anúncio na proposta comercial."],
         ["Alinhe a arte com o Marketing", "Combine criação ou adaptação das peças e entregas do pacote. Sua arte enviada continua preservada."],
-        ["Confirme e acompanhe", "Publicação paga exige pagamento comprovado e aprovação. Depois, acompanhe o engajamento registrado com o time."],
       ].map(([title, description], index) => <li key={title} className="space-y-2 border-t border-border pt-4"><p className="text-xs font-semibold text-primary">0{index + 1}</p><h3 className="text-lg font-semibold">{title}</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{description}</p></li>)}</ol>
-      <div className="flex flex-wrap gap-3"><Button asChild variant="outline" className="h-auto min-h-11 whitespace-normal py-3"><a href={ROUTES.PLANOS_ANUNCIOS}><Megaphone aria-hidden="true" />Quero patrocinar<ArrowRight aria-hidden="true" /></a></Button><Button asChild variant="outline" className="h-auto min-h-11 whitespace-normal py-3"><a href={ROUTES.MEUS_EVENTOS}>Divulgar meu evento<ArrowRight aria-hidden="true" /></a></Button></div>
-      <PitchShare audience="advertiser" />
     </PitchChapter>
-    <footer className="border-t border-border py-6 text-xs leading-relaxed text-muted-foreground">Proposta comercial sujeita a disponibilidade e aprovação. Sem garantia de alcance, presença ou vendas. Dados pessoais e relatórios internos continuam protegidos.</footer>
+    <footer className="space-y-6 border-t border-border py-8">
+      <p data-pdf-note className="text-xs leading-relaxed text-muted-foreground">Proposta comercial sujeita a disponibilidade e aprovação. Sem garantia de alcance, presença ou vendas. Dados pessoais e relatórios internos continuam protegidos.</p>
+      <div data-pdf-exclude className="flex flex-col items-start gap-2">
+        <CommercialWhatsappButton />
+        <AdvertiserPdfButton />
+      </div>
+    </footer>
   </article>;
 }
