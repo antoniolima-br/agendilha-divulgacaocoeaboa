@@ -17,7 +17,10 @@ export function AdvertiserPdfButton() {
     if (!pitch) return;
     const blocks = Array.from(pitch.querySelectorAll("h2, h3, p, dt, dd, [data-pdf-note]"))
       .filter((el) => !el.closest("[data-pdf-exclude]"))
-      .map((el) => ({ text: el.textContent?.trim() || "", heading: /^H[23]$/.test(el.tagName) }))
+      .map((el) => ({
+        text: el.tagName === "DD" && el.children.length ? Array.from(el.children).map((child) => child.textContent?.trim() || "").join(" · ") : el.textContent?.trim() || "",
+        heading: /^H[23]$/.test(el.tagName),
+      }))
       .filter((block) => block.text);
     buildAdvertiserPitchPdf(blocks).then((blob) => { if (active) setFile(blob); })
       .catch(() => { if (active) setFailed(true); });
