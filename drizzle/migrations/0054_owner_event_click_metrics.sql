@@ -1,0 +1,3 @@
+CREATE OR REPLACE FUNCTION public.my_event_click_metrics() RETURNS TABLE(event_id uuid, clicks_count bigint) LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$ SELECT s.id, count(f.id) FROM public.submissions s LEFT JOIN public.flyer_engagement_events f ON f.event_id=s.id WHERE s.user_id=auth.uid() AND s.deleted_at IS NULL GROUP BY s.id; $$;
+REVOKE ALL ON FUNCTION public.my_event_click_metrics() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.my_event_click_metrics() TO authenticated, service_role;
