@@ -321,7 +321,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     const missing = missingFinalFields(values);
     if (missing.length > 0) {
       toast.error("Faltam informações obrigatórias", {
-        description: "Confira data, horário de início, atração e o aceite dos termos antes de enviar.",
+        description: "Confira título do flyer, data, horário de início, atração e o aceite dos termos antes de enviar.",
       });
       setCurrentStep(missing.includes("legalAcceptance") && missing.length === 1 ? 2 : 1);
       return;

@@ -36,6 +36,16 @@ describe("flyer first flow", () => {
     await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
     expect(screen.getByLabelText("Título")).toHaveValue("Meu título");
   });
+  it("asks for the title and marks it invalid when the flyer cannot identify one", async () => {
+    mocks.extract.mockResolvedValue({ date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" });
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.jpg", { type: "image/jpeg" })] } });
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não consegui identificar o título do rolê. Preencha o nome abaixo antes de continuar.");
+    expect(screen.getByLabelText("Título inválido")).toHaveTextContent("sim");
+    expect(screen.getByLabelText("Data")).toHaveValue("2026-10-25");
+    expect(screen.getByLabelText("Horário")).toHaveValue("20:30");
+    expect(screen.getByLabelText("Local")).toHaveValue("Espaço de Teste");
+  });
   it("rejects unsupported images without calling the reader", () => {
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["gif"], "flyer.gif", { type: "image/gif" })] } });
