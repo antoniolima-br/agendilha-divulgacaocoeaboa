@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Flyer 370: conferir imagem e JSON estruturado, impedir leituras simultâneas e testar o preenchimento com processamento visível.
+- [x] Flyer 370: imagem base64 e JSON estruturado conferidos; leituras simultâneas bloqueadas e retorno fragmentado tratado; 17 testes aprovados.
 - [x] PWA 369: checagem ao abrir/retomar e durante uso, aviso discreto e ativação após confirmação; oito testes aprovados, aviso/toque em 390/1280 px com worker simulado e prévia sem registro. Troca real entre versões depende de publicação.
 - [x] Flyer 368: imagem confirmada no envio, título/data/horário/local preenchidos quando lidos e avanço sem título bloqueado; 14 testes aprovados.
 - [ ] Flyer 368: conferir leitura real autenticada — bloqueada por créditos de IA insuficientes no workspace.
