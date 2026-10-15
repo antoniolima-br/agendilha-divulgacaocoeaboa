@@ -15,7 +15,7 @@
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
-- Lazy Guide/routes; shared filters/realtime and São Paulo dates. Read coezinho AGENTS.md in components/functions for FAB and factual answers.
+- Lazy Guide/routes; intent prefetch is public-only. Shared realtime batches have a maximum wait to prevent starvation. Read coezinho AGENTS.md for FAB/facts.
 - Flyer reads fill empty fields and hide provider errors; manual entry stays usable. Preserve art; generate missing sponsored art before batch inserts.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.

@@ -56,7 +56,7 @@ export function SidebarMenu({ onClose }: Props) {
     master: "Admin Master"
   };
 
-  const filteredSections = permissionsLoading && user ? [] : filterSidebarSections(currentRole, hasPermission, routeExists);
+  const filteredSections = useMemo(() => permissionsLoading && user ? [] : filterSidebarSections(currentRole, hasPermission, routeExists), [permissionsLoading, user, currentRole, hasPermission]);
   // Children are already recursively authorized by the shared filter.
   const filterItemsByRoleAndRoute = useCallback((items: SidebarItem[]) => items, []);
 
