@@ -247,7 +247,7 @@ export function EventWhatsAppCardExport({ event }: { event: FlyerEvent }) {
         <div className="origin-top-left" style={{ transform: "scale(var(--flyer-scale, 0.32))", width: 1080 }}>
           <EventWhatsAppCard ref={cardRef} event={event} />
         </div>
-        <style>{`@media (min-width: 640px){ :root{ --flyer-scale: 0.4; } }`}</style>
+        <style>{` :root { --flyer-scale: 0.27; } @media (min-width: 375px) { :root { --flyer-scale: 0.32; } } @media (min-width: 640px) { :root { --flyer-scale: 0.4; } } `}</style>
       </div>
 
       <div className="flex gap-2">
