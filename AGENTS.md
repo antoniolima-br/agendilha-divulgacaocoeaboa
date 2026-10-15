@@ -8,7 +8,7 @@
 - One venue category; ViaCEP suggests editable addresses.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, permissions, formatting and data; shared UI primitives own interaction and responsive behavior.
-- Flows colocate validation/modals; promoter sharing uses owner-only public events and a separate message builder.
+- Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
 - Public lists use São Paulo days: today stays all day; past events leave next day. Home uses splitHomeEventPresentation for daily text and flyer selection.
@@ -17,7 +17,7 @@
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; shared filters/realtime and São Paulo dates. Read coezinho AGENTS.md in components/functions for FAB and factual answers.
 - Flyer reads fill empty fields and hide provider errors; manual entry stays usable. Preserve art; generate missing sponsored art before batch inserts.
-- Moderation fields on submissions are protected in the database; content editors cannot publish events or grant highlights through direct updates.
+- Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
 - Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.
 - Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
@@ -36,4 +36,4 @@
 - Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
 
 - Intranet is Master-only across client and backend; presentation rules live in src/pages/intranet/AGENTS.md and must be read before portal changes.
-- Menus follow roles; bottom Menu opens the sidebar; Home owns the profile shortcut. Auth normalizes phones. Public/promoter journeys stay separate; approval requires protected WhatsApp confirmation.
+- Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.

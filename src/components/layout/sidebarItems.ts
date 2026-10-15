@@ -6,7 +6,6 @@ import {
   ClipboardList,
   ShieldCheck,
   Crown,
-  PlusCircle,
   LayoutDashboard,
   Eye,
   Megaphone,
@@ -17,11 +16,11 @@ import {
   ShoppingBag,
   Settings2,
   CreditCard,
-  Share2,
   CheckCircle2,
   UserRound,
   BriefcaseBusiness,
-  Wallet
+  Wallet,
+  Radar
 } from "lucide-react";
 import { ROUTES } from "@/routes/config";
 import { type AccessRole } from "@/lib/access";
@@ -63,13 +62,14 @@ export const sidebarConfig: SidebarSection[] = [
     title: "Explorar",
     roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
     items: [
-      { id: "agenda", label: "Agenda", path: ROUTES.AGENDA, icon: CalendarDays, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] },
+      { id: "agenda", label: "Todos os Eventos", path: ROUTES.AGENDA, icon: CalendarDays, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"] },
+      { id: "seu_radar", label: "Meu Radar", path: ROUTES.SEU_RADAR, icon: Radar, roles: ["public_guest", "public_registered", "promoter", "collaborator"] },
       {
         id: "cadastros_explorar",
         label: "Cadastros",
         path: ROUTES.PROMOTOR_ATRATIVOS,
         icon: FolderKanban,
-        roles: ["promoter", "collaborator"],
+        roles: ["collaborator"],
         children: [
           {
             id: "artists",
@@ -110,21 +110,7 @@ export const sidebarConfig: SidebarSection[] = [
         icon: ClipboardList, 
         roles: ["promoter", "collaborator", "admin", "senior", "master"] 
       },
-      {
-        id: "share_my_events",
-        label: "Compartilhar meus eventos",
-        path: ROUTES.COMPARTILHAR_MEUS_EVENTOS,
-        icon: Share2,
-        roles: ["promoter", "collaborator", "admin", "senior", "master"]
-      },
-      { 
-        id: "send_event", 
-        label: "Publicar Evento", 
-        path: ROUTES.ENVIAR_EVENTO, 
-        icon: PlusCircle, 
-        roles: ["promoter", "collaborator", "admin", "senior", "master"] 
-      },
-      { id: "ad_plans_catalog", label: "Planos e valores de anúncios", path: ROUTES.PLANOS_ANUNCIOS, icon: ShoppingBag, roles: ["promoter", "collaborator", "admin", "senior", "master"] }
+
     ]
   },
   {

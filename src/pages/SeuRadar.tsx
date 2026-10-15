@@ -16,6 +16,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { AdCard } from "@/components/anuncios/AdCard";
 import { ROUTES } from "@/routes/config";
+import { useAuth } from "@/contexts/AuthContext";
 
 const STYLES = ["Samba", "Pagode", "Rock", "MPB", "Funk", "Jazz", "Pop", "Sertanejo", "Eletrônica"];
 const CATEGORIES = ["Música", "Gastronomia", "Cultura", "Esporte", "Promoções"];
@@ -50,6 +51,7 @@ function ChoiceGroup({ title, options, values, onToggle }: ChoiceGroupProps) {
 }
 
 export default function SeuRadar() {
+  const { user } = useAuth();
   const { profile, loaded, saveProfile } = useProfile();
   const { events, isLoading, isError, refetch } = useEvents({ includeRatings: false });
   const [categories, setCategories] = useState<string[]>([]);
@@ -75,7 +77,7 @@ export default function SeuRadar() {
     setRegions(Array.isArray(profile.followed_regions) ? profile.followed_regions : []);
   }, [loaded, profile]);
 
-  const feed = useMemo(() => radarEvents(events, profile), [events, profile]);
+  const feed = useMemo(() => radarEvents(events, { event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods, followed_regions: regions }), [events, categories, styles, neighborhoods, regions]);
   const mixedFeed = useMemo(() => interleaveRadarAds(feed, radarAds), [feed, radarAds]);
   const toggle = (values: string[], value: string, setter: (next: string[]) => void) => {
     setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]);
@@ -126,10 +128,10 @@ export default function SeuRadar() {
               ))}
             </div>
           </details>
-          <Button disabled={saving} onClick={() => void savePreferences()} className="w-full sm:w-auto">
+          {user ? <Button disabled={saving} onClick={() => void savePreferences()} className="w-full sm:w-auto">
             <Save className="h-4 w-4" />
             {saving ? "Salvando…" : "Salvar meus gostos"}
-          </Button>
+          </Button> : <Button asChild variant="outline"><Link to={ROUTES.CADASTRO_PUBLICO}>Salvar meus gostos no perfil</Link></Button>}
         </section>
       )}
 

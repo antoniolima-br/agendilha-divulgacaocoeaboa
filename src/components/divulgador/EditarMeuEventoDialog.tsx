@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { canEditOwnEvent, ORGANIZER_EDITABLE_STATUSES } from "@/lib/organizerEventAccess";
 
 export type EventoEditavel = {
   id: string;
@@ -24,6 +25,8 @@ export type EventoEditavel = {
   location?: string | null;
   description?: string | null;
   status?: string;
+  approved_at?: string | null;
+  published_at?: string | null;
 };
 
 type Props = {
@@ -50,7 +53,7 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
 
   const salvar = async () => {
     if (!form || !user) return;
-    if (["aprovado", "publicado", "divulgado"].includes(form.status ?? "")) {
+    if (!canEditOwnEvent(form)) {
       toast.error("Esse evento já foi aprovado", { description: "Peça a alteração pra curadoria." });
       onOpenChange(false);
       return;
@@ -61,7 +64,7 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
     }
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("submissions")
         .update({
           event_title: form.event_title.trim(),
@@ -73,8 +76,11 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
         })
         .eq("id", form.id)
         .eq("user_id", user.id)
-        .not("status", "in", "(aprovado,publicado,divulgado)");
+        .in("status", [...ORGANIZER_EDITABLE_STATUSES])
+        .is("approved_at", null).is("published_at", null).is("deleted_at", null)
+        .select("id").maybeSingle();
       if (error) throw error;
+      if (!data) throw new Error("Esse rolê não está mais disponível para edição. Consulte a Curadoria.");
       toast.success("Prontinho, evento atualizado!");
       onOpenChange(false);
       onSaved?.();
@@ -160,7 +166,7 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
             Cancelar
           </Button>
-          <Button onClick={salvar} disabled={saving}>
+          <Button onClick={salvar} disabled={saving || !form || !canEditOwnEvent(form)}>
             {saving ? "Salvando…" : "Salvar alterações"}
           </Button>
         </DialogFooter>
