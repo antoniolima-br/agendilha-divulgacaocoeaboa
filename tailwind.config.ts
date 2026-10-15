@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
@@ -16,13 +17,13 @@ export default {
         'xs': '375px',
       },
       fontFamily: {
-        display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)'],
         serif: ['"Instrument Serif"', 'serif'],
-        body: ['Geist', 'Inter', 'system-ui', 'sans-serif'],
-        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
+        body: ['var(--font-body)'],
+        mono: ['var(--font-mono)'],
       },
       letterSpacing: {
-        tightest: '-0.045em',
+        tightest: '0',
       },
       colors: {
         border: "hsl(var(--border))",
@@ -114,5 +115,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

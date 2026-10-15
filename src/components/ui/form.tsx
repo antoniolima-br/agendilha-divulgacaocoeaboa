@@ -130,7 +130,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
         {...props}
       >
         <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" aria-hidden />
-        <span><strong>Coezinho:</strong> {body}</span>
+        <span className="min-w-0 break-words"><strong>Coezinho:</strong> {body}</span>
       </p>
     );
   },

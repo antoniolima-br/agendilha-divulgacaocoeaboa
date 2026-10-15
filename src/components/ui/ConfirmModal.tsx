@@ -44,7 +44,7 @@ export function ConfirmModal({
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="gap-2 sm:gap-0">
+        <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>
             {cancelText}
           </AlertDialogCancel>
