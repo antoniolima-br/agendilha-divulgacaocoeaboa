@@ -20,4 +20,10 @@ describe("light guide launcher", () => {
     other.rerender(<MemoryRouter><GuideLauncher initiallyOpen /></MemoryRouter>);
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
+  it("hides the avatar in event creation but still responds to an explicit request", async () => {
+    render(<MemoryRouter initialEntries={["/enviar-evento"]}><GuideLauncher /></MemoryRouter>);
+    expect(screen.queryByRole("button", { name: "Falar com o Guia do Coé" })).not.toBeInTheDocument();
+    act(() => window.dispatchEvent(new Event(OPEN_KOE_EVENT)));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
 });

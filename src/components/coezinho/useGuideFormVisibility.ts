@@ -25,7 +25,7 @@ export function useGuideFormVisibility() {
         'form textarea, form input:not([type="hidden"]):not([type="search"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]), [role="dialog"] textarea, [role="dialog"] input, main input[type="file"]',
       );
       const next = Array.from(controls).some(control => {
-        if (control.closest('[data-coezinho-session]')) return false;
+        if (control.closest('[aria-labelledby="coezinho-title"]')) return false;
         const container = control.closest('form, [role="dialog"]') ?? control.parentElement;
         return Boolean(container && !container.closest('[hidden], [aria-hidden="true"], [data-state="closed"]') && container.getClientRects().length);
       });

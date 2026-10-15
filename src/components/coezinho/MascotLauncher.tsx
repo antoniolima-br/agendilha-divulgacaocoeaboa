@@ -3,10 +3,12 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import mascotAsset from "@/assets/coezinho-mascot.webp.asset.json";
 import { clampMascot, mascotSize, safeMascotPosition, type Point } from "./mascotPosition";
+import { useGuideFormVisibility } from "./useGuideFormVisibility";
 let lastPosition: Point | null = null;
 const viewport = () => ({ width: window.innerWidth, height: window.visualViewport?.height ?? window.innerHeight });
 export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const { pathname } = useLocation();
+  const hiddenForForm = useGuideFormVisibility();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const gesture = useRef<{ id: number; start: Point; origin: Point; moved: boolean } | null>(null);
   const suppressClick = useRef(false);
@@ -61,6 +63,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     window.addEventListener("resize", resize); window.visualViewport?.addEventListener("resize", resize);
     return () => { navigationObserver.disconnect(); window.removeEventListener("resize", resize); window.visualViewport?.removeEventListener("resize", resize); };
   }, [pathname, place, reservedBottom]);
+  if (hiddenForForm) return null;
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
     className="coezinho-fab fixed z-[45] h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
     data-dragging={dragging} data-idle={idle} onFocus={() => setIdle(false)} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
