@@ -7,7 +7,7 @@ import { isArchivedEvent } from "@/lib/eventArchive";
 import { ROUTES } from "@/routes/config";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { EditarMeuEventoDialog, type EventoEditavel } from "@/components/divulgador/EditarMeuEventoDialog";
-import { Pencil, Lock, Archive, Eye, Repeat2 } from "lucide-react";
+import { Pencil, Lock, Archive, Eye, Repeat2, Share2, MousePointerClick } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,11 +20,14 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { formatBrazilianDate } from "@/lib/date-utils";
-import { SolicitarDivulgadorCard } from "@/components/divulgador/SolicitarDivulgadorCard";
+import { ShareOwnEventDialog } from "@/components/divulgador/ShareOwnEventDialog";
+import { canEditOwnEvent, organizerStatus } from "@/lib/organizerEventAccess";
+import type { PromoterShareEvent } from "@/lib/promoterEventSharing";
+import { useMyEventClicks } from "@/data/useMyEventClicks";
 import { useDivulgadorStatus } from "@/data/useDivulgadorStatus";
 import { LoadingState } from "@/components/ui/LoadingState";
 
-type StatusKey = "todos" | "pendente" | "aprovado" | "rejeitado" | "arquivados";
+type StatusKey = "todos" | "pendente" | "aprovado" | "rejeitado" | "suspenso" | "arquivados";
 
 interface Row {
   id: string;
@@ -44,49 +47,19 @@ interface Row {
   user_id: string;
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string; Icon: any }> = {
-    pendente: {
-      label: "Aguardando liberação da curadoria",
-      cls: "border-amber-600/30 text-amber-700 bg-amber-50/60",
-      Icon: Clock,
-    },
-    aprovado: {
-      label: "Aprovado / ativo",
-      cls: "border-emerald-600/30 text-emerald-700 bg-emerald-50/60",
-      Icon: ShieldCheck,
-    },
-    publicado: {
-      label: "Aprovado / ativo",
-      cls: "border-emerald-600/30 text-emerald-700 bg-emerald-50/60",
-      Icon: ShieldCheck,
-    },
-    rejeitado: {
-      label: "Rejeitado",
-      cls: "border-red-600/30 text-red-700 bg-red-50/60",
-      Icon: XCircle,
-    },
-  };
-  const m = map[status] || {
-    label: status,
-    cls: "border-foreground/15 text-foreground/70 bg-foreground/5",
-    Icon: AlertCircle,
-  };
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold uppercase tracking-[0.14em] ${m.cls}`}
-    >
-      <m.Icon className="h-3 w-3" strokeWidth={2} />
-      {m.label}
-    </span>
-  );
+function StatusBadge({ status, approvedAt }: { status: string; approvedAt?: string | null }) {
+  const label = status === "Arquivado" ? status : organizerStatus(status, approvedAt);
+  const Icon = label === "Aprovado" ? ShieldCheck : label === "Suspenso" || label === "Rejeitado" ? XCircle : Clock;
+  return <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted px-2.5 py-1 text-xs font-semibold text-foreground"><Icon className="h-3.5 w-3.5 shrink-0" />{label}</span>;
 }
 
 export default function MeusEventos() {
   const { user } = useAuth();
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
-  const { canApprove } = useAppPermissions();
+  const { canApprove, canSubmit, isAdmin } = useAppPermissions();
+  const [sharing, setSharing] = useState<PromoterShareEvent | null>(null);
+  const { data: clickCounts = {} } = useMyEventClicks();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
   const [viewing, setViewing] = useState<Row | null>(null);
   const navigate = useNavigate();
@@ -95,11 +68,12 @@ export default function MeusEventos() {
   const rows = useMemo(() => history.filter((row) => !!user && row.user_id === user.id), [history, user]);
 
   const counts = useMemo(() => {
-    const c = { todos: 0, pendente: 0, aprovado: 0, rejeitado: 0, arquivados: 0 } as Record<StatusKey, number>;
+    const c = { todos: 0, pendente: 0, aprovado: 0, rejeitado: 0, suspenso: 0, arquivados: 0 } as Record<StatusKey, number>;
     rows.forEach((r) => {
       if (isArchivedEvent(r.date)) { c.arquivados++; return; }
       c.todos++;
-      if (r.status === "pendente") c.pendente++;
+      if (organizerStatus(r.status, r.approved_at) === "Suspenso") c.suspenso++;
+      else if (["pendente", "pending", "rascunho", "draft", "em_revisao", "recebido"].includes(r.status)) c.pendente++;
       else if (["aprovado", "publicado", "divulgado"].includes(r.status)) c.aprovado++;
       else if (r.status === "rejeitado") c.rejeitado++;
     });
@@ -110,38 +84,41 @@ export default function MeusEventos() {
     if (tab === "arquivados") return rows.filter((r) => isArchivedEvent(r.date));
     const active = rows.filter((r) => !isArchivedEvent(r.date));
     if (tab === "todos") return active;
+    if (tab === "suspenso") return active.filter((r) => organizerStatus(r.status, r.approved_at) === "Suspenso");
+    if (tab === "pendente") return active.filter((r) => canEditOwnEvent(r) && r.status !== "rejeitado");
     if (tab === "aprovado")
       return active.filter((r) => ["aprovado", "publicado", "divulgado"].includes(r.status));
-    return active.filter((r) => r.status === tab);
+    return active.filter((r) => r.status === tab && organizerStatus(r.status, r.approved_at) !== "Suspenso");
   }, [rows, tab]);
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14 space-y-8">
-        <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <header data-organizer-header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-foreground/12 bg-foreground/[0.02] mb-3">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-foreground/60">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                 Painel pessoal · Divulgador
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
-              Área do Divulgador
+              Meus eventos
             </h1>
-            <p className="text-foreground/65 mt-1 text-sm">
-              Meus eventos — somente os rolês que você cadastrou.
+            <p className="text-muted-foreground mt-1 text-sm">
+              Área do Divulgador
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:items-end">
-          {canApprove && <Button asChild variant="outline"><Link to={ROUTES.ADMIN_APROVAR_EVENTOS}><ShieldCheck className="mr-2 h-4 w-4" />Curadoria geral</Link></Button>}
-          {isDivulgador && (
+          <Button asChild variant="outline" className="min-h-11"><Link to={ROUTES.COMPARTILHAR_MEUS_EVENTOS}><Share2 className="mr-2 h-4 w-4" />Compartilhar meus eventos</Link></Button>
+          {isAdmin && canApprove && <Button asChild variant="outline"><Link to={ROUTES.ADMIN_APROVAR_EVENTOS}><ShieldCheck className="mr-2 h-4 w-4" />Curadoria geral</Link></Button>}
+          {canSubmit && (
             <Button
               asChild
-              className="w-full rounded-full bg-foreground px-5 font-semibold tracking-tight text-background shadow-none hover:bg-foreground/90 sm:w-auto"
+              className="min-h-11 w-full font-semibold sm:w-auto"
             >
               <Link to={ROUTES.ENVIAR_EVENTO}>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Divulgar evento
+                Publicar novo evento
               </Link>
             </Button>
           )}
@@ -165,6 +142,7 @@ export default function MeusEventos() {
             <TabsTrigger value="rejeitado" className="shrink-0 rounded-full px-4">
               Rejeitados <span className="ml-1.5 opacity-60">{counts.rejeitado}</span>
             </TabsTrigger>
+            <TabsTrigger value="suspenso" className="shrink-0 rounded-full px-4">Suspensos <span className="ml-1.5 opacity-60">{counts.suspenso}</span></TabsTrigger>
             <TabsTrigger value="arquivados" className="shrink-0 rounded-full px-4">
               <Archive className="mr-1.5 h-3.5 w-3.5" /> Arquivados <span className="ml-1.5 opacity-60">{counts.arquivados}</span>
             </TabsTrigger>
@@ -176,8 +154,8 @@ export default function MeusEventos() {
           <LoadingState message="Carregando seus rolês…" />
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center space-y-3 border border-dashed border-foreground/15 rounded-2xl">
-            <p className="text-foreground/65 text-sm">Nada por aqui ainda.</p>
-            {isDivulgador ? (
+            <p className="text-muted-foreground text-sm">Nada por aqui ainda.</p>
+            {canSubmit ? (
               <Button
                 asChild
                 variant="outline"
@@ -186,7 +164,7 @@ export default function MeusEventos() {
                 <Link to={ROUTES.ENVIAR_EVENTO}>Divulgar meu primeiro evento</Link>
               </Button>
             ) : (
-              <p className="text-xs text-foreground/55">
+              <p className="text-xs text-muted-foreground">
                 Pra criar ou editar eventos você precisa de acesso de Divulgador — peça acima.
               </p>
             )}
@@ -196,7 +174,7 @@ export default function MeusEventos() {
             {filtered.map((r) => (
               <li
                 key={r.id}
-                className="group flex min-w-0 gap-3 rounded-2xl border border-foreground/10 bg-background p-3 transition-colors hover:border-foreground/25 sm:gap-4 sm:p-4"
+                className="group flex min-w-0 gap-3 rounded-lg border border-border bg-background p-3 transition-colors hover:border-foreground/25 sm:gap-4 sm:p-4"
               >
                 <div className="hidden sm:block shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-foreground/5">
                   {r.image_url ? (
@@ -218,15 +196,20 @@ export default function MeusEventos() {
                      <h3 className="min-w-0 break-words font-semibold tracking-tight text-foreground xs:truncate">
                       {r.event_title || r.atrativo_name || "Evento sem título"}
                     </h3>
-                      <StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} />
+                      <StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} approvedAt={r.approved_at} />
                   </div>
-                  <p className="text-xs text-foreground/60 flex items-center gap-2">
+                  <p className="text-xs text-muted-foreground flex items-center gap-2">
                     <Calendar className="h-3 w-3" />
                     {r.date ? formatBrazilianDate(r.date) : "Data a confirmar"}
                     {r.start_time && ` · ${r.start_time}`}
                   </p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground" aria-label="Métricas do evento">
+                    <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" />{r.views_count ?? 0} visualizações</span>
+                    <span className="inline-flex items-center gap-1"><Share2 className="h-3.5 w-3.5" />{r.shares_count ?? 0} compartilhamentos</span>
+                    <span className="inline-flex items-center gap-1"><MousePointerClick className="h-3.5 w-3.5" />{clickCounts[r.id] === undefined ? "Sem coleta de cliques" : `${clickCounts[r.id]} cliques no flyer`}</span>
+                  </div>
                   {r.status === "rejeitado" && r.rejection_reason && (
-                    <p className="text-xs text-red-700 bg-red-50/60 border border-red-200/60 rounded-md px-2 py-1.5">
+                    <p className="text-xs text-destructive bg-destructive/10 border border-destructive/30 rounded-md px-2 py-1.5">
                       <span className="font-semibold">Motivo: </span>
                       {r.rejection_reason}
                     </p>
@@ -236,16 +219,16 @@ export default function MeusEventos() {
                     {isDivulgador && <Button variant="outline" size="sm" onClick={() => navigate(ROUTES.ENVIAR_EVENTO, { state: { repeatEventId: r.id } })}><Repeat2 className="mr-1.5 h-3.5 w-3.5" /> Repetir evento</Button>}
                   </div> : isDivulgador && user && r.user_id === user.id && (
                     <div className="pt-1">
-                       {["aprovado", "publicado", "divulgado"].includes(r.status) ? (
-                        <span className="inline-flex items-center gap-1.5 text-[11px] text-foreground/55">
+                       {!canEditOwnEvent(r) ? (
+                        <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
                           <Lock className="h-3 w-3" />
-                           Já aprovado — peça alteração pra curadoria.
+                           Edição pela Curadoria. Peça o ajuste à equipe.
                         </span>
                       ) : (
                         <Button
                           size="sm"
                           variant="outline"
-                          className="rounded-full h-8 text-xs border-foreground/15 hover:bg-foreground/5"
+                          className="min-h-11 text-sm"
                           onClick={() => setEditing(r as unknown as EventoEditavel)}
                         >
                           <Pencil className="h-3.5 w-3.5 mr-1.5" />
@@ -254,6 +237,7 @@ export default function MeusEventos() {
                       )}
                     </div>
                   )}
+                  {tab !== "arquivados" && ["aprovado", "publicado", "divulgado"].includes(r.status) && <Button variant="outline" size="sm" className="min-h-11" onClick={() => setSharing(r as PromoterShareEvent)}><Share2 className="mr-1.5 h-4 w-4" />Compartilhar rolê</Button>}
                   {tab !== "arquivados" && ["aprovado", "publicado", "divulgado"].includes(r.status) && r.slug && (
                     <Link
                       to={`/evento/${r.slug}`}
@@ -269,6 +253,7 @@ export default function MeusEventos() {
         )}
       </div>
 
+      <ShareOwnEventDialog event={sharing} onClose={() => setSharing(null)} />
       <EditarMeuEventoDialog
         evento={editing}
         open={!!editing}

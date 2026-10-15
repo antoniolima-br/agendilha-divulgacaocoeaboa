@@ -237,7 +237,7 @@ export const AppRoutes = () => {
           <Route path={ROUTES.CONFIGURAR_ARTISTA} element={<ProtectedRoute><ArtistSetup /></ProtectedRoute>} />
           <Route path={ROUTES.ENVIAR_EVENTO} element={<PromotorRoute><SectionErrorBoundary context="EventForm" title="O formulário do evento deu um tropeço." description="Seu rascunho fica salvo. Toca em tentar de novo."><SubmitEvent /></SectionErrorBoundary></PromotorRoute>} />
           <Route path={ROUTES.EVENTOS_DESTAQUE} element={<EventosEmDestaque />} />
-          <Route path={ROUTES.SEU_RADAR} element={<ProtectedRoute><SeuRadar /></ProtectedRoute>} />
+          <Route path={ROUTES.SEU_RADAR} element={<SeuRadar />} />
           <Route path={ROUTES.MEUS_EVENTOS} element={<PromotorRoute><MeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.COMPARTILHAR_MEUS_EVENTOS} element={<PromotorRoute><CompartilharMeusEventos /></PromotorRoute>} />
           <Route path={ROUTES.PLANOS_ANUNCIOS} element={<PromotorRoute><AdPlansCatalog /></PromotorRoute>} />

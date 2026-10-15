@@ -372,6 +372,20 @@
       "when": 1792022402226,
       "tag": "0052_grant_public_event_entry_information",
       "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1792023097529,
+      "tag": "0053_lock_organizer_edits_after_approval",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1792023128876,
+      "tag": "0054_owner_event_click_metrics",
+      "breakpoints": true
     }
   ]
 }

@@ -3797,6 +3797,13 @@ export type Database = {
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_promotor: { Args: { _user_id: string }; Returns: boolean }
+      my_event_click_metrics: {
+        Args: never
+        Returns: {
+          clicks_count: number
+          event_id: string
+        }[]
+      }
       normalize_schedule_attraction_name: {
         Args: { input_name: string }
         Returns: string

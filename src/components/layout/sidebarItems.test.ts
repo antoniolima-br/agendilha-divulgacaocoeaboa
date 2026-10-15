@@ -5,9 +5,10 @@ import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { computePermissions } from "@/hooks/useAppPermissions";
 
 describe("sidebarConfig", () => {
-  it("indica somente a página pessoal selecionada", () => {
+  it("consolida a jornada em Meus eventos", () => {
     const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
-    expect(items.filter(item => isSidebarItemActive(item, ROUTES.COMPARTILHAR_MEUS_EVENTOS, ROUTES.COMPARTILHAR_MEUS_EVENTOS)).map(item => item.id)).toEqual(["share_my_events"]);
+    expect(items.map(item => item.id)).toEqual(["my_submissions"]);
+    expect(items[0]?.path).toBe(ROUTES.MEUS_EVENTOS);
   });
   it("não confunde prefixos de irmãos", () => {
     const items = sidebarConfig.find(s => s.id === "explorar")?.items ?? [];
@@ -15,14 +16,11 @@ describe("sidebarConfig", () => {
     if (!item) throw new Error("missing explore link");
     expect(isSidebarItemActive(item, `${item.path}-extra`, `${item.path}-extra`)).toBe(false);
   });
-  it("compartilhamento pessoal segue o acesso do painel do divulgador", () => {
-    const items = sidebarConfig.find(s => s.id === "divulgacao")?.items ?? [];
-    const index = items.findIndex(i => i.id === "my_submissions");
-    expect(items[index + 1]?.path).toBe(ROUTES.COMPARTILHAR_MEUS_EVENTOS);
-    expect(items[index + 1]?.roles).toEqual(items[index]?.roles);
-    expect(items[index + 1]?.roles).not.toContain("public_registered");
-    expect(routeExists(ROUTES.COMPARTILHAR_MEUS_EVENTOS)).toBe(true);
-    expect(filterSidebarSections("collaborator", () => false, routeExists).flatMap(s => s.items).some(i => i.id === "share_my_events")).toBe(false);
+  it("divulgador não vê atalhos gerenciais mesmo com permissões fornecidas", () => {
+    const visible = filterSidebarSections("promoter", () => true, routeExists);
+    expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "conta"]);
+    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "profile"]);
+    expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/admin") || item.path.startsWith("/intranet"))).toBe(false);
   });
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
@@ -33,7 +31,7 @@ describe("sidebarConfig", () => {
   it("mantém Meus eventos do admin separado e esconde a Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
-    expect(personal?.items.find((item) => item.id === "send_event")?.roles).toContain("admin");
+    expect(personal?.items).toHaveLength(1);
     expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
     const intranet = sidebarConfig.find((section) => section.id === "intranet");
     expect(intranet?.roles).toEqual(["master"]);
@@ -126,10 +124,10 @@ describe("sidebarConfig", () => {
 
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
     const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
-    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "profile", "divulgador_status"]);
+    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
-    expect(promoterItems.find((item) => item.id === "send_event")?.label).toBe("Publicar Evento");
-    expect(promoterItems.some((item) => item.id === "ad_plans_catalog")).toBe(true);
-    expect(sidebarConfig.flatMap((section) => section.items).some((item) => ["seu_radar", "divulgar_contratar"].includes(item.id))).toBe(false);
+    expect(promoterItems.some(item => item.id === "my_submissions")).toBe(true);
+    expect(promoterItems.some(item => ["send_event", "ad_plans_catalog", "share_my_events"].includes(item.id))).toBe(false);
+    expect(publicItems.find(item => item.id === "seu_radar")?.path).toBe(ROUTES.SEU_RADAR);
   });
 });
