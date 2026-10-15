@@ -4,6 +4,22 @@
 
 .coezinho-fab { cursor: grab; transition: opacity 450ms ease; }
 .limax-brand-x { color: hsl(var(--brand-limax)); }
+/* Five active dates share the lane, independently of calendar weeks. */
+nav[aria-label="Dias com rolês"] > div {
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+nav[aria-label="Dias com rolês"] > div > button {
+  min-width: 0;
+  flex: 0 0 calc((100% - 8px) / 5);
+  scroll-snap-align: start;
+}
+@media (max-width: 479px) {
+  nav[aria-label="Dias com rolês"] { gap: 2px; padding-inline: 4px; }
+  nav[aria-label="Dias com rolês"] > button { width: 32px; min-width: 32px; }
+  nav[aria-label="Dias com rolês"] > div > button > span:first-child { font-size: 9px; }
+}
 /* Retire the three legacy header actions; their destinations live in navigation. */
 header:not([data-organizer-header]) a[href="/enviar-evento"],
 header > div > .grid.mt-1\.5:has(> .btn-gold) > .btn-gold:not(:first-child) {
