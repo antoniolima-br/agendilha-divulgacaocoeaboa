@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Otimização de performance 352: auditar infraestrutura, navegação, dados e assets; aplicar melhorias por evidência, preservar design/acessos e verificar testes e fluxos reais.
 - [x] Atualizar o Pitch Comercial com Coezinho, publicidade regional, prova de valor/BI e pós-venda; preços e acesso preservados, dez testes aprovados e apresentação isolada conferida em 390/1280 px. Abertura com senha privada permanece pendente abaixo.
 - [x] Simplificar Marketing, Comercial/Convidados e Visão Geral com cartões mobile-first, linguagem direta e somente números realmente coletados.
 - [x] Otimizar a edição de rolês na Curadoria: foco exclusivo no selecionado, métricas ao vivo, flyer ampliado, histórico artístico persistente e ações mobile-first.
