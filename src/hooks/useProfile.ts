@@ -15,11 +15,18 @@ import { invalidateProfileDerived } from "@/data/cacheInvalidation";
    phone: string;
    address_street: string;
    address_number: string;
+    address_complement: string;
    address_neighborhood: string;
    address_city: string;
    address_state: string;
    address_zip: string;
     contact_social: string;
+    social_links: { instagram?: string; facebook?: string };
+    coverage_area: string[];
+    whatsapp_phone: string;
+    country: string;
+    avatar_url: string;
+    user_type: string;
     nick_name?: string;
     home_location?: string;
     work_neighborhood?: string;
@@ -42,11 +49,18 @@ import { invalidateProfileDerived } from "@/data/cacheInvalidation";
     phone: "",
     address_street: "",
     address_number: "",
+    address_complement: "",
     address_neighborhood: "",
     address_city: "",
     address_state: "",
     address_zip: "",
     contact_social: "",
+    social_links: {},
+    coverage_area: [],
+    whatsapp_phone: "",
+    country: "Brasil",
+    avatar_url: "",
+    user_type: "public",
     nick_name: "",
     home_location: "",
     work_neighborhood: "",
@@ -77,7 +91,7 @@ export function useProfile() {
       if (!userId) return emptyAddress;
       const { data, error } = await supabase
         .from("profiles")
-        .select("company_name, responsible_name, email, phone, address_street, address_number, address_neighborhood, address_city, address_state, address_zip, contact_social, nick_name, home_location, work_neighborhood, musical_preferences, event_type_preferences, role, push_notifications_enabled, email_notifications_enabled, notification_frequency, followed_regions, followed_neighborhoods, followed_styles, onboarding_completed")
+        .select("company_name, responsible_name, email, phone, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip, contact_social, social_links, coverage_area, whatsapp_phone, country, avatar_url, user_type, nick_name, home_location, work_neighborhood, musical_preferences, event_type_preferences, role, push_notifications_enabled, email_notifications_enabled, notification_frequency, followed_regions, followed_neighborhoods, followed_styles, onboarding_completed")
         .eq("user_id", userId)
         .maybeSingle();
       if (error) throw error;
@@ -89,11 +103,18 @@ export function useProfile() {
         phone: data.phone || "",
         address_street: data.address_street || "",
         address_number: data.address_number || "",
+        address_complement: data.address_complement || "",
         address_neighborhood: data.address_neighborhood || "",
         address_city: data.address_city || "",
         address_state: data.address_state || "",
         address_zip: data.address_zip || "",
         contact_social: data.contact_social || "",
+        social_links: (data.social_links as ProfileAddress["social_links"] | null) || {},
+        coverage_area: data.coverage_area || [],
+        whatsapp_phone: data.whatsapp_phone || "",
+        country: data.country || "Brasil",
+        avatar_url: data.avatar_url || "",
+        user_type: data.user_type || "public",
         nick_name: data.nick_name || "",
         home_location: data.home_location || "",
         work_neighborhood: data.work_neighborhood || "",
