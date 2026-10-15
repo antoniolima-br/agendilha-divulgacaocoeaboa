@@ -94,7 +94,7 @@ export default function MeusEventos() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14 space-y-8">
-        <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <header data-organizer-header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-foreground/12 bg-foreground/[0.02] mb-3">
               <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
