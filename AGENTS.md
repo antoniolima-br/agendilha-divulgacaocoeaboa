@@ -38,3 +38,4 @@
 - Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
 - Read each subdirectory's AGENTS.md before edits.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
+- Profile address UI stays isolated from public, promoter and artist journeys.

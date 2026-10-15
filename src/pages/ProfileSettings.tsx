@@ -95,7 +95,6 @@ export default function ProfileSettings() {
   const { profile, loaded, saveProfile } = useProfile();
   const { isAdmin } = useAppPermissions();
   const [loading, setLoading] = useState(false);
-  const [artistProfile, setArtistProfile] = useState<ArtistProfileSummary | null>(null);
   const [artistLoaded, setArtistLoaded] = useState(false);
   const [baseErrors, setBaseErrors] = useState<{ name?: string; whatsapp?: string; bairro?: string }>({});
 
@@ -167,7 +166,6 @@ export default function ProfileSettings() {
       .maybeSingle();
     
     if (data) {
-      setArtistProfile(data);
       setArtisticName(data.name || "");
       setGenre(data.genre || "");
       setTechNeeds(data.technical_needs || "");
