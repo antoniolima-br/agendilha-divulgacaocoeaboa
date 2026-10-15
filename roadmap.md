@@ -1,5 +1,5 @@
-- [ ] Pitches 355: separar atalhos e destinos de Sócios/Anunciantes, preservar senha/permissões/preços e validar navegação e regressões.
 # Roadmap
+- [x] Pitches 355: atalhos e destinos próprios de Sócios/Anunciantes; senha/permissões/preços preservados. 30 testes aprovados, ambos os atalhos abertos com sessão real, destino antigo redirecionado e página em 390 px sem overflow. Conteúdo privado após senha permanece na pendência abaixo.
 - [x] Performance 354: auditoria complementar, miniaturas só após imagem lazy, cancelamento de agenda obsoleta, cache de 30 termos recentes e transições mais leves; 562 testes aprovados, Agenda/Explorar e página real conferidas em 390/1280 px. Ganhos e limites em performance-report.md; sem ganho de bytes iniciais da Agenda medido.
 - [x] Separar pitches de sócios/investidores e anunciantes, com linguagem própria, compartilhamento seguro, preços e acesso preservados; 11 testes aprovados e revisão isolada em 320/390/1280 px sem overflow.
 - [ ] Conferir as duas apresentações pelo acesso real com senha privada do pitch: senha não disponível; bloqueio, recusa e troca de conta cobertos por testes, conteúdo revisado isoladamente.
