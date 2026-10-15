@@ -1,9 +1,9 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useFavorites } from "./useFavorites";
-import { AuthContext } from "@/contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -26,6 +26,10 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: vi.fn(),
+}));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: false },
@@ -35,9 +39,7 @@ const queryClient = new QueryClient({
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
-    <AuthContext.Provider value={{ user: { id: "user1" }, session: {} } as any}>
-      {children}
-    </AuthContext.Provider>
+    {children}
   </QueryClientProvider>
 );
 
@@ -45,6 +47,7 @@ describe("useFavorites", () => {
   beforeEach(() => {
     queryClient.clear();
     vi.clearAllMocks();
+    (useAuth as any).mockReturnValue({ user: { id: "user1" } });
   });
 
   it("should block concurrent favorites for different events (BUG)", async () => {
@@ -62,13 +65,13 @@ describe("useFavorites", () => {
       result.current.toggleFavorite("event2");
     });
 
-    // If it's blocked, supabase.from("user_favorites").insert will only have been called once
     // Wait for everything to settle
     await waitFor(() => expect(result.current.isToggling).toBe(false));
 
-    const insertCalls = (supabase.from as any).mock.results.filter((r: any) => r.type === "return" && r.value.insert);
-    // This will actually pass if the bug exists (it will be 1 instead of 2)
-    // Actually I want to show it's 1.
-    expect(insertCalls.length).toBe(1); 
+    const fromCalls = (supabase.from as any).mock.calls.filter((call: any) => call[0] === "user_favorites");
+    // We expect 2 inserts, but we might get 1 if the bug exists.
+    // toggleFavorite calls toggleFavoriteMutation.mutate
+    // If we call it twice, we should have two supabase calls.
+    expect(fromCalls.length).toBe(1); 
   });
 });
