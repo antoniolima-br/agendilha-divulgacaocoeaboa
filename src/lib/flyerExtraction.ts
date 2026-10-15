@@ -39,7 +39,9 @@ export async function readFlyerStream(response: Response): Promise<FlyerFields> 
   try {
     while (true) {
       const chunk = await reader.read();
-      buffer += decoder.decode(chunk.value, { stream: !chunk.done }).replace(/\r\n/g, "\n");
+      buffer += decoder.decode(chunk.value, { stream: !chunk.done });
+      // Normalize after joining chunks: CR and LF may arrive in separate reads.
+      buffer = buffer.replace(/\r\n/g, "\n");
       let boundary: number;
       while ((boundary = buffer.indexOf("\n\n")) >= 0) { event(buffer.slice(0, boundary)); buffer = buffer.slice(boundary + 2); }
       if (chunk.done) break;

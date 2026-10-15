@@ -38,4 +38,13 @@ describe("flyer extraction", () => {
     await expect(readFlyerStream(new Response(JSON.stringify({ error: { message: "Limite atingido" } }), { status: 403 }))).rejects.toThrow("Limite atingido");
     await expect(readFlyerStream(new Response('data: {"type":"response.refusal.done"}\n\n'))).rejects.toThrow("manualmente");
   });
+  it("maps all four visual fields even when CRLF event boundaries split across reads", async () => {
+    const fields = { eventTitle: "Samba do domingo", date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" };
+    const events = `data: ${JSON.stringify({ type: "response.output_text.delta", delta: JSON.stringify(fields) })}\r\n\r\ndata: {"type":"response.completed"}\r\n\r\n`;
+    const stream = new ReadableStream({ start(controller) {
+      for (const character of events) controller.enqueue(new TextEncoder().encode(character));
+      controller.close();
+    } });
+    await expect(readFlyerStream(new Response(stream))).resolves.toEqual(fields);
+  });
 });

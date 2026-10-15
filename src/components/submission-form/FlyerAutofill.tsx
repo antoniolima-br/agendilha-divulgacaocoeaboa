@@ -23,7 +23,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
   const pick = async (file?: File) => {
-    if (!file) return;
+    if (!file || (request.current && !request.current.signal.aborted)) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8 * 1024 * 1024 || file.size === 0) {
       setError("Escolha uma imagem JPG, PNG ou WEBP de até 8 MB."); return;
     }
@@ -53,7 +53,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
         document.getElementById("manual-event-fields")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     } finally {
-      if (request.current === controller) { setLoading(false); onLoading(false); }
+      if (request.current === controller) { request.current = null; setLoading(false); onLoading(false); }
     }
   };
 
@@ -73,10 +73,10 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
         {preview ? <img src={preview} alt="Flyer selecionado" className="h-32 w-24 shrink-0 rounded object-contain" /> : <Upload className="h-8 w-8 shrink-0 text-primary" />}
         <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left">
           <p className="text-sm text-muted-foreground">Arraste a imagem ou escolha no seu aparelho.</p>
-          <Button type="button" variant="outline" onClick={() => input.current?.click()} className="min-h-11 gap-2"><ImagePlus className="h-4 w-4" />{preview ? "Trocar flyer" : "Escolher flyer"}</Button>
+           <Button type="button" variant="outline" disabled={loading} onClick={() => input.current?.click()} className="min-h-11 gap-2"><ImagePlus className="h-4 w-4" />{preview ? "Trocar flyer" : "Escolher flyer"}</Button>
           <p className="text-xs text-muted-foreground">JPG, PNG ou WEBP · até 8 MB</p>
         </div>
-        <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
+         <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" disabled={loading} accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <div aria-live="polite" aria-busy={loading}>
         {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><div aria-hidden="true" className="space-y-2"><div className="h-2 w-4/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /><div className="h-2 w-3/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /></div></div>}
