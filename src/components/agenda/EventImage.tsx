@@ -3,13 +3,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getEventFallbackPalette } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 import { flyerListingUrl } from "@/lib/flyerImages";
+import type { LucideIcon } from "lucide-react";
 
 interface EventImageProps {
   src?: string | null;
   alt: string;
   category?: string | null;
   className?: string;
-  icon?: any;
+  icon?: LucideIcon;
   fit?: "cover" | "contain";
 }
 

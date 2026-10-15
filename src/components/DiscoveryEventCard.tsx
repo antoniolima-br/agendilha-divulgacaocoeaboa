@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Star, Heart, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
+import { MapPin, Calendar, Star, Heart, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useMemo, memo, useEffect } from "react";
 import { getEventFallbackPalette } from "@/lib/event-utils";
@@ -27,7 +27,7 @@ interface Event {
   is_suitable_for_minors?: boolean;
 }
 
-const CATEGORY_MAP: Record<string, { label: string; icon: any }> = {
+const CATEGORY_MAP: Record<string, { label: string; icon: LucideIcon }> = {
   musica:      { label: "Música",      icon: Music },
   gastronomia: { label: "Gastronomia", icon: Utensils },
   cultura:     { label: "Cultura",     icon: Theater },

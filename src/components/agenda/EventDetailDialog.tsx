@@ -34,7 +34,7 @@ export function EventDetailDialog({
       <DialogContent aria-describedby={undefined} className="max-w-2xl p-0 overflow-hidden rounded-t-[2rem] sm:rounded-[2rem] border-none bg-background h-[95vh] sm:h-[90vh] flex flex-col focus:outline-none">
         {event && (
           <>
-            <div className="relative h-[52vh] min-h-72 max-h-[34rem] w-full shrink-0 overflow-hidden bg-muted/40 group">
+            <div className="relative h-[34dvh] min-h-0 sm:h-[52vh] sm:min-h-72 max-h-[34rem] w-full shrink-0 overflow-hidden bg-muted/40 group">
               <EventImage
                 src={event.image_url}
                 alt={event.event_title}
@@ -75,12 +75,12 @@ export function EventDetailDialog({
                   )}
                 </div>
                 <DialogTitle asChild><h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-[1.1]">
-                  {event.event_title}
+                  {event.event_title || event.location || "Rolê"}
                 </h2></DialogTitle>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="min-h-0 flex-1 overflow-y-auto">
               <div className="p-5 sm:p-10 space-y-8 sm:space-y-10">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                   <div className="space-y-5 sm:space-y-6">
@@ -160,12 +160,12 @@ export function EventDetailDialog({
               </div>
             </div>
 
-            <div className="p-5 sm:p-10 lg:p-12 bg-card/80 backdrop-blur-xl border-t border-border/50 shrink-0">
-              <div className="flex flex-col gap-5 sm:gap-8">
-                <div className="flex flex-col gap-3.5">
+            <div className="p-3 sm:p-10 lg:p-12 bg-card/80 backdrop-blur-xl border-t border-border/50 shrink-0">
+              <div className="flex flex-col gap-2 sm:gap-8">
+                <div className="flex flex-col gap-2 sm:gap-3.5">
                    {(() => {
-                     const data = getShareData(event as any);
-                     return <EventShareButton title={data.title} text={data.text} url={data.url} onShared={() => trackShare(event.id)} className="w-full h-14 sm:h-16 font-black uppercase tracking-wider" />;
+                     const data = getShareData(event);
+                     return <EventShareButton title={data.title} text={data.text} url={data.url} onShared={() => trackShare(event.id)} className="w-full h-11 sm:h-16 font-black uppercase tracking-wider" />;
                    })()}
 
                   <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2.5 sm:gap-3">
@@ -173,7 +173,7 @@ export function EventDetailDialog({
                       variant="outline"
                       className="flex-1 h-12 sm:h-14 rounded-full font-black uppercase tracking-wider border-2 border-primary/20 text-primary bg-background hover:bg-primary hover:text-primary-foreground active:scale-95 transition-all text-[10px] sm:text-xs shadow-sm"
                       onClick={() => {
-                        const addr = buildFullAddress(event as any);
+                        const addr = buildFullAddress(event);
                         window.open(
                           `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`,
                           "_blank",
@@ -197,7 +197,7 @@ export function EventDetailDialog({
 
                   <Button
                     variant="ghost"
-                    className="h-14 rounded-full font-bold text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-muted-foreground/30 active:scale-95 transition-all"
+                    className="h-11 sm:h-14 rounded-full font-bold text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-muted-foreground/30 active:scale-95 transition-all"
                     onClick={onClose}
                   >
                     Fechar Detalhes

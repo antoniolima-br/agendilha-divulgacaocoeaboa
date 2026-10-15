@@ -12,9 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Upload, X } from "lucide-react";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
+import type { Control, FieldValues } from "react-hook-form";
 
 
-export function CepField({ control, onCepFound }: { control: any; onCepFound: (data: ViaCepData) => void }) {
+export function CepField<T extends FieldValues & { addressZip?: string }>({ control, onCepFound }: { control: Control<T>; onCepFound: (data: ViaCepData) => void }) {
   const [loading, setLoading] = useState(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const request = useRef<AbortController | null>(null);
@@ -51,7 +52,7 @@ export function CepField({ control, onCepFound }: { control: any; onCepFound: (d
   return (
     <FormField
       control={control}
-      name="addressZip"
+      name={"addressZip" as import("react-hook-form").Path<T>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>CEP</FormLabel>
