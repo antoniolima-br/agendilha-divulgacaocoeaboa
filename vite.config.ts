@@ -24,12 +24,12 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'prompt',
       injectRegister: null,
-      includeAssets: ['favicon.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'logo.png', 'logo.jpg', 'robots.txt', 'placeholder.svg'],
+      includeAssets: ['favicon.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'],
       workbox: {
         // Don't precache HTML — always fetch fresh navigations so mobile clients
         // see new builds immediately instead of being stuck on an old shell.
-        globPatterns: ['**/*.{js,css,ico,svg}'],
-        globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js', '**/guide-*.js'],
+        globPatterns: ['assets/index-*.js', 'assets/index-*.css', 'assets/router-*.js', 'assets/db-client-*.js', 'assets/ui-primitives-*.js'],
+        maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         // Prompt mode: don't auto-skip — wait for the user to click "Atualizar".
         clientsClaim: true,
@@ -39,12 +39,7 @@ export default defineConfig(({ mode }) => ({
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'image',
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'app-images',
-              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
+            handler: 'NetworkOnly',
           },
           {
             // HTML navigations: always try network first, fall back to cache only when offline.
@@ -54,7 +49,7 @@ export default defineConfig(({ mode }) => ({
             options: {
               cacheName: 'html-navigations',
               networkTimeoutSeconds: 3,
-              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 },
+              expiration: { maxEntries: 3, maxAgeSeconds: 60 * 60 * 24 },
             },
           },
           {
@@ -63,8 +58,8 @@ export default defineConfig(({ mode }) => ({
             options: {
               cacheName: 'google-fonts-cache',
               expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
+                maxEntries: 2,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -77,8 +72,8 @@ export default defineConfig(({ mode }) => ({
             options: {
               cacheName: 'gstatic-fonts-cache',
               expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // <== 365 days
+                maxEntries: 2,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {
                 statuses: [0, 200],

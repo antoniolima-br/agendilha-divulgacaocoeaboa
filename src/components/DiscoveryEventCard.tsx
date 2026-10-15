@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useState, useMemo, memo, useEffect } from "react";
 import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useThumbnailCache } from "@/hooks/useThumbnailCache";
+import { flyerListingUrl } from "@/lib/flyerImages";
 import { formatBrazilianDate } from "@/lib/date-utils";
 import { EventShareButton } from "@/components/EventShareButton";
 import { getShareData } from "@/lib/sharing";
@@ -71,9 +71,8 @@ export const DiscoveryEventCard = memo(({
     () => getEventFallbackPalette(`${event.id}:${event.category || "outros"}`),
     [event.category, event.id],
   );
-  const sourceImage = hasError ? fallbackImage : officialImage;
-  const cachedThumb = useThumbnailCache(event.id, isCompact && officialImage && !hasError ? officialImage : undefined, isLoaded);
-  const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
+  const sourceImage = hasError ? fallbackImage : flyerListingUrl(officialImage);
+  const finalImage = sourceImage;
   const showGeneratedArtwork = !officialImage || hasError;
   const shareData = getShareData({ ...event, address_street: null, description: null });
 
@@ -121,7 +120,7 @@ export const DiscoveryEventCard = memo(({
               <img
                 src={finalImage}
                 alt={event.event_title || "Evento"}
-                loading={isLarge ? "eager" : "lazy"}
+                loading="lazy"
                 decoding="async"
                 onLoad={() => setIsLoaded(true)}
                 onError={() => {

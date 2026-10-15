@@ -1,4 +1,6 @@
-import { usePublicEvents } from "@/data/usePublicEvents";
+import { usePublicEventIndex, usePublicEventBatch } from "@/data/pagedPublicEvents";
+import { EventBatchNavigation } from "@/components/agenda/EventBatchNavigation";
+import { flyerListingUrl } from "@/lib/flyerImages";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { matchesPublicEventFilters } from "@/lib/publicEventFilters";
 import { isHighlightActive } from "@/lib/highlights";
@@ -95,12 +97,16 @@ function CuradoriaHojeInner() {
     }
   });
 
-  const { data: events = [], isLoading, error, refetch } = usePublicEvents();
+  const { data: events = [], isLoading: indexLoading, error: indexError, refetch: refetchIndex } = usePublicEventIndex();
   const regions = REGIONS;
   const visibleEvents = useMemo(() => events.filter((event) => matchesPublicEventFilters(event, globalFilters)), [events, globalFilters]);
-  const todayEvents = useMemo(() => visibleEvents.filter((event) => eventDateISO(event.date) === today), [visibleEvents, today]);
-  const upcomingEvents = useMemo(() => visibleEvents.filter((event) => eventDateISO(event.date) > today).slice(0, 8), [visibleEvents, today]);
-  const featuredEvents = useMemo(() => [...visibleEvents].sort((a, b) => Number(isHighlightActive(b)) - Number(isHighlightActive(a))).slice(0, 6), [visibleEvents]);
+  const batch = usePublicEventBatch(visibleEvents);
+  const isLoading = indexLoading || batch.isLoading;
+  const error = indexError || batch.error;
+  const refetch = () => { void refetchIndex(); return batch.refetch(); };
+  const todayEvents = useMemo(() => batch.events.filter((event) => eventDateISO(event.date) === today), [batch.events, today]);
+  const upcomingEvents = useMemo(() => batch.events.filter((event) => eventDateISO(event.date) > today).slice(0, 8), [batch.events, today]);
+  const featuredEvents = useMemo(() => [...batch.events].sort((a, b) => Number(isHighlightActive(b)) - Number(isHighlightActive(a))).slice(0, 6), [batch.events]);
 
   useEffect(() => setActiveSlide(0), [globalFilters]);
 
@@ -323,7 +329,7 @@ function CuradoriaHojeInner() {
                   aria-label={`Abrir evento patrocinado ${event.event_title || "Evento"}`}
                 >
                   <img
-                    src={event.image_url || getEventFallbackImage(event.category)}
+                    src={flyerListingUrl(event.image_url) || getEventFallbackImage(event.category)}
                     alt={event.event_title || "Evento patrocinado"}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
@@ -358,6 +364,8 @@ function CuradoriaHojeInner() {
 
         {!error && !isLoading && (
           <>
+            <div id="event-batch-start" className="scroll-mt-24" />
+            <EventBatchNavigation batch={batch} />
             <HomeAdsCarousel region={region} />
 
             <aside className="relative mb-9 overflow-hidden rounded-lg border border-accent/40 bg-muted p-4 shadow-card sm:p-5" aria-label="Publicidade da Mercearia do Tio João">

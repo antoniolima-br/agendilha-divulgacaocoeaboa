@@ -19,6 +19,7 @@ describe("public event prefetch contract", () => {
     expect(await client.fetchQuery(publicEventsQueryOptions())).toEqual([{ id: "current", date: "2026-10-14" }]);
     expect(mock.from).toHaveBeenCalledTimes(1);
     expect(mock.from).toHaveBeenCalledWith("public_submissions");
+    expect(mock.query.range).toHaveBeenCalledWith(0, 14);
     expect(mock.query.eq).toHaveBeenCalledWith("is_archived", false);
     expect(mock.query.gte).toHaveBeenCalledWith("event_day", "2026-10-14");
     expect(mock.query.in).toHaveBeenCalledWith("status", ["aprovado", "publicado"]);

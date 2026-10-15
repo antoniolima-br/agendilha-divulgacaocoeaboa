@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { createElement } from "react";
 import { PwaUpdateNotice } from "@/components/system/PwaUpdateNotice";
 import { isAppRegistration, runAppUpdate } from "./updateApp";
+import { releaseLegacyFlyerCache } from "./cachePolicy";
 
 function isPreviewOrDev(): boolean {
   if (!import.meta.env.PROD || typeof window === "undefined") return true;
@@ -49,6 +50,7 @@ export function setupPWA() {
     },
     onRegistered(registration) {
       if (!registration) return;
+      if ("caches" in window) void releaseLegacyFlyerCache(window.caches).catch(() => undefined);
       cleanupListeners?.();
       let checking = false;
       const checkForUpdate = () => {

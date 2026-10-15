@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useEvents } from "@/data/events";
 import { useCallback } from "react";
+import { usePublicEventIndex } from "@/data/pagedPublicEvents";
 
 /**
  * Compatibility layer for the legacy useAgendaData hook.
@@ -9,7 +10,8 @@ import { useCallback } from "react";
 export function useAgendaData() {
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const { events, ratings, isLoading, trackView, trackShare } = useEvents({ includeRatings: false });
+  const { ratings, trackView, trackShare } = useEvents({ includeRatings: false, enabled: false });
+  const { data: events = [], isLoading } = usePublicEventIndex();
   const eventId = searchParams.get("event");
   const initialEventId = events.some((event) => event.id === eventId) ? eventId : null;
   // Consume the router deep link so refreshed data cannot reopen the dialog.

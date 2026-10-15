@@ -5,7 +5,7 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { usePublicEvents } from "@/data/usePublicEvents";
+import { usePublicEventIndex } from "@/data/pagedPublicEvents";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
 import { availableEventDays } from "@/lib/eventCalendar";
 
@@ -16,7 +16,7 @@ interface EventDateFilterProps {
 
 export function EventDateFilter({ value, onChange }: EventDateFilterProps) {
   const [open, setOpen] = useState(false);
-  const { data: events = [] } = usePublicEvents();
+  const { data: events = [] } = usePublicEventIndex();
   const { filters } = useGlobalEventFilters();
   const availableDays = useMemo(() => availableEventDays(events, filters), [events, filters]);
   const hasEvent = (day: Date) => availableDays.has(format(day, "yyyy-MM-dd"));

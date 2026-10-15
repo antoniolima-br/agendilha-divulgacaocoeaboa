@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useAgendaData } from "./useAgendaData";
 
 const source = vi.hoisted(() => ({ events: [] as { id: string }[] }));
+vi.mock("@/data/pagedPublicEvents", () => ({ usePublicEventIndex: () => ({ data: source.events, isLoading: false }) }));
 vi.mock("@/data/events", () => ({
   useEvents: () => ({ events: source.events, ratings: {}, isLoading: false, trackView: vi.fn(), trackShare: vi.fn() }),
 }));

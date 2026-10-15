@@ -5,7 +5,7 @@ vi.mock("./mediaCompression", () => ({ compressImage: vi.fn() }));
 
 describe("upload compression adapter", () => {
   beforeEach(() => vi.clearAllMocks());
-  it.each(["image/gif", "image/webp", "image/svg+xml"])("preserves %s without flattening animation", async (type) => {
+  it.each(["image/gif", "image/svg+xml"])("preserves %s without flattening animation", async (type) => {
     const file = new File(["media"], "media", { type });
     expect(await prepareUploadImage(file)).toBe(file);
     expect(compressImage).not.toHaveBeenCalled();

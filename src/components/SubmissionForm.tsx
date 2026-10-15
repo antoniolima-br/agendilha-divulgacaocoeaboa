@@ -36,7 +36,7 @@ import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNo
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
 import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
-import { prepareUploadImage } from "@/lib/uploadImage";
+import { uploadFlyerImage } from "@/lib/flyerImages";
 import { FlyerAutofill } from "./submission-form/FlyerAutofill";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
@@ -404,28 +404,16 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       let imageUrl = values.eventImageUrl;
       
       if (eventImage instanceof File) {
-        const optimizedImage = await prepareUploadImage(eventImage);
-        const fileExt = optimizedImage.name.split('.').pop();
+        const fileExt = eventImage.name.split('.').pop() || 'jpg';
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         const filePath = `${user?.id}/${fileName}`;
 
-        const { error: uploadError } = await measureFlowOperation(
+        imageUrl = await measureFlowOperation(
           "event-submission",
           "flyer-upload",
-          () => supabaseClient.storage.from('event-flyers').upload(filePath, optimizedImage, { contentType: optimizedImage.type }),
+          () => uploadFlyerImage(eventImage, filePath),
           currentStep,
         );
-
-        if (uploadError) {
-          handleError(uploadError, { context: "SubmissionForm.uploadFlyer", fallback: "Erro ao subir o flyer." });
-          throw uploadError;
-        }
-
-        const { data: { publicUrl } } = supabaseClient.storage
-          .from('event-flyers')
-          .getPublicUrl(filePath);
-        
-        imageUrl = publicUrl;
       }
 
       // Envio gratuito: não gera flyer automático. O flyer profissional é

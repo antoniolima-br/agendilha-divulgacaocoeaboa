@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
 import { handleError } from "@/lib/error-handler";
 import { PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
-import { prepareUploadImage } from "@/lib/uploadImage";
+import { uploadFlyerImage } from "@/lib/flyerImages";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Label } from "@/components/ui/label";
@@ -54,12 +54,9 @@ export function MainFlyerEditor() {
     }
     setSaving(true);
     try {
-      const prepared = await prepareUploadImage(file);
-      const extension = prepared.type === "image/png" ? "png" : prepared.type === "image/webp" ? "webp" : "jpg";
+      const extension = file.name.split(".").pop() || "jpg";
       const path = `${user.id}/principal-${selected.id}-${Date.now()}.${extension}`;
-      const { error: uploadError } = await supabase.storage.from("event-flyers").upload(path, prepared, { contentType: prepared.type, upsert: false });
-      if (uploadError) throw uploadError;
-      const imageUrl = supabase.storage.from("event-flyers").getPublicUrl(path).data.publicUrl;
+      const imageUrl = await uploadFlyerImage(file, path);
       const { data, error } = await supabase.from("submissions").update({ image_url: imageUrl }).eq("id", selected.id).select("id,image_url").single();
       if (error) throw error;
       if (data.image_url !== imageUrl) throw new Error("A troca do flyer não foi confirmada.");
