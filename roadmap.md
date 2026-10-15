@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Performance 354: auditoria complementar, cancelamento de consultas obsoletas, memória de pesquisas limitada e imagens de descoberta mais leves; validar fluxos públicos e regressões.
 - [x] Separar pitches de sócios/investidores e anunciantes, com linguagem própria, compartilhamento seguro, preços e acesso preservados; 11 testes aprovados e revisão isolada em 320/390/1280 px sem overflow.
 - [ ] Conferir as duas apresentações pelo acesso real com senha privada do pitch: senha não disponível; bloqueio, recusa e troca de conta cobertos por testes, conteúdo revisado isoladamente.
 - [x] Otimização de performance 352: antecipação pública da Agenda/Radar, anúncios com consulta/relógio compartilhados, rajadas com prazo máximo, imagens e menus/permissões estáveis; 553 testes aprovados e validação automática OK. Home → Agenda reutiliza uma leitura pública em 390/1280 px; métricas de produção não aferidas.
