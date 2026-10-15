@@ -3,9 +3,9 @@
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Schedules validate client/database; gaps under two hours block, missing ends warn.
-- WhatsApp confirmations use prepared links; automation requires an authenticated provider.
+- WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; performance schedules validate separately.
-- One venue category; ViaCEP suggests editable addresses.
+- One venue category; editable ViaCEP suggestions.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, permissions, formatting and data; shared UI owns interactions and responsive behavior.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
@@ -36,6 +36,8 @@
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
 
 - Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
-- Read each subdirectory's AGENTS.md before edits.
+- Read nested AGENTS.md before edits.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
-- Profile address UI stays isolated from public, promoter and artist journeys.
+- Profile addresses stay isolated from public/promoter/artist flows.
+
+- PWA uses guarded prompt registration and awaits control before reload to preserve user confirmation.
