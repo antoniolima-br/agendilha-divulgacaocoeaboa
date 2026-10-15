@@ -22,7 +22,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const reservedBottom = useCallback(() => {
     const { width, height } = viewport();
     const rect = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"] > ul')?.getBoundingClientRect();
-    return rect && rect.height > 0 ? height - rect.top + 12 : width < 768 ? 88 : 16;
+    return rect && rect.height > 0 ? height - rect.top + 12 : 88;
   }, []);
   const place = useCallback((point: Point, avoid: boolean) => {
     const { width, height } = viewport();
