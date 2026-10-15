@@ -6,7 +6,7 @@
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes/permissions/data/tokens; memoize auth; lazy-load image/ZIP exports to avoid rework. Shell clips x overflow so flyers stay sticky.
+- Centralize routes/permissions/data/tokens; memoize auth; lazy-load exports. Clip x overflow for sticky flyers.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -15,7 +15,7 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
-- Promoter flyer vision uses authenticated streaming and five allowlisted fields; preserve manual edits/drafts and linked identities to avoid overwrites. Pair thumbnails; retry official art once; generate missing sponsored art first.
+- Flyer vision: authenticated streaming, five allowlisted fields; preserve edits/drafts/identities. Pair thumbnails; retry official art once; generate missing sponsored art first. Restore saved art without extraction; credits belong to workspace billing, never app balances.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.

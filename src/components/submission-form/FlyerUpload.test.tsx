@@ -6,13 +6,28 @@ import { FlyerUpload } from "./FlyerUpload";
 import type { SubmissionFormData } from "./schema";
 const { extract } = vi.hoisted(() => ({ extract: vi.fn() }));
 vi.mock("@/lib/visionFlyer", async (original) => ({ ...await original<typeof import("@/lib/visionFlyer")>(), extractVisionFlyer: extract }));
-function Harness() {
+function Harness({ saved = "" }: { saved?: string }) {
   const [image, setImage] = useState<File | string | null>(null);
-  const form = useForm<SubmissionFormData>({ defaultValues: { eventTitle: "", atrativoName: "", date: "2026-10-15", startTime: "", locationName: "" } });
+  const form = useForm<SubmissionFormData>({ defaultValues: { eventTitle: "", atrativoName: "", date: "2026-10-15", startTime: "", locationName: "", eventImageUrl: saved } });
   return <><FlyerUpload image={image} onImage={setImage} form={form} /><input aria-label="Título" {...form.register("eventTitle")} /><input aria-label="Atração" {...form.register("atrativoName")} /><input aria-label="Data" {...form.register("date")} /><input aria-label="Horário" {...form.register("startTime")} /><input aria-label="Local" {...form.register("locationName")} /><output aria-label="Arquivo">{image instanceof File ? image.name : ""}</output></>;
 }
 beforeEach(() => { vi.clearAllMocks(); extract.mockResolvedValue({ eventTitle: "Samba", atrativoName: "Grupo", date: "2026-10-24", startTime: "20:00", locationName: "Bar da Praça" }); URL.createObjectURL = vi.fn(() => "blob:preview"); URL.revokeObjectURL = vi.fn(); });
 describe("vision flyer upload", () => {
+  it("restores saved official artwork without starting another paid reading", async () => {
+    render(<Harness saved="https://example.test/saved.flyer.jpg" />);
+    await waitFor(() => expect(screen.getByAltText("Flyer oficial do rolê")).toHaveAttribute("src", "https://example.test/saved.flyer.jpg"));
+    expect(extract).not.toHaveBeenCalled();
+  });
+  it("keeps the selected official file when credits prevent reading", async () => {
+    extract.mockRejectedValueOnce(Object.assign(new Error("Créditos insuficientes"), { status: 402 }));
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer do evento"), { target: { files: [new File(["official"], "official.jpg", { type: "image/jpeg" })] } });
+    await screen.findByRole("alert");
+    expect(screen.getByLabelText("Arquivo")).toHaveTextContent("official.jpg");
+    expect(extract).toHaveBeenCalledTimes(1);
+    expect(screen.getByLabelText("Título")).toHaveValue("");
+    expect(screen.getByLabelText("Data")).toHaveValue("2026-10-15");
+  });
   it("autofills five fields and preserves corrections on replacement", async () => {
     render(<Harness />);
     const input = screen.getByLabelText("Enviar flyer do evento");

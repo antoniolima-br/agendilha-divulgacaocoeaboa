@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, MessageCircle, RotateCcw, Save, Settings2 } from "lucide-react";
+import { ExternalLink, Loader2, MessageCircle, RotateCcw, Save, Settings2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -95,7 +95,7 @@ export default function AdminSettings() {
         </div>
         <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight uppercase">Configurações</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">
-          Gerencie o número oficial da equipe.
+          WhatsApp da equipe e créditos para o Coezinho.
         </p>
       </header>
 
@@ -162,6 +162,26 @@ export default function AdminSettings() {
           </div>
         </CardContent>
       </Card>
+
+      <section aria-labelledby="coezinho-credits-title" className="space-y-3 border-y border-border py-5">
+        <h2 id="coezinho-credits-title" className="flex items-center gap-2 text-base font-bold">
+          <Sparkles className="h-4 w-4 shrink-0 text-primary" /> Créditos do Coezinho
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          A conversa com o Coezinho e a leitura dos flyers usam os créditos do seu workspace Lovable.
+          Para consultar o saldo ou comprar créditos, abra Configurações → Planos e créditos no Lovable.
+          A compra precisa ser feita pelo proprietário ou administrador do workspace.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Não é possível adicionar saldo por este formulário. Sem créditos, você pode preencher o rolê manualmente;
+          o flyer enviado continua sendo a arte oficial.
+        </p>
+        <Button asChild variant="outline" className="min-h-11 gap-2">
+          <a href="https://docs.lovable.dev/introduction/credits-and-usage#view-your-credit-balance" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-4 w-4 shrink-0" /> Consultar como adicionar créditos
+          </a>
+        </Button>
+      </section>
 
       <div className="flex flex-wrap justify-end gap-2">
         <Button
