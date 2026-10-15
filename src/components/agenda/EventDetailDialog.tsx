@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +31,7 @@ export function EventDetailDialog({
 }: EventDetailDialogProps) {
   return (
     <Dialog open={!!event} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden rounded-t-[2rem] sm:rounded-[2rem] border-none bg-background h-[95vh] sm:h-[90vh] flex flex-col focus:outline-none">
+      <DialogContent aria-describedby={undefined} className="max-w-2xl p-0 overflow-hidden rounded-t-[2rem] sm:rounded-[2rem] border-none bg-background h-[95vh] sm:h-[90vh] flex flex-col focus:outline-none">
         {event && (
           <>
             <div className="relative h-[52vh] min-h-72 max-h-[34rem] w-full shrink-0 overflow-hidden bg-muted/40 group">
@@ -74,9 +74,9 @@ export function EventDetailDialog({
                     </Badge>
                   )}
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-[1.1]">
+                <DialogTitle asChild><h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-[1.1]">
                   {event.event_title}
-                </h2>
+                </h2></DialogTitle>
               </div>
             </div>
 

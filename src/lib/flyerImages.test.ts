@@ -29,4 +29,14 @@ describe("paired flyer uploads", () => {
     expect(flyerListingUrl("/old-art.png")).toBe("/old-art.png");
     expect(flyerListingUrl(null)).toBeUndefined();
   });
+  it.each(["art.jpeg", "art.JPG"])("pairs uncompressed %s artwork with its uploaded thumbnail", async (name) => {
+    mocks.prepare.mockResolvedValue(new File(["official"], name, { type: "image/jpeg" }));
+    const url = await uploadFlyerImage(new File(["input"], name), "owner/art.png");
+    expect(flyerListingUrl(url)).toBe("/media/owner/art.thumb.webp");
+    expect(mocks.upload.mock.calls[0]?.[0]).toBe("owner/art.thumb.webp");
+  });
+  it("retains signed query parameters and fragments on paired URLs", () => {
+    expect(flyerListingUrl("/media/art.flyer.JPEG?token=test#image")).toBe("/media/art.thumb.webp?token=test#image");
+    expect(flyerListingUrl("/media/art.flyer.png#image")).toBe("/media/art.thumb.webp#image");
+  });
 });

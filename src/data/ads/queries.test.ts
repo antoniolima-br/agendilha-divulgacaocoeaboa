@@ -27,6 +27,9 @@ describe("advertisement read adapters", () => {
     mock.query.range.mockResolvedValueOnce({ data: [ad], error: null });
     expect(await fetchAllAds()).toHaveLength(1);
     expect(mock.query.range).toHaveBeenCalledWith(0, 499);
+    expect(mock.query.order.mock.calls).toEqual([
+      ["created_at", { ascending: false }], ["id", { ascending: true }],
+    ]);
     const error = new Error("denied");
     mock.query.maybeSingle.mockResolvedValueOnce({ data: null, error });
     await expect(fetchAd("a1")).rejects.toBe(error);

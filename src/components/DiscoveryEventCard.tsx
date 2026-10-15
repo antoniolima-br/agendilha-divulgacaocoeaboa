@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Star, Heart, Music, Utensils, Theater, Trophy, Tag, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useMemo, memo, useEffect } from "react";
-import { getEventFallbackImage, getEventFallbackPalette } from "@/lib/event-utils";
+import { getEventFallbackPalette } from "@/lib/event-utils";
+import { eventDateISO, saoPauloTodayISO } from "@/lib/eventDate";
 import { Skeleton } from "@/components/ui/skeleton";
 import { flyerListingUrl } from "@/lib/flyerImages";
 import { formatBrazilianDate } from "@/lib/date-utils";
@@ -37,8 +38,7 @@ const CATEGORY_MAP: Record<string, { label: string; icon: any }> = {
 
 function isToday(d?: string | null) {
   if (!d) return false;
-  const today = new Date().toISOString().slice(0, 10);
-  return d.slice(0, 10) === today;
+  return eventDateISO(d) === saoPauloTodayISO();
 }
 
 export const DiscoveryEventCard = memo(({
@@ -63,16 +63,15 @@ export const DiscoveryEventCard = memo(({
   const isSmall = variant === "small";
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
 
-  const fallbackImage = useMemo(() => getEventFallbackImage(event.category), [event.category]);
   const officialImage = event.image_url || event.imageUrl;
-  useEffect(() => { setIsLoaded(false); setHasError(false); }, [officialImage]);
+  useEffect(() => { setIsLoaded(false); setHasError(false); setThumbnailFailed(false); }, [officialImage]);
   const palette = useMemo(
     () => getEventFallbackPalette(`${event.id}:${event.category || "outros"}`),
     [event.category, event.id],
   );
-  const sourceImage = hasError ? fallbackImage : flyerListingUrl(officialImage);
-  const finalImage = sourceImage;
+  const finalImage = thumbnailFailed ? officialImage : flyerListingUrl(officialImage);
   const showGeneratedArtwork = !officialImage || hasError;
   const shareData = getShareData({ ...event, address_street: null, description: null });
 
@@ -124,6 +123,11 @@ export const DiscoveryEventCard = memo(({
                 decoding="async"
                 onLoad={() => setIsLoaded(true)}
                 onError={() => {
+                  if (!thumbnailFailed && finalImage !== officialImage) {
+                    setThumbnailFailed(true);
+                    setIsLoaded(false);
+                    return;
+                  }
                   setHasError(true);
                   setIsLoaded(true);
                 }}
@@ -165,6 +169,7 @@ export const DiscoveryEventCard = memo(({
              <Button 
                 variant="ghost" 
                 size="icon" 
+                aria-label={isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
                 className={cn(
                   "h-9 w-9 rounded-full backdrop-blur-md border-none transition-all active:scale-90",
                   isFavorite ? "bg-background text-foreground" : "bg-background/70 text-foreground hover:bg-background"
