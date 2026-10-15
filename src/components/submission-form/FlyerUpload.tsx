@@ -20,6 +20,7 @@ export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
   const [reading, setReading] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const savedImage = form?.watch("eventImageUrl") || "";
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => { if (!image) { request.current?.abort(); setReading(false); setFeedback(""); } }, [image]);
   useEffect(() => {
@@ -28,8 +29,8 @@ export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
       setPreview(url);
       return () => URL.revokeObjectURL(url);
     }
-    setPreview(image || "");
-  }, [image]);
+    setPreview(image || savedImage);
+  }, [image, savedImage]);
 
   const pick = (file?: File) => {
     if (!file) return;
