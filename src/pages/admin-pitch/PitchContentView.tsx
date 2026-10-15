@@ -6,7 +6,7 @@ import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
 import { AdvertiserPitch } from "./AdvertiserPitch";
 import { PitchShare } from "./PitchShare";
-import type { PitchContent } from "./types";
+import type { AdvertiserPitchContent, PitchContent } from "./types";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 type Scenario = PitchContent["scenarios"][number];
@@ -23,8 +23,9 @@ const rows: { label: string; value: (s: Scenario) => string | number; emphasis?:
   { label: "Receita após marketing*", value: (s) => money(s.afterMarketing) },
 ];
 
-export function PitchContentView({ content: sourceContent, audience = "investor" }: { content: PitchContent; audience?: "investor" | "advertiser" }) {
-  return audience === "advertiser" ? <AdvertiserPitch content={sourceContent} /> : <InvestorPitch content={sourceContent} />;
+export function PitchContentView({ content: sourceContent, audience = "investor" }: { content: PitchContent | AdvertiserPitchContent; audience?: "investor" | "advertiser" }) {
+  if (audience === "advertiser") return <AdvertiserPitch content={sourceContent} />;
+  return "scenarios" in sourceContent ? <InvestorPitch content={sourceContent} /> : null;
 }
 
 function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {

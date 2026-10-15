@@ -4,11 +4,11 @@ import { ROUTES } from "@/routes/config";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
 import { PitchShare } from "./PitchShare";
-import type { PitchContent } from "./types";
+import type { AdvertiserPitchContent } from "./types";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
-export function AdvertiserPitch({ content }: { content: PitchContent }) {
+export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }) {
   return <article className="min-w-0" aria-label="Apresentação para anunciantes e divulgadores">
     <section className="space-y-5 py-8">
       <p className="text-xs font-medium uppercase text-primary">Marcas · Patrocinadores · Divulgadores</p>
