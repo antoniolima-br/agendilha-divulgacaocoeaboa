@@ -1,21 +1,18 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
-import { useAttractionSchedule, checkAttractionSchedule } from "./useAttractionSchedule";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { useAttractionSchedule } from "./useAttractionSchedule";
+import { vi, describe, it, expect } from "vitest";
 import { supabase } from "@/integrations/supabase/client";
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
-    rpc: vi.fn(() => ({
-      abortSignal: vi.fn().mockReturnThis(),
-      then: vi.fn((cb) => Promise.resolve({ data: [], error: null }).then(cb)),
-    })),
+    rpc: vi.fn(),
   },
 }));
 
 describe("useAttractionSchedule", () => {
-  it("should show stale data while loading new inputs (BUG)", async () => {
+  it("should clear stale conflict data while loading new inputs (FIXED)", async () => {
     // Initial state with conflict
-    (supabase.rpc as any).mockReturnValueOnce({
+    (supabase.rpc as any).mockReturnValue({
         abortSignal: vi.fn().mockReturnThis(),
         then: vi.fn((cb) => Promise.resolve({ data: [{ assessment: "conflict" }], error: null }).then(cb)),
     });
@@ -28,12 +25,11 @@ describe("useAttractionSchedule", () => {
       }
     });
 
-    // Wait for initial load
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.hasConflict).toBe(true);
 
     // Change inputs to something that should be safe
-    (supabase.rpc as any).mockReturnValueOnce({
+    (supabase.rpc as any).mockReturnValue({
         abortSignal: vi.fn().mockReturnThis(),
         then: vi.fn((cb) => new Promise(r => setTimeout(() => r({ data: [], error: null }), 100)).then(cb)),
     });
@@ -46,10 +42,9 @@ describe("useAttractionSchedule", () => {
       });
     });
 
-    // IMMEDIATELY after rerender, it should be loading, but what is hasConflict?
-    // In the current bug, hasConflict will STILL be true (from previous results)
+    // IMMEDIATELY after rerender, it should be loading, and hasConflict should be CLEARED
     expect(result.current.loading).toBe(true);
-    expect(result.current.hasConflict).toBe(true); // This is STALE! Should be false or unknown.
+    expect(result.current.hasConflict).toBe(false); // Fix verified: no longer stale true
     
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.hasConflict).toBe(false);
