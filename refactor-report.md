@@ -28,3 +28,25 @@ Revisão por áreas de dados, hooks, utilitários, componentes, navegação, aut
 ## Continuidade
 
 Refatorações futuras devem seguir evidência de duplicação e testes equivalentes; mover pastas ou unificar jornadas apenas por estética não é uma melhoria segura. Fluxos protegidos sem sessão real permanecem fora da afirmação de equivalência end-to-end desta rodada.
+
+## Rodada 358 — dados derivados, perfil e utilitários
+
+### Mudanças executadas
+
+- As leituras repetidas de cargos usadas por permissões, detalhes administrativos e situação do divulgador passaram por um adaptador compartilhado. A hidratação inicial da sessão continua independente para não acoplar o acesso ao cache de consultas.
+- Invalidações derivadas de alterações de perfil, colaborador e cargo foram centralizadas e cobertas por testes. Edições agora atualizam explicitamente permissões, situação de divulgação, detalhes do usuário e listas administrativas relacionadas.
+- O endereço do Perfil foi extraído para um bloco tipado e um único estado, preservando os campos, nomes de preenchimento automático, textos e apresentação. O contrato do perfil passou a declarar os campos que a tela já consumia, removendo conversões genéricas nesse fluxo.
+- O utilitário redundante de telefone foi removido; seu único uso agora chama a fonte compartilhada equivalente. Os limites entre número nacional, internacional e WhatsApp foram documentados no módulo canônico.
+
+### Evidências
+
+- 37 testes focados aprovaram permissões, situação do divulgador, invalidações e regras de cadastro após o primeiro lote.
+- A suíte completa intermediária aprovou 562 testes em 121 arquivos.
+- Após a extração do Perfil, seis testes focados aprovaram cache derivado, identificação do usuário e acesso à página.
+- Verificação de tipos concluída sem erros e compilação automática registrada como aprovada após as alterações.
+
+### Limites reais
+
+- O envio de eventos e a Gestão de Eventos foram analisados, mas não decompostos nesta rodada: são fluxos extensos e sensíveis, e as extrações de persistência, lote e flyer exigem novos contratos específicos antes de uma mudança segura.
+- Salvar Perfil como divulgador/artista, mudar cargo administrativo e operar moderação não foram executados com dados reais nesta rodada; a equivalência nesses caminhos foi verificada por tipos e testes automatizados disponíveis.
+- Exportações em PDF continuam sem cobertura própria suficiente para uma unificação segura das máscaras de telefone.

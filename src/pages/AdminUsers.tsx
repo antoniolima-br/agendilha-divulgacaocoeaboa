@@ -29,6 +29,8 @@ import type {
   UserWithRole,
   ResetResultState,
 } from "@/components/admin/users/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { invalidateRoleDerived } from "@/data/cacheInvalidation";
 
 function formatPhone(phone: string | null): string {
   if (!phone) return "Não informado";
@@ -56,6 +58,7 @@ const GROUP_LABELS: Record<string, string> = {
 const GROUP_ORDER = ["admin", "divulgador", "artist", "estabelecimento", "usuario"];
 
 export default function AdminUsers() {
+  const queryClient = useQueryClient();
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { hasPermission, loading: permissionsLoading } = useAppPermissions();
   const canManageUsers = hasPermission("users.update");
@@ -289,6 +292,7 @@ export default function AdminUsers() {
         }
         toast.success(`${targetUser.responsible_name || targetUser.email} agora é admin`);
       }
+      await invalidateRoleDerived(queryClient, targetUser.id);
       await fetchUsers();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "Erro ao alterar papel"));
@@ -333,6 +337,7 @@ export default function AdminUsers() {
         if (error) throw error;
         toast.success(`${targetUser.responsible_name || targetUser.email} agora é Admin Master`);
       }
+      await invalidateRoleDerived(queryClient, targetUser.id);
       await fetchUsers();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "Erro ao alterar Master"));

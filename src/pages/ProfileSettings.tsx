@@ -34,6 +34,19 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { BAIRROS } from "@/lib/neighborhoods";
 import { DivulgadorUpgradeCard } from "@/components/divulgador/DivulgadorUpgradeCard";
+import { ProfileAddressFields, type ProfileAddressForm } from "@/components/profile/ProfileAddressFields";
+import type { ProfileAddress } from "@/hooks/useProfile";
+import { getErrorMessage } from "@/lib/error-handler";
+
+const EMPTY_PROFILE_ADDRESS: ProfileAddressForm = {
+  address_street: "",
+  address_number: "",
+  address_complement: "",
+  address_neighborhood: "",
+  address_city: "",
+  address_state: "",
+  country: "Brasil",
+};
 
 // Mask "DD NNNNN-NNNN" (aceita 10 ou 11 dígitos; até 11)
 function formatPhoneMask(raw: string): string {
@@ -75,7 +88,6 @@ export default function ProfileSettings() {
   const { profile, loaded, saveProfile } = useProfile();
   const { isAdmin } = useAppPermissions();
   const [loading, setLoading] = useState(false);
-  const [artistProfile, setArtistProfile] = useState<any>(null);
   const [artistLoaded, setArtistLoaded] = useState(false);
   const [baseErrors, setBaseErrors] = useState<{ name?: string; whatsapp?: string; bairro?: string }>({});
 
@@ -93,13 +105,7 @@ export default function ProfileSettings() {
   const [adminPhone, setAdminPhone] = useState("");
   const [adminPhoneError, setAdminPhoneError] = useState<string | null>(null);
   const [initialAdminPhone, setInitialAdminPhone] = useState("");
-  const [addressStreet, setAddressStreet] = useState("");
-  const [addressNumber, setAddressNumber] = useState("");
-  const [addressComplement, setAddressComplement] = useState("");
-  const [addressNeighborhood, setAddressNeighborhood] = useState("");
-  const [addressCity, setAddressCity] = useState("");
-  const [addressState, setAddressState] = useState("");
-  const [country, setCountry] = useState("Brasil");
+  const [address, setAddress] = useState<ProfileAddressForm>(EMPTY_PROFILE_ADDRESS);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [socialNetworks, setSocialNetworks] = useState("");
   
@@ -116,25 +122,27 @@ export default function ProfileSettings() {
       setHomeLocation(profile.home_location || "");
       setMusicalPreferences(profile.musical_preferences || []);
       
-      const social = (profile as any).social_links || {};
+      const social = profile.social_links;
       setInstagram(social.instagram || "");
       setFacebook(social.facebook || "");
-      setCoverageArea((profile as any).coverage_area || []);
+      setCoverageArea(profile.coverage_area);
 
-      setWhatsappPhone((profile as any).whatsapp_phone || profile.phone || "");
+      setWhatsappPhone(profile.whatsapp_phone || profile.phone || "");
       setAdminPhone(formatPhoneMask(profile.phone || ""));
       setInitialAdminPhone(profile.phone || "");
-      setAddressStreet((profile as any).address_street || "");
-      setAddressNumber((profile as any).address_number || "");
-      setAddressComplement((profile as any).address_complement || "");
-      setAddressNeighborhood((profile as any).address_neighborhood || "");
-      setAddressCity((profile as any).address_city || "");
-      setAddressState((profile as any).address_state || "");
-      setCountry((profile as any).country || "Brasil");
-      setAvatarUrl((profile as any).avatar_url || "");
-      setSocialNetworks((profile as any).contact_social || "");
+      setAddress({
+        address_street: profile.address_street,
+        address_number: profile.address_number,
+        address_complement: profile.address_complement,
+        address_neighborhood: profile.address_neighborhood,
+        address_city: profile.address_city,
+        address_state: profile.address_state,
+        country: profile.country,
+      });
+      setAvatarUrl(profile.avatar_url);
+      setSocialNetworks(profile.contact_social);
       
-      if (profile.role === 'artist' || (profile as any).user_type === 'artist') {
+      if (profile.role === 'artist' || profile.user_type === 'artist') {
         loadArtistProfile();
       } else {
         setArtistLoaded(true);
@@ -151,7 +159,6 @@ export default function ProfileSettings() {
       .maybeSingle();
     
     if (data) {
-      setArtistProfile(data);
       setArtisticName(data.name || "");
       setGenre(data.genre || "");
       setTechNeeds(data.technical_needs || "");
@@ -192,7 +199,7 @@ export default function ProfileSettings() {
     }
     setLoading(true);
     try {
-      const profileData: any = {
+      const profileData: Partial<ProfileAddress> = {
         responsible_name: name,
         home_location: homeLocation,
         musical_preferences: musicalPreferences,
@@ -203,13 +210,7 @@ export default function ProfileSettings() {
         // Se o usuário não for admin (que edita `phone` num campo separado), espelhamos
         // esse valor em `profiles.phone` também, pra o app buscar sempre no mesmo lugar.
         ...(isAdmin ? {} : { phone: (whatsappPhone || "").replace(/\D/g, "") || null }),
-        address_street: addressStreet,
-        address_number: addressNumber,
-        address_complement: addressComplement,
-        address_neighborhood: addressNeighborhood,
-        address_city: addressCity,
-        address_state: addressState,
-        country,
+        ...address,
         avatar_url: avatarUrl,
         contact_social: socialNetworks,
       };
@@ -223,7 +224,7 @@ export default function ProfileSettings() {
 
       await saveProfile(profileData);
 
-      if (profile.role === 'artist' || (profile as any).user_type === 'artist') {
+      if (profile.role === 'artist' || profile.user_type === 'artist') {
         const { error } = await supabase
           .from("artist_profiles")
           .upsert({
@@ -240,8 +241,8 @@ export default function ProfileSettings() {
       }
 
       toast.success("Perfil atualizado com sucesso!");
-    } catch (error: any) {
-      toast.error("Erro ao salvar", { description: error.message });
+    } catch (error: unknown) {
+      toast.error("Erro ao salvar", { description: getErrorMessage(error, "Tenta de novo.") });
     } finally {
       setLoading(false);
     }
@@ -249,7 +250,7 @@ export default function ProfileSettings() {
 
   if (!loaded || !artistLoaded) return <LoadingState />;
 
-  const userType = (profile as any).user_type || profile.role;
+  const userType = profile.user_type || profile.role;
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto pb-12">
@@ -431,40 +432,10 @@ export default function ProfileSettings() {
               <Label>Foto / avatar (URL)</Label>
               <Input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://..." />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="sm:col-span-2 space-y-2">
-                <Label>Rua / Avenida</Label>
-                <Input name="address-line1" autoComplete="address-line1" value={addressStreet} onChange={(e) => setAddressStreet(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label>Número</Label>
-                <Input name="address-line2" autoComplete="address-line2" value={addressNumber} onChange={(e) => setAddressNumber(e.target.value)} />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Complemento (opcional)</Label>
-              <Input name="address-line3" autoComplete="address-line3" value={addressComplement} onChange={(e) => setAddressComplement(e.target.value)} placeholder="Bloco, apto…" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Bairro</Label>
-                <Input name="address-level3" autoComplete="address-level3" value={addressNeighborhood} onChange={(e) => setAddressNeighborhood(e.target.value)} />
-              </div>
-              <div className="space-y-2">
-                <Label>Cidade</Label>
-                <Input name="city" autoComplete="address-level2" value={addressCity} onChange={(e) => setAddressCity(e.target.value)} />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Estado (UF)</Label>
-                <Input name="state" autoComplete="address-level1" value={addressState} onChange={(e) => setAddressState(e.target.value)} placeholder="RJ" />
-              </div>
-              <div className="space-y-2">
-                <Label>País</Label>
-                <Input name="country" autoComplete="country-name" value={country} onChange={(e) => setCountry(e.target.value)} />
-              </div>
-            </div>
+            <ProfileAddressFields
+              value={address}
+              onChange={(field, value) => setAddress((current) => ({ ...current, [field]: value }))}
+            />
           </CardContent>
         </Card>
         </>
