@@ -72,7 +72,7 @@ export const DiscoveryEventCard = memo(({
     [event.category, event.id],
   );
   const sourceImage = hasError ? fallbackImage : officialImage;
-  const cachedThumb = useThumbnailCache(event.id, isCompact && officialImage && !hasError ? officialImage : undefined);
+  const cachedThumb = useThumbnailCache(event.id, isCompact && officialImage && !hasError ? officialImage : undefined, isLoaded);
   const finalImage = isCompact ? (cachedThumb || sourceImage) : sourceImage;
   const showGeneratedArtwork = !officialImage || hasError;
   const shareData = getShareData({ ...event, address_street: null, description: null });

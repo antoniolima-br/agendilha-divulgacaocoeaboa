@@ -1,1 +1,2 @@
 - Bound autocomplete term caches with least-recently-used eviction and reset on page-size/source changes so long form sessions do not retain every search.
+- Build compact thumbnails only after the native lazy image loads; associate cached state with its source URL to avoid stale artwork and off-screen decoding.
