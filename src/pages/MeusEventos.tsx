@@ -58,7 +58,7 @@ export default function MeusEventos() {
   const { user } = useAuth();
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
-  const { canApprove, canSubmit, isAdmin } = useAppPermissions();
+  const { canSubmit } = useAppPermissions();
   const [sharing, setSharing] = useState<PromoterShareEvent | null>(null);
   const { data: clickCounts = {} } = useMyEventClicks();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
