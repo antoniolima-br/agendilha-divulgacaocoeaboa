@@ -37,7 +37,7 @@ import { submissionFormSchema, type SubmissionFormData } from "./submission-form
 import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { uploadFlyerImage } from "@/lib/flyerImages";
-import { FlyerAutofill } from "./submission-form/FlyerAutofill";
+import { FlyerUpload } from "./submission-form/FlyerUpload";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
 import {
@@ -49,6 +49,7 @@ import {
   fieldsForSubmissionStep,
   resolveAtrativoCategory,
   toEventDateOnly,
+  suggestedSubmissionDate,
 } from "./submission-form/formConfig";
 
 const formSchema = submissionFormSchema;
@@ -56,8 +57,6 @@ type FormData = SubmissionFormData;
 
 export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
-  const [readingFlyer, setReadingFlyer] = useState(false);
-  const [flyerRevision, setFlyerRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
@@ -78,7 +77,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     resolver: zodResolver(formSchema),
     defaultValues: {
       nickName: "", basicPhone: "", companyName: "", email: "",
-      category: "", eventTitle: "", date: "", startTime: "",
+      category: "", eventTitle: "", date: suggestedSubmissionDate(), startTime: "",
       ageRating: "Livre", isSuitableForMinors: true,
       atrativoName: "", atrativoType: "", atrativoContact: "", atrativoEmail: "", atrativoCategory: undefined as any, atrativoOpeningHours: "",
       locationName: "", estabelecimentoId: "", eventAddress: "", locationType: "commercial" as const, locationCep: "",
@@ -192,7 +191,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   // Handle draft loading
   useEffect(() => {
     if (initialValues) {
-      form.reset({ ...form.getValues(), ...initialValues });
+      form.reset({ ...form.getValues(), ...initialValues, date: suggestedSubmissionDate(initialValues.date) });
       setCurrentStep(1);
       draftLoadedRef.current = true;
       return;
@@ -201,7 +200,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     if (saved) {
       try {
         const { data, step, savedAt } = JSON.parse(saved);
-        form.reset(data);
+        form.reset({ ...data, date: suggestedSubmissionDate(data?.date) });
         setCurrentStep(step === 2 ? 2 : 1);
         if (savedAt) setDraftSavedAt(new Date(savedAt));
         toast.info("Rascunho do evento recuperado.");
@@ -254,7 +253,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
 
 
   const nextStep = async () => {
-    if (readingFlyer) return;
     const fields = fieldsForSubmissionStep(currentStep);
     const validationTimer = startFlowMeasure("event-submission", "step-validation", currentStep);
     let isValid = false;
@@ -300,7 +298,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   };
 
   const onSubmit = async (values: FormData) => {
-    if (readingFlyer) return;
     // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
     if (currentStep < steps.length) {
       logger.info("[EventForm] submit ignorado fora da revisão", { currentStep });
@@ -709,12 +706,11 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       basicPhone: profile?.phone || "",
       companyName: profile?.company_name || profile?.responsible_name || "",
       email: profile?.email || "",
+      date: suggestedSubmissionDate(),
     });
     setCurrentStep(1);
     setDraftSavedAt(null);
     setEventImage(null);
-    setFlyerRevision(value => value + 1);
-    setReadingFlyer(false);
     toast.success("Rascunho limpo.");
   };
 
@@ -765,14 +761,16 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
               <div className="space-y-1">
                 <h1 className="text-2xl font-bold">Divulgar um rolê</h1>
                 <p className="text-sm text-muted-foreground">
-                  Envie seu flyer ou preencha os dados do rolê abaixo.
+                  Seu rolê, do seu jeito.
                 </p>
               </div>
 
-              <FlyerAutofill key={flyerRevision} form={form} onImage={setEventImage} onLoading={setReadingFlyer} />
-
-              <div id="manual-event-fields" className="border rounded-2xl px-4 py-5 bg-card/30">
-                <EventStep form={form} section="core" />
+              <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
+                <FlyerUpload image={eventImage || form.watch("eventImageUrl") || null} onImage={setEventImage} />
+                <div id="manual-event-fields" className="min-w-0 space-y-6">
+                  <EventStep form={form} section="core" />
+                  <LocationStep form={form} />
+                </div>
               </div>
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
@@ -784,10 +782,6 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                     failed={attractionSchedule.failed}
                   />
                 </div>
-              </div>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <LocationStep form={form} />
               </div>
 
               <div className="border rounded-2xl px-4 py-5 bg-card/30">
@@ -808,7 +802,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                   <AccordionTrigger className="hover:no-underline font-semibold">
                     Complementos opcionais
                     <span className="ml-2 text-xs font-normal text-muted-foreground">
-                      título, término, flyer e descrição
+                      término, flyer e descrição
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-2 pb-6 space-y-6">
@@ -897,7 +891,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
             {currentStep < steps.length ? (
               // `key` distinto impede o React de reaproveitar o mesmo botão: sem isso, o clique em
               // "Continuar" virava "Publicar" no meio do evento e enviava o formulário sem passar pela Revisão.
-              <Button key="next-step" type="button" onClick={nextStep} disabled={readingFlyer} className="gap-2 h-12 px-6 font-bold">
+              <Button key="next-step" type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (

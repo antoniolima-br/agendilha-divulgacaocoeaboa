@@ -6,7 +6,7 @@
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes/permissions/data and UI tokens; memoize auth values/actions and lazy-load image/ZIP exports to avoid repeated work.
+- Centralize routes/permissions/data/UI tokens; memoize auth values/actions and lazy-load image/ZIP exports to avoid repeated work.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -15,12 +15,12 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
-- Flyer OCR: lazy Tesseract, Portuguese parsing, abort cleanup; preserve edits, no draft gate. Pair thumbnails; retry official art once on failure; generate missing sponsored art first.
+- Promoter FlyerUpload is visual-only beside manual event/location fields; shared date defaults preserve drafts, avoiding inference. Pair thumbnails; retry official art once on failure; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
 - Public reads use the date-filtered view; personal queries use session ownership even for admins. Separate curation queries retain authorized oversight.
-- Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
+- Repeat uses a fresh form from allowlisted content, clearing schedule/media/approval/payment/consent to preserve history.
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
 - Curatorial editing uses protected RPCs, private artistic history, soft deletion and broad cache invalidation.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
