@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Menu, Radar } from "lucide-react";
+import { CalendarDays, Home, Menu, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/routes/config";
@@ -12,6 +12,7 @@ interface Props {
 const items = [
   { label: "Início", icon: Home, path: "/", match: (p: string) => p === "/" },
   { label: "Meu Radar", icon: Radar, path: ROUTES.SEU_RADAR, match: (p: string) => p === ROUTES.SEU_RADAR },
+  { label: "Agenda", icon: CalendarDays, path: ROUTES.AGENDA, match: (p: string) => p === ROUTES.AGENDA || p.startsWith(`${ROUTES.AGENDA}/`) },
 ];
 
 export const OPEN_KOE_EVENT = "koe:open";
@@ -36,7 +37,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
       aria-label="Navegação principal"
       className="app-bottom-navigation fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]"
     >
-      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-4 px-2 xs:px-3">
+      <ul className="mx-auto grid w-full max-w-screen-sm grid-cols-5 px-1 xs:px-2">
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -46,7 +47,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
                 to={item.path}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-[var(--bottom-navigation-height)] flex-col items-center justify-center gap-0.5 px-2 transition-colors",
+                  "flex h-[var(--bottom-navigation-height)] flex-col items-center justify-center gap-1 px-1 transition-colors",
                   active ? "text-primary font-bold" : "text-muted-foreground"
                 )}
               >
@@ -70,7 +71,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             aria-label="Abrir menu lateral"
             aria-haspopup="dialog"
             className={cn(
-              "flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-0.5 rounded-none px-2 transition-colors",
+               "flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-1 rounded-none px-1 transition-colors",
               "text-muted-foreground"
             )}
           >

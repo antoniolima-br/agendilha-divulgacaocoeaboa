@@ -1,9 +1,17 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { MobileTabBar, isTabBarHidden } from "./MobileTabBar";
 
 describe("bottom navigation actions", () => {
+  it("navigates directly to Agenda from another tab", () => {
+    function Destination() {
+      return <output aria-label="Destino">{useLocation().pathname}</output>;
+    }
+    render(<MemoryRouter initialEntries={["/seu-radar"]}><MobileTabBar onMenuClick={vi.fn()} /><Destination /></MemoryRouter>);
+    fireEvent.click(screen.getByRole("link", { name: "Agenda" }));
+    expect(screen.getByLabelText("Destino")).toHaveTextContent(/^\/agenda$/);
+  });
   it("shows a single partnership entry and the Radar destination", () => {
     render(<MemoryRouter><MobileTabBar onMenuClick={vi.fn()} /></MemoryRouter>);
     expect(screen.getByRole("link", { name: "Meu Radar" })).toHaveAttribute("href", "/seu-radar");
