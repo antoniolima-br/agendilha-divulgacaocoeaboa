@@ -32,9 +32,9 @@ export default function AdminPitchComercial({ audience = "investor" }: { audienc
   return <div className="theme-coeaboa mx-auto w-full min-w-0 max-w-6xl space-y-6 bg-background p-4 text-foreground sm:p-8">
     <Helmet><title>{title} | Coé a Boa?</title><meta name="description" content={subtitle} /></Helmet>
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
-      {audience === "advertiser" && <Button asChild variant="ghost" size="icon"><a href={ROUTES.HOME} aria-label="Voltar ao app" title="Voltar ao app"><ArrowLeft aria-hidden="true" /></a></Button>}
+      {audience === "advertiser" && <Button asChild variant="ghost" size="icon"><a href={ROUTES.LANDING} aria-label="Voltar ao app" title="Voltar ao app"><ArrowLeft aria-hidden="true" /></a></Button>}
       {audience !== "advertiser" &&
-      <div className="min-w-0 space-y-2"><h1 className="break-words text-2xl font-semibold sm:text-3xl">{audience === "advertiser" ? `${title} · Coé a Boa?` : title}</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
+      <div className="min-w-0 space-y-2"><h1 className="break-words text-2xl font-semibold sm:text-3xl">{title}</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
       }
     </header>
     {content ? <PitchContentView key={audience} content={content} audience={audience} /> : <section className="mx-auto max-w-sm space-y-5 py-10">
