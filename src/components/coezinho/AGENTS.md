@@ -5,5 +5,5 @@
 - Keep responsive launcher dimensions and collision bounds aligned through mascotSize; a compact visual must also reduce its occupied drag area.
 - GuideLauncher remains intent-loaded; CoezinhoChat reuses the mascot when closed for consistent placement and behavior.
 - CoezinhoChat composes AI Elements; each opening mounts a new conversation session, and closing unmounts it and stops requests to isolate late responses. Preserve transport/models; never persist transcripts or drafts.
-- Launcher starts in the bottom-right each page session; retain drag placement only for that session and use passive activity listeners for idle fading.
+- Launcher placement and standby restart per route/visibility; retain session drag positions, and scope wake-up to mascot interactions so page activity cannot prevent fading.
 - Observe navigation size; clamp above its ul controls inside the reserved mascot lane, including safe-area changes. Navigation is below the launcher and both remain below dialogs; content reserves their full height.

@@ -14,12 +14,15 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const suppressClick = useRef(false);
   const [dragging, setDragging] = useState(false);
   const [idle, setIdle] = useState(false);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hovered = useRef(false);
+  const focused = useRef(false);
   const [position, setPosition] = useState<Point | null>(null);
   const positionRef = useRef<Point | null>(null);
   const reservedBottom = useCallback(() => {
-    const { width, height } = viewport();
+    const { height } = viewport();
     const rect = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"] > ul')?.getBoundingClientRect();
-    return rect && rect.height > 0 ? height - rect.top + 12 : width < 768 ? 88 : 16;
+    return rect && rect.height > 0 ? height - rect.top + 12 : 88;
   }, []);
   const place = useCallback((point: Point, avoid: boolean) => {
     const { width, height } = viewport();
@@ -34,27 +37,25 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     const { width, height } = viewport();
     lastPosition = { x: point.x / width, y: point.y / height };
   };
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    const wake = () => {
-      setIdle(false);
-      clearTimeout(timer);
-      timer = setTimeout(() => { if (!gesture.current) setIdle(true); }, 6000);
-    };
-    const events = ["pointermove", "pointerdown", "keydown", "scroll", "touchstart", "wheel"] as const;
-    events.forEach((event) => window.addEventListener(event, wake, { passive: true }));
-    wake();
-    return () => {
-      clearTimeout(timer);
-      events.forEach((event) => window.removeEventListener(event, wake));
-    };
+  const wake = useCallback(() => {
+    setIdle(false);
+    if (idleTimer.current) clearTimeout(idleTimer.current);
+    idleTimer.current = setTimeout(() => {
+      if (!gesture.current && !hovered.current && !focused.current) setIdle(true);
+    }, 4000);
   }, []);
+  useEffect(() => {
+    hovered.current = false;
+    focused.current = false;
+    if (!hiddenForForm) wake();
+    return () => { if (idleTimer.current) clearTimeout(idleTimer.current); };
+  }, [pathname, hiddenForForm, wake]);
   useEffect(() => {
     const { width, height } = viewport();
     const size = mascotSize(width);
-    let initial = positionRef.current ?? { x: width - size - 16, y: height - size - reservedBottom() - 12 };
+    let initial = positionRef.current ?? { x: 16, y: height - size - reservedBottom() - 12 };
     if (!positionRef.current && lastPosition) initial = { x: lastPosition.x * width, y: lastPosition.y * height };
-    place(initial, true);
+    place(initial, Boolean(positionRef.current || lastPosition));
     const resize = () => { if (positionRef.current) place(positionRef.current, true); };
     const keepAboveNavigation = () => { if (positionRef.current) place(positionRef.current, false); };
     const navigation = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"]');
@@ -66,9 +67,15 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   if (hiddenForForm) return null;
   return <Button ref={buttonRef} type="button" variant="ghost" aria-label="Falar com o Guia do Coé" title="Coezinho · Guia do Coé"
     className="coezinho-fab fixed z-[45] h-[76px] w-[76px] md:h-[104px] md:w-[104px] touch-none select-none rounded-full border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-primary"
-    data-dragging={dragging} data-idle={idle} onFocus={() => setIdle(false)} style={position ? { left: position.x, top: position.y } : { right: 16, bottom: 100 }}
+    data-dragging={dragging} data-idle={idle}
+    onPointerEnter={(e) => { if (e.pointerType !== "touch") hovered.current = true; wake(); }}
+    onPointerLeave={() => { hovered.current = false; wake(); }}
+    onFocus={() => { focused.current = true; wake(); }}
+    onBlur={() => { focused.current = false; wake(); }}
+    style={position ? { left: position.x, top: position.y } : { left: 16, bottom: 100 }}
     onPointerDown={(e) => {
       if (e.button !== 0 || !e.isPrimary) return;
+      wake();
       const rect = e.currentTarget.getBoundingClientRect(); suppressClick.current = false;
       gesture.current = { id: e.pointerId, start: { x: e.clientX, y: e.clientY }, origin: { x: rect.left, y: rect.top }, moved: false };
       e.currentTarget.setPointerCapture(e.pointerId);
@@ -83,11 +90,13 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
     onPointerUp={(e) => {
       const g = gesture.current; if (!g || g.id !== e.pointerId) return;
       gesture.current = null; setDragging(false);
+      wake();
       if (g.moved && positionRef.current) save(place(positionRef.current, true));
       if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
     }}
     onPointerCancel={() => {
       suppressClick.current = true; gesture.current = null; setDragging(false);
+      wake();
       if (positionRef.current) place(positionRef.current, true);
     }}
     onLostPointerCapture={() => { gesture.current = null; setDragging(false); }}
