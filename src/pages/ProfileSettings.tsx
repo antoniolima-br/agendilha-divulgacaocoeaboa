@@ -38,13 +38,6 @@ import { ProfileAddressFields, type ProfileAddressForm } from "@/components/prof
 import type { ProfileAddress } from "@/hooks/useProfile";
 import { getErrorMessage } from "@/lib/error-handler";
 
-interface ArtistProfileSummary {
-  id: string;
-  name: string | null;
-  genre: string | null;
-  technical_needs: string | null;
-}
-
 const EMPTY_PROFILE_ADDRESS: ProfileAddressForm = {
   address_street: "",
   address_number: "",
