@@ -1,11 +1,11 @@
 import { BriefcaseBusiness, Megaphone, ClipboardCheck, Wallet, Code2, ShieldCheck } from "lucide-react";
 
 const pillars = [
-  { title: "Comercial", description: "Parceiros, propostas e inventário publicitário.", icon: BriefcaseBusiness },
-  { title: "Marketing", description: "Campanhas, comunidade e aquisição regional.", icon: Megaphone },
-  { title: "Administração", description: "Curadoria, cadastros e organização da operação.", icon: ClipboardCheck },
-  { title: "Financeiro", description: "Receitas, despesas e acompanhamento de cobranças.", icon: Wallet },
-  { title: "Desenvolvimento", description: "Tecnologia, qualidade e evolução do produto.", icon: Code2 },
+  { title: "Comercial", description: "Prospecção, pacotes personalizados, negociação e pós-venda ativo.", icon: BriefcaseBusiness },
+  { title: "Marketing", description: "Anúncios, banners de marcas, promoções e acompanhamento do engajamento regional.", icon: Megaphone },
+  { title: "Administração", description: "Curadoria de eventos, revisão dos dados e governança da operação.", icon: ClipboardCheck },
+  { title: "Financeiro", description: "Conciliação rastreável, pagamentos comprovados e liberação integrada à publicação.", icon: Wallet },
+  { title: "Desenvolvimento", description: "Coezinho, leitura inteligente de flyers e evolução da experiência mobile-first.", icon: Code2 },
 ];
 
 export function CorporatePillars() {

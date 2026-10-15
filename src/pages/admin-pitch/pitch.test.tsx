@@ -133,6 +133,15 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("button", { name: "Abrir pitch" })).toBeDisabled();
     expect(mocks.call).not.toHaveBeenCalled();
   });
+  it("apresenta automação, prova de valor e parceria sem prometer ROI ou presença", () => {
+    render(<PitchContentView content={buildPitchContent()} />);
+    expect(screen.getByRole("heading", { name: "Coezinho · Tecnologia e Automação Inteligente" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Inteligência de Dados · Prova de Valor e ROI" })).toBeVisible();
+    expect(screen.getByText(/ROI exige receita atribuível/)).toHaveTextContent("não retorno financeiro exato");
+    expect(screen.getByText(/Listas de convidados e status/)).toHaveTextContent("não comprova presença");
+    expect(screen.getByRole("link", { name: /Definir parceria e patrocínio/ })).toHaveAttribute("href", "/planos-anuncios");
+    expect(screen.getByText(/Cortesias e permutas ficam separadas/)).toBeVisible();
+  });
   it("mantém fechado se a senha for recusada", async () => {
     mocks.call.mockRejectedValue(new Error("Senha incorreta. Confira e tente novamente.")); render(page());
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
