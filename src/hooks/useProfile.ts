@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { qk } from "@/data/queryKeys";
+import { invalidateProfileDerived } from "@/data/cacheInvalidation";
 
 
  export interface ProfileAddress {
@@ -134,6 +135,7 @@ export function useProfile() {
         ...(previous ?? emptyAddress),
         ...data,
       }));
+      await invalidateProfileDerived(queryClient, user.id);
       window.dispatchEvent(new Event("agendilha:profile-updated"));
       toast.success("Perfil atualizado!");
       return true;

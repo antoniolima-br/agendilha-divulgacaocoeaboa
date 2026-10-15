@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { normalizePhone } from "@/lib/validations";
+import { onlyDigits } from "@/lib/phone";
 
 import { notificationGeography } from "@/lib/notificationPreferences";
 
@@ -20,7 +20,7 @@ async function insertContato(base: ContatoBase) {
     .insert({
       tipo_perfil: base.tipo_perfil,
       nome: base.nome.trim(),
-      whatsapp: base.whatsapp?.trim() ? normalizePhone(base.whatsapp) : null,
+      whatsapp: base.whatsapp?.trim() ? onlyDigits(base.whatsapp) : null,
       bairro: base.bairro,
       endereco: base.endereco?.trim() || null,
       user_id: userData.user?.id ?? null,

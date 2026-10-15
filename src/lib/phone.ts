@@ -5,6 +5,8 @@
  * (`55DDDNUMERO@phone.agendilha.app`). Se cadastro, login e recuperação
  * normalizarem o número de formas diferentes, a pessoa cria a conta e depois
  * não consegue entrar. Por isso TUDO passa por aqui.
+ * Para números internacionais fora da autenticação brasileira, use intlPhone.ts.
+ * Validação específica de WhatsApp e formatação de exibição ficam em whatsapp.ts.
  */
 
 export const PHONE_EMAIL_DOMAIN = "phone.agendilha.app";

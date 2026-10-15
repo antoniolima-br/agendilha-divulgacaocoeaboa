@@ -6,3 +6,4 @@
 - Public navigation prefetch shares publicEventsQuery options and abort signals with mounted readers; never prefetch personal or staff data.
 - Published-ad placements share one visible-tab refresh clock per QueryClient and one paginated request, avoiding duplicate polling while preserving audiences.
 - Abort superseded attraction-schedule checks while retaining submit-time validation and database guards, avoiding unused responses without weakening conflicts.
+- Centralize cross-query invalidation for profile and collaborator writes so derived permission and promoter views cannot drift.

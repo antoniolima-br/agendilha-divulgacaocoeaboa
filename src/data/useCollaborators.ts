@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { handleError } from "@/lib/error-handler";
 import { qk } from "./queryKeys";
+import { invalidateCollaboratorDerived } from "./cacheInvalidation";
 
 export interface Collaborator {
   id: string;
@@ -59,7 +60,10 @@ export function useUpsertCollaborator() {
         if (error) throw error;
       }
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.collaborators.all }),
+    onSuccess: (_data, input) => {
+      const userId = "user_id" in input.payload ? input.payload.user_id : null;
+      return invalidateCollaboratorDerived(qc, typeof userId === "string" ? userId : null);
+    },
   });
 }
 
@@ -70,6 +74,6 @@ export function useDeleteCollaborator() {
       const { error } = await supabase.from("collaborators").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.collaborators.all }),
+    onSuccess: () => invalidateCollaboratorDerived(qc),
   });
 }

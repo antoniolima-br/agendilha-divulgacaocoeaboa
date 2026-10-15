@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { handleError } from "@/lib/error-handler";
 import { qk } from "./queryKeys";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
+import { invalidateCollaboratorDerived } from "./cacheInvalidation";
 
 export interface UserDetailsEvent {
   id: string;
@@ -93,12 +94,7 @@ export function useSaveUserPermissions() {
       );
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: qk.userDetails.byId(vars.userId) });
-      qc.invalidateQueries({ queryKey: qk.collaborators.all });
-      qc.invalidateQueries({ queryKey: qk.permissions.all });
-      qc.invalidateQueries({ queryKey: qk.divulgador.all });
-    },
+    onSuccess: (_d, vars) => invalidateCollaboratorDerived(qc, vars.userId),
   });
 }
 
