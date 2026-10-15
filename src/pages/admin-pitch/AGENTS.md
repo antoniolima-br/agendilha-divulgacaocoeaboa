@@ -1,5 +1,5 @@
-- Select audiences via dedicated protected routes; both require server-verified staff access, but only investors require the extra password. Return only allowlisted sales fields for advertisers so the passwordless response cannot expose investor projections.
+- Select audiences via dedicated public routes with no login, role or password barrier. Return only allowlisted sales fields for advertisers while investors receive their separate complete presentation.
 - Keep corporate pillars presentational and use the existing protected pitch response; this avoids new permissions, metrics or duplicate sector data fetches.
 - Use shared native PitchDetails disclosures after each chapter summary, initially closed, so executive reading stays concise with keyboard-accessible expansion.
 - Open contextual shortcut ancestor disclosures before focus and reduced-motion-aware scrolling so detailed content stays reachable.
-- Share only curated audience summaries without private URLs, projections or credentials; scope loaded content to account and audience and expire it to preserve access.
+- Share only curated audience summaries without private URLs or credentials; keep each loaded document scoped to its requested audience.

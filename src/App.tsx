@@ -233,6 +233,11 @@ export const AppRoutes = () => {
         <Route path={ROUTES.CADASTRO_ATRATIVO} element={<CadastroAtrativoPublico />} />
         <Route path={ROUTES.CADASTRO_ESTABELECIMENTO} element={<CadastroEstabelecimentoPublico />} />
         <Route path={ROUTES.CADASTRO_PROMOTOR} element={<CadastroPromotor />} />
+
+        {/* Apresentações comerciais públicas e sem navegação administrativa */}
+        <Route path={ROUTES.ADMIN_PITCH_COMERCIAL} element={<Navigate to={ROUTES.ADMIN_PITCH_SOCIOS} replace />} />
+        <Route path={ROUTES.ADMIN_PITCH_SOCIOS} element={<AdminPitchComercial audience="investor" />} />
+        <Route path={ROUTES.ADMIN_PITCH_ANUNCIANTES} element={<AdminPitchComercial audience="advertiser" />} />
         
         {/* App Wrapper for standard pages */}
         <Route element={<AppShell maxWidth="md"><Outlet /></AppShell>}>
@@ -281,9 +286,6 @@ export const AppRoutes = () => {
           <Route path={ROUTES.ADMIN_FINANCEIRO} element={<ProtectedRoute requiredPermission="finance.read"><AdminFinanceiro /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_CONFIGURACOES} element={<AdminSettings />} />
           <Route path={ROUTES.ADMIN_CENTRAL} element={<ProtectedRoute requiredPermission="events.update"><AdminControlCenter /></ProtectedRoute>} />
-          <Route path={ROUTES.ADMIN_PITCH_COMERCIAL} element={<ProtectedRoute requiredPermission="pitch.read"><Navigate to={ROUTES.ADMIN_PITCH_SOCIOS} replace /></ProtectedRoute>} />
-          <Route path={ROUTES.ADMIN_PITCH_SOCIOS} element={<ProtectedRoute requiredPermission="pitch.read"><AdminPitchComercial audience="investor" /></ProtectedRoute>} />
-          <Route path={ROUTES.ADMIN_PITCH_ANUNCIANTES} element={<ProtectedRoute requiredPermission="pitch.read"><AdminPitchComercial audience="advertiser" /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_ROLANDO_AGORA} element={<AdminRolandoAgora />} />
           <Route path={ROUTES.ADMIN_APROVAR_EVENTOS} element={<ProtectedRoute requiredPermission="events.approve"><AdminAprovarEventos /></ProtectedRoute>} />
           <Route path={ROUTES.ADMIN_REPORTS} element={<AdminReports />} />

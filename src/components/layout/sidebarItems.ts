@@ -114,6 +114,15 @@ export const sidebarConfig: SidebarSection[] = [
     ]
   },
   {
+    id: "apresentacoes",
+    title: "Apresentações",
+    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
+    items: [
+      { id: "pitch_socios", label: "Pitch para Sócios", path: ROUTES.ADMIN_PITCH_SOCIOS, icon: BriefcaseBusiness, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"], exact: true },
+      { id: "pitch_anunciantes", label: "Pitch para Anunciantes", path: ROUTES.ADMIN_PITCH_ANUNCIANTES, icon: Megaphone, roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"], exact: true },
+    ],
+  },
+  {
     id: "curadoria", title: "Curadoria", roles: ["admin", "senior", "master"],
     items: [{
       id: "curadoria_moderacao", label: "Curadoria e Moderação", path: ROUTES.ADMIN_CENTRAL, icon: ShieldCheck, roles: ["admin", "senior", "master"],
@@ -138,8 +147,6 @@ export const sidebarConfig: SidebarSection[] = [
     items: [
       { id: "comercial_setorial", label: "Clientes e pós-venda", path: `${ROUTES.INTRANET}/comercial`, icon: BriefcaseBusiness, roles: ["master"] },
       { id: "planos_anuncio_admin", label: "Publicidade e pacotes", path: ROUTES.ADMIN_PLANOS_ANUNCIO, icon: ShoppingBag, roles: ["admin", "senior", "financeiro", "master"] },
-      { id: "pitch_socios", label: "Pitch para Sócios", path: ROUTES.ADMIN_PITCH_SOCIOS, icon: BriefcaseBusiness, roles: ["admin", "financeiro", "senior", "master"], exact: true },
-      { id: "pitch_anunciantes", label: "Pitch para Anunciantes", path: ROUTES.ADMIN_PITCH_ANUNCIANTES, icon: Megaphone, roles: ["admin", "financeiro", "senior", "master"], exact: true },
     ],
   },
   {
