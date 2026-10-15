@@ -10,7 +10,11 @@ export function flyerDataURL(file: File, signal: AbortSignal): Promise<string> {
     if (signal.aborted) { abort(); return; }
     signal.addEventListener("abort", abort, { once: true });
     const clean = () => signal.removeEventListener("abort", abort);
-    reader.onload = () => { clean(); typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Escolha outro flyer.")); };
+    reader.onload = () => {
+      clean();
+      if (typeof reader.result === "string") resolve(reader.result);
+      else reject(new Error("Escolha outro flyer."));
+    };
     reader.onerror = () => { clean(); reject(new Error("Não consegui abrir esse flyer. Escolha outra imagem.")); };
     reader.readAsDataURL(file);
   });
@@ -19,7 +23,11 @@ export function flyerDataURL(file: File, signal: AbortSignal): Promise<string> {
 export async function readFlyerStream(response: Response) {
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}));
-    throw new EdgeFunctionError(payload.message || payload.error?.message || "Não consegui ler o flyer. Preencha os dados manualmente.", response.status);
+    const reason = payload.message || payload.error?.message || "Não consegui ler o flyer. Preencha os dados manualmente.";
+    const message = reason === "Not enough credits"
+      ? "Não tenho créditos suficientes para ler o flyer. Adicione créditos em Configurações → Planos e créditos do Lovable. Você pode preencher os dados manualmente."
+      : reason;
+    throw new EdgeFunctionError(message, response.status);
   }
   if (!response.body) throw new Error("Não recebi os dados do flyer. Preencha manualmente.");
   const reader = response.body.getReader();
