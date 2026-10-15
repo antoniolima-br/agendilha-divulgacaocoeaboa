@@ -8,6 +8,10 @@ beforeEach(() => {
   mocks.create.mockResolvedValue({ recognize: mocks.recognize, terminate: mocks.terminate });
 });
 describe("local flyer extraction", () => {
+  it("interprets Portuguese text immediately after recognition", async () => {
+    mocks.recognize.mockResolvedValue({ data: { text: "APRESENTA\nSAMBA DA ILHA\n24 DE OUTUBRO DE 2027\nàs 20\nLocal do evento: Bar da Praça" } });
+    expect(await extractFlyer(new File(["image"], "flyer.png"), new AbortController().signal)).toEqual({ eventTitle: "SAMBA DA ILHA", date: "2027-10-24", startTime: "20:00", locationName: "Bar da Praça" });
+  });
   it("passes actual image directly to Portuguese OCR without cloud requests", async () => {
     mocks.recognize.mockResolvedValue({ data: { text: "SAMBA DA ILHA\n25/10/2026\n22h\nLocal: Bar da Praça" } });
     const fetchMock = vi.fn(); vi.stubGlobal("fetch", fetchMock);

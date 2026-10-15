@@ -4,8 +4,8 @@
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Schedules validate client/database; gaps <2h block, missing ends warn.
 - WhatsApp uses prepared links; automation needs an authenticated provider.
-- opening_hours is free text; validate performances separately.
-- One venue category; editable CEP.
+- opening_hours is free text; validate shows separately.
+- One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, permissions, formatting and data; shared UI owns sizing, collision-aware menus and touch scrolling.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
@@ -16,7 +16,7 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; intent prefetch is public-only. Shared realtime batches have a maximum wait to prevent starvation. Read coezinho AGENTS.md for FAB/facts.
-- Flyer OCR: lazy browser Tesseract, safe parsing, abort cleanup; preserve edits, no draft gate. Preserve art; generate missing sponsored art first.
+- Flyer OCR: lazy browser Tesseract, Portuguese pattern parsing, abort cleanup; preserve edits, no draft gate. Preserve art; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
