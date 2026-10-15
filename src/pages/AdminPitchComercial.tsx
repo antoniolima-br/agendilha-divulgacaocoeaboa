@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ROUTES } from "@/routes/config";
 import { callPublicEdge } from "@/lib/edge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ export default function AdminPitchComercial({ audience = "investor" }: { audienc
   return <div className="theme-coeaboa mx-auto w-full min-w-0 max-w-6xl space-y-6 bg-background p-4 text-foreground sm:p-8">
     <Helmet><title>{title} | Coé a Boa?</title><meta name="description" content={subtitle} /></Helmet>
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
-      {audience === "advertiser" && <Button asChild variant="ghost" size="icon"><a href={ROUTES.LANDING} aria-label="Voltar ao app" title="Voltar ao app"><ArrowLeft aria-hidden="true" /></a></Button>}
+      <Button asChild variant="ghost" size="sm" className="gap-2"><Link to={ROUTES.LANDING} aria-label="Voltar para o app" title="Voltar para o app"><ArrowLeft aria-hidden="true" /><span>Voltar para o app</span></Link></Button>
       {audience !== "advertiser" &&
       <div className="min-w-0 space-y-2"><h1 className="break-words text-2xl font-semibold sm:text-3xl">{title}</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
       }
