@@ -38,7 +38,7 @@ describe("pitch comercial", () => {
     expect(content.projectionBasis).toContain("não taxas simbólicas");
     expect(content.scenarios.every((s) => s.placementRevenue > s.marketing)).toBe(true);
   });
-  async function openInvestor(heading = "Visão Geral e Qualidades do Ecossistema") {
+  async function openInvestor(heading = "Conectando Pessoas, Negócios e Diversão em Grande Escala.") {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     render(page());
     await screen.findByRole("heading", { name: heading });
@@ -46,10 +46,10 @@ describe("pitch comercial", () => {
   it("abre diretamente e apresenta capítulos em sequência", async () => {
     await openInvestor();
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "investor" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
-    expect(screen.getByRole("heading", { level: 1, name: /Pitch para Sócios/ })).toBeVisible();
+    expect(screen.getByRole("heading", { level: 1, name: "Coé a Boa? | Visão Societária & Expansão" })).toBeVisible();
     expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
-    expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "O Poder da Hiperlocalidade" })).toBeVisible();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
     fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
     expect(screen.getByRole("heading", { name: "Projeção de receita mensal" })).toBeVisible();
@@ -61,10 +61,10 @@ describe("pitch comercial", () => {
   });
   it("destaca cinco setores e visão consolidada sem inventar indicadores", async () => {
     await openInvestor();
-    for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
+    for (const name of ["Curadoria & Moderação", "Marketing", "Comercial", "Financeiro", "Desenvolvimento & Inovação"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
     fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
-    expect(screen.getByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Governança e Organização Corporativa" })).toBeVisible();
     expect(screen.getByRole("contentinfo", { name: "Notas institucionais" })).toHaveTextContent("não representam receita realizada");
     expect(screen.queryByRole("link", { name: "Limax Sistemas" })).not.toBeInTheDocument();
     expect(screen.queryByText("Coé a Boa? — empresa proprietária do ecossistema e do aplicativo.")).not.toBeInTheDocument();
@@ -96,7 +96,7 @@ describe("pitch comercial", () => {
       fireEvent.click(within(screen.getByRole("region", { name: "Estratégia de Lançamento e Expansão Regional" })).getByText("Recolher detalhes"));
       expect(screen.getAllByRole("navigation")).toHaveLength(1);
       expect(screen.getByRole("heading", { name: "Estratégia de Atração Híbrida (Go-To-Market)" })).not.toBeVisible();
-      expect(screen.getByRole("heading", { name: "Diferencial do Produto" })).toBeVisible();
+      expect(screen.getByRole("heading", { name: "Muito Além do Retorno Financeiro: O Propósito" })).toBeVisible();
     } finally { scroll.mockRestore(); vi.unstubAllGlobals(); }
   });
   it("mantém resumos visíveis e detalhes fechados nos cinco blocos, com abertura e recolhimento", () => {
@@ -106,7 +106,7 @@ describe("pitch comercial", () => {
       { tab: "Plano de Marketing · B2C & Aceleração", summary: "Comunidade primeiro, mídia local para acelerar", detail: "Estratégia Orgânica · Zero Barreiras" },
       { tab: "Plano Comercial · Abordagem B2B", summary: "Visibilidade de bairro, resultados acompanhados", detail: "Metodologia de Captação" },
       { tab: "Estratégia de Lançamento e Expansão Regional", summary: "O Ponto de Partida: Ilha do Governador como Praça-Piloto", detail: "Ecossistema de Governança e Expansão Regional" },
-      { tab: "Conclusão · Por que Investir no Coé a Boa?", summary: "Diferencial do Produto", detail: "Oportunidade e Validação" },
+      { tab: "Conclusão · Propósito, Futuro e Expansão", summary: "Muito Além do Retorno Financeiro: O Propósito", detail: "Oportunidade e Validação" },
     ];
     for (const chapter of chapters) {
       const region = within(screen.getByRole("region", { name: chapter.tab }));
@@ -139,9 +139,9 @@ describe("pitch comercial", () => {
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
-    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Conectando Pessoas, Negócios e Diversão em Grande Escala." })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Governança e Organização Corporativa" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
     expect(screen.getByRole("link", { name: /Divulgar meu evento/ })).toHaveAttribute("href", "/meus-eventos");
     expect(screen.getByText(/Aberturas não são pessoas únicas/)).toBeVisible();
@@ -162,7 +162,7 @@ describe("pitch comercial", () => {
     const view = render(page("advertiser"));
     await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     view.rerender(page("investor"));
-    await screen.findByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
+    await screen.findByRole("heading", { name: "Conectando Pessoas, Negócios e Diversão em Grande Escala." });
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
   });
 
