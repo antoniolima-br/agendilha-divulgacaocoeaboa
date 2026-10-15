@@ -6,9 +6,10 @@ import MeusEventos from "./MeusEventos";
 const mocks = vi.hoisted(() => ({ navigate: vi.fn(), history: vi.fn() }));
 vi.mock("react-router-dom", async (importOriginal) => ({ ...await importOriginal<typeof import("react-router-dom")>(), useNavigate: () => mocks.navigate }));
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: "owner" } }) }));
+vi.mock("@/data/useMyEventClicks", () => ({ useMyEventClicks: () => ({ data: { approved: 7 } }) }));
 vi.mock("@/data/useMyEventHistory", () => ({ useMyEventHistory: (id: string) => mocks.history(id) }));
 vi.mock("@/data/useDivulgadorStatus", () => ({ useDivulgadorStatus: () => ({ isDivulgador: true }) }));
-vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ canApprove: true }) }));
+vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ canApprove: true, isAdmin: true }) }));
 vi.mock("@/components/divulgador/EditarMeuEventoDialog", () => ({ EditarMeuEventoDialog: () => null }));
 vi.mock("@/components/divulgador/SolicitarDivulgadorCard", () => ({ SolicitarDivulgadorCard: () => null }));
 
@@ -22,7 +23,20 @@ describe("organizer archives", () => {
     expect(screen.getByText("Meu rolê")).toBeInTheDocument();
     expect(screen.queryByText("Rolê de outra pessoa")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Curadoria geral" })).toHaveAttribute("href", "/admin/aprovar-eventos");
-    expect(screen.getByRole("link", { name: "Divulgar evento" })).toHaveAttribute("href", "/enviar-evento");
+    expect(screen.getByRole("link", { name: "Publicar novo evento" })).toHaveAttribute("href", "/enviar-evento");
+  });
+  it("exibe métricas e compartilhamento sem edição de aprovado ou suspenso", () => {
+    mocks.history.mockReturnValue({ data: [
+      { id: "approved", user_id: "owner", event_title: "Samba aprovado", date: "2099-01-01", status: "aprovado", approved_at: "2026-10-01", views_count: 12, shares_count: 3, slug: "samba" },
+      { id: "suspended", user_id: "owner", event_title: "Suspenso", date: "2099-01-01", status: "pendente", approved_at: "2026-10-01" },
+    ], isLoading: false, refetch: vi.fn() });
+    render(<MemoryRouter><MeusEventos /></MemoryRouter>);
+    expect(screen.getByText("12 visualizações")).toBeInTheDocument();
+    expect(screen.getByText("3 compartilhamentos")).toBeInTheDocument();
+    expect(screen.getByText("7 cliques no flyer")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Editar" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Compartilhar rolê" }));
+    expect(screen.getByRole("link", { name: "WhatsApp" }).getAttribute("href")).toContain("samba");
   });
   beforeEach(() => {
     vi.clearAllMocks();
