@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { EditarMeuEventoDialog, type EventoEditavel } from "@/components/divulgador/EditarMeuEventoDialog";
 import { Pencil, Lock, Archive, Eye, Repeat2, Share2, MousePointerClick } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calendar,
@@ -57,7 +58,7 @@ export default function MeusEventos() {
   const { user } = useAuth();
   const [tab, setTab] = useState<StatusKey>("todos");
   const { isDivulgador } = useDivulgadorStatus();
-  const { canApprove, canSubmit, isAdmin } = useAppPermissions();
+  const { canSubmit } = useAppPermissions();
   const [sharing, setSharing] = useState<PromoterShareEvent | null>(null);
   const { data: clickCounts = {} } = useMyEventClicks();
   const [editing, setEditing] = useState<EventoEditavel | null>(null);
@@ -110,7 +111,6 @@ export default function MeusEventos() {
           </div>
           <div className="flex flex-col gap-2 sm:items-end">
           <Button asChild variant="outline" className="min-h-11"><Link to={ROUTES.COMPARTILHAR_MEUS_EVENTOS}><Share2 className="mr-2 h-4 w-4" />Compartilhar meus eventos</Link></Button>
-          {isAdmin && canApprove && <Button asChild variant="outline"><Link to={ROUTES.ADMIN_APROVAR_EVENTOS}><ShieldCheck className="mr-2 h-4 w-4" />Curadoria geral</Link></Button>}
           {canSubmit && (
             <Button
               asChild
@@ -196,7 +196,7 @@ export default function MeusEventos() {
                      <h3 className="min-w-0 break-words font-semibold tracking-tight text-foreground xs:truncate">
                       {r.event_title || r.atrativo_name || "Evento sem título"}
                     </h3>
-                      <StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} approvedAt={r.approved_at} />
+                      <div className="flex flex-wrap items-center gap-1.5"><StatusBadge status={tab === "arquivados" ? "Arquivado" : r.status} approvedAt={r.approved_at} /><Badge variant={r.promotion_choice === "highlight" || r.is_highlight ? "default" : "secondary"}>{r.promotion_choice === "highlight" || r.is_highlight ? "Patrocinado" : "Gratuito"}</Badge></div>
                   </div>
                   <p className="text-xs text-muted-foreground flex items-center gap-2">
                     <Calendar className="h-3 w-3" />
