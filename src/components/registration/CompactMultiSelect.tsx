@@ -32,13 +32,13 @@ export function CompactMultiSelect({ id, label, values, groups, onChange, placeh
             {groups.map(group => <CommandGroup key={group.label} heading={group.label}>{group.options.map(option => {
               const checked = values.includes(option.value);
               return <CommandItem key={option.value} value={`${option.label} ${option.value}`} onSelect={() => toggle(option.value)} aria-checked={checked} className={cn(
-                "min-h-10 gap-2 cursor-pointer border transition-colors duration-150 motion-reduce:transition-none",
+                "min-h-10 gap-2 cursor-pointer border-2 font-medium transition-colors duration-150 motion-reduce:transition-none",
                 checked
-                  ? "border-primary/40 bg-primary/15 text-foreground data-[selected=true]:bg-primary/15 data-[selected=true]:text-foreground"
-                  : "border-transparent bg-transparent data-[selected=true]:bg-muted data-[selected=true]:text-foreground",
-                "data-[selected=true]:ring-1 data-[selected=true]:ring-inset data-[selected=true]:ring-border"
+                  ? "border-primary bg-primary text-primary-foreground data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:ring-primary-foreground"
+                  : "border-transparent bg-transparent text-popover-foreground data-[selected=true]:bg-muted data-[selected=true]:text-foreground data-[selected=true]:ring-border",
+                "data-[selected=true]:ring-1 data-[selected=true]:ring-inset"
               )} aria-label={option.label}>
-                <span aria-hidden="true" className={cn("flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border transition-colors duration-150 motion-reduce:transition-none", checked ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background")}><Check className={cn("h-3 w-3", checked ? "opacity-100" : "opacity-0")} /></span><span className="min-w-0 break-words">{option.label}</span>
+                <span aria-hidden="true" className={cn("flex h-5 w-5 shrink-0 items-center justify-center rounded-sm border-2 transition-colors duration-150 motion-reduce:transition-none", checked ? "border-primary-foreground bg-primary-foreground text-primary" : "border-muted-foreground bg-background")}><Check strokeWidth={3} className={cn("h-3.5 w-3.5", checked ? "opacity-100" : "opacity-0")} /></span><span className="min-w-0 break-words">{option.label}</span>
               </CommandItem>;
             })}</CommandGroup>)}
           </CommandList>
@@ -47,7 +47,7 @@ export function CompactMultiSelect({ id, label, values, groups, onChange, placeh
       </PopoverContent>
     </Popover>
     {values.length > 0 && <div className="flex max-h-20 flex-wrap gap-1.5 overflow-y-auto" aria-label={`${label}: escolhas`}>
-      {values.map(value => <Button key={value} type="button" variant="secondary" size="sm" title={`Remover ${options.find(option => option.value === value)?.label ?? value}`} aria-label={`Remover ${options.find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(value)} className="h-7 max-w-full gap-1 rounded-md border border-primary/20 bg-primary/10 px-2 text-xs font-medium text-primary hover:bg-primary/20"><span className="truncate">{options.find(option => option.value === value)?.label ?? value}</span><X className="h-3 w-3 shrink-0" /></Button>)}
+      {values.map(value => <Button key={value} type="button" variant="default" size="sm" title={`Remover ${options.find(option => option.value === value)?.label ?? value}`} aria-label={`Remover ${options.find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(value)} className="h-7 max-w-full gap-1.5 rounded-md border-2 border-primary bg-primary px-2 text-xs font-semibold text-primary-foreground hover:border-primary-foreground hover:bg-primary hover:text-primary-foreground"><Check aria-hidden="true" strokeWidth={3} className="h-3.5 w-3.5 shrink-0" /><span className="truncate">{options.find(option => option.value === value)?.label ?? value}</span><X aria-hidden="true" className="h-3 w-3 shrink-0" /></Button>)}
     </div>}
   </div>;
 }
