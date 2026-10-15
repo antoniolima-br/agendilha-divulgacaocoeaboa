@@ -33,6 +33,7 @@ type CurationEvent = {
 };
 
 const MAX_FLYER_MB = 8;
+const EMPTY_CURATION_EVENTS: CurationEvent[] = [];
 
 async function invalidateEventViews(client: ReturnType<typeof useQueryClient>) {
   await Promise.all([qk.intranet.all, qk.curation.all, qk.submissions.all, qk.home.all, qk.agenda.all, qk.highlights.publicList()].map((key) => client.invalidateQueries({ queryKey: key })));
@@ -68,7 +69,7 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
       return (data ?? []) as CurationEvent[];
     },
   });
-  const events = eventsQuery.data ?? [];
+  const events = eventsQuery.data ?? EMPTY_CURATION_EVENTS;
   const impactQuery = useCurationImpact(30);
   const impactByEvent = useMemo(() => new Map((impactQuery.data?.events ?? []).map((item) => [item.id, item])), [impactQuery.data?.events]);
   const visibleEvents = useMemo(() => events.filter((event) => `${event.event_title ?? ""} ${event.date ?? ""}`.toLocaleLowerCase("pt-BR").includes(search.toLocaleLowerCase("pt-BR"))), [events, search]);

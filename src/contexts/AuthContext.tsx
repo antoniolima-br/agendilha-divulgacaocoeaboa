@@ -41,7 +41,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const authCheckSequence = useRef(0);
 
   useEffect(() => {
+    let active = true;
+    const initialSequence = authCheckSequence.current;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!active) return;
       if (event === "TOKEN_REFRESHED" && session?.user) {
         setSession(session);
         setUser(session.user);
@@ -59,6 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setSession(session);
       setUser(session?.user ?? null);
+      setIsAdmin(false);
+      setMustChangePassword(false);
       if (session?.user) {
         setAccountStateReady(false);
         setTimeout(() => void refreshAccountState(session.user.id, sequence), 0);
@@ -70,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active || authCheckSequence.current !== initialSequence) return;
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -78,6 +84,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         void refreshAccountState(session.user.id, sequence);
       }
       setLoading(false);
+    }).catch((error) => {
+      if (!active || authCheckSequence.current !== initialSequence) return;
+      setLoading(false);
+      handleError(error, { silent: true, context: "AuthContext:session" });
     });
 
     // Periodic session check removed in favor of onAuthStateChange and autoRefreshToken
@@ -85,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     return () => {
+      active = false;
+      ++authCheckSequence.current;
       subscription.unsubscribe();
       // Interval removed
     };
@@ -249,7 +261,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) handleError(error, { fallback: "Não deu pra sair da conta. Tenta de novo.", context: "AuthContext:signOut" });
   };
 
   return (

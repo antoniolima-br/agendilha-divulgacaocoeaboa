@@ -50,23 +50,25 @@ export function useAttractionSchedule(input: AttractionScheduleInput) {
     const attractionName = input.attractionName?.trim();
     const date = input.date?.trim();
     const startTime = input.startTime?.trim();
+    
+    // Reset state immediately when inputs change to avoid stale conflict warnings
+    setEntries([]);
+    setFailed(false);
+
     if (!attractionName || !date || !startTime) {
-      setEntries([]);
       setLoading(false);
-      setFailed(false);
       return () => { active = false; };
     }
 
     setLoading(true);
-    setFailed(false);
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
       void checkAttractionSchedule(input, controller.signal)
         .then((next) => {
           if (active) setEntries(next);
         })
-        .catch(() => {
-          if (active) {
+        .catch((err) => {
+          if (active && err?.name !== "AbortError") {
             setEntries([]);
             setFailed(true);
           }
