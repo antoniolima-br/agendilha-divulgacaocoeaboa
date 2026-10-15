@@ -3,26 +3,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getEventFallbackPalette } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 import { flyerListingUrl } from "@/lib/flyerImages";
+import type { LucideIcon } from "lucide-react";
 
 interface EventImageProps {
   src?: string | null;
   alt: string;
   category?: string | null;
   className?: string;
-  icon?: any;
+  icon?: LucideIcon;
   fit?: "cover" | "contain";
 }
 
 export const EventImage = memo(function EventImage({ src, alt, category, className, icon: Icon, fit = "cover" }: EventImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [thumbnailFailed, setThumbnailFailed] = useState(false);
+  const imageSource = fit === "contain" || thumbnailFailed ? src || undefined : flyerListingUrl(src);
   const palette = useMemo(() => getEventFallbackPalette(`${alt}:${category || "outros"}`), [alt, category]);
   const showGeneratedArtwork = !src || error;
 
   useEffect(() => {
     setIsLoaded(false);
     setError(false);
-  }, [src]);
+    setThumbnailFailed(false);
+  }, [src, fit]);
 
   return (
     <div className={cn("relative overflow-hidden bg-muted/20", className)}>
@@ -38,7 +42,7 @@ export const EventImage = memo(function EventImage({ src, alt, category, classNa
           </span>
         </div>
       ) : <img
-        src={fit === "contain" ? src || undefined : flyerListingUrl(src)}
+        src={imageSource}
         alt={alt}
         key={src || "fallback"}
         className={cn(
@@ -48,6 +52,11 @@ export const EventImage = memo(function EventImage({ src, alt, category, classNa
         )}
         onLoad={() => setIsLoaded(true)}
         onError={() => {
+          if (!thumbnailFailed && imageSource !== src) {
+            setThumbnailFailed(true);
+            setIsLoaded(false);
+            return;
+          }
           setError(true);
           setIsLoaded(true);
         }}

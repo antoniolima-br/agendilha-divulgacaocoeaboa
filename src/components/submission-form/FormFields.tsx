@@ -1,5 +1,4 @@
 import { fetchCepAddress, type ViaCepData } from "@/data/cep";
-import { UseFormReturn } from "react-hook-form";
 import {
   FormField,
   FormItem,
@@ -9,29 +8,51 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Upload, X } from "lucide-react";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
+import type { Control, FieldValues } from "react-hook-form";
 
 
-export function CepField({ control, onCepFound }: { control: any; onCepFound: (data: ViaCepData) => void }) {
+export function CepField<T extends FieldValues & { addressZip?: string }>({ control, onCepFound }: { control: Control<T>; onCepFound: (data: ViaCepData) => void }) {
   const [loading, setLoading] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const request = useRef<AbortController | null>(null);
+  const onFound = useRef(onCepFound);
+  onFound.current = onCepFound;
+  useEffect(() => () => request.current?.abort(), []);
 
   const fetchCep = useCallback(async (cep: string) => {
     const clean = cep.replace(/\D/g, "");
-    if (clean.length !== 8) return;
+    request.current?.abort();
+    request.current = null;
+    setLookupError(null);
+    if (clean.length !== 8) {
+      setLoading(false);
+      return;
+    }
+    const controller = new AbortController();
+    request.current = controller;
     setLoading(true);
     try {
-      const data = await fetchCepAddress(clean, { checkHttpStatus: false });
-      if (!data.erro) onCepFound(data);
-    } catch { /* silently ignore */ }
-    setLoading(false);
-  }, [onCepFound]);
+      const data = await fetchCepAddress(clean, { signal: controller.signal });
+      if (controller.signal.aborted || request.current !== controller) return;
+      if (data.erro) setLookupError("CEP não encontrado. Confira o número ou preencha o endereço.");
+      else onFound.current(data);
+    } catch {
+      if (!controller.signal.aborted && request.current === controller) {
+        setLookupError("Não consegui buscar o CEP. Você pode preencher o endereço.");
+      }
+    } finally {
+      if (!controller.signal.aborted && request.current === controller) setLoading(false);
+    }
+  }, []);
 
   return (
     <FormField
       control={control}
-      name="addressZip"
+      name={"addressZip" as import("react-hook-form").Path<T>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>CEP</FormLabel>
@@ -48,6 +69,7 @@ export function CepField({ control, onCepFound }: { control: any; onCepFound: (d
             />
           </FormControl>
           {loading && <p className="text-xs text-muted-foreground">Buscando endereço...</p>}
+          {lookupError && <p role="status" className="text-xs text-muted-foreground">{lookupError}</p>}
           <FormMessage />
         </FormItem>
       )}
@@ -73,20 +95,32 @@ export function FileUpload({ label, accept, file, onFileChange, required }: File
         {label} {required && <span className="text-accent">*</span>}
       </Label>
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={label}
         onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
         className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 px-3 sm:px-4 py-6 sm:py-8 cursor-pointer transition-all hover:border-primary/60 hover:bg-primary/10 active:scale-[0.98] min-h-[72px]"
       >
         <Upload className="h-6 w-6 text-primary/60" />
         {file ? (
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-foreground truncate max-w-[200px]">{fileName}</span>
-            <button
+            <Button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onFileChange(null); }}
+              variant="ghost"
+              size="icon"
+              aria-label="Remover arquivo"
+              onClick={(e) => { e.stopPropagation(); if (inputRef.current) inputRef.current.value = ""; onFileChange(null); }}
               className="rounded-full p-1.5 hover:bg-muted active:bg-muted/80 min-w-[36px] min-h-[36px] flex items-center justify-center"
             >
               <X className="h-4 w-4 text-muted-foreground" />
-            </button>
+            </Button>
           </div>
         ) : (
           <span className="text-sm text-muted-foreground text-center">Toque para enviar ({accept})</span>
@@ -96,9 +130,11 @@ export function FileUpload({ label, accept, file, onFileChange, required }: File
           type="file"
           accept={accept}
           className="hidden"
+          onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             const selectedFile = e.target.files?.[0];
             if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
+              e.target.value = "";
               toast.error("Arquivo muito grande", { description: "O limite é de 5MB" });
               return;
             }

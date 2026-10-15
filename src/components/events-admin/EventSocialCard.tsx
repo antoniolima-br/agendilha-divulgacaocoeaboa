@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { CalendarDays, Image as ImageIcon, MapPin } from "lucide-react";
 import { categoryLabels, type Submission } from "./types";
 
@@ -17,7 +17,8 @@ export function EventSocialCard({ sub }: EventSocialCardProps) {
           Card p/ Redes Sociais
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[450px] p-0 overflow-hidden border-0">
+      <DialogContent aria-describedby={undefined} className="max-w-[450px] p-0 overflow-hidden border-0">
+        <DialogTitle className="sr-only">Card de {sub.event_title || "evento"}</DialogTitle>
         <div id={`event-card-${sub.id}`} className="bg-gradient-to-br from-primary via-primary to-primary/90 p-8 text-white aspect-square flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-[-20%] right-[-20%] w-[70%] h-[70%] bg-white/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/20 rounded-full blur-2xl" />

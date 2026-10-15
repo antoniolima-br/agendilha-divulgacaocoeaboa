@@ -5,7 +5,7 @@ import { prepareUploadImage, isAnimatedWebp } from "./uploadImage";
 /** Only our paired uploads carry this marker; legacy/external art is untouched. */
 export function flyerListingUrl(url?: string | null): string | undefined {
   if (!url) return undefined;
-  return url.replace(/\.flyer\.(webp|jpg|png)(?=\?|$)/, ".thumb.webp");
+  return url.replace(/\.flyer\.(webp|jpe?g|png)(?=[?#]|$)/i, ".thumb.webp");
 }
 
 export async function uploadFlyerImage(file: File, path: string): Promise<string> {
@@ -27,7 +27,8 @@ export async function uploadFlyerImage(file: File, path: string): Promise<string
     thumbnailPath = nextPath;
   }
   const extension = prepared.name.split(".").pop() || "jpg";
-  const officialPath = thumbnailPath ? `${base}.flyer.${extension}` : path;
+  // Listing pairing is case-insensitive; normalize persisted paths for predictable cache keys.
+  const officialPath = thumbnailPath ? `${base}.flyer.${extension.toLowerCase()}` : path;
   const { error } = await bucket.upload(officialPath, prepared, { contentType: prepared.type, upsert: false });
   if (error) {
     if (thumbnailPath) await bucket.remove([thumbnailPath]);

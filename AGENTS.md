@@ -1,5 +1,5 @@
 
-- Authority comes only from protected user_roles; SQL/client checks match to prevent escalation.
+- Authority: protected user_roles only; SQL/client checks match. Browser profiles cannot delete; trusted deletion stays server-side.
 - Effective workspaces follow master/senior/financeiro/admin order; shared gates prevent mixed-role leaks. Account mutations require server-verified Master.
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Schedules validate client/database; gaps <2h block, missing ends warn.
@@ -15,11 +15,11 @@
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
 - Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
-- Flyer OCR: lazy Tesseract, Portuguese parsing, abort cleanup; preserve edits, no draft gate. Pair official art with thumbnails; generate missing sponsored art first.
+- Flyer OCR: lazy Tesseract, Portuguese parsing, abort cleanup; preserve edits, no draft gate. Pair thumbnails; retry official art once on failure; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
 - Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
-- Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
+- Public reads use the date-filtered view; personal queries use session ownership even for admins. Separate curation queries retain authorized oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
 - Curatorial editing uses protected RPCs, private artistic history, soft deletion and broad cache invalidation.
@@ -32,7 +32,7 @@
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
 - Intranet: Master-only; read src/pages/intranet/AGENTS.md.
-- Read nested AGENTS.md. sharedResource shares lifetimes only; userGrouping never grants access.
+- Read nested AGENTS.md; sharedResource shares lifetimes, userGrouping never grants access.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay separate from public/promoter/artist flows.
 - PWA guards registration, awaits control before reload and user confirmation; cache core chunks, not flyers.

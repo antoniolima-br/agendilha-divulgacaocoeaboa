@@ -26,7 +26,8 @@ export async function fetchMyAds(userId: string | undefined): Promise<Ad[]> {
 
 export async function fetchAllAds(): Promise<Ad[]> {
   const data = await fetchAllPages((from, to) => supabase.from("ads")
-    .select(AD_COLUMNS).order("created_at", { ascending: false }).range(from, to));
+    .select(AD_COLUMNS).order("created_at", { ascending: false })
+    .order("id", { ascending: true }).range(from, to));
   return normalizeAds(data);
 }
 

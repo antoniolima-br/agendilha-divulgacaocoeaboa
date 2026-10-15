@@ -386,6 +386,13 @@
       "when": 1792023128876,
       "tag": "0054_owner_event_click_metrics",
       "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1792093725613,
+      "tag": "0055_harden_profile_client_privileges",
+      "breakpoints": true
     }
   ]
 }
