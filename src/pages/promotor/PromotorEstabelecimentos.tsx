@@ -1,3 +1,4 @@
+import { fetchCepAddress } from "@/data/cep";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, MapPin, Pencil, Trash2, Loader2 } from "lucide-react";
@@ -106,9 +107,7 @@ function PromotorEstabelecimentosInner({ listingKind }: { listingKind: "event_ve
 
     setCepLoading(true);
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
-      if (!response.ok) throw new Error("Falha ao consultar CEP");
-      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      const data = await fetchCepAddress(digits);
       if (requestId !== cepRequest.current) return;
       if (data.erro) {
         setCepMessage("CEP não encontrado. Preencha o endereço manualmente.");

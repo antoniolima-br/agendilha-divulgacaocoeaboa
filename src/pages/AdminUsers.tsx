@@ -20,6 +20,7 @@ import {
   UserFiltersBar,
 } from "@/components/admin/users/UserFiltersBar";
 import { UserCard } from "@/components/admin/users/UserCard";
+import { userGroup, GROUP_LABELS, GROUP_ORDER } from "@/components/admin/users/userGrouping";
 import { matchesUserSearch } from "@/components/admin/users/userSearch";
 import { ConfirmUserActionDialogs } from "@/components/admin/users/ConfirmUserActionDialogs";
 import { ResetPasswordDialog } from "@/components/admin/users/ResetPasswordDialog";
@@ -37,25 +38,7 @@ function formatPhone(phone: string | null): string {
   return formatPhoneDisplay(phone);
 }
 
-/** Agrupa o usuário numa "gaveta" só: Admin, Divulgador, Artista, Estabelecimento ou Público. */
-export function userGroup(u: Pick<UserWithRole, "status" | "user_type">): string {
-  if (u.status === "admin" || u.status === "master") return "admin";
-  if (u.status === "artist" || u.user_type === "artist") return "artist";
-  if (u.user_type === "estabelecimento") return "estabelecimento";
-  if (u.status === "collaborator" || u.user_type === "divulgador" || u.user_type === "promotor" || u.user_type === "promoter")
-    return "divulgador";
-  return "usuario";
-}
-
-const GROUP_LABELS: Record<string, string> = {
-  admin: "Administradores",
-  divulgador: "Divulgadores",
-  artist: "Músicos / Artistas",
-  estabelecimento: "Estabelecimentos",
-  usuario: "Usuários públicos",
-};
-
-const GROUP_ORDER = ["admin", "divulgador", "artist", "estabelecimento", "usuario"];
+export { userGroup } from "@/components/admin/users/userGrouping";
 
 export default function AdminUsers() {
   const queryClient = useQueryClient();

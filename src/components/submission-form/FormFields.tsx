@@ -1,3 +1,4 @@
+import { fetchCepAddress, type ViaCepData } from "@/data/cep";
 import { UseFormReturn } from "react-hook-form";
 import {
   FormField,
@@ -13,14 +14,6 @@ import { useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 
-interface ViaCepData {
-  logradouro?: string;
-  bairro?: string;
-  localidade?: string;
-  uf?: string;
-  erro?: boolean;
-}
-
 export function CepField({ control, onCepFound }: { control: any; onCepFound: (data: ViaCepData) => void }) {
   const [loading, setLoading] = useState(false);
 
@@ -29,8 +22,7 @@ export function CepField({ control, onCepFound }: { control: any; onCepFound: (d
     if (clean.length !== 8) return;
     setLoading(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
-      const data: ViaCepData = await res.json();
+      const data = await fetchCepAddress(clean, { checkHttpStatus: false });
       if (!data.erro) onCepFound(data);
     } catch { /* silently ignore */ }
     setLoading(false);
