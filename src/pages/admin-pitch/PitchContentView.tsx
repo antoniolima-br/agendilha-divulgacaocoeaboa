@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, ShieldCheck, Smartphone, Layers3, Sparkles, ScanLine, ChartNoAxesCombined, MousePointerClick } from "lucide-react";
+import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, Layers3, Sparkles, ScanLine, ChartNoAxesCombined, MousePointerClick } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
 import { AdvertiserPitch } from "./AdvertiserPitch";
-import { PitchShare } from "./PitchShare";
 import { InvestorPdfButton } from "./InvestorPdfButton";
 import { investorPitchSections } from "./investorPitchPdf";
 import type { AdvertiserPitchContent, PitchContent } from "./types";
