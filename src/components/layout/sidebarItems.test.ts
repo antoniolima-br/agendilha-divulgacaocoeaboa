@@ -25,8 +25,11 @@ describe("sidebarConfig", () => {
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
     const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
-    expect(visible.some((s) => s.items.some((i) => i.path === ROUTES.ADMIN_PITCH_COMERCIAL))).toBe(["admin", "financeiro", "senior", "master"].includes(role));
-    expect(ROUTE_PERMISSIONS[ROUTES.ADMIN_PITCH_COMERCIAL]).toBe("pitch.read");
+    const paths = visible.flatMap((s) => s.items.map((i) => i.path));
+    const allowed = ["admin", "financeiro", "senior", "master"].includes(role);
+    expect(paths.includes(ROUTES.ADMIN_PITCH_SOCIOS)).toBe(allowed);
+    expect(paths.includes(ROUTES.ADMIN_PITCH_ANUNCIANTES)).toBe(allowed);
+    for (const path of [ROUTES.ADMIN_PITCH_COMERCIAL, ROUTES.ADMIN_PITCH_SOCIOS, ROUTES.ADMIN_PITCH_ANUNCIANTES]) expect(ROUTE_PERMISSIONS[path]).toBe("pitch.read");
   });
   it("mantém Meus eventos do admin separado e esconde a Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
@@ -102,7 +105,8 @@ describe("sidebarConfig", () => {
     const commercial = sidebarConfig.find((section) => section.id === "comercial");
     const finance = sidebarConfig.find((section) => section.id === "financeiro");
     expect(marketing?.items.map((item) => item.id)).toEqual(["marketing_setorial", "anuncios_admin", "destaques_admin"]);
-    expect(commercial?.items.map((item) => item.id)).toEqual(["comercial_setorial", "planos_anuncio_admin", "pitch_comercial"]);
+    expect(commercial?.items.map((item) => item.id)).toEqual(["comercial_setorial", "planos_anuncio_admin", "pitch_socios", "pitch_anunciantes"]);
+    expect(commercial?.items.slice(2).map((item) => item.label)).toEqual(["Pitch para Sócios", "Pitch para Anunciantes"]);
     expect(finance?.items.map((item) => item.id)).toEqual(["financeiro_admin", "pagamentos_destaque_admin"]);
     const ids = sidebarConfig.flatMap((section) => section.items.map((item) => item.id));
     expect(ids.filter((id) => id === "anuncios_admin")).toHaveLength(1);

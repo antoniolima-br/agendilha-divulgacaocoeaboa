@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({ call: vi.fn(), allowed: true, userId: "test-us
 vi.mock("@/lib/edge", () => ({ callEdge: mocks.call }));
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: mocks.userId }, mustChangePassword: false }) }));
 vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ hasPermission: () => mocks.allowed }) }));
-const page = () => <HelmetProvider><AdminPitchComercial /></HelmetProvider>;
+const page = (audience: "investor" | "advertiser" = "investor") => <HelmetProvider><AdminPitchComercial audience={audience} /></HelmetProvider>;
 
 describe("pitch comercial", () => {
   beforeEach(() => { mocks.allowed = true; mocks.userId = "test-user"; mocks.call.mockReset(); });
@@ -39,17 +39,18 @@ describe("pitch comercial", () => {
     expect(content.projectionBasis).toContain("não taxas simbólicas");
     expect(content.scenarios.every((s) => s.placementRevenue > s.marketing)).toBe(true);
   });
-  async function unlock() {
+  async function unlock(heading = "Visão Geral e Qualidades do Ecossistema") {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
     fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
     fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-    await screen.findByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
+    await screen.findByRole("heading", { name: heading });
   }
   it("abre somente após conferência e apresenta capítulos em sequência", async () => {
     render(page());
     expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     await unlock();
-    expect(screen.getByRole("tablist", { name: "Público da apresentação" })).toBeVisible();
+    expect(screen.getByRole("heading", { level: 1, name: /Pitch para Sócios/ })).toBeVisible();
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
@@ -114,7 +115,6 @@ describe("pitch comercial", () => {
     ];
     for (const chapter of chapters) {
       const region = within(screen.getByRole("region", { name: chapter.tab }));
-      expect(screen.getByRole("tablist", { name: "Público da apresentação" })).toBeVisible();
       expect(screen.getByRole("heading", { name: chapter.summary })).toBeVisible();
       const details = region.getByText("Ver detalhes").closest("details");
       expect(details).not.toHaveAttribute("open");
@@ -154,11 +154,9 @@ describe("pitch comercial", () => {
     await waitFor(() => expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument());
   });
   it("separa os públicos sem expor projeções na vitrine", async () => {
-    render(page()); await unlock();
-    const tab = screen.getByRole("tab", { name: "Anunciantes / Divulgadores" });
-    fireEvent.mouseDown(tab, { button: 0, ctrlKey: false });
-    fireEvent.click(tab);
-    await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
+    render(page("advertiser")); await unlock("Coé a Boa? · Sua marca no próximo rolê");
+    expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
@@ -171,7 +169,8 @@ describe("pitch comercial", () => {
     expect(href).not.toContain("pitch-comercial");
     expect(href).not.toContain("1960");
     fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
   });
 
 });
