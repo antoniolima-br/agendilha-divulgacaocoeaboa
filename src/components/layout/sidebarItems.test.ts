@@ -18,18 +18,17 @@ describe("sidebarConfig", () => {
   });
   it("divulgador não vê atalhos gerenciais mesmo com permissões fornecidas", () => {
     const visible = filterSidebarSections("promoter", () => true, routeExists);
-    expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "conta"]);
-    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "profile"]);
-    expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/admin") || item.path.startsWith("/intranet"))).toBe(false);
+    expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "apresentacoes", "conta"]);
+    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "pitch_socios", "pitch_anunciantes", "profile"]);
+    expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/intranet"))).toBe(false);
   });
-  it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("restringe link comercial para %s", (role) => {
+  it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("abre os pitches no menu para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
     const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
     const paths = visible.flatMap((s) => s.items.map((i) => i.path));
-    const allowed = ["admin", "financeiro", "senior", "master"].includes(role);
-    expect(paths.includes(ROUTES.ADMIN_PITCH_SOCIOS)).toBe(allowed);
-    expect(paths.includes(ROUTES.ADMIN_PITCH_ANUNCIANTES)).toBe(allowed);
-    for (const path of [ROUTES.ADMIN_PITCH_COMERCIAL, ROUTES.ADMIN_PITCH_SOCIOS, ROUTES.ADMIN_PITCH_ANUNCIANTES]) expect(ROUTE_PERMISSIONS[path]).toBe("pitch.read");
+    expect(paths).toContain(ROUTES.ADMIN_PITCH_SOCIOS);
+    expect(paths).toContain(ROUTES.ADMIN_PITCH_ANUNCIANTES);
+    for (const path of [ROUTES.ADMIN_PITCH_COMERCIAL, ROUTES.ADMIN_PITCH_SOCIOS, ROUTES.ADMIN_PITCH_ANUNCIANTES]) expect(ROUTE_PERMISSIONS[path]).toBeUndefined();
   });
   it("mantém Meus eventos do admin separado e esconde a Gestão setorial", () => {
     const personal = sidebarConfig.find((section) => section.id === "divulgacao");
@@ -105,8 +104,8 @@ describe("sidebarConfig", () => {
     const commercial = sidebarConfig.find((section) => section.id === "comercial");
     const finance = sidebarConfig.find((section) => section.id === "financeiro");
     expect(marketing?.items.map((item) => item.id)).toEqual(["marketing_setorial", "anuncios_admin", "destaques_admin"]);
-    expect(commercial?.items.map((item) => item.id)).toEqual(["comercial_setorial", "planos_anuncio_admin", "pitch_socios", "pitch_anunciantes"]);
-    expect(commercial?.items.slice(2).map((item) => item.label)).toEqual(["Pitch para Sócios", "Pitch para Anunciantes"]);
+    expect(commercial?.items.map((item) => item.id)).toEqual(["comercial_setorial", "planos_anuncio_admin"]);
+    expect(sidebarConfig.find((section) => section.id === "apresentacoes")?.items.map((item) => item.label)).toEqual(["Pitch para Sócios", "Pitch para Anunciantes"]);
     expect(finance?.items.map((item) => item.id)).toEqual(["financeiro_admin", "pagamentos_destaque_admin"]);
     const ids = sidebarConfig.flatMap((section) => section.items.map((item) => item.id));
     expect(ids.filter((id) => id === "anuncios_admin")).toHaveLength(1);
@@ -128,7 +127,7 @@ describe("sidebarConfig", () => {
 
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
     const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
-    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "profile", "divulgador_status"]);
+    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "pitch_socios", "pitch_anunciantes", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
     expect(promoterItems.some(item => item.id === "my_submissions")).toBe(true);
     expect(promoterItems.some(item => ["send_event", "ad_plans_catalog", "share_my_events"].includes(item.id))).toBe(false);
