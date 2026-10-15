@@ -3,6 +3,30 @@ import { describe, expect, it, vi } from "vitest";
 import { useAutocompleteSearch } from "./useAutocompleteSearch";
 
 describe("autocomplete request lifecycle", () => {
+  it("retains recent terms and evicts the least recently used search", async () => {
+    const fetchPage = vi.fn(async (term: string) => [term]);
+    const { result, rerender } = renderHook(({ term }) => useAutocompleteSearch({ term, fetchPage, debounceMs: 0, maxCachedTerms: 2 }), { initialProps: { term: "first" } });
+    await waitFor(() => expect(result.current.items).toEqual(["first"]));
+    rerender({ term: "second" });
+    await waitFor(() => expect(result.current.items).toEqual(["second"]));
+    rerender({ term: "first" });
+    expect(result.current.items).toEqual(["first"]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    rerender({ term: "third" });
+    await waitFor(() => expect(result.current.items).toEqual(["third"]));
+    rerender({ term: "second" });
+    await waitFor(() => expect(fetchPage).toHaveBeenCalledTimes(4));
+    expect(result.current.items).toEqual(["second"]);
+  });
+
+  it("refetches when the page size changes instead of reusing incompatible pagination", async () => {
+    const fetchPage = vi.fn(async (_q: string, _from: number, to: number) => Array.from({ length: to + 1 }, (_, i) => String(i)));
+    const { result, rerender } = renderHook(({ pageSize }) => useAutocompleteSearch({ term: "first", fetchPage, pageSize, debounceMs: 0 }), { initialProps: { pageSize: 1 } });
+    await waitFor(() => expect(result.current.items).toEqual(["0"]));
+    rerender({ pageSize: 2 });
+    await waitFor(() => expect(result.current.items).toEqual(["0", "1"]));
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+  });
   it("does not overwrite a cached term with a late response", async () => {
     let finish: (rows: string[]) => void = () => {};
     const fetchPage = vi.fn((q: string) => q === "first" ? Promise.resolve(["first-result"]) : new Promise<string[]>(resolve => { finish = resolve; }));
