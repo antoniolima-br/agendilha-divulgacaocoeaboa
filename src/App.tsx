@@ -8,7 +8,8 @@ import { SubmissionProvider } from "@/contexts/SubmissionContext";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { GuideLauncher } from "@/components/coezinho/GuideLauncher";
 import { installIntentPreload } from "@/routes/intentPreload";
-import { loadAgenda, loadEventDetail, loadExplorar, loadHighlights, loadToday } from "@/routes/publicLoaders";
+import { loadAgenda, loadEventDetail, loadExplorar, loadHighlights, loadToday, loadRadar } from "@/routes/publicLoaders";
+import { publicEventsQueryOptions } from "@/data/publicEventsQuery";
 import { Loader2 } from "lucide-react";
 import { useAppPermissions, type PermissionName } from "@/hooks/useAppPermissions";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
@@ -70,7 +71,7 @@ const EventoEnviado = lazy(() => import("./pages/EventoEnviado"));
 const ContratarDestaqueEvento = lazy(() => import("./pages/ContratarDestaqueEvento"));
 const MeusEventos = lazy(() => import("./pages/MeusEventos"));
 const CompartilharMeusEventos = lazy(() => import("./pages/CompartilharMeusEventos"));
-const SeuRadar = lazy(() => import("./pages/SeuRadar"));
+const SeuRadar = lazy(loadRadar);
 const AdminWhatsAppTemplates = lazy(() => import("./pages/AdminWhatsAppTemplates"));
 const AdminDestaques = lazy(() => import("./pages/AdminDestaques"));
 const AdminHighlightPayments = lazy(() => import("./pages/AdminHighlightPayments"));
@@ -123,6 +124,10 @@ function DeferredAppFeatures() {
     [ROUTES.EXPLORAR]: loadExplorar,
     [ROUTES.EVENTOS_DESTAQUE]: loadHighlights,
     [ROUTES.CURADORIA_HOJE]: loadToday,
+    [ROUTES.SEU_RADAR]: loadRadar,
+  }, {
+    [ROUTES.AGENDA]: () => queryClient.prefetchQuery(publicEventsQueryOptions()),
+    [ROUTES.SEU_RADAR]: () => queryClient.prefetchQuery(publicEventsQueryOptions()),
   }), []);
 
   useEffect(() => {
