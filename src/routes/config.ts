@@ -57,6 +57,8 @@ export const ROUTES = {
   ADMIN_CONFIGURACOES: "/admin/configuracoes",
   ADMIN_CENTRAL: "/admin/central-home",
   ADMIN_PITCH_COMERCIAL: "/admin/pitch-comercial",
+  ADMIN_PITCH_SOCIOS: "/admin/pitch-socios",
+  ADMIN_PITCH_ANUNCIANTES: "/admin/pitch-anunciantes",
   CADASTRO_PROMOTOR: "/cadastro-promotor",
   PROMOTOR_HOME: "/promotor",
   PROMOTOR_ESTABELECIMENTOS: "/promotor/estabelecimentos",

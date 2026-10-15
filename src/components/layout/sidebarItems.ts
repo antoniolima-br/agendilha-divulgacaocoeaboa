@@ -138,7 +138,8 @@ export const sidebarConfig: SidebarSection[] = [
     items: [
       { id: "comercial_setorial", label: "Clientes e pós-venda", path: `${ROUTES.INTRANET}/comercial`, icon: BriefcaseBusiness, roles: ["master"] },
       { id: "planos_anuncio_admin", label: "Publicidade e pacotes", path: ROUTES.ADMIN_PLANOS_ANUNCIO, icon: ShoppingBag, roles: ["admin", "senior", "financeiro", "master"] },
-      { id: "pitch_comercial", label: "Pitch Comercial e Projeção", path: ROUTES.ADMIN_PITCH_COMERCIAL, icon: ClipboardList, roles: ["admin", "financeiro", "senior", "master"] },
+      { id: "pitch_socios", label: "Pitch para Sócios", path: ROUTES.ADMIN_PITCH_SOCIOS, icon: BriefcaseBusiness, roles: ["admin", "financeiro", "senior", "master"], exact: true },
+      { id: "pitch_anunciantes", label: "Pitch para Anunciantes", path: ROUTES.ADMIN_PITCH_ANUNCIANTES, icon: Megaphone, roles: ["admin", "financeiro", "senior", "master"], exact: true },
     ],
   },
   {

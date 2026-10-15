@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 import { PitchContentView } from "./admin-pitch/PitchContentView";
 import type { PitchContent } from "./admin-pitch/types";
 
-export default function AdminPitchComercial() {
+export default function AdminPitchComercial({ audience = "investor" }: { audience?: "investor" | "advertiser" }) {
+  const title = audience === "advertiser" ? "Pitch para Anunciantes" : "Pitch para Sócios";
+  const subtitle = audience === "advertiser" ? "Marcas, patrocinadores e divulgadores · Publicidade regional" : "Sócios e investidores · Governança, estratégia e expansão";
   const { user, mustChangePassword } = useAuth();
   const { hasPermission } = useAppPermissions();
   const [password, setPassword] = useState("");
@@ -44,12 +46,12 @@ export default function AdminPitchComercial() {
   }
 
   return <div className="theme-coeaboa mx-auto w-full min-w-0 max-w-6xl space-y-6 bg-background p-4 text-foreground sm:p-8">
-    <Helmet><title>Pitch Comercial & Estratégia | Coé a Boa?</title><meta name="robots" content="noindex, nofollow, noarchive" /><meta name="description" content="Área comercial interna e restrita do Coé a Boa?." /></Helmet>
+    <Helmet><title>{title} | Coé a Boa?</title><meta name="robots" content="noindex, nofollow, noarchive" /><meta name="description" content={subtitle} /></Helmet>
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
-      <div className="min-w-0 space-y-2"><p className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Uso interno · Admin, Financeiro, Master e Sênior</p><h1 className="break-words text-2xl font-semibold sm:text-3xl">Apresentações Comerciais · Coé a Boa?</h1><p className="text-sm text-muted-foreground">Sócios e investidores · Anunciantes, patrocinadores e divulgadores</p></div>
+      <div className="min-w-0 space-y-2"><p className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Uso interno · Admin, Financeiro, Master e Sênior</p><h1 className="break-words text-2xl font-semibold sm:text-3xl">{title} · Coé a Boa?</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
       {content && <Button variant="outline" size="sm" onClick={() => setUnlocked(null)} className="gap-2"><LockKeyhole className="h-4 w-4" /> Bloquear</Button>}
     </header>
-    {content ? <PitchContentView content={content} /> : <section className="mx-auto max-w-sm space-y-5 py-10">
+    {content ? <PitchContentView key={audience} content={content} audience={audience} /> : <section className="mx-auto max-w-sm space-y-5 py-10">
       <LockKeyhole className="h-8 w-8 text-primary" />
       <h2 className="text-xl font-semibold">Acesso ao pitch</h2>
       <form onSubmit={unlock} className="space-y-4">
