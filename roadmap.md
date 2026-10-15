@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Preferências 388: reforçar contraste das opções e tags selecionadas com cores sólidas, bordas e check visível; conferir seleção/remoção e contraste nos dois modos.
 - [x] Preferências 387: destaque/check derivados das escolhas, foco neutro independente e transição de cores; dez testes e lint aprovados, validação automática OK. Marcação/remoção de bairros e interesses conferidas no formulário público em 390 px sem envio; conferência completa em 1280 px limitada pelo posicionamento da lista durante a automação.
 - [x] Navegação 386: Agenda central com seleção destacada, cinco atalhos equilibrados e legenda Divulgar compacta preservando o submenu; quatro testes aprovados e navegação real em 320/390/1280 px sem transbordar ou cortar legendas. Validação automática OK.
 - [x] Calendário 385: janela de cinco datas ativas cruza dias/semanas vazios; seleção e rolagem suave preservadas. 10 testes, lint e validação automática OK; 320/390/1280 px sem overflow. Dados reais possuem três datas disponíveis; toque abre a Agenda no dia escolhido. Cinco datas conferidas visualmente com exemplo temporário, sem criar eventos.

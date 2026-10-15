@@ -26,7 +26,7 @@
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
 - Pitches are public and split by audience; disclosures stay concise. Read src/pages/admin-pitch/AGENTS.md.
-- Notification selectors derive checks from values, not cmdk focus, avoiding false feedback; normalize audience arrays separately from address/consent.
+- Notification checks follow values, not focus; solid primary pairs ensure contrast. Normalize audiences apart from address/consent.
 - Calendar/strip share eventCalendar availability independent of selected dates; occupied-date windows skip empty days and weeks.
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
