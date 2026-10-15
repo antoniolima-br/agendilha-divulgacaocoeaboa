@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Pitch 360: Anunciantes reescrito com "Anuncie no Coé a Boa?", benefícios hiperlocais, ganhos da marca e botão "Fale com o Comercial no WhatsApp" usando o contato oficial configurado; 10 testes aprovados.
 - [x] Pitches 359: Sócios e Anunciantes abrem diretamente sem login, perfil ou senha; rotas e atalhos públicos preservam documentos separados, preços e visual responsivo.
 - [x] Refatoração estrutural 358: cargos e invalidações derivados centralizados, Perfil/endereço tipados, utilitário redundante removido e limites registrados; 562 testes intermediários aprovados, regressões focadas e tipos/compilação validados. Envios, flyer administrativo e PDF permanecem condicionados a cobertura específica antes de novas extrações.
 - [x] Pitch 357: Anunciantes abre sem senha adicional, com acesso da equipe preservado e resposta limitada aos campos comerciais; Sócios mantém senha. 14 testes aprovados e abertura real conferida com conta autorizada.
