@@ -86,6 +86,7 @@
     "streamdown": "^2.7.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "tesseract.js": "^7.0.0",
     "use-stick-to-bottom": "^1.1.6",
     "vaul": "^0.9.9",
     "ws": "8.22.0",

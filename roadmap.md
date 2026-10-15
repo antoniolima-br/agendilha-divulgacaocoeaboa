@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Flyer 372: substituir leitura em nuvem por Tesseract.js local, sugerir campos com padrões, mostrar progresso e liberar fallback manual; verificar OCR real e regressões.
 - [x] Coezinho 371: avatar oculto nos formulários e edição, arraste e abertura explícita preservados; 28 testes aprovados. Formulário autenticado, arraste, abertura/fechamento e retorno à Agenda conferidos em 390/1280 px.
 - [x] Flyer 370: imagem base64 e JSON estruturado conferidos; leituras simultâneas bloqueadas e retorno fragmentado tratado; 17 testes aprovados e formulário autenticado conferido com resposta controlada, sem salvar evento. Leitura real segue bloqueada pelos créditos já registrados.
 - [x] PWA 369: checagem ao abrir/retomar e durante uso, aviso discreto e ativação após confirmação; oito testes aprovados, aviso/toque em 390/1280 px com worker simulado e prévia sem registro. Troca real entre versões depende de publicação.
