@@ -41,13 +41,34 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-primary flex items-center gap-2">
           <PartyPopper className="h-5 w-5" />
-          Sobre o Evento
+          Dados do rolê
         </h2>
-        <p className="text-sm text-muted-foreground">Quando vai rolar e pra quem?</p>
+        
       </div>
       )}
 
       {show("core") && (<>
+
+      {/* 4. Nome do evento */}
+      <FormField
+        control={form.control}
+        name="eventTitle"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Título do Rolê <span className="text-xs font-normal text-muted-foreground">(opcional no envio)</span></FormLabel>
+            <FormControl>
+              <SuggestInput
+                placeholder="Ex: Festival de Inverno"
+                className="h-12"
+                suggestFrom="public_submissions"
+                suggestColumn="event_title"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {/* 1. Data do evento (com dia da semana na divulgação) */}
       <FormField
@@ -64,7 +85,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
                     <Button
                       variant="outline"
                       className={cn(
-                        "h-12 pl-3 text-left font-normal",
+                        "h-auto min-h-12 w-full pl-3 text-left font-normal whitespace-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -191,27 +212,6 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
           Preencha se quiser deixar a divulgação mais completa. Pode pular sem problema.
         </p>
       </div>
-
-      {/* 4. Nome do evento */}
-      <FormField
-        control={form.control}
-        name="eventTitle"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Título do rolé <span className="text-xs font-normal text-muted-foreground">(opcional no envio)</span></FormLabel>
-            <FormControl>
-              <SuggestInput
-                placeholder="Ex: Festival de Inverno"
-                className="h-12"
-                suggestFrom="public_submissions"
-                suggestColumn="event_title"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       {/* 5. Horário previsto para término (opcional) */}
       <FormField

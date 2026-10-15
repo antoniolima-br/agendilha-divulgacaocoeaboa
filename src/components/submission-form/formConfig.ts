@@ -1,3 +1,4 @@
+import { saoPauloTodayISO } from "@/lib/eventDate";
 import type { SubmissionFormData } from "./schema";
 
 export const SUBMISSION_DRAFT_KEY = "agendilha_event_submission_draft";
@@ -75,4 +76,8 @@ export function toEventDateOnly(value?: string | null): string | null {
     month: "2-digit",
     day: "2-digit",
   }).format(parsed);
+}
+/** Only suggest a day for new/undated drafts; never replace the organizer’s choice. */
+export function suggestedSubmissionDate(value?: string | null, now = new Date()): string {
+  return value?.trim() || saoPauloTodayISO(now);
 }
