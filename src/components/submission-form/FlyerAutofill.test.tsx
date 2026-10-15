@@ -36,6 +36,26 @@ describe("flyer first flow", () => {
     await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
     expect(screen.getByLabelText("Título")).toHaveValue("Meu título");
   });
+  it("prevents concurrent reads from repeated selections or drops and accepts another flyer after completion", async () => {
+    let resolve: (value: unknown) => void = () => {};
+    mocks.extract.mockImplementation(() => new Promise(r => { resolve = r; }));
+    render(<Harness />);
+    const input = screen.getByLabelText("Enviar flyer para preencher evento");
+    const flyer = new File(["photo"], "flyer.png", { type: "image/png" });
+    fireEvent.change(input, { target: { files: [flyer] } });
+    await waitFor(() => expect(mocks.extract).toHaveBeenCalledTimes(1));
+    expect(input).toBeDisabled();
+    fireEvent.change(input, { target: { files: [flyer] } });
+    fireEvent.drop(input.parentElement as HTMLElement, { dataTransfer: { files: [flyer] } });
+    expect(mocks.image).toHaveBeenCalledTimes(1);
+    expect(mocks.extract).toHaveBeenCalledTimes(1);
+    resolve({ eventTitle: "Samba" });
+    await waitFor(() => expect(input).toBeEnabled());
+    fireEvent.change(input, { target: { files: [flyer] } });
+    await waitFor(() => expect(mocks.extract).toHaveBeenCalledTimes(2));
+    resolve({ eventTitle: "Samba" });
+    await waitFor(() => expect(input).toBeEnabled());
+  });
   it("asks for the title and marks it invalid when the flyer cannot identify one", async () => {
     mocks.extract.mockResolvedValue({ date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" });
     render(<Harness />);
