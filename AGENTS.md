@@ -6,7 +6,7 @@
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes/permissions/data/UI tokens; memoize auth values/actions and lazy-load image/ZIP exports to avoid repeated work.
+- Centralize routes/permissions/data/tokens; memoize auth; lazy-load image/ZIP exports to avoid rework. Shell clips x overflow so flyers stay sticky.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -30,7 +30,7 @@
 - Home/Agenda calendar and weekly strip share eventCalendar availability, ignoring selected dates; strip navigation skips empty weeks.
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
-- Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
+- Sidebar links close menus; offsets prevent overlap; toggles reference submenus for accessibility.
 - Intranet: Master-only; read src/pages/intranet/AGENTS.md.
 - Read nested AGENTS.md; sharedResource shares lifetimes, userGrouping never grants access.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
