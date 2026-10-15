@@ -12,6 +12,16 @@ function Harness() {
 }
 beforeEach(() => { vi.clearAllMocks(); URL.createObjectURL = vi.fn(() => "blob:preview"); URL.revokeObjectURL = vi.fn(); });
 describe("flyer first flow", () => {
+  it("keeps blank OCR results editable without marking title invalid", async () => {
+    mocks.extract.mockResolvedValue({});
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.jpg", { type: "image/jpeg" })] } });
+    await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
+    expect(screen.getByLabelText("Título inválido")).toHaveTextContent("não");
+    fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Título manual" } });
+    expect(screen.getByLabelText("Título")).toHaveValue("Título manual");
+    expect(screen.getByLabelText("Enviar flyer para preencher evento")).toBeEnabled();
+  });
   it("reads immediately, fills empty fields and preserves manual access", async () => {
     mocks.extract.mockResolvedValue({ eventTitle: "Samba do domingo", date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" });
     render(<Harness />);
@@ -30,7 +40,7 @@ describe("flyer first flow", () => {
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.png", { type: "image/png" })] } });
     await waitFor(() => expect(mocks.extract).toHaveBeenCalled());
-    expect(screen.getByText("Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!")).toBeVisible();
+    expect(screen.getByText(/Coezinho está escaneando/)).toBeVisible();
     fireEvent.change(screen.getByLabelText("Título"), { target: { value: "Meu título" } });
     resolve({ eventTitle: "Outro" });
     await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
@@ -56,12 +66,13 @@ describe("flyer first flow", () => {
     resolve({ eventTitle: "Samba" });
     await waitFor(() => expect(input).toBeEnabled());
   });
-  it("asks for the title and marks it invalid when the flyer cannot identify one", async () => {
+  it("keeps title optional for draft submission when OCR cannot identify one", async () => {
     mocks.extract.mockResolvedValue({ date: "2026-10-25", startTime: "20:30", locationName: "Espaço de Teste" });
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.jpg", { type: "image/jpeg" })] } });
-    expect(await screen.findByRole("alert")).toHaveTextContent("Não consegui identificar o título do rolê. Preencha o nome abaixo antes de continuar.");
-    expect(screen.getByLabelText("Título inválido")).toHaveTextContent("sim");
+    await waitFor(() => expect(mocks.loading).toHaveBeenLastCalledWith(false));
+    expect(screen.getByLabelText("Título inválido")).toHaveTextContent("não");
+    expect(screen.getByLabelText("Título")).toBeEnabled();
     expect(screen.getByLabelText("Data")).toHaveValue("2026-10-25");
     expect(screen.getByLabelText("Horário")).toHaveValue("20:30");
     expect(screen.getByLabelText("Local")).toHaveValue("Espaço de Teste");
@@ -77,7 +88,7 @@ describe("flyer first flow", () => {
     mocks.extract.mockImplementation(() => new Promise((_, rejectPromise) => { reject = rejectPromise; }));
     render(<Harness />);
     fireEvent.change(screen.getByLabelText("Enviar flyer para preencher evento"), { target: { files: [new File(["photo"], "flyer.webp", { type: "image/webp" })] } });
-    expect(await screen.findByText("Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!")).toBeVisible();
+    expect(await screen.findByText(/Coezinho está escaneando/)).toBeVisible();
     reject(new Error("402 raw gateway response"));
     expect(await screen.findByRole("alert")).toHaveTextContent("Oi, sou o Coezinho! Não consegui ler seu flyer agora, mas deixei os campos abaixo livres pra você preencher rapidinho.");
     expect(screen.queryByText(/402 raw gateway response/i)).not.toBeInTheDocument();

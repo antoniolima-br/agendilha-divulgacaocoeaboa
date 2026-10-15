@@ -38,7 +38,6 @@ import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSecti
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { prepareUploadImage } from "@/lib/uploadImage";
 import { FlyerAutofill } from "./submission-form/FlyerAutofill";
-import { missingFlyerTitle } from "@/lib/flyerExtraction";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
 import {
@@ -254,18 +253,8 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   }, []);
 
 
-  const hasMissingFlyerTitle = () => {
-    if (!missingFlyerTitle(Boolean(eventImage || form.getValues("eventImageUrl")), form.getValues("eventTitle"))) return false;
-    const message = "Preencha o título do rolê antes de continuar.";
-    form.setError("eventTitle", { type: "manual", message });
-    toast.error(message);
-    setCurrentStep(1);
-    form.setFocus("eventTitle");
-    return true;
-  };
-
   const nextStep = async () => {
-    if (readingFlyer || hasMissingFlyerTitle()) return;
+    if (readingFlyer) return;
     const fields = fieldsForSubmissionStep(currentStep);
     const validationTimer = startFlowMeasure("event-submission", "step-validation", currentStep);
     let isValid = false;
@@ -311,7 +300,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
   };
 
   const onSubmit = async (values: FormData) => {
-    if (readingFlyer || hasMissingFlyerTitle()) return;
+    if (readingFlyer) return;
     // Só publica a partir da etapa de Revisão; Enter ou cliques fora dela apenas avançam.
     if (currentStep < steps.length) {
       logger.info("[EventForm] submit ignorado fora da revisão", { currentStep });
@@ -321,7 +310,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
     const missing = missingFinalFields(values);
     if (missing.length > 0) {
       toast.error("Faltam informações obrigatórias", {
-        description: "Confira título do flyer, data, horário de início, atração e o aceite dos termos antes de enviar.",
+        description: "Confira data, horário de início, atração e o aceite dos termos antes de enviar.",
       });
       setCurrentStep(missing.includes("legalAcceptance") && missing.length === 1 ? 2 : 1);
       return;

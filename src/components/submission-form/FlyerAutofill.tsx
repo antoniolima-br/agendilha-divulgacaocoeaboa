@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { AlertCircle, ImagePlus, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { extractFlyer, missingFlyerTitle, safeFlyerPatch } from "@/lib/flyerExtraction";
+import { extractFlyer, safeFlyerPatch } from "@/lib/flyerExtraction";
 import { prepareUploadImage } from "@/lib/uploadImage";
 import type { SubmissionFormData } from "./schema";
 
@@ -15,6 +15,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
   const request = useRef<AbortController | null>(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [dragging, setDragging] = useState(false);
@@ -31,22 +32,17 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
     const controller = new AbortController(); request.current = controller;
     const snapshot = form.getValues();
     setPreview(URL.createObjectURL(file)); onImage(file);
-    setLoading(true); onLoading(true); setStatus(""); setError("");
+    setLoading(true); setProgress(0); onLoading(true); setStatus(""); setError("");
     try {
       const prepared = await prepareUploadImage(file);
       if (controller.signal.aborted) return;
-      const fields = await extractFlyer(prepared, controller.signal);
+      const fields = await extractFlyer(prepared, controller.signal, setProgress);
       if (controller.signal.aborted) return;
       const patch = safeFlyerPatch(fields, snapshot, form.getValues());
       for (const key of Object.keys(patch) as (keyof typeof patch)[]) {
         form.setValue(key, patch[key], { shouldDirty: true, shouldValidate: true });
       }
-      if (missingFlyerTitle(true, form.getValues("eventTitle"))) {
-        setError("Não consegui identificar o título do rolê. Preencha o nome abaixo antes de continuar.");
-        form.setError("eventTitle", { type: "manual", message: "Preencha o título do rolê para continuar." });
-        return;
-      }
-      setStatus(Object.keys(patch).length ? "Prontinho! Eu preenchi os dados. Confira título, data, horário e endereço antes de continuar." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
+      setStatus(Object.keys(patch).length ? "Prontinho! Confira as sugestões de título, data, horário e local. Datas sem ano usam a próxima ocorrência." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
     } catch (e) {
       if (!controller.signal.aborted) {
         setError(manualFallback);
@@ -79,7 +75,7 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
          <input ref={input} aria-label="Enviar flyer para preencher evento" type="file" disabled={loading} accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <div aria-live="polite" aria-busy={loading}>
-        {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Aguarde um instante que o Coezinho está lendo o seu flyer e preenchendo os dados!</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><div aria-hidden="true" className="space-y-2"><div className="h-2 w-4/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /><div className="h-2 w-3/5 animate-pulse rounded bg-primary/20 motion-reduce:animate-none" /></div></div>}
+        {loading && <div className="space-y-3 rounded-md border border-primary/30 bg-primary/5 p-3"><div className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2 text-primary"><Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" />Coezinho está escaneando o flyer... {progress}%</span><Button type="button" variant="ghost" size="icon" title="Interromper leitura" aria-label="Interromper leitura" onClick={cancel}><X className="h-4 w-4" /></Button></div><progress aria-label="Progresso da leitura" value={progress} max={100} className="h-2 w-full accent-primary" /></div>}
         {!loading && status && <p className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{status}</p>}
       </div>
       {error && <p role="alert" className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{error}</p>}

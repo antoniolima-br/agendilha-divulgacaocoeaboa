@@ -198,7 +198,7 @@ export function EventStep({ form, section = "all" }: { form: UseFormReturn<any>;
         name="eventTitle"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Título do rolé <span className="text-xs font-normal text-muted-foreground">(obrigatório ao enviar flyer)</span></FormLabel>
+            <FormLabel>Título do rolé <span className="text-xs font-normal text-muted-foreground">(opcional no envio)</span></FormLabel>
             <FormControl>
               <SuggestInput
                 placeholder="Ex: Festival de Inverno"
