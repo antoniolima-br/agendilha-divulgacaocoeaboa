@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ImagePlus, Upload, Loader2, Square } from "lucide-react";
+import { AlertCircle, ImagePlus, Upload, Loader2, Square, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { extractVisionFlyer, safeVisionPatch } from "@/lib/visionFlyer";
 import type { UseFormReturn } from "react-hook-form";
@@ -19,6 +19,7 @@ export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
   const [dragging, setDragging] = useState(false);
   const [reading, setReading] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => { if (!image) { request.current?.abort(); setReading(false); setFeedback(""); } }, [image]);
   useEffect(() => {
@@ -38,6 +39,7 @@ export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
     }
     setError("");
     setFeedback("");
+    setCollapsed(false);
     request.current?.abort();
     onImage(file);
     if (!form) return;
@@ -65,21 +67,24 @@ export function FlyerUpload({ image, onImage, form, preserveDate = false }: {
   };
 
   return (
-    <section aria-label="Flyer do rolê" className="min-w-0 space-y-3 lg:sticky lg:top-24">
+    <section aria-label="Flyer do rolê" className="min-w-0 space-y-3 lg:sticky lg:top-24 lg:self-start">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 font-display text-lg font-bold"><ImagePlus className="h-5 w-5 text-primary" />Flyer do rolê</h2>
-        <Button type="button" variant="outline" onClick={() => input.current?.click()} className="min-h-11 gap-2"><Upload className="h-4 w-4" />{preview ? "Trocar flyer" : "Escolher flyer"}</Button>
+        <div className="flex items-center gap-2">
+          {preview && <Button type="button" variant="ghost" size="icon" className="min-h-11 min-w-11 lg:hidden" aria-label={collapsed ? "Ampliar flyer" : "Recolher flyer"} title={collapsed ? "Ampliar flyer" : "Recolher flyer"} aria-expanded={!collapsed} aria-controls="submission-flyer-preview" onClick={() => setCollapsed(value => !value)}>{collapsed ? <ChevronDown /> : <ChevronUp />}</Button>}
+          <Button type="button" variant="outline" onClick={() => input.current?.click()} className="min-h-11 gap-2"><Upload className="h-4 w-4" />{preview ? "Trocar flyer" : "Escolher flyer"}</Button>
+        </div>
       </div>
-      <div onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={(event) => { event.preventDefault(); setDragging(false); pick(event.dataTransfer.files[0]); }}
-        className={`flex min-h-40 w-full items-center justify-center rounded-lg border border-dashed ${dragging ? "border-primary bg-primary/10" : "border-border bg-muted/20"}`}>
-        {preview ? <img src={preview} alt="Flyer oficial do rolê" className="max-h-[60dvh] w-full rounded-lg object-contain lg:max-h-[75dvh]" /> : <Upload className="h-10 w-10 text-muted-foreground" />}
+      <div id="submission-flyer-preview" onDragOver={(event) => { event.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={(event) => { event.preventDefault(); setDragging(false); pick(event.dataTransfer.files[0]); }}
+        className={`flex w-full items-center justify-center rounded-lg border border-dashed ${collapsed && preview ? "min-h-24 lg:min-h-40" : "min-h-40"} ${dragging ? "border-primary bg-primary/10" : "border-border bg-muted/20"}`}>
+        {preview ? <img src={preview} alt="Flyer oficial do rolê" className={`${collapsed ? "max-h-24" : "max-h-[60dvh]"} w-full rounded-lg object-contain lg:max-h-[max(10rem,calc(100dvh-17rem))]`} /> : <Upload className="h-10 w-10 text-muted-foreground" />}
         <input ref={input} aria-label="Enviar flyer do evento" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { pick(event.target.files?.[0]); event.target.value = ""; }} />
       </div>
       <p className="text-xs text-muted-foreground">Opcional · JPG, PNG ou WEBP · até 8 MB</p>
       {reading && <div role="status" className="flex items-center gap-2 text-sm text-foreground">
         <img src={mascotAsset.url} alt="Coezinho" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
         <Loader2 aria-hidden="true" className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none text-primary" />
-        <span className="min-w-0 flex-1">Coezinho analisando o flyer...</span>
+        <span className="min-w-0 flex-1">Coezinho está analisando o flyer...</span>
         <Button type="button" variant="ghost" size="icon" aria-label="Parar leitura" title="Parar leitura" onClick={() => request.current?.abort()}><Square className="h-4 w-4" /></Button>
       </div>}
       {feedback && <p role="status" className="text-sm text-muted-foreground">{feedback}</p>}

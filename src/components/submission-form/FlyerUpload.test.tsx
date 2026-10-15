@@ -53,4 +53,17 @@ describe("vision flyer upload", () => {
     expect(screen.getByLabelText("Arquivo")).toHaveTextContent("");
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
+  it("keeps all manual fields editable after a failed reading", async () => {
+    extract.mockRejectedValueOnce(new Error("Não consegui ler o flyer."));
+    render(<Harness />);
+    fireEvent.change(screen.getByLabelText("Enviar flyer do evento"), { target: { files: [new File(["image"], "flyer.png", { type: "image/png" })] } });
+    await screen.findByRole("alert");
+    for (const [label, value] of [["Título", "Samba manual"], ["Data", "2026-10-25"], ["Horário", "21:00"], ["Local", "Praça"]]) {
+      const field = screen.getByLabelText(label);
+      expect(field).not.toBeDisabled();
+      fireEvent.change(field, { target: { value } });
+      expect(field).toHaveValue(value);
+    }
+    expect(screen.getByLabelText("Arquivo")).toHaveTextContent("flyer.png");
+  });
 });
