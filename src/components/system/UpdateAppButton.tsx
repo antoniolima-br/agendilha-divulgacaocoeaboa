@@ -8,8 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 /**
  * Botão "Atualizar app" — força o navegador/PWA a buscar a versão mais nova
  * de forma segura: respeita offline, prioriza troca de Service Worker via
- * `skipWaiting` (sem limpar caches à toa) e só invalida caches específicos
- * do app-shell quando de fato precisa reobter a build.
+ * `skipWaiting`, aguarda o novo controle e preserva caches e dados locais.
  */
 export function UpdateAppButton({ compact = false }: { compact?: boolean }) {
   const [loading, setLoading] = useState(false);

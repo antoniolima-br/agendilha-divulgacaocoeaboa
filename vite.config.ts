@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => ({
         globIgnores: ['**/pdf-gen-*.js', '**/charts-*.js', '**/guide-*.js'],
         cleanupOutdatedCaches: true,
         // Prompt mode: don't auto-skip — wait for the user to click "Atualizar".
-        clientsClaim: false,
+        clientsClaim: true,
         skipWaiting: false,
         navigateFallback: null,
         navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
