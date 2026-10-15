@@ -22,7 +22,7 @@ describe("organizer archives", () => {
     render(<MemoryRouter><MeusEventos /></MemoryRouter>);
     expect(screen.getByText("Meu rolê")).toBeInTheDocument();
     expect(screen.queryByText("Rolê de outra pessoa")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Curadoria geral" })).toHaveAttribute("href", "/admin/aprovar-eventos");
+    expect(screen.queryByRole("link", { name: "Curadoria geral" })).toBeNull();
     expect(screen.getByRole("link", { name: "Publicar novo evento" })).toHaveAttribute("href", "/enviar-evento");
   });
   it("exibe métricas e compartilhamento sem edição de aprovado ou suspenso", () => {
