@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Refatoração estrutural 358: reduzir acoplamento, duplicação e tipagem frágil por lotes seguros, sem alterar telas, acessos, dados ou regras; validar cada frente com regressões e registrar limites reais.
 - [x] Pitch 357: Anunciantes abre sem senha adicional, com acesso da equipe preservado e resposta limitada aos campos comerciais; Sócios mantém senha. 14 testes aprovados e abertura real conferida com conta autorizada.
 - [x] Auditoria 356: sessão obsoleta/estado entre contas, falha de logout, concorrência/rollback de favoritos e acessibilidade de submenus corrigidos; 561 testes atuais aprovados, compilação automática OK, oito telas em 390/1280 px sem overflow e favorito/saída reais conferidos. Achados e limites em audit-356.md.
 - [ ] Auditoria 356: entrega da imagem gerenciada do Coezinho na prévia local — recurso devolve HTML; depende da infraestrutura de assets, sem substituir a arte original.
