@@ -141,12 +141,15 @@ describe("pitch comercial", () => {
     await screen.findByRole("heading", { name: "Anuncie no Coé a Boa?" });
     expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Voltar ao app" })).toHaveAttribute("href", "/");
     expect(screen.queryByRole("heading", { name: "Conectando Pessoas, Comércios e a Energia do Rio de Janeiro." })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Governança e Organização Corporativa" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
-    expect(screen.getByRole("link", { name: /Divulgar meu evento/ })).toHaveAttribute("href", "/meus-eventos");
+    expect(screen.queryByRole("link", { name: /Quero patrocinar/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Divulgar meu evento/ })).not.toBeInTheDocument();
+    expect(screen.queryByText("Confirme e acompanhe")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Publicação paga exige pagamento comprovado/)).not.toBeInTheDocument();
+    expect(screen.queryByText("Ver detalhes")).not.toBeInTheDocument();
     expect(screen.getByText(/Aberturas não são pessoas únicas/)).toBeVisible();
     const sales = screen.getAllByRole("link", { name: /Fale com o Comercial no WhatsApp/ });
     expect(sales).toHaveLength(1);
@@ -155,11 +158,14 @@ describe("pitch comercial", () => {
     expect(screen.queryByText(/alto poder aquisitivo/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/ROI incomparável/i)).not.toBeInTheDocument();
     expect(screen.getByText(/R\$\s*800,00 a R\$\s*1.000,00/)).toBeVisible();
-    const share = screen.getAllByRole("link", { name: "WhatsApp" })[0];
-    const href = decodeURIComponent(share.getAttribute("href") || "");
-    expect(href).toContain("Sua marca no próximo rolê");
-    expect(href).not.toContain("pitch-comercial");
-    expect(href).not.toContain("1960");
+    expect(screen.queryByRole("link", { name: "WhatsApp" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Copiar/ })).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Baixar a Apresentação em PDF" })).toBeEnabled());
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.getAllByRole("link")).toHaveLength(2);
+    const article = screen.getByRole("article", { name: "Apresentação para anunciantes e divulgadores" });
+    expect(article.querySelectorAll("section button, section a, summary")).toHaveLength(0);
+    expect(within(article.querySelector("footer") as HTMLElement).getByRole("link", { name: /Fale com o Comercial/ })).toBeVisible();
     expect(screen.queryByRole("button", { name: "Bloquear" })).not.toBeInTheDocument();
   });
 
