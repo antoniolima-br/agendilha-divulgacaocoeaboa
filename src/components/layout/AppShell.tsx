@@ -51,7 +51,7 @@ export function AppShell({
   };
 
   return (
-    <div className="flex min-h-dvh bg-background text-foreground selection:bg-primary/10 overflow-x-hidden relative">
+    <div className="flex min-h-dvh bg-background text-foreground selection:bg-primary/10 overflow-x-clip relative">
       {/* Sidebar for Desktop */}
       {hasSidebar && !isMobile && desktopMenuOpen && (
         <aside aria-label="Menu principal" className="fixed inset-y-0 left-0 z-40 hidden w-72 overflow-y-auto border-r border-border bg-sidebar shadow-sm md:block">
@@ -74,7 +74,7 @@ export function AppShell({
 
         {/* Page Content */}
         <main className={cn(
-          "mx-auto w-full min-w-0 flex-1 overflow-x-hidden px-3 py-4 sm:px-4 md:p-8",
+          "mx-auto w-full min-w-0 flex-1 overflow-x-clip px-3 py-4 sm:px-4 md:p-8",
           maxWidthClasses[maxWidth]
         )}>
           <AppErrorBoundary context="AppShellContent">
