@@ -49,7 +49,7 @@ describe("pitch comercial", () => {
     render(page());
     expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
     await unlock();
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByRole("tablist", { name: "Público da apresentação" })).toBeVisible();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
     expect(screen.getByRole("heading", { name: "Segurança e Governança" })).toBeVisible();
     expect(screen.getByText("Projeção de receita mensal")).not.toBeVisible();
@@ -114,7 +114,7 @@ describe("pitch comercial", () => {
     ];
     for (const chapter of chapters) {
       const region = within(screen.getByRole("region", { name: chapter.tab }));
-      expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+      expect(screen.getByRole("tablist", { name: "Público da apresentação" })).toBeVisible();
       expect(screen.getByRole("heading", { name: chapter.summary })).toBeVisible();
       const details = region.getByText("Ver detalhes").closest("details");
       expect(details).not.toHaveAttribute("open");
@@ -139,7 +139,7 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("heading", { name: "Inteligência de Dados · Prova de Valor e ROI" })).toBeVisible();
     expect(screen.getByText(/ROI exige receita atribuível/)).toHaveTextContent("não retorno financeiro exato");
     expect(screen.getByText(/Listas de convidados e status/)).toHaveTextContent("não comprova presença");
-    expect(screen.getByRole("link", { name: /Definir parceria e patrocínio/ })).toHaveAttribute("href", "/planos-anuncios");
+    expect(screen.queryByRole("link", { name: /Quero patrocinar/ })).not.toBeInTheDocument();
     expect(screen.getByText(/Cortesias e permutas ficam separadas/)).toBeVisible();
   });
   it("mantém fechado se a senha for recusada", async () => {
@@ -151,6 +151,27 @@ describe("pitch comercial", () => {
   });
   it("remove os capítulos ao trocar de conta", async () => {
     const view = render(page()); await unlock(); mocks.userId = "other-test-user"; view.rerender(page());
-    await waitFor(() => expect(screen.queryByRole("tablist")).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument());
   });
+  it("separa os públicos sem expor projeções na vitrine", async () => {
+    render(page()); await unlock();
+    const tab = screen.getByRole("tab", { name: "Anunciantes / Divulgadores" });
+    fireEvent.mouseDown(tab, { button: 0, ctrlKey: false });
+    fireEvent.click(tab);
+    await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
+    expect(screen.queryByRole("heading", { name: "Projeção de receita mensal" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Uma empresa. Cinco pilares integrados." })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Quero patrocinar/ })).toHaveAttribute("href", "/planos-anuncios");
+    expect(screen.getByRole("link", { name: /Divulgar meu evento/ })).toHaveAttribute("href", "/meus-eventos");
+    expect(screen.getByText(/Aberturas não são pessoas únicas/)).toBeVisible();
+    expect(screen.getByText(/R\$\s*800,00 a R\$\s*1.000,00/)).toBeVisible();
+    const share = screen.getAllByRole("link", { name: "WhatsApp" })[0];
+    const href = decodeURIComponent(share.getAttribute("href") || "");
+    expect(href).toContain("Sua marca no próximo rolê");
+    expect(href).not.toContain("pitch-comercial");
+    expect(href).not.toContain("1960");
+    fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+  });
+
 });

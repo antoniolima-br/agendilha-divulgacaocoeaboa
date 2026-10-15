@@ -5,6 +5,9 @@ import { ROUTES } from "@/routes/config";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdvertiserPitch } from "./AdvertiserPitch";
+import { PitchShare } from "./PitchShare";
 import type { PitchContent } from "./types";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -23,6 +26,17 @@ const rows: { label: string; value: (s: Scenario) => string | number; emphasis?:
 ];
 
 export function PitchContentView({ content: sourceContent }: { content: PitchContent }) {
+  return <Tabs defaultValue="investor" className="min-w-0">
+    <TabsList aria-label="Público da apresentação" className="grid h-auto w-full grid-cols-2 gap-1">
+      <TabsTrigger value="investor" className="min-h-12 whitespace-normal px-2 py-3 text-center"><span>Sócios / Investidores</span></TabsTrigger>
+      <TabsTrigger value="advertiser" className="min-h-12 whitespace-normal px-2 py-3 text-center"><span>Anunciantes / Divulgadores</span></TabsTrigger>
+    </TabsList>
+    <TabsContent value="investor"><InvestorPitch content={sourceContent} /></TabsContent>
+    <TabsContent value="advertiser"><AdvertiserPitch content={sourceContent} /></TabsContent>
+  </Tabs>;
+}
+
+function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
   const content: PitchContent = {
     ...sourceContent,
     brandPositioning: "O Coé a Boa? é o app PWA de curadoria de eventos e publicidade hiperlocal no Rio de Janeiro. Conecta público, produtores e negócios aos rolês de cada região.",
@@ -82,6 +96,8 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
           <p className="text-xs font-medium uppercase text-primary">Coé a Boa? · Visão executiva</p>
           <h2 id="pitch-overview" className="max-w-3xl text-3xl font-semibold leading-tight">Visão Geral e Qualidades do Ecossistema</h2>
           <p className="max-w-2xl leading-relaxed text-muted-foreground">Coé a Boa? conecta os rolês do Rio de Janeiro a marcas que querem ser vistas na região certa. Coezinho agiliza o cadastro; Marketing entrega visibilidade; dados registrados orientam a próxima decisão comercial.</p>
+          <p className="max-w-3xl leading-relaxed text-muted-foreground">Uma proposta de negócio para o entretenimento carioca: receita de publicidade regional, responsabilidades separadas e automação com revisão humana. Sustentabilidade e expansão dependem da validação comercial e do controle dos custos.</p>
+          <PitchShare audience="investor" />
           <ul className="divide-y divide-border">{[
             { title: "Segurança e Governança", description: "Anti-duplicidade, cotas e revisão antes da publicação.", icon: ShieldCheck },
             { title: "Visibilidade Publicitária Regional", description: "Espaços dedicados, banners de marcas e promoções geridos pelo Marketing, com região, período e destino definidos para cada campanha.", icon: Megaphone },
@@ -193,7 +209,7 @@ export function PitchContentView({ content: sourceContent }: { content: PitchCon
       <section className="space-y-3"><h3 id="pitch-investment-differential" tabIndex={-1} className={headingClass}>Diferencial do Produto</h3>
       <p className="max-w-3xl text-lg font-medium leading-relaxed">Um ecossistema seguro e inteligente para o entretenimento local.</p></section>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">IA para reduzir o trabalho de cadastro, publicidade no contexto local e dados para sustentar o pós-venda. Uma parceria com entregas claras, acompanhamento e expansão condicionada à validação de cada praça.</p>
-      <section aria-labelledby="pitch-partnership" className="space-y-4 border-t border-border pt-6"><h3 id="pitch-partnership" className="text-xl font-semibold">Sua marca no próximo rolê</h3><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Escolha o formato de publicidade para iniciar uma proposta de parceria ou patrocínio. Região, período e metas de acompanhamento entram na negociação.</p><Button asChild className="min-h-11 h-auto w-full whitespace-normal py-3 sm:w-auto"><a href={ROUTES.PLANOS_ANUNCIOS}><BriefcaseBusiness aria-hidden="true" />Definir parceria e patrocínio<ArrowRight aria-hidden="true" /></a></Button></section>
+      <section aria-labelledby="pitch-partnership" className="space-y-4 border-t border-border pt-6"><h3 id="pitch-partnership" className="text-xl font-semibold">Próximo passo · Conversa societária</h3><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">Alinhar participação, responsabilidades, investimento e critérios de validação. As projeções são cenários de receita, não lucro líquido ou promessa de retorno.</p><PitchShare audience="investor" /></section>
       <PitchDetails>
       <section className="space-y-3"><h3 id="pitch-investment-ecosystem" tabIndex={-1} className={headingClass}>Ecossistema Hiperlocal</h3>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Curadoria, cadastro rápido e publicidade de bairro conectam público, produtores e comerciantes. Preparado para escalar praça a praça, com governança e validação do piloto.</p></section>
