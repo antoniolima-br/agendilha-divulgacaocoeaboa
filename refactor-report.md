@@ -1,5 +1,36 @@
 # Refatoração interna — organização e duplicações
 
+## Rodada 375 — revisão estrutural e refatoração segura
+
+### Revisão e prioridade
+
+A revisão por domínios abrangeu organização de componentes/páginas, hooks e estado, dados e consultas, autenticação, navegação, integrações e estrutura das funções. O inventário tem 291 arquivos em componentes, 118 em páginas, 54 em dados e 23 em hooks antes desta rodada. Não representa leitura ou certificação linha a linha de toda a base; arquivos excluídos e autogerados permaneceram intocados.
+
+1. **Alta — anúncios:** contratos, normalização e cinco leituras estavam misturados aos hooks e mutações. Modelo e adaptadores foram extraídos para `src/data/ads`, mantendo `useAds.ts` como fachada compatível. O arquivo passou de 337 para 177 linhas.
+2. **Alta — transporte de CEP:** seis consumidores repetiam a mesma requisição e contrato de resposta. `src/data/cep.ts` centraliza somente o transporte. Cada formulário continua dono da máscara, validação, tratamento de respostas antigas, preenchimento manual e mensagens; consumidores que não verificavam status HTTP continuam com essa política explícita.
+3. **Média — ciclos compartilhados:** relógio de anúncios e assinatura pública de eventos repetiam contagem de consumidores e liberação. `sharedResource.ts` centraliza o ciclo de vida por proprietário, sem unificar canais, filtros, frequência, adiamento ou lotes de invalidação.
+4. **Média — apresentação de usuários:** classificação e ordem dos grupos saíram da página para `userGrouping.ts`, com exportação anterior preservada. São agrupamentos visuais, não fontes de permissão.
+
+### Limites preservados
+
+- Nenhuma alteração visual, de rota, autenticação, tabela, política, função remota, pagamento ou registro real.
+- Consultas pessoais e administrativas continuam distintas; chaves, filtros, campos selecionados, limites, paginação e ordenação foram preservados.
+- Os três cadastros permanecem separados; não foram fundidos critérios de validação ou de preenchimento.
+- Hidratação de sessão, permissões, persistência em lote, geração de flyer e exportação PDF não foram reescritas sem necessidade comprovada e cobertura específica.
+
+### Evidências
+
+- Linha de base: 611 testes em 125 arquivos; final: **625 testes em 129 arquivos**, todos aprovados. Suíte exclui o teste da página previamente excluída da intervenção.
+- Novos testes cobrem transporte/abort/status do CEP, contrato dos adaptadores de anúncios, precedência de classificação e isolamento/liberação de recursos compartilhados.
+- Verificação automática final: **build OK**; lint dos novos módulos e dos hooks de anúncios/atualização sem apontamentos.
+- Navegador com sessão real: CEP `21021100` preencheu endereço/bairro nos cadastros administrativo, pessoal e público; anúncio pessoal existente abriu seus detalhes; listas pública/pessoal e Gestão de Usuários foram abertas.
+- Cadastro público também conferido em 390 px, após carregamento e preenchimento de CEP, sem overflow horizontal. Capturas em `/tmp/browser/refactor375`.
+- Nenhum cadastro foi enviado, anúncio editado, usuário alterado ou pagamento lançado; essas operações não foram validadas ponta a ponta nesta rodada.
+
+### Continuidade
+
+Arquivos extensos de cadastro de banda, envio de eventos e gestão administrativa ainda existem. Uma decomposição integral de todos os arquivos não foi realizada; requer extrações por domínio com testes de persistência e autorização para registros de teste, em vez de uma movimentação indiscriminada de pastas.
+
 ## Análise e prioridades
 
 Revisão por áreas de dados, hooks, utilitários, componentes, navegação, autenticação e integração. As fontes de autoridade, rotas e chaves de consultas já têm módulos centralizados; substituí-los sem necessidade aumentaria risco. Esta rodada não é uma certificação linha a linha de toda a base.

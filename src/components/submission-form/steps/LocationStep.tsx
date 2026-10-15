@@ -1,3 +1,4 @@
+import { fetchCepAddress } from "@/data/cep";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SuggestInput } from "@/components/ui/SuggestInput";
@@ -69,9 +70,7 @@ export function LocationStep({ form }: { form: UseFormReturn<any> }) {
     cepRequest.current = controller;
     setCepLoading(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${d}/json/`, { signal: controller.signal });
-      if (!res.ok) throw new Error("CEP indisponível");
-      const data: { erro?: boolean; logradouro?: string; bairro?: string; localidade?: string; uf?: string } = await res.json();
+      const data = await fetchCepAddress(d, { signal: controller.signal });
       if (controller.signal.aborted || cepDigits(form.getValues("locationCep")) !== d) return;
       if (data.erro) {
         setCepMessage("CEP não encontrado. Confira o CEP ou preencha o endereço manualmente.");

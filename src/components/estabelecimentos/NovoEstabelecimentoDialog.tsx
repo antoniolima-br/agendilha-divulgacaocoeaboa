@@ -1,3 +1,4 @@
+import { fetchCepAddress } from "@/data/cep";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -82,8 +83,7 @@ export function NovoEstabelecimentoDialog({
     const d = cepDigits(raw);
     if (d.length !== 8 || validateCep(d).valid === false) return;
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${d}/json/`);
-      const data = await res.json();
+      const data = await fetchCepAddress(d, { checkHttpStatus: false });
       if (data?.erro) return;
       if (!endereco.trim() && data.logradouro) setEndereco(data.logradouro);
       if (!bairro && data.bairro && BAIRROS.includes(data.bairro)) setBairro(data.bairro);

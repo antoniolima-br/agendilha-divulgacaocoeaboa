@@ -7,3 +7,5 @@
 - Published-ad placements share one visible-tab refresh clock per QueryClient and one paginated request, avoiding duplicate polling while preserving audiences.
 - Abort superseded attraction-schedule checks while retaining submit-time validation and database guards, avoiding unused responses without weakening conflicts.
 - Centralize cross-query invalidation for profile and collaborator writes so derived permission and promoter views cannot drift.
+- Ads keep models/read adapters in ads/; useAds.ts preserves hook exports and cache contracts, separating transport from consumers.
+- CEP transport lives in cep.ts; forms retain validation, request ownership, field policy and feedback to preserve distinct journeys.

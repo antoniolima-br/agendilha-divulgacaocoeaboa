@@ -1,3 +1,4 @@
+import { fetchCepAddress } from "@/data/cep";
 import { useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -66,9 +67,7 @@ function AdminEstabelecimentosPage({ listingKind }: { listingKind: "event_venue"
 
     setCepLoading(true);
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
-      if (!response.ok) throw new Error("Falha ao consultar CEP");
-      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      const data = await fetchCepAddress(digits);
       if (data.erro) {
         setCepMessage("CEP não encontrado. Preencha o endereço manualmente.");
         return;

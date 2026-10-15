@@ -1,3 +1,4 @@
+import { fetchCepAddress } from "@/data/cep";
 import { useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
@@ -70,9 +71,7 @@ export default function CadastroEstabelecimentoPublico() {
 
     setCepLoading(true);
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
-      if (!response.ok) throw new Error("Não foi possível consultar o CEP");
-      const data: { erro?: boolean; logradouro?: string; bairro?: string } = await response.json();
+      const data = await fetchCepAddress(digits);
       if (requestId !== cepRequest.current) return;
 
       if (data.erro) {
