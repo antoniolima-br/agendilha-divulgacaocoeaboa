@@ -1,132 +1,56 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { runAppUpdate, __test__ } from "./updateApp";
+import { describe, it, expect, vi } from "vitest";
+import { runAppUpdate } from "./updateApp";
 
-function makeReg(overrides: Partial<{ waiting: any; update: () => Promise<void> }> = {}) {
-  return {
-    waiting: overrides.waiting ?? null,
-    update: overrides.update ?? vi.fn().mockResolvedValue(undefined),
-  } as unknown as ServiceWorkerRegistration;
+function fixture(path = "/sw.js", waiting = true) {
+  const sw = new EventTarget() as EventTarget & { controller: unknown; getRegistrations: ReturnType<typeof vi.fn> };
+  sw.controller = null;
+  const worker = { scriptURL: new URL(path, window.location.origin).href, postMessage: vi.fn() };
+  const reg = { active: worker, waiting: waiting ? worker : null, installing: null, update: vi.fn().mockResolvedValue(undefined) };
+  sw.getRegistrations = vi.fn().mockResolvedValue([reg]);
+  return { sw: sw as unknown as ServiceWorkerContainer, worker, reg };
 }
 
-function makeSW(regs: ServiceWorkerRegistration[], afterUpdate?: ServiceWorkerRegistration[]) {
-  let call = 0;
-  return {
-    getRegistrations: vi.fn().mockImplementation(async () => {
-      call += 1;
-      return call === 1 || !afterUpdate ? regs : afterUpdate;
-    }),
-  } as unknown as ServiceWorkerContainer;
-}
-
-function makeCaches(keys: string[]) {
-  const deleted: string[] = [];
-  return {
-    storage: {
-      keys: vi.fn().mockResolvedValue(keys),
-      delete: vi.fn().mockImplementation(async (k: string) => {
-        deleted.push(k);
-        return true;
-      }),
-      match: vi.fn(),
-      has: vi.fn(),
-      open: vi.fn(),
-    } as unknown as CacheStorage,
-    deleted,
-  };
-}
-
-describe("runAppUpdate", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("aborta com status 'offline' quando o usuário está sem conexão", async () => {
-    const sw = makeSW([]);
-    const c = makeCaches(["workbox-precache-v2-http://x/"]);
-    const res = await runAppUpdate({ onLine: false, serviceWorker: sw, caches: c.storage });
-    expect(res).toEqual({ status: "offline" });
-    expect(sw.getRegistrations).not.toHaveBeenCalled();
-    expect(c.deleted).toHaveLength(0);
+describe("confirmed PWA updates", () => {
+  it("does not modify anything offline", async () => {
+    const { sw, worker } = fixture();
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: false })).toEqual({ status: "offline" });
+    expect(worker.postMessage).not.toHaveBeenCalled();
   });
-
-  it("apenas ativa o waiting worker sem apagar caches", async () => {
-    const postMessage = vi.fn();
-    const reg = makeReg({ waiting: { postMessage } });
-    const sw = makeSW([reg]);
-    const c = makeCaches(["workbox-precache-v2-http://x/", "google-fonts-cache"]);
-    const res = await runAppUpdate({ onLine: true, serviceWorker: sw, caches: c.storage });
-    expect(res).toEqual({ status: "sw-activated" });
-    expect(postMessage).toHaveBeenCalledWith({ type: "SKIP_WAITING" });
-    expect(c.deleted).toHaveLength(0);
+  it("sends skipWaiting but waits for controllerchange before reporting activation", async () => {
+    const { sw, worker } = fixture();
+    let resolved = false;
+    const result = runAppUpdate({ serviceWorker: sw, onLine: true }).then(r => { resolved = true; return r; });
+    await vi.waitFor(() => expect(worker.postMessage).toHaveBeenCalledWith({ type: "SKIP_WAITING" }));
+    expect(resolved).toBe(false);
+    Object.defineProperty(sw, "controller", { value: worker, configurable: true });
+    sw.dispatchEvent(new Event("controllerchange"));
+    expect(await result).toEqual({ status: "sw-activated" });
   });
-
-  it("marca 'unstable' quando registration.update() estoura o timeout", async () => {
-    const reg = makeReg({ update: () => new Promise(() => {}) }); // pendura pra sempre
-    const sw = makeSW([reg]);
-    const c = makeCaches([]);
-    const res = await runAppUpdate({
-      onLine: true,
-      serviceWorker: sw,
-      caches: c.storage,
-      updateTimeoutMs: 10,
-    });
-    expect(res).toEqual({ status: "unstable" });
-    expect(c.deleted).toHaveLength(0);
+  it("does not claim success if the new worker never takes control", async () => {
+    const { sw } = fixture();
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: true, updateTimeoutMs: 5 })).toEqual({ status: "unstable" });
   });
-
-  it("marca 'unstable' quando todas as chamadas update() falham (conexão instável)", async () => {
-    const reg = makeReg({ update: vi.fn().mockRejectedValue(new Error("net")) });
-    const sw = makeSW([reg]);
-    const c = makeCaches([]);
-    const res = await runAppUpdate({
-      onLine: true,
-      serviceWorker: sw,
-      caches: c.storage,
-      updateTimeoutMs: 50,
-    });
-    expect(res).toEqual({ status: "unstable" });
+  it("does not update messaging workers", async () => {
+    const { sw, worker, reg } = fixture("/firebase-messaging-sw.js");
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: true })).toEqual({ status: "reload-only" });
+    expect(worker.postMessage).not.toHaveBeenCalled();
+    expect(reg.update).not.toHaveBeenCalled();
   });
-
-  it("após update(), se surgir waiting worker, ativa e preserva caches", async () => {
-    const reg1 = makeReg();
-    const postMessage = vi.fn();
-    const reg2 = makeReg({ waiting: { postMessage } });
-    const sw = makeSW([reg1], [reg2]);
-    const c = makeCaches(["workbox-precache-v2-http://x/", "google-fonts-cache"]);
-    const res = await runAppUpdate({ onLine: true, serviceWorker: sw, caches: c.storage });
-    expect(res).toEqual({ status: "sw-activated" });
-    expect(postMessage).toHaveBeenCalled();
-    expect(c.deleted).toHaveLength(0);
+  it("preserves caches and local data even when no newer version exists", async () => {
+    const { sw } = fixture("/sw.js", false);
+    const caches = { keys: vi.fn(), delete: vi.fn() } as unknown as CacheStorage;
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: true, caches })).toEqual({ status: "reload-only" });
+    expect(caches.keys).not.toHaveBeenCalled();
+    expect(caches.delete).not.toHaveBeenCalled();
   });
-
-  it("no fallback, limpa só caches do app-shell e preserva fontes/externos", async () => {
-    const reg = makeReg();
-    const sw = makeSW([reg], [reg]);
-    const c = makeCaches([
-      "workbox-precache-v2-http://x/",
-      "workbox-runtime-http://x/",
-      "html-navigations",
-      "google-fonts-cache",
-      "gstatic-fonts-cache",
-      "supabase-api-cache",
-    ]);
-    const res = await runAppUpdate({ onLine: true, serviceWorker: sw, caches: c.storage });
-    expect(res).toEqual({ status: "reload-only" });
-    expect(c.deleted.sort()).toEqual(
-      ["html-navigations", "workbox-precache-v2-http://x/", "workbox-runtime-http://x/"].sort(),
-    );
-    // fontes e cache externo do supabase preservados
-    expect(c.deleted).not.toContain("google-fonts-cache");
-    expect(c.deleted).not.toContain("gstatic-fonts-cache");
-    expect(c.deleted).not.toContain("supabase-api-cache");
+  it("does not reload while installation is in progress", async () => {
+    const { sw, reg, worker } = fixture("/sw.js", false);
+    Object.assign(reg, { installing: worker });
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: true })).toEqual({ status: "unstable" });
   });
-
-  it("isAppShellCache identifica corretamente os caches descartáveis", () => {
-    const f = __test__.isAppShellCache;
-    expect(f("workbox-precache-v2-http://x/")).toBe(true);
-    expect(f("workbox-runtime-http://x/")).toBe(true);
-    expect(f("html-navigations")).toBe(true);
-    expect(f("google-fonts-cache")).toBe(false);
-    expect(f("gstatic-fonts-cache")).toBe(false);
-    expect(f("supabase-api-cache")).toBe(false);
-    expect(f("qualquer-outro")).toBe(false);
+  it("recovers from a failed version check", async () => {
+    const { sw, reg } = fixture("/sw.js", false);
+    reg.update.mockRejectedValue(new Error("offline"));
+    expect(await runAppUpdate({ serviceWorker: sw, onLine: true })).toEqual({ status: "unstable" });
   });
 });
