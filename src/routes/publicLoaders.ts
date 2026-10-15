@@ -4,3 +4,4 @@ export const loadEventDetail = () => import("@/pages/EventDetail");
 export const loadExplorar = () => import("@/pages/Explorar");
 export const loadHighlights = () => import("@/pages/EventosEmDestaque");
 export const loadToday = () => import("@/pages/CuradoriaHoje");
+export const loadRadar = () => import("@/pages/SeuRadar");

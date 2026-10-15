@@ -53,7 +53,7 @@ export function AppShell({
   return (
     <div className="flex min-h-dvh bg-background text-foreground selection:bg-primary/10 overflow-x-hidden relative">
       {/* Sidebar for Desktop */}
-      {hasSidebar && (isMobile || desktopMenuOpen) && (
+      {hasSidebar && !isMobile && desktopMenuOpen && (
         <aside aria-label="Menu principal" className="fixed inset-y-0 left-0 z-40 hidden w-72 overflow-y-auto border-r border-border bg-sidebar shadow-sm md:block">
           <SidebarMenu onClose={() => setDesktopSidebar(false)} />
         </aside>

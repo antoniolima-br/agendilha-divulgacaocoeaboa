@@ -25,4 +25,20 @@ describe("batched query invalidation", () => {
     vi.runAllTimers();
     expect(invalidate).not.toHaveBeenCalled();
   });
+  it("flushes continuous changes at the deadline rather than starving refreshes", () => {
+    vi.useFakeTimers();
+    const invalidate = vi.fn();
+    const batch = createQueryInvalidationBatch(invalidate);
+    for (let index = 0; index < 6; index++) {
+      batch.schedule(["events"]);
+      vi.advanceTimersByTime(500);
+    }
+    expect(invalidate).toHaveBeenCalledTimes(1);
+    batch.schedule(["ratings"]);
+    vi.advanceTimersByTime(750);
+    expect(invalidate.mock.calls).toEqual([[["events"]], [["ratings"]]]);
+    batch.cancel();
+    vi.runAllTimers();
+    expect(invalidate).toHaveBeenCalledTimes(2);
+  });
 });

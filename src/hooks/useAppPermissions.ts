@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
@@ -70,6 +71,8 @@ export type PermissionName =
   | "audit_logs.read";
 
 const PROMOTER_ALIASES = ["promoter", "promotor", "divulgador"];
+const EMPTY_PERMISSIONS = new Set<PermissionName>();
+const EMPTY_ROLES: string[] = [];
 
 /**
  * Pura: dado o resultado das 3 queries (roles, colaborador, profile),
@@ -190,15 +193,15 @@ export function useAppPermissions() {
     },
   });
 
-  const permissions = data?.permissions ?? new Set<PermissionName>();
-  const roles = data?.roles ?? [];
+  const permissions = data?.permissions ?? EMPTY_PERMISSIONS;
+  const roles = data?.roles ?? EMPTY_ROLES;
   // Considera "loading" apenas enquanto não temos a primeira resposta.
   // Não bloquear por refetches em background — isso causava "flicker" e
   // intermitências no acesso ao Painel Master.
   const loading = !!userId && isLoading && !data;
 
-  const hasPermission = (permission: PermissionName) => permissions.has(permission);
-  const hasRole = (role: string) => roles.includes(role);
+  const hasPermission = useCallback((permission: PermissionName) => permissions.has(permission), [permissions]);
+  const hasRole = useCallback((role: string) => roles.includes(role), [roles]);
 
   const isMaster = roles.includes("master");
    const staffRole = administrativeRole(roles);

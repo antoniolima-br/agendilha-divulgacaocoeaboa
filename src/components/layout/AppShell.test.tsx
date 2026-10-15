@@ -33,9 +33,11 @@ describe('AppShell sidebar layout', () => {
   it('keeps mobile drawers separate and closes them on desktop resize', () => {
     state.mobile = true;
     const view = render(shell());
-    expect(screen.getByRole('complementary')).toHaveClass('hidden', 'md:block');
+    expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
+    expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
     fireEvent.click(screen.getByText('Menu'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getAllByRole('navigation')).toHaveLength(1);
     state.mobile = false;
     view.rerender(shell());
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

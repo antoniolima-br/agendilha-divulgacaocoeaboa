@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getEventFallbackImage, getEventFallbackPalette, normalizeText } from "@/lib/event-utils";
+import { getEventFallbackPalette } from "@/lib/event-utils";
 import { cn } from "@/lib/utils";
 
 interface EventImageProps {
@@ -12,18 +12,9 @@ interface EventImageProps {
   fit?: "cover" | "contain";
 }
 
-const EVENT_IMAGE_FALLBACKS: Record<string, string> = {
-  musica: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=72&w=480",
-  gastronomia: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=72&w=480",
-  teatro: "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&q=72&w=480",
-  esporte: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=72&w=480",
-  outros: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=72&w=480",
-};
-
-export function EventImage({ src, alt, category, className, icon: Icon, fit = "cover" }: EventImageProps) {
+export const EventImage = memo(function EventImage({ src, alt, category, className, icon: Icon, fit = "cover" }: EventImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
-  const fallback = useMemo(() => getEventFallbackImage(category), [category]);
   const palette = useMemo(() => getEventFallbackPalette(`${alt}:${category || "outros"}`), [alt, category]);
   const showGeneratedArtwork = !src || error;
 
@@ -46,34 +37,16 @@ export function EventImage({ src, alt, category, className, icon: Icon, fit = "c
           </span>
         </div>
       ) : <img
-        src={error ? fallback : src || fallback}
+        src={src || undefined}
         alt={alt}
         key={src || "fallback"}
         className={cn(
-          "h-full w-full transition-all duration-700",
+          "h-full w-full motion-safe:transition-opacity motion-safe:duration-300",
           fit === "contain" ? "object-contain" : "object-cover",
-          !isLoaded ? "opacity-0 blur-sm scale-105" : "opacity-100 blur-0 scale-100",
+          !isLoaded ? "opacity-0" : "opacity-100",
         )}
         onLoad={() => setIsLoaded(true)}
-        onError={(e) => {
-          const currentTarget = e.currentTarget;
-          if (!error) {
-            const normalized = normalizeText(category || "");
-            let finalFallback = EVENT_IMAGE_FALLBACKS.outros;
-            if (normalized.includes("musica") || normalized.includes("show"))
-              finalFallback = EVENT_IMAGE_FALLBACKS.musica;
-            else if (normalized.includes("gastronomia") || normalized.includes("comida"))
-              finalFallback = EVENT_IMAGE_FALLBACKS.gastronomia;
-            else if (
-              normalized.includes("teatro") ||
-              normalized.includes("arte") ||
-              normalized.includes("cultura")
-            )
-              finalFallback = EVENT_IMAGE_FALLBACKS.teatro;
-            else if (normalized.includes("esporte")) finalFallback = EVENT_IMAGE_FALLBACKS.esporte;
-
-            currentTarget.src = finalFallback;
-          }
+        onError={() => {
           setError(true);
           setIsLoaded(true);
         }}
@@ -87,4 +60,4 @@ export function EventImage({ src, alt, category, className, icon: Icon, fit = "c
       )}
     </div>
   );
-}
+});

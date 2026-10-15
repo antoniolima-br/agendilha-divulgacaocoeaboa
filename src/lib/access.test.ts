@@ -29,20 +29,21 @@ describe("effective workspaces", () => {
     const paths = menu([], false).map((item) => item.path);
     expect(paths).toContain(ROUTES.AGENDA);
     expect(paths).not.toContain(ROUTES.ANUNCIO_NOVO);
-    expect(paths).not.toContain(ROUTES.SEU_RADAR);
+    expect(paths).toContain(ROUTES.SEU_RADAR);
     expect(paths.some((path) => path.startsWith("/admin"))).toBe(false);
   });
   it("public users see agenda and promoter registration, but no organizer or financial tools", () => {
     const paths = menu(["user"]).map((item) => item.path);
     expect(paths).toEqual(expect.arrayContaining([ROUTES.AGENDA, ROUTES.CADASTRO_DIVULGADOR]));
-    expect(paths).not.toContain(ROUTES.SEU_RADAR);
+    expect(paths).toContain(ROUTES.SEU_RADAR);
     expect(paths).not.toContain(ROUTES.MEUS_EVENTOS);
     expect(paths).not.toContain(ROUTES.ADMIN_FINANCEIRO);
   });
   it("promoters see only personal operations", () => {
     const paths = menu(["promoter"]).map((item) => item.path);
     expect(paths).toContain(ROUTES.MEUS_EVENTOS);
-    expect(paths).toContain(ROUTES.ENVIAR_EVENTO);
+    expect(paths).not.toContain(ROUTES.ENVIAR_EVENTO);
+    expect(paths).not.toContain(ROUTES.COMPARTILHAR_MEUS_EVENTOS);
     expect(paths).not.toContain(ROUTES.ADMIN_FINANCEIRO);
     expect(paths).not.toContain(ROUTES.ADMIN_APROVAR_EVENTOS);
   });

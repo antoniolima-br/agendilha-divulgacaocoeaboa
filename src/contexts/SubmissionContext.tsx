@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -208,9 +208,7 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
     );
   }, [user]);
 
-  return (
-    <SubmissionContext.Provider
-      value={{
+  const value = useMemo(() => ({
         submissions,
         loading,
         fetchSubmissions,
@@ -220,8 +218,10 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
         resubmit,
         updateStatus,
         savedCount: submissions.length,
-      }}
-    >
+      }), [submissions, loading, fetchSubmissions, addSubmissionBatch, addSubmission, deleteSubmission, resubmit, updateStatus]);
+
+  return (
+    <SubmissionContext.Provider value={value}>
       {children}
     </SubmissionContext.Provider>
   );

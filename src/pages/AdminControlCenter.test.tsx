@@ -21,8 +21,9 @@ describe("central administrativa", () => {
   });
 
   it("usa uma única entrada para Central da Home e Moderação", () => {
-    const operation = filterSidebarSections("admin", () => true, routeExists).find((section) => section.id === "operacao");
-    expect(operation?.items.find((item) => item.id === "central_moderacao")?.path).toBe(ROUTES.ADMIN_CENTRAL);
+    const operation = filterSidebarSections("admin", () => true, routeExists).find((section) => section.id === "curadoria");
+    const curation = operation?.items.find((item) => item.id === "curadoria_moderacao");
+    expect(curation?.children?.find((item) => item.id === "central_moderacao")?.path).toBe(ROUTES.ADMIN_CENTRAL);
     expect(operation?.items.some((item) => ["central_home", "moderacao"].includes(item.id))).toBe(false);
   });
 });
