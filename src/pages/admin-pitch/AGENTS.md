@@ -1,4 +1,4 @@
-- Select investor or advertiser audiences with accessible top-level tabs; render each as a separate linear document so governance/projections do not mix with the sales pitch.
+- Select audiences via dedicated protected routes and sidebar entries; share the account/password gate and render one linear document per destination so governance/projections do not mix with sales.
 - Keep corporate pillars presentational and use the existing protected pitch response; this avoids new permissions, metrics or duplicate sector data fetches.
 - Use shared native PitchDetails disclosures after each chapter summary, initially closed, so executive reading stays concise with keyboard-accessible expansion.
 - Open contextual shortcut ancestor disclosures before focus and reduced-motion-aware scrolling so detailed content stays reachable.

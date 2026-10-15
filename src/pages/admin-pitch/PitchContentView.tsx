@@ -5,7 +5,6 @@ import { ROUTES } from "@/routes/config";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdvertiserPitch } from "./AdvertiserPitch";
 import { PitchShare } from "./PitchShare";
 import type { PitchContent } from "./types";
@@ -25,15 +24,8 @@ const rows: { label: string; value: (s: Scenario) => string | number; emphasis?:
   { label: "Receita após marketing*", value: (s) => money(s.afterMarketing) },
 ];
 
-export function PitchContentView({ content: sourceContent }: { content: PitchContent }) {
-  return <Tabs defaultValue="investor" className="min-w-0">
-    <TabsList aria-label="Público da apresentação" className="grid h-auto w-full grid-cols-2 gap-1">
-      <TabsTrigger value="investor" className="min-h-12 whitespace-normal px-2 py-3 text-center"><span>Sócios / Investidores</span></TabsTrigger>
-      <TabsTrigger value="advertiser" className="min-h-12 whitespace-normal px-2 py-3 text-center"><span>Anunciantes / Divulgadores</span></TabsTrigger>
-    </TabsList>
-    <TabsContent value="investor"><InvestorPitch content={sourceContent} /></TabsContent>
-    <TabsContent value="advertiser"><AdvertiserPitch content={sourceContent} /></TabsContent>
-  </Tabs>;
+export function PitchContentView({ content: sourceContent, audience = "investor" }: { content: PitchContent; audience?: "investor" | "advertiser" }) {
+  return audience === "advertiser" ? <AdvertiserPitch content={sourceContent} /> : <InvestorPitch content={sourceContent} />;
 }
 
 function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
