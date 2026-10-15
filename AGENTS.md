@@ -4,10 +4,9 @@
 - promotion_choice separates free/highlight intent; courtesy is immediate, paid requires payment_records, and free submissions get no automatic flyer.
 - Schedules validate client/database; gaps <2h block, missing ends warn.
 - WhatsApp uses prepared links; automation needs an authenticated provider.
-- opening_hours is free text; validate shows separately.
-- One venue category; edit CEP.
+- opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes, permissions, formatting and data; shared UI owns sizing, collision-aware menus and touch scrolling.
+- Centralize routes/permissions/data; shared UI owns sizing, menu collisions and touch scrolling.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -26,18 +25,14 @@
 - Curatorial editing uses protected RPCs, private artistic history, soft deletion and broad cache invalidation.
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
-
 - Pitches are public and split by audience; disclosures stay concise. Read src/pages/admin-pitch/AGENTS.md.
 - Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.
 - Home/Agenda calendar and weekly strip share eventCalendar availability, ignoring selected dates; strip navigation skips empty weeks.
-
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
-- Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
+- Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels stale requests and exposes failures. Read src/data/AGENTS.md.
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
-
 - Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
-- Read nested AGENTS.md.
+- Read nested AGENTS.md. sharedResource shares lifetimes, not timing; userGrouping is presentation-only to preserve authority.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay isolated from public/promoter/artist flows.
-
 - PWA guards registration and awaits control before reload; user confirms updates.
