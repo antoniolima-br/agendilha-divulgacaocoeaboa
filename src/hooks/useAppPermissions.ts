@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { handleError } from "@/lib/error-handler";
 import { administrativeRole, isAdministrativeRole } from "@/lib/access";
 import { qk } from "@/data/queryKeys";
+import { fetchUserRoles } from "@/data/userRoles";
 
 const ADMIN_PERMISSIONS: PermissionName[] = [
   "events.create",
@@ -147,8 +148,8 @@ export function useAppPermissions() {
     refetchOnMount: false,
     queryFn: async () => {
       if (!userId) return { roles: [], permissions: new Set<PermissionName>(), collaboratorName: null };
-      const [rolesResponse, collaboratorResponse, profileResponse] = await Promise.all([
-        supabase.from("user_roles").select("role").eq("user_id", userId),
+      const [roleNames, collaboratorResponse, profileResponse] = await Promise.all([
+        fetchUserRoles(userId),
         supabase
           .from("collaborators")
           .select("name, can_submit, can_approve, can_edit, can_delete, is_active")
@@ -157,12 +158,6 @@ export function useAppPermissions() {
         supabase.from("profiles").select("role, user_type").eq("user_id", userId).maybeSingle(),
       ]);
 
-      if (rolesResponse.error) {
-        handleError(rolesResponse.error, { 
-          silent: true, 
-          context: "useAppPermissions:roles" 
-        });
-      }
       if (collaboratorResponse.error) {
         handleError(collaboratorResponse.error, { 
           silent: true, 
@@ -176,7 +171,6 @@ export function useAppPermissions() {
         });
       }
 
-      const roleNames: string[] = rolesResponse.data?.map((r) => r.role).filter(Boolean) || [];
       const profileData = profileResponse.data as { role?: string | null; user_type?: string | null } | null;
       // `role` é a fonte principal; `user_type` cobre perfis antigos sem `role`.
       const profileRole =

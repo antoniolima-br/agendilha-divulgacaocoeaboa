@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { qk } from "@/data/queryKeys";
 import { handleError } from "@/lib/error-handler";
 import { administrativeRole, canOrganize } from "@/lib/access";
+import { fetchUserRoles } from "@/data/userRoles";
 
 export type DivulgadorRequestStatus = "pendente" | "aprovado" | "recusado";
 
@@ -39,7 +40,7 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
       if (!userId) return { isAdmin: false, isDivulgador: false, isCollaborator: false, profile: null, request: null };
       const [profileRes, rolesRes, collabRes, requestRes] = await Promise.all([
         supabase.from("profiles").select("user_type, responsible_name, phone, whatsapp_phone").eq("user_id", userId).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", userId),
+        fetchUserRoles(userId),
         supabase
           .from("collaborators")
           .select("can_submit, is_active")
@@ -56,12 +57,11 @@ export function useDivulgadorStatus(targetUserId?: string | null) {
       ]);
 
       if (profileRes.error) throw profileRes.error;
-      if (rolesRes.error) throw rolesRes.error;
       if (collabRes.error) throw collabRes.error;
       if (requestRes.error) throw requestRes.error;
 
       const userType = ((profileRes.data as { user_type?: string | null } | null)?.user_type ?? "").toLowerCase();
-      const roles = rolesRes.data?.map((r) => r.role) ?? [];
+      const roles = rolesRes;
       const staffRole = administrativeRole(roles);
       const isAdmin = staffRole !== null && staffRole !== "financeiro";
       const canSubmitAsCollaborator =

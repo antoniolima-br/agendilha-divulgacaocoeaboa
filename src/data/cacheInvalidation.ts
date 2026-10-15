@@ -8,6 +8,15 @@ export async function invalidateProfileDerived(client: QueryClient, userId: stri
   ]);
 }
 
+export async function invalidateRoleDerived(client: QueryClient, userId: string): Promise<void> {
+  await Promise.all([
+    client.invalidateQueries({ queryKey: qk.permissions.byUser(userId) }),
+    client.invalidateQueries({ queryKey: qk.divulgador.status(userId) }),
+    client.invalidateQueries({ queryKey: qk.userDetails.byId(userId) }),
+    client.invalidateQueries({ queryKey: qk.adminUsers.all }),
+  ]);
+}
+
 export async function invalidateCollaboratorDerived(client: QueryClient, userId?: string | null): Promise<void> {
   const invalidations = [
     client.invalidateQueries({ queryKey: qk.collaborators.all }),

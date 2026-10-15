@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { describe, expect, it, vi } from "vitest";
 import { qk } from "./queryKeys";
-import { invalidateCollaboratorDerived, invalidateProfileDerived } from "./cacheInvalidation";
+import { invalidateCollaboratorDerived, invalidateProfileDerived, invalidateRoleDerived } from "./cacheInvalidation";
 
 function createClient() {
   const client = new QueryClient();
@@ -28,5 +28,16 @@ describe("derived cache invalidation", () => {
     expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.permissions.all });
     expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.divulgador.all });
     expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.userDetails.byId("user-2") });
+  });
+
+  it("refreshes every role-derived response for one account", async () => {
+    const { client, invalidate } = createClient();
+
+    await invalidateRoleDerived(client, "user-3");
+
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.permissions.byUser("user-3") });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.divulgador.status("user-3") });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.userDetails.byId("user-3") });
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: qk.adminUsers.all });
   });
 });

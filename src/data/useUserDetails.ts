@@ -4,6 +4,7 @@ import { handleError } from "@/lib/error-handler";
 import { qk } from "./queryKeys";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { invalidateCollaboratorDerived } from "./cacheInvalidation";
+import { fetchUserRoles } from "./userRoles";
 
 export interface UserDetailsEvent {
   id: string;
@@ -40,7 +41,7 @@ export function useUserDetails(userId: string | null | undefined, enabled = true
           .eq("user_id", userId)
           .order("date", { ascending: false })
           .limit(30),
-        supabase.from("user_roles").select("role").eq("user_id", userId),
+        fetchUserRoles(userId),
         supabase
           .from("collaborators")
           .select("can_submit, can_approve, can_edit, can_delete, is_active, role_title")
@@ -48,11 +49,10 @@ export function useUserDetails(userId: string | null | undefined, enabled = true
           .maybeSingle(),
       ]);
       if (events.error) throw events.error;
-      if (roles.error) throw roles.error;
       if (collab.error) throw collab.error;
       return {
         events: (events.data ?? []) as UserDetailsEvent[],
-        roles: (roles.data ?? []).map((r) => String(r.role)),
+        roles,
         collab: (collab.data as UserDetailsCollab | null) ?? null,
       };
     },

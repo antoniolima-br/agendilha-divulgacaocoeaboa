@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import type { UserWithRole } from "./types";
 import { useQueryClient } from "@tanstack/react-query";
-import { qk } from "@/data/queryKeys";
+import { invalidateRoleDerived } from "@/data/cacheInvalidation";
 
 type Level = "senior" | "financeiro";
 const LEVELS: { id: Level; label: string; hint: string }[] = [
@@ -55,11 +55,7 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
       const cur = prev[userId] ?? [];
       return { ...prev, [userId]: on ? [...cur, level] : cur.filter((l) => l !== level) };
     });
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: qk.permissions.all }),
-      queryClient.invalidateQueries({ queryKey: qk.divulgador.all }),
-      queryClient.invalidateQueries({ queryKey: qk.adminUsers.all }),
-    ]);
+    await invalidateRoleDerived(queryClient, userId);
     toast.success("Nível atualizado");
   }
 
