@@ -7,7 +7,7 @@
 - opening_hours is free text; performance schedules validate separately.
 - One venue category; ViaCEP suggests editable addresses.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes, permissions, formatting and data; shared UI primitives own interaction and responsive behavior.
+- Centralize routes, permissions, formatting and data; shared UI owns interactions and responsive behavior.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -19,7 +19,7 @@
 - Flyer reads fill empty fields and hide provider errors; manual entry stays usable. Preserve art; generate missing sponsored art before batch inserts.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
-- Password-change completion is server-verified and the app-wide route gate waits for account-state hydration, preventing temporary-password sessions from skipping the required change.
+- Server-verify password changes; the app-wide gate awaits account hydration so temporary-password sessions cannot skip the required change.
 - Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
