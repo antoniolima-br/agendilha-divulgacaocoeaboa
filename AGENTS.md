@@ -18,8 +18,8 @@
 - Lazy Guide/routes; intent prefetch is public-only. Shared realtime batches have a maximum wait to prevent starvation. Read coezinho AGENTS.md for FAB/facts.
 - Flyer reads fill empty fields and hide provider errors; manual entry stays usable. Preserve art; generate missing sponsored art before batch inserts.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
-- Password recovery issues temporary credentials only to authorized staff for manual WhatsApp delivery after identity verification; anonymous requests never receive credentials.
-- Server-verify password changes; the app-wide gate awaits account hydration so temporary-password sessions cannot skip the required change.
+- Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.
+- Server-verify password changes; auth hydration discards stale sessions, clears prior account state, and awaits the password gate.
 - Public event reads use the date-filtered public view; personal organizer queries derive ownership from the active session and stay owner-scoped even for administrators, while separate curation queries retain authorized oversight.
 - Repeating an event creates a fresh form from an allowlisted content snapshot, clearing schedule, media, approval, payment and consent so the historical record remains unchanged.
 - Radar stays public and owner-scoped; regions.ts derives and normalizes geography for all filters and CEP suggestions. Event CEP cancels superseded lookups to avoid stale addresses.
