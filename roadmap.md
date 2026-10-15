@@ -297,3 +297,7 @@
 - [x] Reorganizar o menu lateral em Curadoria, Marketing, Comercial, Financeiro e Configurações, sem atalhos duplicados.
 - [x] Remover definitivamente o atalho de Envios do topo em celular e computador, preservando o menu lateral.
 - [x] Garantir leitura de toda a programação pública, flyers e detalhes sem cadastro, preservando os dados privados e o Perfil opcional.
+
+- [ ] Consolidar a Área do Divulgador em Meus Eventos com criação, compartilhamento, status e métricas.
+- [ ] Bloquear edição do divulgador após aprovação, na interface e no backend.
+- [ ] Restringir áreas gerenciais a administradores e manter descoberta pública aberta.
