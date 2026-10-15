@@ -26,11 +26,24 @@ describe("dias disponíveis no calendário", () => {
     ], { ...DEFAULT_EVENT_FILTERS, region: "Zona Norte", category: "musica", period: "custom", date: today }, today);
     expect([...days]).toEqual(["2026-10-11"]);
   });
-  it("oculta dias vazios e pula semanas sem programação", () => {
+  it("oculta dias vazios e reúne a programação de semanas diferentes", () => {
     const days = new Set(["2026-10-10", "2026-10-12", "2026-10-31"]);
-    expect(eventDayStripWindow(days, today, today)).toEqual({ days: [today, "2026-10-12"], previous: undefined, next: "2026-10-31" });
-    expect(eventDayStripWindow(days, "2026-10-31", today)).toEqual({ days: ["2026-10-31"], previous: today, next: undefined });
+    expect(eventDayStripWindow(days, today, today)).toEqual({ days: [today, "2026-10-12", "2026-10-31"], previous: undefined, next: undefined });
+    expect(eventDayStripWindow(days, "2026-10-31", today).days).toEqual([today, "2026-10-12", "2026-10-31"]);
     expect(eventDayStripWindow(new Set(), today, today).days).toEqual([]);
+  });
+  it("exibe cinco datas ativas e navega sem preencher dias vazios", () => {
+    const dates = [today, "2026-10-12", "2026-10-17", "2026-10-31", "2026-11-04", "2026-11-20", "2026-12-02"];
+    const days = new Set(dates);
+    const first = eventDayStripWindow(days, today, today);
+    expect(first).toEqual({ days: dates.slice(0, 5), previous: undefined, next: "2026-10-17" });
+    const last = eventDayStripWindow(days, first.next ?? today, today);
+    expect(last).toEqual({ days: dates.slice(2), previous: today, next: undefined });
+    expect(eventDayStripWindow(days, last.previous ?? today, today).days).toEqual(first.days);
+  });
+  it("mantém cinco datas no fim e exclui dias passados", () => {
+    const days = new Set(["2026-10-09", today, "2026-10-12", "2026-10-17", "2026-10-31", "2026-11-04", "2026-12-02"]);
+    expect(eventDayStripWindow(days, "2026-12-02", today).days).toEqual(["2026-10-12", "2026-10-17", "2026-10-31", "2026-11-04", "2026-12-02"]);
   });
   it("reposiciona a semana quando os filtros removem os dias exibidos", () => {
     expect(eventDayStripWindow(new Set(["2026-10-31"]), today, today).days).toEqual(["2026-10-31"]);

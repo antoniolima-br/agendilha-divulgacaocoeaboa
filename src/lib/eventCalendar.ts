@@ -19,15 +19,15 @@ export function availableEventDays(events: readonly CalendarEvent[], filters: Pu
   return days;
 }
 
-/** Occupied seven-day windows only; keep the same availability source as the calendar. */
+/** Five occupied dates; week anchors remain compatible with flyer focus. */
 export function eventDayStripWindow(availableDays: ReadonlySet<string>, requestedStart: string, today = saoPauloTodayISO()) {
   const days = [...availableDays].filter(day => day >= today).sort();
-  const starts = [...new Set(days.map(day => eventWeekStart(day, today)))];
-  const start = starts.includes(requestedStart) ? requestedStart : starts.find(day => day >= requestedStart) ?? starts.at(-1);
-  const index = start ? starts.indexOf(start) : -1;
+  const found = days.findIndex(day => day >= requestedStart);
+  const index = found >= 0 ? found : Math.max(0, days.length - 5);
+  const start = Math.min(index, Math.max(0, days.length - 5));
   return {
-    days: start ? days.filter(day => day >= start && day <= addDaysToISO(start, 6)) : [],
-    previous: index > 0 ? starts[index - 1] : undefined,
-    next: index >= 0 ? starts[index + 1] : undefined,
+    days: days.slice(start, start + 5),
+    previous: start > 0 ? days[Math.max(0, start - 5)] : undefined,
+    next: start + 5 < days.length ? days[Math.min(start + 5, days.length - 5)] : undefined,
   };
 }
