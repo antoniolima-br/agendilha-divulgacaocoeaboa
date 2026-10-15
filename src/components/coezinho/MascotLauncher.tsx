@@ -20,7 +20,7 @@ export function MascotLauncher({ onOpen }: { onOpen: () => void }) {
   const [position, setPosition] = useState<Point | null>(null);
   const positionRef = useRef<Point | null>(null);
   const reservedBottom = useCallback(() => {
-    const { width, height } = viewport();
+    const { height } = viewport();
     const rect = document.querySelector<HTMLElement>('nav[aria-label="Navegação principal"] > ul')?.getBoundingClientRect();
     return rect && rect.height > 0 ? height - rect.top + 12 : 88;
   }, []);
