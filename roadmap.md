@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Preferências 387: seleção imediata e destaque persistente de regiões/bairros e interesses, sem confundir foco com marcação; conferir seleções e remoções rápidas.
 - [x] Navegação 386: Agenda central com seleção destacada, cinco atalhos equilibrados e legenda Divulgar compacta preservando o submenu; quatro testes aprovados e navegação real em 320/390/1280 px sem transbordar ou cortar legendas. Validação automática OK.
 - [x] Calendário 385: janela de cinco datas ativas cruza dias/semanas vazios; seleção e rolagem suave preservadas. 10 testes, lint e validação automática OK; 320/390/1280 px sem overflow. Dados reais possuem três datas disponíveis; toque abre a Agenda no dia escolhido. Cinco datas conferidas visualmente com exemplo temporário, sem criar eventos.
 - [x] Coezinho 384: canto inferior esquerdo, standby após quatro segundos e retorno imediato ao interagir; ocultação em cadastros/edição/uploads, busca preservada. 36 testes, lint e validação automática OK; Agenda/cadastro em 390/1280 px conferidos com margem de navegação, arraste sem abrir e conversa funcionando. Arte original mantém a pendência de entrega registrada na Auditoria 356.
