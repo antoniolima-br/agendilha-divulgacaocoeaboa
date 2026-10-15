@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage } from "./mediaCompression";
-import { prepareUploadImage } from "./uploadImage";
+import { prepareUploadImage, isAnimatedWebp } from "./uploadImage";
 
 /** Only our paired uploads carry this marker; legacy/external art is untouched. */
 export function flyerListingUrl(url?: string | null): string | undefined {
@@ -13,7 +13,7 @@ export async function uploadFlyerImage(file: File, path: string): Promise<string
   const prepared = await prepareUploadImage(file);
   const base = path.replace(/\.[^.\/]+$/, "");
   let thumbnail: File | undefined;
-  if (["image/jpeg", "image/png", "image/webp"].includes(prepared.type)) {
+  if (["image/jpeg", "image/png", "image/webp"].includes(prepared.type) && !(await isAnimatedWebp(prepared))) {
     const result = await compressImage(prepared, { maxSide: 480, quality: 0.72, outputType: "image/webp" });
     URL.revokeObjectURL(result.preview);
     if (result.file.type === "image/webp") thumbnail = result.file;

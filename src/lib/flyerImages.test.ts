@@ -3,7 +3,7 @@ import { flyerListingUrl, uploadFlyerImage } from "./flyerImages";
 const mocks = vi.hoisted(() => ({ upload: vi.fn(), remove: vi.fn(), compress: vi.fn(), prepare: vi.fn() }));
 vi.mock("@/integrations/supabase/client", () => ({ supabase: { storage: { from: () => ({ upload: mocks.upload, remove: mocks.remove, getPublicUrl: (path: string) => ({ data: { publicUrl: `/media/${path}` } }) }) } } }));
 vi.mock("./mediaCompression", () => ({ compressImage: mocks.compress }));
-vi.mock("./uploadImage", () => ({ prepareUploadImage: mocks.prepare }));
+vi.mock("./uploadImage", () => ({ prepareUploadImage: mocks.prepare, isAnimatedWebp: async () => false }));
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.upload.mockResolvedValue({ error: null });

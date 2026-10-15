@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, MapPin, Radar, Save, Settings2 } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
-import { useEvents } from "@/data/events";
 import { usePublishedRadarAds } from "@/data/useAds";
 import { interleaveRadarAds, radarEvents } from "@/lib/radar";
 import { REGIONS, REGION_NEIGHBORHOODS, regionOf } from "@/lib/regions";
@@ -141,7 +140,7 @@ export default function SeuRadar() {
 
       <div id="event-batch-start" className="scroll-mt-24" />
       {isError || batch.isError ? (
-        <ErrorState title="Não deu pra carregar seu Radar" message="Tente novamente em instantes." onRetry={() => void refetch()} />
+        <ErrorState title="Não deu pra carregar seu Radar" message="Tente novamente em instantes." onRetry={() => { void refetch(); void batch.refetch(); }} />
       ) : isLoading || batch.isLoading ? (
         <LoadingState message="Buscando seus rolês…" />
       ) : feed.length ? (

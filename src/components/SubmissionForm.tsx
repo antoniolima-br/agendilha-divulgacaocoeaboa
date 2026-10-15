@@ -404,14 +404,15 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       let imageUrl = values.eventImageUrl;
       
       if (eventImage instanceof File) {
-        const fileExt = eventImage.name.split('.').pop() || 'jpg';
+        const file = eventImage;
+        const fileExt = file.name.split('.').pop() || 'jpg';
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         const filePath = `${user?.id}/${fileName}`;
 
         imageUrl = await measureFlowOperation(
           "event-submission",
           "flyer-upload",
-          () => uploadFlyerImage(eventImage, filePath),
+          () => uploadFlyerImage(file, filePath),
           currentStep,
         );
       }
