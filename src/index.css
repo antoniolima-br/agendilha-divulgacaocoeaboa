@@ -38,7 +38,7 @@ footer .grid:has(> div > img[alt="Coé a Boa?"]) {
   footer .grid:has(> div > img[alt="Coé a Boa?"]) { flex-direction: row; }
 }
 .coezinho-fab[data-idle="true"] { opacity: 0.22; }
-.coezinho-fab:focus-visible { opacity: 1; }
+.coezinho-fab:is(:hover, :focus-visible, :active), .coezinho-fab[data-idle="false"] { opacity: 1; transition-duration: 0ms; }
 .coezinho-composer [data-slot="input-group"] { height: auto; flex-direction: column; background: hsl(var(--card)); }
 .coezinho-composer textarea { width: 100%; min-height: 40px; max-height: 136px; }
 .coezinho-fab[data-dragging="true"] { cursor: grabbing; }

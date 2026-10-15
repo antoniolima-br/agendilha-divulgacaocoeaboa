@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Coezinho 384: canto inferior esquerdo, standby após quatro segundos, retorno imediato ao interagir e ocultação completa em formulários; validar arraste e navegação.
 - [x] Cadastro 383: flyer fixo à esquerda e recolhível/ampliável no celular; leitura em segundo plano e campos sempre livres. 15 testes, lint e validação automática OK; cadastro autenticado em 1280/390 px confirmou rolagem fixa, ausência de overflow e edição durante leitura/falha com resposta controlada, sem salvar eventos. Leitura real mantém o bloqueio de créditos registrado em Flyer 382.
 - [x] Flyer 382: visão autenticada com imagem base64/MIME real, JSON exato de cinco campos, preenchimento revisável, indicador e cancelamento; 19 testes, lint e validação automática OK. Cadastro autenticado em 390/1280 px conferido com resposta controlada; título revisado preservado, sem salvar evento.
 - [ ] Flyer 382: confirmar extração real — chamada implantada recebeu 402 (créditos insuficientes); aguarda recarga de créditos e nova ação do usuário. Carinha usa arte oficial, cuja entrega local continua bloqueada pela infraestrutura de assets já registrada na Auditoria 356.
