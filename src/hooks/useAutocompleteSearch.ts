@@ -6,28 +6,16 @@ export interface AutocompletePage<T> {
 }
 
 export interface UseAutocompleteSearchOptions<T> {
-  /** Termo digitado. */
   term: string;
-  /** Busca uma página. `from`/`to` são índices inclusivos (range do Supabase). */
   fetchPage: (query: string, from: number, to: number, signal: AbortSignal) => Promise<T[]>;
-  /** Itens por página. */
   pageSize?: number;
-  /** Debounce em ms para termo digitado (0 quando o campo está vazio). */
   debounceMs?: number;
-  /** Mínimo de caracteres para disparar a busca por termo (abaixo disso lista o topo). */
   minChars?: number;
-  /** Invalida o cache quando muda (ex.: novo registro criado). */
   refreshKey?: unknown;
-  /** Desliga a busca (ex.: dropdown fechado). */
   enabled?: boolean;
   maxCachedTerms?: number;
 }
 
-/**
- * Autocomplete rápido: debounce, cache em memória por termo, cancelamento das
- * requisições antigas (evita resposta fora de ordem) e paginação incremental
- * para listas grandes.
- */
 export function useAutocompleteSearch<T>({
   term,
   fetchPage,
@@ -67,7 +55,6 @@ export function useAutocompleteSearch<T>({
     }
   }, [maxCachedTerms]);
 
-  // Invalida o cache quando a fonte de dados muda.
   useEffect(() => {
     cache.current.clear();
   }, [refreshKey, pageSize]);
@@ -79,13 +66,20 @@ export function useAutocompleteSearch<T>({
     const seq = ++seqRef.current;
     morePendingRef.current = false;
     setLoadingMore(false);
-    if (!enabled) { setLoading(false); return; }
+    
     const cleanup = () => {
       ++seqRef.current;
       abortRef.current?.abort();
       moreAbortRef.current?.abort();
       morePendingRef.current = false;
     };
+
+    if (!enabled) { 
+      setLoading(false); 
+      setItems([]);
+      setHasMore(false);
+      return cleanup; 
+    }
 
     const cached = cache.current.get(effectiveTerm);
     if (cached) {
@@ -98,20 +92,20 @@ export function useAutocompleteSearch<T>({
       return cleanup;
     }
 
-    const delay = normalized.length ? debounceMs : 0;
+    // Clear items immediately if not in cache to avoid showing stale results for the previous term
+    setItems([]);
+    setHasMore(false);
     setLoading(true);
     setError(null);
 
+    const delay = normalized.length ? debounceMs : 0;
     const timer = window.setTimeout(async () => {
-      // Abortamos apenas quando o timer dispara para evitar abortar
-      // requisições que ainda estão sendo debounced se possível, 
-      // mas na prática o cleanup do useEffect já faz isso.
       const controller = new AbortController();
       abortRef.current = controller;
       
       try {
         const rows = await fetchRef.current(effectiveTerm, 0, pageSize, controller.signal);
-        if (seq !== seqRef.current) return; // resposta obsoleta
+        if (seq !== seqRef.current) return;
         
         const more = rows.length > pageSize;
         const page = { rows: more ? rows.slice(0, pageSize) : rows, hasMore: more };

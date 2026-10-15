@@ -50,7 +50,7 @@ describe("useFavorites", () => {
     (useAuth as any).mockReturnValue({ user: { id: "user1" } });
   });
 
-  it("should block concurrent favorites for different events (BUG)", async () => {
+  it("should NOT block concurrent favorites for different events", async () => {
     const { result } = renderHook(() => useFavorites(), { wrapper });
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
@@ -69,9 +69,30 @@ describe("useFavorites", () => {
     await waitFor(() => expect(result.current.isToggling).toBe(false));
 
     const fromCalls = (supabase.from as any).mock.calls.filter((call: any) => call[0] === "user_favorites");
-    // We expect 2 inserts, but we might get 1 if the bug exists.
-    // toggleFavorite calls toggleFavoriteMutation.mutate
-    // If we call it twice, we should have two supabase calls.
-    expect(fromCalls.length).toBe(1); 
+    // Initial fetch + 2 inserts = 3 calls
+    expect(fromCalls.length).toBe(3); 
+  });
+
+  it("should still block concurrent favorites for the SAME event", async () => {
+    const { result } = renderHook(() => useFavorites(), { wrapper });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    // First favorite
+    act(() => {
+      result.current.toggleFavorite("event1");
+    });
+
+    // Second favorite for the SAME event while first is pending
+    act(() => {
+      result.current.toggleFavorite("event1");
+    });
+
+    // Wait for everything to settle
+    await waitFor(() => expect(result.current.isToggling).toBe(false));
+
+    const fromCalls = (supabase.from as any).mock.calls.filter((call: any) => call[0] === "user_favorites");
+    // Initial fetch + 1 insert = 2 calls (second call was blocked)
+    expect(fromCalls.length).toBe(2); 
   });
 });
