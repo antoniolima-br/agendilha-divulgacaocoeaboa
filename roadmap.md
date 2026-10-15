@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Flyer 382: restaurar leitura por visão, retorno JSON de cinco campos, preenchimento revisável e indicador do Coezinho; validar imagem real e preservação manual.
 - [x] PWA 381: manifesto único, logotipo original em 192/512 com any maskable e margem segura, Apple Touch Icon 180 e favicon derivados da mesma arte; cores de abertura preservadas. 12 testes aprovados e arquivos servidos conferidos; instalação física não testada, alterações disponíveis no site após publicar.
 - [x] Cadastro 380: flyer ampliado sem leitura automática, título/data/horário/local manuais ao lado no computador e abaixo no celular; hoje em São Paulo sugerido sem sobrescrever rascunhos. 26 testes aprovados, sessão ativa em 390/1280 px sem overflow, troca de arte preserva campos e nenhum recurso OCR carregado; sem publicar evento real. Validação automática OK.
 - [x] Auditoria 379: dez achados corrigidos em imagens, CEP, anúncios, datas, acessibilidade, detalhes móveis e privilégios de perfil; 654 testes, lint focalizado e validação automática OK. 272 navegações sem overflow; sessão/visitante e detalhes 390/1280 px conferidos. Escopo e limites em audit-379.md.
