@@ -5,7 +5,7 @@
 - Schedules validate client/database; gaps <2h block, missing ends warn.
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately.
-- One venue category; editable CEP.
+- One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, permissions, formatting and data; shared UI owns sizing, collision-aware menus and touch scrolling.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
