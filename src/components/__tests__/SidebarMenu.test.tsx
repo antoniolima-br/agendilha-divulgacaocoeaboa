@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SidebarMenu } from "../SidebarMenu";
@@ -108,6 +108,14 @@ describe("SidebarMenu", () => {
     
     renderSidebar();
     expect(screen.getByText("Admin Master")).toBeDefined();
+    const toggles = screen.getAllByRole("button").filter(button => button.hasAttribute("aria-expanded"));
+    expect(toggles.length).toBeGreaterThan(0);
+    for (const toggle of toggles) {
+      if (toggle.getAttribute("aria-expanded") === "false") fireEvent.click(toggle);
+      const controlledId = toggle.getAttribute("aria-controls");
+      expect(controlledId).toBeTruthy();
+      expect(document.getElementById(controlledId ?? "")).not.toBeNull();
+    }
   });
 
   it("hides items whose routes do not exist", () => {

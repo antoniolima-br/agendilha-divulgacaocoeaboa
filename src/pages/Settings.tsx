@@ -1,7 +1,7 @@
 import { ChangePasswordSection } from "@/components/ChangePasswordSection";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
-import { KeyRound, ShieldCheck } from "lucide-react";
+import { KeyRound } from "lucide-react";
 
 export default function Settings() {
   return (

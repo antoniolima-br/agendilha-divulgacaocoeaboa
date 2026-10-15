@@ -224,6 +224,7 @@ function SidebarNavigationItem({
         <Button
           variant="ghost"
           aria-expanded={!!openSubmenus[item.id]}
+          aria-controls={`sidebar-submenu-${item.id}`}
           onClick={() => toggleSubmenu(item.id)}
           className={cn(
              "group relative flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all",
@@ -273,7 +274,7 @@ function SidebarNavigationItem({
       )}
 
       {hasChildren && isOpen && (
-        <div className="mt-1 space-y-1 ml-4 border-l border-primary/10 pl-2 animate-in slide-in-from-top-2 duration-200">
+        <div id={`sidebar-submenu-${item.id}`} className="mt-1 space-y-1 ml-4 border-l border-primary/10 pl-2 animate-in slide-in-from-top-2 duration-200">
           {validChildren.map(child => (
             <SidebarNavigationItem 
               key={child.id}

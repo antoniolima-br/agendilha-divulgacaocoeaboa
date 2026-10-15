@@ -33,7 +33,7 @@
 
 - Favorite writes serialize per owner/QueryClient with explicit intent and owner identity, preventing rapid-click races and wrong-account rollback.
 - Attraction/venue RPCs enforce approved/owner/editor visibility; autocomplete cancels obsolete requests and exposes failures. Data-layer rules live in src/data/AGENTS.md.
-- Sidebar destinations close menus; offsets follow visibility with reopening, preventing overlaps.
+- Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
 
 - Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
 - Read each subdirectory's AGENTS.md before edits.

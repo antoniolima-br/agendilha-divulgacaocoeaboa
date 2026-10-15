@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, Users, Workflow, ArrowRight, ShieldCheck, Smartphone, Layers3, Sparkles, ScanLine, ChartNoAxesCombined, MousePointerClick } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/routes/config";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
 import { CorporatePillars } from "./CorporatePillars";
