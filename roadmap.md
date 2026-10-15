@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Pitch 362: Anunciantes reorganizado com foco hiperlocal responsável e um único contato final no WhatsApp; preços, acesso público e Pitch para Sócios preservados.
 - [x] Pitch 361: apresentação de Sócios atualizada com Visão Societária & Expansão, hiperlocalidade, governança setorial, propósito e convite societário; preços, acesso público e pitch de Anunciantes preservados.
 - [x] Pitch 360: Anunciantes reescrito com "Anuncie no Coé a Boa?", benefícios hiperlocais, ganhos da marca e botão "Fale com o Comercial no WhatsApp" usando o contato oficial configurado; 10 testes aprovados.
 - [x] Pitches 359: Sócios e Anunciantes abrem diretamente sem login, perfil ou senha; rotas e atalhos públicos preservam documentos separados, preços e visual responsivo.
