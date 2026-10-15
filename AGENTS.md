@@ -5,7 +5,7 @@
 - Schedules validate client/database; gaps <2h block, missing ends warn.
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate performances separately.
-- One venue category; editable ViaCEP suggestions.
+- One venue category; editable ViaCEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
 - Centralize routes, permissions, formatting and data; shared UI owns interactions and responsive behavior.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
@@ -36,7 +36,7 @@
 - Sidebar links close menus; offsets prevent overlaps; toggles reference submenu containers for accessibility.
 
 - Intranet is Master-only client/server; read src/pages/intranet/AGENTS.md before edits.
-- Read nested AGENTS.md before edits.
+- Read nested AGENTS.md first.
 - Role menus isolate staff; bottom Menu opens the sidebar. Public discovery stays open; personal data is session-scoped. Auth normalizes phones; promoter approval requires protected WhatsApp confirmation.
 - Profile addresses stay isolated from public/promoter/artist flows.
 
