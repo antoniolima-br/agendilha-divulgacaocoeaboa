@@ -26,24 +26,23 @@ export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }
       <p className="text-xs font-medium uppercase text-primary">Marcas · Patrocinadores · Divulgadores</p>
       <h2 className="text-3xl font-semibold leading-tight sm:text-4xl">Anuncie no Coé a Boa?</h2>
       <p className="max-w-3xl text-xl font-medium leading-relaxed">Onde o Rio de Janeiro vai, a sua marca está.</p>
-      <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">O Coé a Boa? é o ecossistema digital de descoberta de eventos e entretenimento do Rio de Janeiro. Mais do que uma agenda: é onde quem curte sair procura o próximo rolê.</p>
+      <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">O Coé a Boa? é um ecossistema digital de descoberta de eventos e entretenimento do Rio de Janeiro. Mais do que uma agenda, é um ponto de encontro para quem procura o próximo rolê.</p>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Se a sua marca busca visibilidade com contexto e conexão com quem vive a cultura carioca, este espaço foi pensado para você.</p>
-      <div className="flex flex-wrap gap-3"><CommercialWhatsappButton /><Button asChild variant="outline" className="h-auto min-h-11 whitespace-normal py-3"><a href={ROUTES.PLANOS_ANUNCIOS}><Megaphone aria-hidden="true" />Escolher meu pacote</a></Button></div>
       <PitchShare audience="advertiser" />
     </section>
     <PitchChapter value="sales-visibility" number="01" title="Por que anunciar no Coé a Boa?" eyebrow="Público · Região" icon={MapPin}>
       <ul className="divide-y divide-border">
-        {item("Público que sai e consome lazer", "Quem abre o app está decidindo o que fazer: rolês, gastronomia, cultura e experiências em diferentes regiões do Rio, da Zona Sul à Barra, da Zona Norte aos polos culturais.", Users)}
-        {item("Hiperlocalidade: tiro certo", "Nada de pagar para aparecer a quem está longe. Sua marca aparece para a região escolhida, no momento em que a pessoa decide para onde ir e o que consumir.", Crosshair)}
-        {item("Flyers e banners em destaque", "Formatos integrados ao fluxo visual do app, pensados para o celular: sua marca vista com elegância e clareza, sem poluição visual.", Smartphone)}
-        {item("Métricas registradas", "Diferente do panfleto, você acompanha visualizações e cliques registrados na sua campanha, por período e origem.", ChartNoAxesCombined)}
+        {item("Público interessado em lazer", "Quem abre o app procura o que fazer: rolês, gastronomia, cultura e experiências em diferentes regiões do Rio, da Zona Sul à Barra, da Zona Norte aos polos culturais.", Users)}
+        {item("Hiperlocalidade: foco na região certa", "Sua campanha pode ser direcionada à região escolhida e acompanhar a pessoa enquanto ela decide para onde ir e o que consumir.", Crosshair)}
+        {item("Flyers e banners em destaque", "Formatos integrados ao fluxo visual do app e pensados para o celular apresentam sua marca com elegância e clareza, sem poluição visual.", Smartphone)}
+        {item("Rastreamento e métricas registradas", "Você acompanha as visualizações e os cliques registrados na sua campanha, por período e origem, conforme os dados coletados.", ChartNoAxesCombined)}
       </ul>
     </PitchChapter>
     <PitchChapter value="sales-gains" number="02" title="O que sua marca ganha" eyebrow="Valor · Parceria" icon={Sparkles}>
       <ul className="divide-y divide-border">
-        {item("Autoridade e desejo", "Estar ao lado dos melhores rolês da cidade associa sua marca a estilo de vida, novidade e experiência.", BadgeCheck)}
-        {item("Investimento acessível e direcionado", "Pacotes com custo enxuto frente às grandes mídias de massa, focados na região que importa para você. O retorno é avaliado com seus dados de vendas.", Wallet)}
-        {item("Suporte criativo", "Nosso Marketing ajuda a desenhar ou adaptar sua arte, no padrão visual que o público carioca espera.", Palette)}
+        {item("Autoridade e desejo", "Estar junto dos rolês divulgados aproxima sua marca de estilo de vida, novidade e experiências cariocas.", BadgeCheck)}
+        {item("Investimento direcionado", "Os pacotes concentram a campanha na região que importa para você. O retorno pode ser avaliado quando seus dados de vendas são relacionados aos registros da campanha.", Wallet)}
+        {item("Suporte criativo", "Nosso Marketing ajuda a desenhar ou adaptar sua arte ao padrão visual da apresentação.", Palette)}
       </ul>
     </PitchChapter>
     <PitchChapter value="sales-engagement" number="03" title="Interesse registrado, campanha acompanhada" eyebrow="Engajamento · Pós-venda" icon={MousePointerClick}>
@@ -61,7 +60,7 @@ export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }
       <PitchDetails><p className="text-sm leading-relaxed text-muted-foreground">Preços sugeridos; confirme disponibilidade, região, período e entregas na proposta. Master e Sub-Masters seguem condições mensais. Formatos propostos não significam ativação automática.</p><p className="text-sm leading-relaxed text-muted-foreground">Push regional é uma proposta sujeita a implantação e consentimento: {money(content.pushTicket)} por envio; {content.push.packageSends} envios por {money(content.push.packagePrice)}. Não há disparos ativados por esta apresentação.</p></PitchDetails>
     </PitchChapter>
     <PitchChapter value="sales-close" number="05" title="Vamos fechar essa parceria?" eyebrow="Contratação · Próximo passo" icon={MessageCircle}>
-      <p className="max-w-3xl text-lg leading-relaxed">Não perca tempo aparecendo para quem não compra. Fale direto com o público que movimenta o Rio de Janeiro.</p>
+      <p className="max-w-3xl text-lg leading-relaxed">Converse com o Comercial para escolher região, período e formato e aproximar sua marca de quem procura o que fazer no Rio de Janeiro.</p>
       <CommercialWhatsappButton />
       <ol className="space-y-5">{[
         ["Defina sua campanha", "Escolha região, período, formato e destino do anúncio na proposta comercial."],

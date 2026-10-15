@@ -146,8 +146,11 @@ describe("pitch comercial", () => {
     expect(screen.getByRole("link", { name: /Divulgar meu evento/ })).toHaveAttribute("href", "/meus-eventos");
     expect(screen.getByText(/Aberturas não são pessoas únicas/)).toBeVisible();
     const sales = screen.getAllByRole("link", { name: /Fale com o Comercial no WhatsApp/ });
-    expect(sales).toHaveLength(2);
+    expect(sales).toHaveLength(1);
     expect(sales[0].getAttribute("href")).toContain("wa.me/5521998554322");
+    expect(screen.getByText(/Público interessado em lazer/)).toBeVisible();
+    expect(screen.queryByText(/alto poder aquisitivo/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ROI incomparável/i)).not.toBeInTheDocument();
     expect(screen.getByText(/R\$\s*800,00 a R\$\s*1.000,00/)).toBeVisible();
     const share = screen.getAllByRole("link", { name: "WhatsApp" })[0];
     const href = decodeURIComponent(share.getAttribute("href") || "");

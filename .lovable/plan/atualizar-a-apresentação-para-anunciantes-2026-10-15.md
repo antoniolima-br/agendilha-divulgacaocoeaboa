@@ -1,15 +1,11 @@
-# Atualizar a apresentação para Anunciantes
+# Atualizar a apresentação para anunciantes
 
 ## Resultado
-- Reescrever a abertura e os benefícios da apresentação com a mensagem “Anuncie no Coé a Boa?” e foco hiperlocal no Rio.
-- Organizar os ganhos para marcas em uma leitura direta, mantendo o visual atual e os preços já definidos.
-- Trocar o encerramento por um convite comercial no WhatsApp, usando somente o contato oficial configurado no aplicativo; se ele estiver ausente, abrir o WhatsApp com a mensagem pronta, sem inventar número.
-
-## Cuidados
-- Não afirmar poder aquisitivo, alcance, conversão, ROI ou superioridade sem dados comprovados.
-- Manter avisos claros de que aberturas e cliques não equivalem a vendas.
-- Não alterar a apresentação de Sócios, permissões, rotas, preços ou regras comerciais.
+- Reorganizar o texto em abertura, motivos para anunciar, ganhos da marca e convite final.
+- Manter a linguagem hiperlocal do Rio sem afirmar público, conversão, ROI ou resultados que ainda não foram comprovados.
+- Deixar um único botão elegante de WhatsApp no final da apresentação, usando o contato oficial já configurado.
+- Preservar os preços, o acesso público, o Pitch para Sócios e o visual atual.
 
 ## Validação
-- Atualizar os testes da apresentação de Anunciantes.
-- Conferir o fluxo em tela larga e celular, incluindo o botão do WhatsApp.
+- Atualizar o teste da apresentação para conferir o botão único e a separação entre os dois públicos.
+- Rodar os testes focados e conferir a apresentação no celular e no computador.
