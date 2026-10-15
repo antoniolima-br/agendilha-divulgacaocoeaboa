@@ -1,5 +1,39 @@
 # Performance — resultado e limites
 
+## Nova análise e melhorias — 15/10/2026
+
+### Cobertura e prioridades
+
+Revisão independente de infraestrutura/rotas/contextos, dados/queries/backend e imagens/CSS/PWA. Os arquivos excluídos pelo solicitante não foram inspecionados. A análise não equivale a medir cada fluxo ou a garantir ausência de todos os gargalos.
+
+| Prioridade | Evidência | Melhoria aplicada / impacto |
+|---|---|---|
+| Alta | Agenda/Radar antecipavam apenas código, sem compartilhar uma definição de consulta com a antecipação de dados. | Consulta pública extraída, com os mesmos filtros e cancelamento; intenção nos links antecipa Agenda/Radar sem acessar dados pessoais. Cache recente é reutilizado ao navegar. |
+| Alta | Cada observador de anúncio público possuía um relógio de atualização próprio; duas implementações repetiam a consulta. | Um relógio por QueryClient, pausado em aba oculta, atualizado ao retornar. Uma consulta paginada e ordenada compartilhada; seleção regional permanece por observador. |
+| Média | Rajadas contínuas reiniciavam indefinidamente o atraso de atualização. | Prazo máximo de três segundos, mantendo agrupamento de 750 ms; limpeza cancela ambos os relógios. |
+| Média | Menu lateral invisível de desktop permanecia montado no celular, executando hooks e consultas. | Só o menu da tela correspondente é montado. Menu móvel é criado ao abrir; o de desktop mantém reserva e reabertura. |
+| Média | Estado do contexto e funções de verificação de permissões mudavam de referência sem mudança dos dados. | Contexto memoizado, funções estáveis e menu filtrado memoizado; regras de autorização intactas. |
+| Média | Imagem da Agenda aplicava blur/transições gerais e tentava buscar outra imagem externa ao falhar, embora a arte local já fosse exibida. | Transição só de opacidade, respeitando movimento reduzido; arte local sem segundo download, flyer oficial intacto, componente memoizado. |
+
+### Backend: o que foi realmente observado
+
+- Estatísticas cumulativas mostraram leitura de papéis 30.163 vezes, média 0,89 ms; leituras administrativas completas tiveram médias de aproximadamente 78–105 ms. Isso não determina latência por visitante nem prova que o custo principal está no banco.
+- Plano da consulta pública real retornou 29 linhas com índice existente `idx_submissions_status_date`, execução observada de 6,577 ms e ordenação de 32 kB.
+- A função de dia paulista é `STABLE`, não `IMMUTABLE`; portanto a sugestão de índice funcional direto não é válida. Não foram mudadas semânticas de data, permissões, funções ou índices sem uma justificativa segura.
+- Leituras repetidas de identidade foram identificadas; a hidratação do bloqueio de senha provisória foi preservada. Não foi removida a espera de segurança para acelerar telas.
+- Paginação progressiva de grandes painéis exigiria redesenhar busca/contagens/seleção/exportação; não foi trocada cegamente a leitura completa por uma lista parcial.
+
+### Validação e limites
+
+- 85 testes focados aprovados antes da suíte de regressão; novos testes cobrem compartilhamento, pausa/retomada, cancelamento, filtros, arte oficial e limite de espera em rajadas.
+- Home → Agenda com dados públicos reais: uma leitura de eventos antes, após intenção e após navegação, em 390 e 1280 px. A Agenda reaproveita os eventos, sem leitura adicional; ambas as larguras sem overflow.
+- Medição inicial local em desenvolvimento: 216 recursos e 8.246.098 bytes de transferência; DOM 852 elementos. Não é tamanho de pacote de produção, Lighthouse ou resultado de Core Web Vitals.
+- Logos PNG foram testados com compressão sem perdas: principais ícones de 512 px já não encolheram; não foram substituídos por imagens com perda nem removidos assets que possam ser referenciados em arquivos excluídos.
+- Bibliotecas grandes e Guia já são carregados sob demanda. Não foram alterados chunks/PWA sem pacote de produção medido, nem eliminado CSS cuja utilização não pudesse ser descartada.
+- Nenhum pagamento, aprovação, cadastro ou conteúdo real foi modificado. Métricas de produção, uploads e operações financeiras privadas não foram aferidos nesta etapa.
+
+---
+
 ## Correções por prioridade
 
 | Prioridade | Causa confirmada | Correção e impacto |
