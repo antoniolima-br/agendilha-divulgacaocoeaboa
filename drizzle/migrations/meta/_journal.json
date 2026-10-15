@@ -365,6 +365,13 @@
       "when": 1792022170240,
       "tag": "0051_restore_public_event_read_for_visitors",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1792022402226,
+      "tag": "0052_grant_public_event_entry_information",
+      "breakpoints": true
     }
   ]
 }
