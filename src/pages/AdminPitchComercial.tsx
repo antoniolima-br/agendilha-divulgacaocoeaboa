@@ -1,88 +1,41 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Loader2, LockKeyhole, UnlockKeyhole } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useAppPermissions } from "@/hooks/useAppPermissions";
-import { callEdge } from "@/lib/edge";
+import { Loader2 } from "lucide-react";
+import { callPublicEdge } from "@/lib/edge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PitchContentView } from "./admin-pitch/PitchContentView";
 import type { AdvertiserPitchContent, PitchContent } from "./admin-pitch/types";
 
 export default function AdminPitchComercial({ audience = "investor" }: { audience?: "investor" | "advertiser" }) {
   const title = audience === "advertiser" ? "Pitch para Anunciantes" : "Pitch para Sócios";
   const subtitle = audience === "advertiser" ? "Marcas, patrocinadores e divulgadores · Publicidade regional" : "Sócios e investidores · Governança, estratégia e expansão";
-  const { user, mustChangePassword } = useAuth();
-  const { hasPermission } = useAppPermissions();
-  const [password, setPassword] = useState("");
-  const [unlocked, setUnlocked] = useState<{ content: PitchContent | AdvertiserPitchContent; userId: string; audience: "investor" | "advertiser"; expiresAt: number } | null>(null);
+  const [content, setContent] = useState<PitchContent | AdvertiserPitchContent | null>(null);
   const [retry, setRetry] = useState(0);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const allowed = !!user && !mustChangePassword && hasPermission("pitch.read");
-  const content = allowed && unlocked?.userId === user?.id && unlocked?.audience === audience ? unlocked?.content : null;
-
   useEffect(() => {
-    if (!allowed || unlocked?.userId !== user?.id || unlocked?.audience !== audience) setUnlocked(null);
-  }, [allowed, user?.id, audience, unlocked?.userId, unlocked?.audience]);
-  useEffect(() => {
-    if (audience !== "advertiser" || !allowed || !user) return;
     let active = true;
-    const userId = user.id;
+    const controller = new AbortController();
     setPending(true);
     setError("");
-    callEdge<{ content: AdvertiserPitchContent; expiresInSeconds: number }>("commercial-pitch", { audience: "advertiser" })
+    setContent(null);
+    callPublicEdge<{ content: PitchContent | AdvertiserPitchContent }>("commercial-pitch", { audience }, { signal: controller.signal })
       .then((result) => {
-        if (active) setUnlocked({ content: result.content, userId, audience: "advertiser", expiresAt: Date.now() + result.expiresInSeconds * 1000 });
+        if (active) setContent(result.content);
       })
-      .catch((e) => { if (active) setError(e instanceof Error ? e.message : "Não deu para abrir. Tente novamente."); })
+      .catch((e) => { if (active && !(e instanceof DOMException && e.name === "AbortError")) setError(e instanceof Error ? e.message : "Não deu para abrir. Tente novamente."); })
       .finally(() => { if (active) setPending(false); });
-    return () => { active = false; };
-  }, [audience, allowed, user?.id, retry]);
-  useEffect(() => {
-    if (!unlocked) return;
-    const timer = window.setTimeout(() => {
-      setUnlocked(null);
-      if (unlocked.audience === "advertiser") setRetry((value) => value + 1);
-    }, Math.max(0, unlocked.expiresAt - Date.now()));
-    return () => window.clearTimeout(timer);
-  }, [unlocked]);
-
-  async function unlock(event: React.FormEvent) {
-    event.preventDefault();
-    if (!allowed || !user || pending || !password) return;
-    const userId = user.id;
-    setPending(true);
-    setError("");
-    try {
-      const result = await callEdge<{ content: PitchContent; expiresInSeconds: number }>("commercial-pitch", { audience: "investor", password });
-      setUnlocked({ content: result.content, userId, audience: "investor", expiresAt: Date.now() + result.expiresInSeconds * 1000 });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Não deu para abrir. Tente novamente.");
-    } finally { setPassword(""); setPending(false); }
-  }
+    return () => { active = false; controller.abort(); };
+  }, [audience, retry]);
 
   return <div className="theme-coeaboa mx-auto w-full min-w-0 max-w-6xl space-y-6 bg-background p-4 text-foreground sm:p-8">
-    <Helmet><title>{title} | Coé a Boa?</title><meta name="robots" content="noindex, nofollow, noarchive" /><meta name="description" content={subtitle} /></Helmet>
+    <Helmet><title>{title} | Coé a Boa?</title><meta name="description" content={subtitle} /></Helmet>
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
-      <div className="min-w-0 space-y-2"><p className="flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Uso interno · Admin, Financeiro, Master e Sênior</p><h1 className="break-words text-2xl font-semibold sm:text-3xl">{title} · Coé a Boa?</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
-      {content && audience === "investor" && <Button variant="outline" size="sm" onClick={() => setUnlocked(null)} className="gap-2"><LockKeyhole className="h-4 w-4" /> Bloquear</Button>}
+      <div className="min-w-0 space-y-2"><h1 className="break-words text-2xl font-semibold sm:text-3xl">{title} · Coé a Boa?</h1><p className="text-sm text-muted-foreground">{subtitle}</p></div>
     </header>
     {content ? <PitchContentView key={audience} content={content} audience={audience} /> : <section className="mx-auto max-w-sm space-y-5 py-10">
-      {audience === "advertiser" ? <>
-        {pending && <Loader2 aria-label="Carregando pitch" className="h-8 w-8 animate-spin text-primary" />}
-        {!allowed && <p className="text-sm text-muted-foreground">Entre com uma conta autorizada para abrir o pitch.</p>}
-        {error && <><p role="alert" className="text-sm text-destructive">{error}</p><Button onClick={() => setRetry((value) => value + 1)} disabled={pending || !allowed}>Tentar novamente</Button></>}
-      </> : <>
-      <LockKeyhole className="h-8 w-8 text-primary" />
-      <h2 className="text-xl font-semibold">Acesso ao pitch</h2>
-      <form onSubmit={unlock} className="space-y-4">
-        <div className="space-y-2"><Label htmlFor="pitch-password">Senha do pitch</Label><Input id="pitch-password" type="password" autoComplete="off" maxLength={256} value={password} onChange={(e) => setPassword(e.target.value)} disabled={pending || !allowed} required aria-describedby={error ? "pitch-error" : undefined} /></div>
-        {error && <p id="pitch-error" role="alert" className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" disabled={pending || !password || !allowed} className="w-full gap-2">{pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <UnlockKeyhole className="h-4 w-4" />}{pending ? "Conferindo…" : "Abrir pitch"}</Button>
-      </form>
-      </>}
+      {pending && <Loader2 aria-label="Carregando pitch" className="h-8 w-8 animate-spin text-primary" />}
+      {error && <><p role="alert" className="text-sm text-destructive">{error}</p><Button onClick={() => setRetry((value) => value + 1)} disabled={pending}>Tentar novamente</Button></>}
     </section>}
   </div>;
 }

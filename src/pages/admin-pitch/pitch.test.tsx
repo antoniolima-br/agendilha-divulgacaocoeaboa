@@ -6,14 +6,12 @@ import { inventoryImage } from "../../../supabase/functions/commercial-pitch/inv
 import AdminPitchComercial from "../AdminPitchComercial";
 import { PitchContentView } from "./PitchContentView";
 
-const mocks = vi.hoisted(() => ({ call: vi.fn(), allowed: true, userId: "test-user" }));
-vi.mock("@/lib/edge", () => ({ callEdge: mocks.call }));
-vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: mocks.userId }, mustChangePassword: false }) }));
-vi.mock("@/hooks/useAppPermissions", () => ({ useAppPermissions: () => ({ hasPermission: () => mocks.allowed }) }));
+const mocks = vi.hoisted(() => ({ call: vi.fn() }));
+vi.mock("@/lib/edge", () => ({ callPublicEdge: mocks.call }));
 const page = (audience: "investor" | "advertiser" = "investor") => <HelmetProvider><AdminPitchComercial audience={audience} /></HelmetProvider>;
 
 describe("pitch comercial", () => {
-  beforeEach(() => { mocks.allowed = true; mocks.userId = "test-user"; mocks.call.mockReset(); });
+  beforeEach(() => { mocks.call.mockReset(); });
   it("calcula projeções sem dupla contagem ou confundir saldo com lucro", () => {
     const content = buildPitchContent();
     expect(content.scenarios.map((s) => s.revenue)).toEqual([1960, 5880, 11760]);
@@ -39,16 +37,14 @@ describe("pitch comercial", () => {
     expect(content.projectionBasis).toContain("não taxas simbólicas");
     expect(content.scenarios.every((s) => s.placementRevenue > s.marketing)).toBe(true);
   });
-  async function unlock(heading = "Visão Geral e Qualidades do Ecossistema") {
+  async function openInvestor(heading = "Visão Geral e Qualidades do Ecossistema") {
     mocks.call.mockResolvedValue({ content: { ...buildPitchContent(), inventoryImage }, expiresInSeconds: 900 });
-    fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
-    fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
+    render(page());
     await screen.findByRole("heading", { name: heading });
   }
-  it("abre somente após conferência e apresenta capítulos em sequência", async () => {
-    render(page());
-    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
-    await unlock();
+  it("abre diretamente e apresenta capítulos em sequência", async () => {
+    await openInvestor();
+    expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "investor" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.getByRole("heading", { level: 1, name: /Pitch para Sócios/ })).toBeVisible();
     expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(6);
@@ -60,12 +56,10 @@ describe("pitch comercial", () => {
     expect(screen.getByText("1 Anunciante Master")).toBeVisible();
     expect(screen.getByText("2 Sub-Masters / Co-Patrocinadores")).toBeVisible();
     expect(screen.getByRole("img", { name: /Layout conceitual/ })).toHaveAttribute("src", inventoryImage);
-    fireEvent.click(screen.getByRole("button", { name: "Bloquear" }));
-    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
-    expect(screen.getByLabelText("Senha do pitch")).toHaveValue("");
+    expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
   });
   it("destaca cinco setores e visão consolidada sem inventar indicadores", async () => {
-    render(page()); await unlock();
+    await openInvestor();
     for (const name of ["Comercial", "Marketing", "Administração", "Financeiro", "Desenvolvimento"]) expect(screen.getByRole("heading", { name })).toBeVisible();
     expect(screen.getByText(/Acesso restrito por setor/)).toHaveTextContent("Master e Sênior");
     fireEvent.click(within(screen.getByRole("region", { name: "Negócio, Produto e Receita" })).getByText("Ver detalhes"));
@@ -75,7 +69,7 @@ describe("pitch comercial", () => {
     expect(screen.queryByText("Coé a Boa? — empresa proprietária do ecossistema e do aplicativo.")).not.toBeInTheDocument();
   });
   it("navega ao lançamento e preserva a estratégia como plano", async () => {
-    render(page()); await unlock();
+    await openInvestor();
     expect(screen.getByRole("heading", { name: /O Ponto de Partida/ })).toBeVisible();
     expect(screen.getByText("AgendIlha")).toBeVisible();
     expect(screen.getByText(/como Niterói/)).not.toBeVisible();
@@ -89,7 +83,7 @@ describe("pitch comercial", () => {
     const scroll = vi.spyOn(HTMLElement.prototype, "scrollIntoView").mockImplementation(() => {});
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true })));
     try {
-      render(page()); await unlock();
+      await openInvestor();
       expect(screen.getAllByRole("navigation")).toHaveLength(1);
       const nav = screen.getByRole("navigation", { name: "Atalhos do Plano de Marketing" });
       expect(within(nav).getAllByRole("link")).toHaveLength(1);
@@ -127,12 +121,6 @@ describe("pitch comercial", () => {
       expect(screen.getByText(chapter.detail)).not.toBeVisible();
     }
   });
-  it("não solicita conteúdo sem autorização", () => {
-    mocks.allowed = false; render(page());
-    expect(screen.getByLabelText("Senha do pitch")).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Abrir pitch" })).toBeDisabled();
-    expect(mocks.call).not.toHaveBeenCalled();
-  });
   it("apresenta automação, prova de valor e parceria sem prometer ROI ou presença", () => {
     render(<PitchContentView content={buildPitchContent()} />);
     expect(screen.getByRole("heading", { name: "Coezinho · Tecnologia e Automação Inteligente" })).toBeVisible();
@@ -142,23 +130,12 @@ describe("pitch comercial", () => {
     expect(screen.queryByRole("link", { name: /Quero patrocinar/ })).not.toBeInTheDocument();
     expect(screen.getByText(/Cortesias e permutas ficam separadas/)).toBeVisible();
   });
-  it("mantém fechado se a senha for recusada", async () => {
-    mocks.call.mockRejectedValue(new Error("Senha incorreta. Confira e tente novamente.")); render(page());
-    fireEvent.change(screen.getByLabelText("Senha do pitch"), { target: { value: "synthetic-test-input" } });
-    fireEvent.click(screen.getByRole("button", { name: "Abrir pitch" }));
-    await screen.findByRole("alert");
-    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
-  });
-  it("remove os capítulos ao trocar de conta", async () => {
-    const view = render(page()); await unlock(); mocks.userId = "other-test-user"; view.rerender(page());
-    await waitFor(() => expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument());
-  });
   it("separa os públicos sem expor projeções na vitrine", async () => {
     const { formats, pushTicket, push } = buildPitchContent();
     mocks.call.mockResolvedValue({ content: { formats, pushTicket, push }, expiresInSeconds: 900 });
     render(page("advertiser"));
     await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
-    expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" });
+    expect(mocks.call).toHaveBeenCalledWith("commercial-pitch", { audience: "advertiser" }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
     expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: /Pitch para Anunciantes/ })).toBeVisible();
     expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
@@ -176,19 +153,13 @@ describe("pitch comercial", () => {
     expect(screen.queryByRole("button", { name: "Bloquear" })).not.toBeInTheDocument();
   });
 
-  it("não abre anunciantes sem permissão", () => {
-    mocks.allowed = false; render(page("advertiser"));
-    expect(mocks.call).not.toHaveBeenCalled();
-    expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
-  });
-
   it("não reaproveita conteúdo de anunciantes para sócios", async () => {
-    mocks.call.mockResolvedValue({ content: buildPitchContent(), expiresInSeconds: 900 });
+    mocks.call.mockResolvedValueOnce({ content: { formats: buildPitchContent().formats, pushTicket: 150, push: buildPitchContent().push } }).mockResolvedValueOnce({ content: buildPitchContent() });
     const view = render(page("advertiser"));
     await screen.findByRole("heading", { name: "Coé a Boa? · Sua marca no próximo rolê" });
     view.rerender(page("investor"));
-    expect(screen.getByLabelText("Senha do pitch")).toBeVisible();
-    expect(screen.queryByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" })).not.toBeInTheDocument();
+    await screen.findByRole("heading", { name: "Visão Geral e Qualidades do Ecossistema" });
+    expect(screen.queryByLabelText("Senha do pitch")).not.toBeInTheDocument();
   });
 
   it("permite tentar novamente após falha ao abrir anunciantes", async () => {

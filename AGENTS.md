@@ -27,7 +27,7 @@
 - Central finance settles and publishes atomically through authenticated RPCs; payment_records are cash revenue, immutable finance_expenses are paid outflows, and finance_contracts track noncash classifications separately so courtesy/barter never inflate the balance.
 - ad_products separates sale inventory from finance contracts; guarded campaign fields and shared advertising helpers enforce safe destinations and regional placements to prevent audience leakage.
 
-- Pitch expires per account; disclosures keep summaries concise. Read src/pages/admin-pitch/AGENTS.md.
+- Pitches are public and split by audience; disclosures stay concise. Read src/pages/admin-pitch/AGENTS.md.
 - Notification forms share compact multi-selects and normalization; save explicit audience arrays apart from address/consent to avoid targeting drift.
 - Home/Agenda calendar and weekly strip share eventCalendar availability, ignoring selected dates; strip navigation skips empty weeks.
 

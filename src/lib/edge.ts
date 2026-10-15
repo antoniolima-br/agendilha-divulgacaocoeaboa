@@ -52,3 +52,29 @@ export async function callEdge<TResp = unknown>(
 
   return data as TResp;
 }
+
+/** Calls an explicitly public function with the app's publishable credential. */
+export async function callPublicEdge<TResp = unknown>(
+  name: string,
+  body?: unknown,
+  init?: { method?: "POST" | "GET"; signal?: AbortSignal },
+): Promise<TResp> {
+  const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${name}`;
+  const res = await fetch(url, {
+    method: init?.method ?? "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${publishableKey}`, apikey: publishableKey },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal: init?.signal,
+  });
+  const text = await res.text();
+  let data: unknown = null;
+  if (text) {
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+  }
+  if (!res.ok) {
+    const payload = (data ?? {}) as { error?: string; message?: string };
+    throw new EdgeFunctionError(payload.error || payload.message || `Erro ${res.status} ao chamar ${name}`, res.status);
+  }
+  return data as TResp;
+}
