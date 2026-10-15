@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { toPng, toJpeg } from "html-to-image";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { 
@@ -135,6 +134,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
     if (!flyerRef.current) return;
     setIsGenerating(true);
     try {
+      const { toPng } = await import("html-to-image");
       const formats: FlyerFormat[] = ["feed", "story", "whatsapp"];
       const urls: any = {};
 
@@ -161,6 +161,7 @@ export function AIFlyerGenerator({ initialData, onFlyerGenerated }: AIFlyerGener
   const handleDownload = async () => {
     if (!flyerRef.current) return;
     try {
+      const { toJpeg } = await import("html-to-image");
       const dataUrl = await toJpeg(flyerRef.current, { quality: 1.0, pixelRatio: 3 });
       const link = document.createElement('a');
       link.download = `flyer-${format}-${data.title.replace(/\s+/g, '-').toLowerCase()}.jpg`;

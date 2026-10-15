@@ -1,7 +1,6 @@
 import { forwardRef, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Share2, Loader2 } from "lucide-react";
-import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { formatBrazilianDate } from "@/lib/date-utils";
@@ -188,6 +187,7 @@ export function EventWhatsAppCardExport({ event }: { event: FlyerEvent }) {
 
   async function render(): Promise<{ blob: Blob; dataUrl: string } | null> {
     if (!cardRef.current) return null;
+    const { toPng } = await import("html-to-image");
     const dataUrl = await toPng(cardRef.current, {
       pixelRatio: 1, // node is already 1080px
       cacheBust: true,

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { toAuthEmail, toLegacyAuthEmail, toE164Digits, validateWhatsappForAccount } from "@/lib/phone";
@@ -123,12 +123,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function refreshMustChangePassword() {
+  const refreshMustChangePassword = useCallback(async () => {
     if (user?.id) {
       const sequence = ++authCheckSequence.current;
       await refreshAccountState(user.id, sequence);
     }
-  }
+  }, [user?.id]);
 
   /**
    * Garante que a pessoa tenha linha em `profiles`. O trigger de signup cria,
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) handleError(error, { silent: true, context: "AuthContext:ensureProfile:insert" });
   }
 
-  const signUp = async (
+  const signUp = useCallback(async (
     phone: string,
     password: string,
     name?: string,
@@ -224,9 +224,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     return { error: null };
-  };
+  }, []);
 
-  const signIn = async (phone: string, password: string) => {
+  const signIn = useCallback(async (phone: string, password: string) => {
     const identifier = phone.trim();
     const problem = validateWhatsappForAccount(identifier);
     if (problem) return { error: new Error(problem) };
@@ -258,15 +258,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
     }
     return { error: (error as Error) ?? new Error("Não deu pra entrar agora. Tenta de novo.") };
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) handleError(error, { fallback: "Não deu pra sair da conta. Tenta de novo.", context: "AuthContext:signOut" });
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    user, session, loading: loading || (!!user && !accountStateReady), isAdmin,
+    mustChangePassword, refreshMustChangePassword, signUp, signIn, signOut,
+  }), [user, session, loading, accountStateReady, isAdmin, mustChangePassword,
+    refreshMustChangePassword, signUp, signIn, signOut]);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading: loading || (!!user && !accountStateReady), isAdmin, mustChangePassword, refreshMustChangePassword, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

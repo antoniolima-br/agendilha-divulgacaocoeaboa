@@ -8,8 +8,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Loader2, Package } from "lucide-react";
 import { Link } from "react-router-dom";
-import { toPng } from "html-to-image";
-import JSZip from "jszip";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { pickCarouselEvents } from "@/lib/highlights";
@@ -66,6 +64,9 @@ export default function Carrossel() {
     try {
       setZipping(true);
       setZipProgress(0);
+      const [{ toPng }, { default: JSZip }] = await Promise.all([
+        import("html-to-image"), import("jszip"),
+      ]);
       const zip = new JSZip();
       const nodes = Array.from(
         bulkRef.current.querySelectorAll<HTMLElement>("[data-flyer]")
