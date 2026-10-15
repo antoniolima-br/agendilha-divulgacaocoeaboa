@@ -19,7 +19,7 @@ export const investorPitchSections = [
   ] },
 ] as const;
 
-export async function buildInvestorPitchPdf() {
+export async function buildInvestorPitchPdf(blocks?: { text: string; heading: boolean }[]) {
   const { default: JsPDF } = await import("jspdf");
   const doc = new JsPDF({ unit: "mm", format: "a4" });
   const margin = 18, width = 174, bottom = 276;
@@ -35,7 +35,9 @@ export async function buildInvestorPitchPdf() {
   doc.setTextColor(15, 23, 42);
   write("Coé a Boa? | Visão de Negócio & Futuro", 20, "bold", 5);
   write("Conectando Pessoas, Comércios e a Energia do Rio de Janeiro.", 12, "normal", 9);
-  for (const section of investorPitchSections) {
+  if (blocks) {
+    for (const block of blocks) write(block.text, block.heading ? 13 : 10.5, block.heading ? "bold" : "normal", block.heading ? 5 : 4);
+  } else for (const section of investorPitchSections) {
     write(section.title, 14, "bold", 4);
     if ("paragraphs" in section) section.paragraphs.forEach((p) => write(p, 10.5));
     if ("items" in section) section.items.forEach(([title, text]) => { write(title, 11, "bold", 2); write(text, 10.5); });

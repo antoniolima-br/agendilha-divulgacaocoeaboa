@@ -83,7 +83,7 @@ function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
   const headingClass = "scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
   const event = content.formats[0];
   const regional = content.formats[1];
-  return <div className="min-w-0">
+  return <div data-investor-pitch className="min-w-0">
       <div className="min-w-0 space-y-10 pb-10 pt-4 sm:pb-14">
         <section aria-labelledby="pitch-overview" className="space-y-5">
           <p className="text-xs font-medium uppercase text-primary">Coé a Boa? · Visão de negócio</p>
