@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { HelmetProvider } from "react-helmet-async";
+import { MemoryRouter } from "react-router-dom";
 import { buildPitchContent } from "../../../supabase/functions/commercial-pitch/content";
 import { inventoryImage } from "../../../supabase/functions/commercial-pitch/inventory-image";
 import AdminPitchComercial from "../AdminPitchComercial";
@@ -9,7 +10,7 @@ import { PitchContentView } from "./PitchContentView";
 const mocks = vi.hoisted(() => ({ call: vi.fn() }));
 vi.mock("@/lib/edge", () => ({ callPublicEdge: mocks.call }));
 vi.mock("@/data/useAppSettings", () => ({ SETTING_KEYS: { teamWhatsapp: "team_whatsapp" }, settingOr: () => "21998554322", useAppSettings: () => ({ data: {} }) }));
-const page = (audience: "investor" | "advertiser" = "investor") => <HelmetProvider><AdminPitchComercial audience={audience} /></HelmetProvider>;
+const page = (audience: "investor" | "advertiser" = "investor") => <MemoryRouter><HelmetProvider><AdminPitchComercial audience={audience} /></HelmetProvider></MemoryRouter>;
 
 describe("pitch comercial", () => {
   beforeEach(() => { mocks.call.mockReset(); });
