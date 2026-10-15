@@ -44,4 +44,37 @@ describe("Guide form visibility", () => {
     expect(screen.getByLabelText("Avatar")).toHaveTextContent("visível");
     act(() => dialog.remove());
   });
+
+  it("skips DOM observation on known form routes", () => {
+    const observe = vi.spyOn(MutationObserver.prototype, "observe");
+    render(<MemoryRouter initialEntries={["/enviar-evento"]}><Harness /></MemoryRouter>);
+    expect(observe).not.toHaveBeenCalled();
+    expect(screen.getByLabelText("Avatar")).toHaveTextContent("oculto");
+  });
+
+  it("coalesces mutations and cancels queued layout work on unmount", async () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => {
+      frames.push(callback);
+      return frames.length;
+    });
+    const cancel = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
+    const rects = vi.spyOn(HTMLElement.prototype, "getClientRects")
+      .mockReturnValue([{}] as unknown as DOMRectList);
+    const { unmount } = render(<MemoryRouter initialEntries={["/meus-eventos"]}><Harness /></MemoryRouter>);
+    const dialog = document.createElement("div");
+    dialog.setAttribute("role", "dialog");
+    dialog.innerHTML = "<input />";
+    await act(async () => { document.body.append(dialog); });
+    await act(async () => { dialog.append(document.createElement("span")); });
+    expect(frames).toHaveLength(1);
+    expect(rects).not.toHaveBeenCalled();
+    act(() => frames[0]?.(0));
+    expect(screen.getByLabelText("Avatar")).toHaveTextContent("oculto");
+    expect(rects).toHaveBeenCalledTimes(1);
+    await act(async () => { dialog.append(document.createElement("span")); });
+    unmount();
+    expect(cancel).toHaveBeenCalledWith(frames.length);
+    dialog.remove();
+  });
 });

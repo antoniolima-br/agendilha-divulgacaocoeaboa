@@ -6,7 +6,7 @@
 - WhatsApp uses prepared links; automation needs an authenticated provider.
 - opening_hours is free text; validate shows separately. One venue category; edit CEP.
 - Estabelecimentos use `listing_kind`: existing rows and event selectors are `event_venue`; `general_business` stays isolated in panel-only lists.
-- Centralize routes/permissions/data; shared UI owns type, surfaces, focus and sizing for consistency.
+- Centralize routes/permissions/data and UI tokens; memoize auth values/actions and lazy-load image/ZIP exports to avoid repeated work.
 - Meus eventos centralizes creation/sharing; owner-only public events use a shared message builder.
 - Multi-event submissions use one atomic insert with guarded duplicates, daily quotas and distinct start times; public endpoints also use server-side quotas with hashed request fingerprints.
 - Guia refreshes approved public events/venues per message; chat links only to event details, where ride actions stay.
@@ -14,7 +14,7 @@
 - `highlight_payment_status` labels workflow; only `payment_records` proves settlement, keeping payment evidence separate.
 - Home flyers follow São Paulo date/time; focus syncs dates. Embla rotates in 5s, pauses on interaction, and handles gestures/keys/details.
 - Details share natively with WhatsApp/copy fallback; Agenda close clears selection and replaces the event query, preserving filters to prevent reopen loops.
-- Lazy Guide/routes; intent prefetch is public-only. Shared realtime batches have a maximum wait to prevent starvation. Read coezinho AGENTS.md for FAB/facts.
+- Lazy Guide/routes; prefetch public-only. Realtime batches have a max wait. Read coezinho AGENTS.md for FAB/facts.
 - Flyer OCR: lazy browser Tesseract, Portuguese pattern parsing, abort cleanup; preserve edits, no draft gate. Preserve art; generate missing sponsored art first.
 - Database guards protect moderation; personal edits use a shared status allowlist and permanent approval timestamps, preventing post-approval/suspension edits.
 - Password recovery issues temporary credentials only after identity verification; anonymous requests never receive credentials.

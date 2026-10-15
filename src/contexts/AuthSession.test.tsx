@@ -56,4 +56,19 @@ describe("account session ordering", () => {
     await act(async () => { await result.current.signOut(); });
     expect(mocks.error).toHaveBeenCalledWith(expect.any(Error), expect.objectContaining({ context: "AuthContext:signOut" }));
   });
+
+  it("keeps actions stable on token refresh without re-reading account gates", async () => {
+    mocks.getSession.mockResolvedValue({ data: { session } });
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const before = result.current;
+    mocks.from.mockClear();
+    act(() => callback("TOKEN_REFRESHED", { ...session, access_token: "refreshed" }));
+    expect(result.current.signIn).toBe(before.signIn);
+    expect(result.current.signUp).toBe(before.signUp);
+    expect(result.current.signOut).toBe(before.signOut);
+    expect(result.current.refreshMustChangePassword).toBe(before.refreshMustChangePassword);
+    expect(result.current.isAdmin).toBe(true);
+    expect(mocks.from).not.toHaveBeenCalled();
+  });
 });
