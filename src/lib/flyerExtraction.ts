@@ -2,6 +2,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { sanitizeFlyerFields, type FlyerFields } from "../../supabase/functions/_shared/flyerFields";
 export { sanitizeFlyerFields, type FlyerFields };
 
+export function missingFlyerTitle(hasFlyer: boolean, title: unknown): boolean {
+  return hasFlyer && !(typeof title === "string" && title.trim());
+}
+
 export function safeFlyerPatch(extracted: FlyerFields, before: Record<string, unknown>, current: Record<string, unknown>): FlyerFields {
   const patch: FlyerFields = {};
   for (const key of Object.keys(extracted) as (keyof FlyerFields)[]) {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { AlertCircle, ImagePlus, Loader2, Upload, X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { extractFlyer, safeFlyerPatch } from "@/lib/flyerExtraction";
+import { extractFlyer, missingFlyerTitle, safeFlyerPatch } from "@/lib/flyerExtraction";
 import { prepareUploadImage } from "@/lib/uploadImage";
 import type { SubmissionFormData } from "./schema";
 
@@ -40,6 +40,11 @@ export function FlyerAutofill({ form, onImage, onLoading }: {
       const patch = safeFlyerPatch(fields, snapshot, form.getValues());
       for (const key of Object.keys(patch) as (keyof typeof patch)[]) {
         form.setValue(key, patch[key], { shouldDirty: true, shouldValidate: true });
+      }
+      if (missingFlyerTitle(true, form.getValues("eventTitle"))) {
+        setError("Não consegui identificar o título do rolê. Preencha o nome abaixo antes de continuar.");
+        form.setError("eventTitle", { type: "manual", message: "Preencha o título do rolê para continuar." });
+        return;
       }
       setStatus(Object.keys(patch).length ? "Prontinho! Eu preenchi os dados. Confira título, data, horário e endereço antes de continuar." : "Não encontrei dados para preencher. Confira os campos abaixo ou envie outro flyer.");
     } catch (e) {
