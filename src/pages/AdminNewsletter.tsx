@@ -26,7 +26,11 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useNewsletterSubscribers } from "@/data";
+import type { NewsletterSubscriber } from "@/data/useNewsletterSubscribers";
 import { exportRowsToCsv } from "@/lib/csv";
+
+/** Bairro principal + bairros e localidades escolhidos nas preferências (micro-regiões). */
+const placesOf = (s: NewsletterSubscriber) => [...new Set([s.neighborhood, ...(s.preferred_neighborhoods ?? []), ...(s.preferred_localities ?? [])].filter((p): p is string => !!p?.trim()))];
 
 export default function AdminNewsletter() {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -38,9 +42,7 @@ export default function AdminNewsletter() {
 
   const neighborhoods = useMemo(() => {
     const set = new Set<string>();
-    subscribers.forEach(s => {
-      if (s.neighborhood) set.add(s.neighborhood);
-    });
+    subscribers.forEach(s => placesOf(s).forEach(p => set.add(p)));
     return Array.from(set).sort();
   }, [subscribers]);
 
@@ -48,7 +50,7 @@ export default function AdminNewsletter() {
     return subscribers.filter(s => {
       const matchSearch = (s.name || "").toLowerCase().includes(search.toLowerCase()) || 
                           (s.email || "").toLowerCase().includes(search.toLowerCase());
-      const matchNeighborhood = neighborhoodFilter === "all" || s.neighborhood === neighborhoodFilter;
+      const matchNeighborhood = neighborhoodFilter === "all" || placesOf(s).includes(neighborhoodFilter);
       return matchSearch && matchNeighborhood;
     });
   }, [subscribers, search, neighborhoodFilter]);
@@ -56,11 +58,11 @@ export default function AdminNewsletter() {
   const exportToCSV = () => {
     exportRowsToCsv(
       `inscritos-newsletter-${new Date().toISOString().split("T")[0]}.csv`,
-      ["Nome", "E-mail", "Bairro", "Data de Inscrição"],
+      ["Nome", "E-mail", "Bairros e localidades", "Data de Inscrição"],
       filtered.map((s) => [
         s.name || "—",
         s.email,
-        s.neighborhood || "—",
+        placesOf(s).join(", ") || "—",
         new Date(s.created_at).toLocaleDateString("pt-BR"),
       ])
     );
@@ -104,7 +106,7 @@ export default function AdminNewsletter() {
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os Bairros</SelectItem>
+              <SelectItem value="all">Todos os bairros e localidades</SelectItem>
               {neighborhoods.map(n => (
                 <SelectItem key={n} value={n}>{n}</SelectItem>
               ))}
@@ -141,10 +143,8 @@ export default function AdminNewsletter() {
                     </TableCell>
                     <TableCell className="min-w-0 break-all p-0 font-mono text-xs md:table-cell md:p-4">{subscriber.email}</TableCell>
                     <TableCell className="p-0 md:table-cell md:p-4">
-                      {subscriber.neighborhood ? (
-                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest bg-muted/50 border-none">
-                          {subscriber.neighborhood}
-                        </Badge>
+                      {placesOf(subscriber).length ? (
+                        <span className="flex flex-wrap gap-1">{placesOf(subscriber).map(p => <Badge key={p} variant="outline" className="text-[10px] font-bold uppercase tracking-widest bg-muted/50 border-none">{p}</Badge>)}</span>
                       ) : (
                         <span className="text-muted-foreground italic text-xs">Não informado</span>
                       )}

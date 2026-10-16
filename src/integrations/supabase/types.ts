@@ -1996,6 +1996,7 @@ export type Database = {
           interests: string[]
           name: string | null
           neighborhood: string | null
+          preferred_localities: string[]
           preferred_neighborhood: string | null
           preferred_neighborhoods: string[]
           preferred_region: string | null
@@ -2010,6 +2011,7 @@ export type Database = {
           interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
           preferred_region?: string | null
@@ -2024,6 +2026,7 @@ export type Database = {
           interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
           preferred_region?: string | null
@@ -2991,6 +2994,7 @@ export type Database = {
           id: string
           interesses: string[]
           origem_cadastro: string | null
+          preferred_localities: string[]
           preferred_neighborhood: string | null
           preferred_neighborhoods: string[]
           preferred_region: string | null
@@ -3006,6 +3010,7 @@ export type Database = {
           id?: string
           interesses?: string[]
           origem_cadastro?: string | null
+          preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
           preferred_region?: string | null
@@ -3021,6 +3026,7 @@ export type Database = {
           id?: string
           interesses?: string[]
           origem_cadastro?: string | null
+          preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
           preferred_region?: string | null
