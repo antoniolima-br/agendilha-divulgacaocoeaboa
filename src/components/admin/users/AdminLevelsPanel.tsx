@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { listRoleAssignments, setUserRole } from "@/data/userRoles";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
@@ -23,13 +23,10 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
 
   useEffect(() => {
     if (!isMaster || admins.length === 0) return;
-    supabase
-      .from("user_roles")
-      .select("user_id, role")
-      .in("role", ["senior", "financeiro"] as never[])
-      .then(({ data }) => {
+    void listRoleAssignments(["senior", "financeiro"])
+      .then((data) => {
         const map: Record<string, Level[]> = {};
-        (data ?? []).forEach((r: { user_id: string; role: string }) => {
+        data.forEach((r) => {
           (map[r.user_id] ||= []).push(r.role as Level);
         });
         setLevels(map);
@@ -42,10 +39,7 @@ export function AdminLevelsPanel({ users }: { users: UserWithRole[] }) {
   async function toggle(userId: string, level: Level, on: boolean) {
     if (!isMaster) return;
     setBusy(`${userId}-${level}`);
-    const q = on
-      ? supabase.from("user_roles").insert({ user_id: userId, role: level as never })
-      : supabase.from("user_roles").delete().eq("user_id", userId).eq("role", level as never);
-    const { error } = await q;
+    const error = await setUserRole(userId, level, on);
     setBusy(null);
     if (error) {
       toast.error("Não deu pra mudar o nível. Tenta de novo.");
