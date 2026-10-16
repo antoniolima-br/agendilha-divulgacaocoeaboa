@@ -1,4 +1,4 @@
-import { deleteEvent, setEventHighlight, setEventModeration, setEventReviewStatus } from "@/data/eventWrites";
+import { deleteEvent, listAdminEvents, listAutoFlyerEvents, setEventHighlight, setEventImageUrl, uploadFallbackFlyer, setEventModeration, setEventReviewStatus } from "@/data/eventWrites";
 import { PaymentStatus } from "@/components/admin/PaymentStatus";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -94,14 +94,10 @@ function AdminEventsInner() {
 
   async function fetchAll() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("submissions")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) {
+    try {
+      setSubmissions(await listAdminEvents());
+    } catch (error) {
       handleError(error, "Erro ao carregar eventos");
-    } else {
-      setSubmissions(data || []);
     }
     setLoading(false);
   }
@@ -226,20 +222,8 @@ function AdminEventsInner() {
         location: sub.location,
         category: (sub as any).category ?? null,
       });
-      const blob = await (await fetch(dataUrl)).blob();
-      const filePath = `${user?.id ?? "admin"}/fallback-${sub.id}-${Date.now()}.jpg`;
-      const { error: upErr } = await supabase.storage
-        .from("event-flyers")
-        .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
-      if (upErr) throw upErr;
-      const { data: { publicUrl } } = supabase.storage
-        .from("event-flyers")
-        .getPublicUrl(filePath);
-      const { error: updErr } = await supabase
-        .from("submissions")
-        .update({ image_url: publicUrl })
-        .eq("id", sub.id);
-      if (updErr) throw updErr;
+      const publicUrl = await uploadFallbackFlyer(user?.id, sub.id, dataUrl);
+      await setEventImageUrl(sub.id, publicUrl);
       
       setFlyerOffer(null);
       fetchAll();
@@ -254,13 +238,9 @@ function AdminEventsInner() {
   async function regenerateAutoFlyers() {
     setRegenerating(true);
     try {
-      const { data, error } = await supabase
-        .from("submissions")
-        .select("id, event_title, atrativo_name, company_name, date, start_time, location, category, image_url")
-        .like("image_url", "%/fallback-%");
-      if (error) throw error;
+      const data = await listAutoFlyerEvents();
       let ok = 0;
-      for (const s of (data ?? []) as any[]) {
+      for (const s of data as any[]) {
         try {
           const dataUrl = await generateFallbackFlyer({
             title: s.event_title || s.atrativo_name || s.company_name || "Evento",
@@ -269,15 +249,8 @@ function AdminEventsInner() {
             location: s.location,
             category: s.category ?? null,
           });
-          const blob = await (await fetch(dataUrl)).blob();
-          const filePath = `${user?.id ?? "admin"}/fallback-${s.id}-${Date.now()}.jpg`;
-          const { error: upErr } = await supabase.storage
-            .from("event-flyers")
-            .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
-          if (upErr) throw upErr;
-          const { data: { publicUrl } } = supabase.storage.from("event-flyers").getPublicUrl(filePath);
-          const { error: updErr } = await supabase.from("submissions").update({ image_url: publicUrl }).eq("id", s.id);
-          if (updErr) throw updErr;
+          const publicUrl = await uploadFallbackFlyer(user?.id, s.id, dataUrl);
+          await setEventImageUrl(s.id, publicUrl);
           ok++;
         } catch (e) {
           console.warn("[refazer flyer]", s.id, e);
@@ -341,13 +314,7 @@ function AdminEventsInner() {
           location: target.location,
           category: target.category,
         });
-        const blob = await (await fetch(dataUrl)).blob();
-        const filePath = `${user?.id ?? "admin"}/fallback-${target.id}-${Date.now()}.jpg`;
-        const { error: uploadError } = await supabase.storage
-          .from("event-flyers")
-          .upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
-        if (uploadError) throw uploadError;
-        imageUrl = supabase.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+        imageUrl = await uploadFallbackFlyer(user?.id, target.id, dataUrl);
       }
 
       const nextHighlight = !current;
