@@ -11,6 +11,10 @@ export interface NewsletterSubscriber {
   preferred_neighborhoods?: string[] | null;
   preferred_localities?: string[] | null;
   created_at: string;
+  phone?: string | null;
+  preferred_regions?: string[] | null;
+  interest_event_id?: string | null;
+  interest_status?: "interessado" | "confirmado" | "compareceu" | "cancelado";
 }
 
 /** Lista todos os inscritos da newsletter (admin only via RLS). */
