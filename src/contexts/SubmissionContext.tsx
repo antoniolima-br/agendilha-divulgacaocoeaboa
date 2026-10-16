@@ -120,11 +120,13 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
       return null;
     }
     const payload = { ...data, user_id: user.id } as unknown as SubmissionInsert;
-    const { data: inserted, error } = await supabase
-      .from("submissions")
-      .insert(payload)
-      .select("id")
-      .single();
+    let inserted: { id: string } | undefined;
+    let error: { message?: string; code?: string; details?: string; hint?: string } | null = null;
+    try {
+      [inserted] = await insertEventBatch(user.id, [payload]);
+    } catch (e) {
+      error = e as typeof error;
+    }
 
     if (error || !inserted) {
       logger.error("[addSubmission] insert failed", error);
