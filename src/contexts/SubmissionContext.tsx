@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
 import { toast } from "sonner";
+import { insertEventBatch } from "@/data/eventSubmission";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { logger } from "@/lib/logger";
@@ -106,10 +107,7 @@ export function SubmissionProvider({ children }: { children: ReactNode }) {
 
   const addSubmissionBatch = useCallback(async (data: Omit<SubmissionInsert, "user_id">[]) => {
     if (!user) throw new Error("Sua sessão expirou. Entre novamente para enviar os eventos.");
-    const { data: inserted, error } = await supabase.from("submissions")
-      .insert(data.map(row => ({ ...row, user_id: user.id }))).select("id");
-    if (error) throw error;
-    if (!inserted || inserted.length !== data.length) throw new Error("Não deu pra confirmar o envio. Confira seus eventos antes de tentar novamente.");
+    const inserted = await insertEventBatch(user.id, data);
     await fetchSubmissions();
     return inserted;
   }, [user, fetchSubmissions]);

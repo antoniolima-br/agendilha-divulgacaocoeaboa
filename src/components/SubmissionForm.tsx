@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./submission-form/StepIndicator";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { EventDetailsStage } from "./submission-form/EventDetailsStage";
+import { createAttractionFromSubmission, createVenueForSubmissions, insertSubmissionAttractions } from "@/data/eventSubmission";
 import { FormNavigation } from "./submission-form/FormNavigation";
 import { SubmitReviewDialog } from "./submission-form/SubmitReviewDialog";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
@@ -565,10 +566,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
           await measureFlowOperation(
             "event-submission",
             "additional-attractions-insert",
-            async () => supabaseClient.from("submission_atrativos").insert(rows).then((response) => {
-              if (response.error) throw response.error;
-              return response;
-            }),
+            async () => insertSubmissionAttractions(rows),
             currentStep,
           );
         }
@@ -582,35 +580,24 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       // pra que apareçam no autocomplete em divulgações futuras (após aprovação).
       try {
         if (!selectedEstabId && user?.id && clean(values.locationName)) {
-          const { data: novoLocal } = await supabaseClient
-            .from("estabelecimentos")
-            .insert({
+          const novoLocalId = await createVenueForSubmissions({
               nome: clean(values.locationName)!,
               tipo: clean((values as any).localTipo),
               bairro: clean(values.addressNeighborhood),
               endereco: clean(values.eventAddress),
               cep: clean((values as any).locationCep),
               contato: clean(values.locationContact),
-              listing_kind: "event_venue",
               responsavel_id: user.id,
               created_by: user.id,
-            })
-            .select("id")
-            .maybeSingle();
-          if (novoLocal?.id) {
-            await supabaseClient
-              .from("submissions")
-              .update({ estabelecimento_id: novoLocal.id })
-              .in("id", insertedSubmissionIds);
-            emitEntityCreated("estabelecimento");
-          }
+            }, insertedSubmissionIds);
+          if (novoLocalId) emitEntityCreated("estabelecimento");
         }
 
         const atrativoLinkedType = (values as any).atrativoSourceType;
         const atrativoLinkedId = (values as any).atrativoSourceId;
         
         if (!atrativoLinkedId && user?.id && clean(values.atrativoName)) {
-          await supabaseClient.from("atrativos").insert({
+          await createAttractionFromSubmission({
             name: clean(values.atrativoName)!,
             tipo_atrativo: resolveAtrativoCategory(values),
             category_other: values.atrativoCategory === "Outros" ? clean(values.atrativoCategoryOther) : null,
