@@ -65,8 +65,16 @@ export function useDeleteNewsletterSubscriber() {
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async (id: string) => {
+      await qc.cancelQueries({ queryKey: qk.newsletter.list() });
+      const prev = qc.getQueryData<NewsletterSubscriber[]>(qk.newsletter.list());
+      qc.setQueryData<NewsletterSubscriber[]>(qk.newsletter.list(), rows => rows?.filter(r => r.id !== id));
+      return { prev };
+    },
+    onError: (_e, _id, ctx) => { if (ctx?.prev) qc.setQueryData(qk.newsletter.list(), ctx.prev); },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: qk.newsletter.all });
+      qc.invalidateQueries({ queryKey: ["crm"] });
     },
   });
 }
