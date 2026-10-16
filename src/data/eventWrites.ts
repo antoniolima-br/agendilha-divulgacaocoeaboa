@@ -66,3 +66,35 @@ export async function setEventReviewStatus(
   const { error } = await supabase.from("submissions").update(payload as never).eq("id", eventId);
   if (error) throw error;
 }
+
+/** Sobe um flyer automático (gerado no navegador) e devolve o link público da arte. */
+export async function uploadFallbackFlyer(ownerId: string | undefined, eventId: string, dataUrl: string): Promise<string> {
+  const blob = await (await fetch(dataUrl)).blob();
+  const filePath = `${ownerId ?? "admin"}/fallback-${eventId}-${Date.now()}.jpg`;
+  const { error } = await supabase.storage.from("event-flyers").upload(filePath, blob, { contentType: "image/jpeg", upsert: true });
+  if (error) throw error;
+  return supabase.storage.from("event-flyers").getPublicUrl(filePath).data.publicUrl;
+}
+
+/** Grava a arte no rolê sem exigir confirmação da linha alterada. */
+export async function setEventImageUrl(eventId: string, imageUrl: string): Promise<void> {
+  const { error } = await supabase.from("submissions").update({ image_url: imageUrl }).eq("id", eventId);
+  if (error) throw error;
+}
+
+/** Lista completa do painel de eventos, do mais novo pro mais antigo. */
+export async function listAdminEvents() {
+  const { data, error } = await supabase.from("submissions").select("*").order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+/** Rolês cuja arte atual é um flyer automático. */
+export async function listAutoFlyerEvents() {
+  const { data, error } = await supabase
+    .from("submissions")
+    .select("id, event_title, atrativo_name, company_name, date, start_time, location, category, image_url")
+    .like("image_url", "%/fallback-%");
+  if (error) throw error;
+  return data ?? [];
+}
