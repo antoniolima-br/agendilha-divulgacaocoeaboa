@@ -52,8 +52,8 @@ export function MobileTabBar({ onMenuClick }: Props) {
                 )}
               >
                 <div className="relative flex flex-col items-center">
-                  <Icon className={cn("h-5 w-5 shrink-0 transition-transform", active && "fill-primary/10 scale-110")} />
-                  {active && <div className="absolute -bottom-1.5 h-1 w-1 rounded-full bg-primary animate-in zoom-in duration-300" />}
+                  <Icon className={cn("h-5 w-5 shrink-0 transition-transform", active && "scale-110")} strokeWidth={active ? 2.5 : 2} />
+                  {active && <div className="nav-active-dot absolute -bottom-1.5 h-1 w-1 rounded-full animate-in zoom-in duration-300" />}
                 </div>
                 <span className="w-full truncate text-center text-[10px] font-semibold leading-none">
                   {item.label}
