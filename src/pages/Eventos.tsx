@@ -20,6 +20,7 @@ import {
   categoryLabels, getWeekRange, parseEventDate, type Submission, EDITORIAL_STAGES, type EditorialStatus,
 } from "@/components/events-admin/types";
 import { EventCard } from "@/components/events-admin/EventCard";
+import { filterSubmissions } from "@/components/events-admin/filterSubmissions";
 import { useEventActions } from "@/components/events-admin/useEventActions";
 import { useAuditLogs } from "@/components/events-admin/useAuditLogs";
 import { KanbanBoard } from "@/components/events-admin/KanbanBoard";
