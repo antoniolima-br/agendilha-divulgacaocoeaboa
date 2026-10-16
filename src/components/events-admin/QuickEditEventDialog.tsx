@@ -3,6 +3,7 @@ import { Gift, Home, Loader2, Wallet } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { updateEventFields } from "@/data/eventWrites";
 import { handleError } from "@/lib/error-handler";
 import { generateFallbackFlyer } from "@/lib/generateFallbackFlyer";
 import { formatBrazilianDate } from "@/lib/date-utils";
@@ -122,8 +123,7 @@ export function QuickEditEventDialog({
       payload.highlight_grant_type = isHighlight ? highlightGrantType : null;
       if (isHighlight) payload.highlight_hidden = false;
 
-      const { error } = await supabase.from("submissions").update(payload as never).eq("id", event.id);
-      if (error) throw error;
+      await updateEventFields(event.id, payload);
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: qk.home.all }),
