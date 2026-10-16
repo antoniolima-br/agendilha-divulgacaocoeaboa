@@ -28,7 +28,7 @@ function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () =>
       className="group relative h-auto w-full overflow-hidden rounded-lg border bg-card p-0 text-left shadow-sm hover:bg-card hover:shadow-md"
       aria-label={`Abrir detalhes do anúncio ${ad.title}`}
     >
-      <div className={cn("w-full bg-muted", compact ? "h-44 sm:h-52" : "aspect-video")}>
+      <div className={cn("w-full bg-muted", compact ? "h-32 sm:h-44" : "aspect-video")}>
         {displayImage ? (
           <img src={displayImage} alt={ad.title} loading="lazy" width={1536} height={864} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
         ) : (
@@ -37,8 +37,9 @@ function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () =>
           </div>
         )}
       </div>
+      {compact && <Badge variant="secondary" className="absolute right-2 top-2 text-[10px] uppercase shadow-sm">Patrocinado</Badge>}
       <div className={cn("absolute inset-x-0 bottom-0 bg-background/95 backdrop-blur-sm", compact ? "p-3 sm:p-4" : "p-4")}>
-        <Badge variant="secondary" className={cn(compact ? "mb-1.5 text-[10px]" : "mb-2")}>Patrocinado</Badge>
+        {!compact && <Badge variant="secondary" className="mb-2">Patrocinado</Badge>}
         <h3 className={cn("line-clamp-1 font-bold text-foreground", compact ? "text-sm sm:text-base" : "text-base sm:text-lg")}>{ad.title}</h3>
         {location && (
           <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">

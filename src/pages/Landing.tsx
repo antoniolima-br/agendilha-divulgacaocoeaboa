@@ -387,6 +387,10 @@ export default function Landing() {
              <ChevronRight className="h-4 w-4" />
            </Button>
          </nav>}
+         <section aria-label="Destaque para você" className="mx-auto w-full max-w-screen-lg space-y-6 px-4 pt-4 sm:space-y-8 sm:px-6">
+           <HomeAdsCarousel variant="compact" region={globalFilters.region} />
+           <h2 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-foreground">Destaque para você</h2>
+         </section>
          <HomeMixedHeroCarousel
            events={unfilteredHomeFlyerEvents.filter((event) => matchesPublicEventFilters(event, globalFilters))}
            onOpenEvent={openCarouselEvent}
