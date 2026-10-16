@@ -20,6 +20,7 @@ import { StepIndicator } from "./submission-form/StepIndicator";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { EventDetailsStage } from "./submission-form/EventDetailsStage";
 import { FormNavigation } from "./submission-form/FormNavigation";
+import { SubmitReviewDialog } from "./submission-form/SubmitReviewDialog";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
 import { prepareSponsoredFlyers, uploadSponsoredFlyer } from "@/lib/sponsoredFlyer";
@@ -50,6 +51,8 @@ type FormData = SubmissionFormData;
 
 export default function SubmissionForm({ initialValues }: { initialValues?: Partial<SubmissionFormData> } = {}) {
   const [eventImage, setEventImage] = useState<File | string | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const reviewConfirmedRef = useRef(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
@@ -308,6 +311,12 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
       setCurrentStep(missing.includes("legalAcceptance") && missing.length === 1 ? 2 : 1);
       return;
     }
+    // Antes de mandar pra curadoria, mostra o resumo e espera a confirmação.
+    if (!reviewConfirmedRef.current) {
+      setReviewOpen(true);
+      return;
+    }
+    reviewConfirmedRef.current = false;
     if (submittingRef.current) return;
     submittingRef.current = true;
     setRegistrationIssue(null);
@@ -807,6 +816,20 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
           />
         </form>
       </Form>
+      <SubmitReviewDialog
+        open={reviewOpen}
+        onOpenChange={setReviewOpen}
+        image={eventImage ?? (typeof form.watch("eventImageUrl") === "string" ? (form.watch("eventImageUrl") as string) : null) ?? null}
+        events={[form.watch(), ...form.watch("additionalEvents")].map((ev) => ({ title: ev.eventTitle || "", date: String(ev.date || ""), startTime: ev.startTime || "", endTime: ev.endTime || "" }))}
+        location={form.watch("locationName") || ""}
+        neighborhood={form.watch("addressNeighborhood") || ""}
+        submitting={submitting}
+        onConfirm={() => {
+          reviewConfirmedRef.current = true;
+          setReviewOpen(false);
+          void form.handleSubmit(onSubmit, onInvalid)();
+        }}
+      />
     </div>
   );
 }
