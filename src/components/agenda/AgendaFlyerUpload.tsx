@@ -3,7 +3,7 @@ import { uploadFlyerImage } from "@/lib/flyerImages";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { saveEventFlyerUrl } from "@/data/eventFlyers";
 import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -38,8 +38,7 @@ export function AgendaFlyerUpload({ events, userId }: { events: AgendaEvent[]; u
       const ext = file.name.split(".").pop() || "jpg";
       const path = `${userId}/flyer-${eventId}-${Date.now()}.${ext}`;
       const imageUrl = await uploadFlyerImage(file, path);
-      const { error } = await supabase.from("submissions").update({ image_url: imageUrl }).eq("id", eventId);
-      if (error) throw error;
+      await saveEventFlyerUrl(eventId, imageUrl);
       toast.success("Flyer no ar! Já aparece na agenda.");
       setFile(null);
       setEventId("");
