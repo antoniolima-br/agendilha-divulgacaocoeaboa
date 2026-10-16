@@ -9,6 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { AlertCircle, Check, Plus, X } from "lucide-react";
 import { formatEventDateTimeBR } from "@/lib/eventDate";
 
@@ -19,13 +23,18 @@ export default function AdminAprovarEventos() {
   const approved = useCuration(!loading && canApprove, "approved");
   const currentApproved = (approved.data ?? []).filter((event) => isCurrentOrFutureEventDate(event.date));
 
-  const decide = async (id: string, ok: boolean) => {
-    if (decision.isPending) return;
+  const [rejecting, setRejecting] = useState<CurationEvent | null>(null);
+  const [reason, setReason] = useState("");
+
+  const decide = async (id: string, ok: boolean, why?: string) => {
+    if (decision.isPending) return false;
     try {
-      await decision.mutateAsync({ id, approve: ok });
+      await decision.mutateAsync({ id, approve: ok, reason: why });
       toast.success(ok ? "Aprovado! Eventos atuais e futuros já aparecem na agenda." : "Evento rejeitado.");
+      return true;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Não rolou salvar. Tenta de novo.");
+      return false;
     }
   };
 
@@ -65,7 +74,7 @@ export default function AdminAprovarEventos() {
             ? <p className="text-sm text-muted-foreground">Nada esperando aprovação. Tudo em dia!</p>
              : (pending.data ?? []).map((e) => row(e, <>
                 <Button className="min-h-12 text-base" disabled={decision.isPending || !e.event_title?.trim()} onClick={() => decide(e.id, true)}><Check className="mr-1 h-4 w-4" /> Aprovar</Button>
-                <Button className="min-h-12 text-base" variant="outline" disabled={decision.isPending} onClick={() => decide(e.id, false)}><X className="mr-1 h-4 w-4" /> Rejeitar</Button>
+                <Button className="min-h-12 text-base" variant="outline" disabled={decision.isPending} onClick={() => { setReason(""); setRejecting(e); }}><X className="mr-1 h-4 w-4" /> Rejeitar</Button>
               </>))}
         </TabsContent>
         <TabsContent value="aprovados" className="space-y-3">
@@ -74,6 +83,22 @@ export default function AdminAprovarEventos() {
              : currentApproved.map((e) => row(e))}
         </TabsContent>
       </Tabs>
+      <Dialog open={!!rejecting} onOpenChange={(open) => { if (!open && !decision.isPending) setRejecting(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rejeitar "{rejecting?.event_title || "Rolê sem título"}"?</DialogTitle>
+            <DialogDescription>O rolê não vai pro feed. Se quiser, conta o motivo pra ajudar no ajuste.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="reject-reason">Motivo (opcional)</Label>
+            <Textarea id="reject-reason" value={reason} maxLength={500} onChange={(ev) => setReason(ev.target.value)} placeholder="Ex.: flyer ilegível, data errada…" />
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" disabled={decision.isPending} onClick={() => setRejecting(null)}>Voltar</Button>
+            <Button variant="destructive" disabled={decision.isPending} onClick={async () => { if (rejecting && await decide(rejecting.id, false, reason)) setRejecting(null); }}><X className="mr-1 h-4 w-4" /> Confirmar rejeição</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 }
