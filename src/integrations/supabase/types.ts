@@ -900,6 +900,87 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_notification_deliveries: {
+        Row: {
+          created_at: string
+          delivered_at: string | null
+          id: string
+          notification_id: string
+          subscriber_id: string
+        }
+        Insert: {
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          notification_id: string
+          subscriber_id: string
+        }
+        Update: {
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          notification_id?: string
+          subscriber_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_notification_deliveries_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "crm_notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_notification_deliveries_subscriber_id_fkey"
+            columns: ["subscriber_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_subscribers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_notifications: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          event_id: string | null
+          id: string
+          message: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          event_id?: string | null
+          id?: string
+          message?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          event_id?: string | null
+          id?: string
+          message?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_notifications_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_notifications_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       divulgador_requests: {
         Row: {
           admin_notes: string | null
@@ -1993,9 +2074,12 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
+          interest_event_id: string | null
+          interest_status: string
           interests: string[]
           name: string | null
           neighborhood: string | null
+          phone: string | null
           preferred_localities: string[]
           preferred_neighborhood: string | null
           preferred_neighborhoods: string[]
@@ -2008,9 +2092,12 @@ export type Database = {
           created_at?: string | null
           email: string
           id?: string
+          interest_event_id?: string | null
+          interest_status?: string
           interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          phone?: string | null
           preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
@@ -2023,9 +2110,12 @@ export type Database = {
           created_at?: string | null
           email?: string
           id?: string
+          interest_event_id?: string | null
+          interest_status?: string
           interests?: string[]
           name?: string | null
           neighborhood?: string | null
+          phone?: string | null
           preferred_localities?: string[]
           preferred_neighborhood?: string | null
           preferred_neighborhoods?: string[]
@@ -2033,7 +2123,22 @@ export type Database = {
           preferred_regions?: string[]
           whatsapp_consent?: boolean
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_subscribers_interest_event_id_fkey"
+            columns: ["interest_event_id"]
+            isOneToOne: false
+            referencedRelation: "public_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "newsletter_subscribers_interest_event_id_fkey"
+            columns: ["interest_event_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       password_reset_codes: {
         Row: {

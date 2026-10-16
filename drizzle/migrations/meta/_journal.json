@@ -407,6 +407,13 @@
       "when": 1792159358268,
       "tag": "0057_notification_custom_localities",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1792160645674,
+      "tag": "0058_crm_subscribers_notifications",
+      "breakpoints": true
     }
   ]
 }
