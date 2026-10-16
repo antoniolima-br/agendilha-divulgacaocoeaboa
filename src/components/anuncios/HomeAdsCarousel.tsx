@@ -51,7 +51,7 @@ function SponsoredSlide({ ad, onOpen, compact = false }: { ad: Ad; onOpen: () =>
   );
 }
 
-export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { variant?: "showcase" | "banner"; region?: string }) {
+export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { variant?: "showcase" | "banner" | "compact"; region?: string }) {
   const { data, isLoading } = usePublishedAds(region, "carousel");
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -84,6 +84,8 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
 
   if (isLoading) return null;
   const isBanner = variant === "banner";
+  const isCompact = variant === "compact";
+  if (isCompact && total === 0) return null;
 
   if (total === 0) {
     return (
@@ -112,8 +114,8 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   };
 
   return (
-    <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
-      <div className="mb-5 flex min-w-0 items-center justify-between gap-3 sm:mb-6">
+    <section className={isCompact ? "" : isBanner ? "mb-4" : "mb-12"} aria-label={isBanner || isCompact ? "Espaço publicitário" : "Anúncios da Ilha"}>
+      {!isCompact && <div className="mb-5 flex min-w-0 items-center justify-between gap-3 sm:mb-6">
         <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
           <ShoppingBag className="h-5 w-5 text-primary" />
           {isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}
@@ -121,7 +123,7 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
         <Button asChild variant="link" className="shrink-0 px-1 font-bold sm:px-0">
           <Link to="/anuncios">Ver todos</Link>
         </Button>
-      </div>
+      </div>}
 
       <div
         className="relative"
@@ -132,8 +134,8 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
         onFocusCapture={() => setPaused(true)}
         onBlurCapture={() => setPaused(false)}
       >
-        <div className="mx-auto max-w-3xl" aria-live="polite">
-          <SponsoredSlide ad={currentAd} onOpen={() => openDetails(currentAd)} />
+        <div className={cn("mx-auto", isCompact ? "max-w-screen-lg" : "max-w-3xl")} aria-live="polite">
+          <SponsoredSlide ad={currentAd} compact={isCompact} onOpen={() => openDetails(currentAd)} />
         </div>
 
         {total > 1 && (
@@ -158,7 +160,7 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
             >
               <ChevronRight />
             </Button>
-            <div className="mt-4 flex justify-center gap-2" aria-label="Escolher anúncio">
+            <div className={cn("flex justify-center gap-2", isCompact ? "mt-2" : "mt-4")} aria-label="Escolher anúncio">
               {visibleAds.map((ad, dotIndex) => (
                 <Button
                   key={ad.id}
