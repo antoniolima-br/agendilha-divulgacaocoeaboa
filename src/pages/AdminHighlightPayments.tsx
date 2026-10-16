@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { CreditCard, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { hidePaidHighlight } from "@/data/eventWrites";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { qk } from "@/data/queryKeys";
@@ -68,10 +69,7 @@ export default function AdminHighlightPayments() {
       return;
     }
     if (status === "cancelled" && event.highlight_grant_type === "paid") {
-      const { error: highlightError } = await supabase
-        .from("submissions")
-        .update({ is_highlight: false, highlight_hidden: true })
-        .eq("id", event.id);
+      const highlightError = await hidePaidHighlight(event.id).then(() => null, (e: unknown) => e);
       if (highlightError) {
         toast.error("O pagamento foi atualizado, mas não deu pra ocultar o destaque.");
         return;

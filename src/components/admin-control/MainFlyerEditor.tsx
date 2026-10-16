@@ -1,4 +1,4 @@
-import { saveEventFlyerUrl } from "@/data/eventFlyers";
+import { saveEventFlyerUrl } from "@/data/eventWrites";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";

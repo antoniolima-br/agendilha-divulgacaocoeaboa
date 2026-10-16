@@ -3,7 +3,7 @@ import { uploadFlyerImage } from "@/lib/flyerImages";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { saveEventFlyerUrl } from "@/data/eventFlyers";
+import { saveEventFlyerUrl } from "@/data/eventWrites";
 import { qk } from "@/data/queryKeys";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
