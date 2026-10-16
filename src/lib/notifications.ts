@@ -1,4 +1,5 @@
 import { formatBrazilianDate } from "@/lib/date-utils";
+import { onlyDigits } from "@/lib/phone";
 
 export interface NotifiableSubmission {
   event_title: string;
@@ -51,7 +52,7 @@ export function openWhatsappNotification(
   status: string
 ): boolean {
   if (!sub.phone) return false;
-  const phone = sub.phone.replace(/\D/g, "");
+  const phone = onlyDigits(sub.phone);
   const fullPhone = phone.startsWith("55") ? phone : `55${phone}`;
   const message = encodeURIComponent(buildNotificationMessage(sub, status));
   window.open(`https://wa.me/${fullPhone}?text=${message}`, "_blank");

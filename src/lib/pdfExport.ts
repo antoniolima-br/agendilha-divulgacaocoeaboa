@@ -1,4 +1,5 @@
 import type jsPDF from "jspdf";
+import { onlyDigits } from "@/lib/phone";
 import { AGENDILHA_LOGO_BASE64, LOGO_MIME } from "./logoBase64";
 import { INSTITUTIONAL } from "./institutional";
 
@@ -56,7 +57,7 @@ const SECTION_BG: [number, number, number] = [250, 245, 240];
 
 function formatWhatsApp(raw?: string | null): string {
   if (!raw) return "";
-  const digits = raw.replace(/\D/g, "");
+  const digits = onlyDigits(raw);
   if (digits.length === 11) return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
   if (digits.length === 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
   if (digits.length === 13) return `+${digits.slice(0, 2)} (${digits.slice(2, 4)}) ${digits.slice(4, 9)}-${digits.slice(9)}`;
@@ -350,7 +351,7 @@ function drawEventPage(doc: jsPDF, event: EventData, isLastPage = true) {
       doc.text("W", iconX, iconY + 1, { align: "center" });
 
       // Clickable phone text
-      const digits = (event.phone || "").replace(/\D/g, "");
+      const digits = onlyDigits(event.phone || "");
       const waUrl = digits ? `https://wa.me/${digits.length <= 11 ? "55" + digits : digits}` : "";
       doc.setFont("helvetica", "normal");
       doc.setFontSize(valueSize);

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { onlyDigits } from "@/lib/phone";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -341,7 +342,7 @@ export default function CadastroBanda() {
         member_count: Math.max(1, members.length || 1),
         members,
         representative_name: representativeName.trim() || null,
-        whatsapp: whatsapp ? whatsapp.replace(/\D/g, "") : null,
+        whatsapp: whatsapp ? onlyDigits(whatsapp) : null,
         contact_email: contactEmail.trim() || null,
         instagram: instagram.trim() || null,
         spotify_url: spotify.trim() || null,

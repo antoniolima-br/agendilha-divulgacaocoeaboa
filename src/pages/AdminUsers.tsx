@@ -1,4 +1,5 @@
 import { AdminLevelsPanel } from "@/components/admin/users/AdminLevelsPanel";
+import { onlyDigits } from "@/lib/phone";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -208,7 +209,7 @@ export default function AdminUsers() {
       toast.error("Nome muito curto");
       return;
     }
-    const phoneDigits = editPhone.replace(/\D/g, "");
+    const phoneDigits = onlyDigits(editPhone);
     if (phoneDigits.length > 0 && (phoneDigits.length < 10 || phoneDigits.length > 11)) {
       toast.error("WhatsApp inválido — use DDD + número (10 ou 11 dígitos)");
       return;

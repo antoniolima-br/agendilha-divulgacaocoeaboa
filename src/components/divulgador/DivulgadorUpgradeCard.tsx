@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { maskBrPhone, validateWhatsappForAccount } from "@/lib/phone";
+import { maskBrPhone, validateWhatsappForAccount, onlyDigits } from "@/lib/phone";
 import { BAIRROS } from "@/lib/neighborhoods";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -69,7 +69,7 @@ export function DivulgadorUpgradeCard() {
       await createRequest.mutateAsync({
         userId: user.id,
         nome: name.trim(),
-        whatsapp: phone.replace(/\D/g, ""),
+        whatsapp: onlyDigits(phone),
         tipo_divulgador: type,
         motivo: about.trim(),
         neighborhood,
