@@ -3,6 +3,7 @@ import { BellRing, BriefcaseBusiness, Crown, MapPin, Megaphone, TrendingUp, User
 import { Button } from "@/components/ui/button";
 import { PitchChapter } from "./PitchChapter";
 import { PitchDetails } from "./PitchDetails";
+import { PitchItemList } from "./PitchItemList";
 import { CorporatePillars } from "./CorporatePillars";
 import { AdvertiserPitch } from "./AdvertiserPitch";
 import { InvestorPdfButton } from "./InvestorPdfButton";
@@ -160,35 +161,35 @@ function InvestorPitch({ content: sourceContent }: { content: PitchContent }) {
       <p className="max-w-3xl border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Validar produto, tração e receita no piloto antes de avançar para Niterói e a Baixada Fluminense.</p>
       <PitchDetails>
       <section className="space-y-4">
-        <ul className="space-y-5">{[
+        <PitchItemList items={[
           { title: "Vantagem Inicial", description: "Relações locais e conhecimento da região como ponto de partida." },
           { title: "Validação de Produto", description: "Ouvir o público e refinar o cadastro por flyer e a experiência de uso." },
-        ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
+        ]} />
       </section>
       <section className="space-y-4 border-t border-border pt-6">
         <h3 id="pitch-governance" tabIndex={-1} className={headingClass}>Ecossistema de Governança e Expansão Regional</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">O controle inteligente de duplicidade e as cotas — gratuito versus patrocinado — apoiam uma curadoria limpa. Revisão e horários distintos sustentam a expansão além da Ilha do Governador.</p>
-        <ul className="space-y-5">{[
+        <PitchItemList items={[
           { title: "Facilidade para quem divulga", description: "Cadastro por flyer, revisão rápida e loop de compartilhamento viral no WhatsApp e nas redes." },
           { title: "Facilidade para quem busca lazer", description: "Uma agenda organizada para descobrir rolês locais e em regiões vizinhas." },
-        ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
+        ]} />
       </section>
       <section className="space-y-4 border-t border-border pt-6">
         <h3 id="pitch-regional-expansion" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Plano de Expansão Regional (Fases 2 e 3)</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Após validar tração e receita no piloto, expandir por etapas:</p>
-        <ul className="space-y-5">{[
+        <PitchItemList items={[
           { title: "Fase de Adjacência", description: "Avançar para polos vizinhos, como Niterói." },
           { title: "Fase de Escala Metropolitana", description: "Chegar à Baixada Fluminense, como Duque de Caxias, e aos principais eixos da capital." },
-        ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
+        ]} />
       </section>
       <section className="space-y-4 border-t border-border pt-6">
         <h3 id="pitch-hybrid-acquisition" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Estratégia de Atração Híbrida (Go-To-Market)</h3>
         <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">Parcerias, curadoria e mídia local para conquistar público:</p>
-        <ul className="space-y-6">{[
+        <PitchItemList className="space-y-6" items={[
           { title: "Boca a Boca e Parcerias Locais (B2B Orgânico)", description: "Visitar bares, quiosques e organizadores; demonstrar o cadastro por flyer." },
           { title: "Conteúdo e Comunidade (B2C Orgânico)", description: "Compartilhar os melhores rolês da semana e fortalecer o hábito de consultar a agenda." },
           { title: "Tráfego Pago Hiperlocal", description: "Segmentar por geolocalização e raio de interesse; medir antes de ampliar." },
-        ].map((item) => <li key={item.title} className="space-y-2 border-t border-border pt-4"><h4 className="text-sm font-semibold">{item.title}</h4><p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p></li>)}</ul>
+        ]} />
       </section>
       </PitchDetails>
     </PitchChapter>
