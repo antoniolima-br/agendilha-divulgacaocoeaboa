@@ -8,6 +8,8 @@ export interface NewsletterSubscriber {
   email: string;
   name: string | null;
   neighborhood: string | null;
+  preferred_neighborhoods?: string[] | null;
+  preferred_localities?: string[] | null;
   created_at: string;
 }
 
