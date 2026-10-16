@@ -22,7 +22,7 @@ export function useCuration(enabled: boolean, status: "pending" | "approved") {
 export function useCurationDecision() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, approve }: { id: string; approve: boolean }) => {
+    mutationFn: async ({ id, approve, reason }: { id: string; approve: boolean; reason?: string }) => {
       const { data: auth, error: authError } = await supabase.auth.getUser();
       if (authError || !auth.user) throw new Error("Sua sessão expirou. Entre novamente.");
       if (approve) {
@@ -31,7 +31,10 @@ export function useCurationDecision() {
         if (!event?.event_title?.trim()) throw new Error("Preencha o título do rolê antes de aprovar.");
       }
       const now = new Date().toISOString();
-      const patch = approve ? { status: "aprovado", approved_at: now, approved_by: auth.user.id } : { status: "rejeitado", rejected_at: now, rejected_by: auth.user.id };
+      const note = reason?.trim().slice(0, 500) || null;
+      const patch = approve
+        ? { status: "aprovado", approved_at: now, approved_by: auth.user.id }
+        : { status: "rejeitado", rejected_at: now, rejected_by: auth.user.id, ...(note ? { admin_notes: note } : {}) };
       const { data, error } = await supabase.from("submissions").update(patch).eq("id", id).eq("status", "pendente").select("id,status").maybeSingle();
       if (error) throw error;
       if (!data || data.status !== patch.status) throw new Error("O evento já foi revisado ou você não tem permissão. Atualize a lista.");
