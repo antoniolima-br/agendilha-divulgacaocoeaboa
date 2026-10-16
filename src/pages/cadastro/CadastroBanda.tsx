@@ -2,7 +2,7 @@ import { uploadArtistAvatar } from "@/data/useArtistMedia";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { onlyDigits } from "@/lib/phone";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { getArtistProfileById, getOwnArtistProfile, saveArtistProfile, searchPublicArtists } from "@/data/artistProfiles";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,11 +121,7 @@ export default function CadastroBanda() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase
-        .from("artist_profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const data = await getOwnArtistProfile(user.id);
       if (data) applyArtist(data as ArtistRow);
     })();
   }, [user]);
@@ -139,11 +135,7 @@ export default function CadastroBanda() {
     }
     searchTimer.current = window.setTimeout(async () => {
       setSearching(true);
-      const { data } = await supabase
-        .from("public_artist_profiles")
-        .select("id, name, genre")
-        .ilike("name", `%${search.trim()}%`)
-        .limit(8);
+      const data = await searchPublicArtists(search.trim());
       setSuggestions((data as any[]) || []);
       setSearching(false);
     }, 250);
@@ -184,12 +176,7 @@ export default function CadastroBanda() {
   async function loadArtistById(id: string) {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("artist_profiles")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-      if (error) throw error;
+      const data = await getArtistProfileById(id);
       if (data) {
         applyArtist(data as ArtistRow);
         setSuggestions([]);
@@ -346,25 +333,7 @@ export default function CadastroBanda() {
         moderation_status: isApproved ? "approved" : "pending",
       };
 
-      let saved: any = null;
-      if (artistId) {
-        const { data, error } = await supabase
-          .from("artist_profiles")
-          .update(payload)
-          .eq("id", artistId)
-          .select("*")
-          .single();
-        if (error) throw error;
-        saved = data;
-      } else {
-        const { data, error } = await supabase
-          .from("artist_profiles")
-          .upsert(payload, { onConflict: "user_id" })
-          .select("*")
-          .single();
-        if (error) throw error;
-        saved = data;
-      }
+      const saved = await saveArtistProfile(artistId, payload);
       applyArtist(saved as ArtistRow);
       toast.success("Cadastro salvo. Bora arrasar nos rolês!");
     } catch (e) {
