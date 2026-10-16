@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { onlyDigits } from "@/lib/phone";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -183,7 +184,7 @@ export default function EventDetail() {
   const shareUrl = getEventOgShareUrl(event.slug);
   const shareText = `Confira este rolê no Coé a Boa?: ${event.event_title}`;
 
-  const duvidasPhone = event.duvidas_phone ? event.duvidas_phone.replace(/\D/g, "") : "";
+  const duvidasPhone = event.duvidas_phone ? onlyDigits(event.duvidas_phone) : "";
   const duvidasSource = event.duvidas_source || "promotor";
   const duvidasLabel =
     duvidasSource === "atrativo"

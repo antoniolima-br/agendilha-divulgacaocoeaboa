@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { onlyDigits } from "@/lib/phone";
 import { Megaphone, Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -53,7 +54,7 @@ export function SolicitarDivulgadorCard({ compact = false }: { compact?: boolean
       await createRequest.mutateAsync({
         userId: user.id,
         nome: nome.trim(),
-        whatsapp: whats.replace(/\D/g, ""),
+        whatsapp: onlyDigits(whats),
         tipo_divulgador: tipo || null,
         motivo: motivo.trim(),
         neighborhood: bairro || null,

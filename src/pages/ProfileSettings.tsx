@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { onlyDigits } from "@/lib/phone";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
@@ -50,7 +51,7 @@ const EMPTY_PROFILE_ADDRESS: ProfileAddressForm = {
 
 // Mask "DD NNNNN-NNNN" (aceita 10 ou 11 dígitos; até 11)
 function formatPhoneMask(raw: string): string {
-  const d = (raw || "").replace(/\D/g, "").slice(0, 11);
+  const d = onlyDigits(raw || "").slice(0, 11);
   if (d.length === 0) return "";
   if (d.length <= 2) return d;
   if (d.length <= 7) return `${d.slice(0, 2)} ${d.slice(2)}`;
@@ -61,7 +62,7 @@ function formatPhoneMask(raw: string): string {
 }
 
 function validateAdminPhone(raw: string): string | null {
-  const d = (raw || "").replace(/\D/g, "");
+  const d = onlyDigits(raw || "");
   if (d.length === 0) return null; // vazio permitido para limpar
   if (d.length < 10 || d.length > 11) return "Use DDD + número (10 ou 11 dígitos).";
   const ddd = parseInt(d.slice(0, 2), 10);
@@ -209,7 +210,7 @@ export default function ProfileSettings() {
         // whatsapp_phone é o "WhatsApp principal" do cadastro base — vale pra todos os perfis.
         // Se o usuário não for admin (que edita `phone` num campo separado), espelhamos
         // esse valor em `profiles.phone` também, pra o app buscar sempre no mesmo lugar.
-        ...(isAdmin ? {} : { phone: (whatsappPhone || "").replace(/\D/g, "") || null }),
+        ...(isAdmin ? {} : { phone: onlyDigits(whatsappPhone || "") || null }),
         ...address,
         avatar_url: avatarUrl,
         contact_social: socialNetworks,
@@ -218,7 +219,7 @@ export default function ProfileSettings() {
       // Admin/Master pode editar diretamente o telefone principal do perfil.
       // A trigger `trg_log_profile_phone_change` registra a mudança em audit_logs.
       if (isAdmin) {
-        const digits = adminPhone.replace(/\D/g, "");
+        const digits = onlyDigits(adminPhone);
         profileData.phone = digits || null;
       }
 
@@ -528,7 +529,7 @@ export default function ProfileSettings() {
             ) : (
               <p className="text-xs text-muted-foreground">
                 Formato brasileiro: DDD + número (ex.: 21 99999-9999). Apenas dígitos.
-                {initialAdminPhone && adminPhone.replace(/\D/g, "") !== initialAdminPhone
+                {initialAdminPhone && onlyDigits(adminPhone) !== initialAdminPhone
                   ? " Alteração pendente — será registrada ao salvar."
                   : ""}
               </p>
