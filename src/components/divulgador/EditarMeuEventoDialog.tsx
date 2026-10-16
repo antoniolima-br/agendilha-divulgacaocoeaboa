@@ -58,16 +58,12 @@ export function EditarMeuEventoDialog({ evento, open, onOpenChange, onSaved }: P
       onOpenChange(false);
       return;
     }
-    if (!form.event_title?.trim()) {
-      toast.error("Falta o nome do rolê", { description: "Coloca um título pra galera reconhecer." });
-      return;
-    }
     setSaving(true);
     try {
       const { data, error } = await supabase
         .from("submissions")
         .update({
-          event_title: form.event_title.trim(),
+          event_title: form.event_title?.trim() || null,
           date: form.date || null,
           start_time: form.start_time || null,
           end_time: form.end_time || null,
