@@ -48,7 +48,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex h-[var(--bottom-navigation-height)] flex-col items-center justify-center gap-1 px-1 transition-colors",
-                  active ? "text-primary font-bold" : "text-muted-foreground"
+                  active ? "text-nav-active font-bold" : "text-nav-inactive"
                 )}
               >
                 <div className="relative flex flex-col items-center">
@@ -72,7 +72,7 @@ export function MobileTabBar({ onMenuClick }: Props) {
             aria-haspopup="dialog"
             className={cn(
                "flex h-[var(--bottom-navigation-height)] w-full flex-col items-center justify-center gap-1 rounded-none px-1 transition-colors",
-              "text-muted-foreground"
+              "text-nav-inactive"
             )}
           >
             <div className="relative flex flex-col items-center">
