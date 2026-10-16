@@ -18,13 +18,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./submission-form/StepIndicator";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
+import { EventDetailsStage } from "./submission-form/EventDetailsStage";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
-import { DuvidasWhatsappField } from "./submission-form/DuvidasWhatsappField";
-import { 
-  EventStep, AtrativoStep, 
-  LocationStep, MediaStep
-} from "./submission-form/steps";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
 import { prepareSponsoredFlyers, uploadSponsoredFlyer } from "@/lib/sponsoredFlyer";
 import { emitEntityCreated } from "@/lib/entityEvents";
@@ -33,10 +28,8 @@ import { measureFlowOperation, startFlowMeasure } from "@/lib/flow-performance";
 import { checkAttractionSchedule, useAttractionSchedule } from "@/data/useAttractionSchedule";
 import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNotice";
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
-import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { uploadFlyerImage } from "@/lib/flyerImages";
-import { FlyerUpload } from "./submission-form/FlyerUpload";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
 import {
@@ -760,64 +753,13 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
         <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
           {/* ETAPA 1 — informações principais do evento */}
           {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="space-y-1">
-                <h1 className="text-2xl font-bold">Divulgar um rolê</h1>
-                <p className="text-sm text-muted-foreground">
-                  Seu rolê, do seu jeito.
-                </p>
-              </div>
-
-              <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
-                <FlyerUpload image={eventImage || form.watch("eventImageUrl") || null} onImage={setEventImage} form={form} preserveDate={flyerPreserveDateRef.current} />
-                <div id="manual-event-fields" className="min-w-0 space-y-6">
-                  <EventStep form={form} section="core" />
-                  <LocationStep form={form} />
-                </div>
-              </div>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <AtrativoStep form={form} />
-                <div className="mt-4">
-                  <AttractionScheduleNotice
-                    entries={attractionSchedule.entries}
-                    loading={attractionSchedule.loading}
-                    failed={attractionSchedule.failed}
-                  />
-                </div>
-              </div>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <AdditionalEventsSection form={form} />
-              </div>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <EventStep form={form} section="selections" />
-              </div>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <DuvidasWhatsappField form={form} />
-              </div>
-
-
-              <Accordion type="single" collapsible defaultValue="extras" className="w-full">
-                <AccordionItem value="extras" className="border rounded-2xl px-4 bg-muted/20">
-                  <AccordionTrigger className="hover:no-underline font-semibold">
-                    Complementos opcionais
-                    <span className="ml-2 text-xs font-normal text-muted-foreground">
-                      término, flyer e descrição
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-6 space-y-6">
-                    <EventStep form={form} section="optional" />
-                    <MediaStep
-                      form={form}
-                      eventImage={eventImage}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
+            <EventDetailsStage
+              form={form}
+              eventImage={eventImage}
+              onImage={setEventImage}
+              preserveDate={flyerPreserveDateRef.current}
+              schedule={attractionSchedule}
+            />
           )}
 
           {/* ETAPA 2 — conferência e aceite */}
