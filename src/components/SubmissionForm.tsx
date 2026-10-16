@@ -12,13 +12,14 @@ import { useSubmissions } from "@/contexts/SubmissionContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
-import { Send, Loader2, Save, ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, Check } from "lucide-react";
+import { Save, CheckCircle2, RotateCcw, Check } from "lucide-react";
 import { supabase as supabaseClient } from "@/integrations/supabase/client";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./submission-form/StepIndicator";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { EventDetailsStage } from "./submission-form/EventDetailsStage";
+import { FormNavigation } from "./submission-form/FormNavigation";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
 import { prepareSponsoredFlyers, uploadSponsoredFlyer } from "@/lib/sponsoredFlyer";
@@ -795,30 +796,15 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-8 border-t">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => { setCurrentStep(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }}
-              disabled={currentStep === 1}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" /> Voltar
-            </Button>
-
-            {currentStep < steps.length ? (
-              // `key` distinto impede o React de reaproveitar o mesmo botão: sem isso, o clique em
-              // "Continuar" virava "Publicar" no meio do evento e enviava o formulário sem passar pela Revisão.
-              <Button key="next-step" type="button" onClick={nextStep} className="gap-2 h-12 px-6 font-bold">
-                Continuar <ArrowRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button key="publish" type="submit" disabled={submitting || attractionSchedule.hasConflict} aria-busy={submitting} className="gap-2 h-12 px-6 gradient-sunset font-bold touch-manipulation">
-                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                {form.watch("additionalEvents").length > 0 ? "Publicar eventos" : "Publicar evento"}
-              </Button>
-            )}
-          </div>
+          <FormNavigation
+            isFirst={currentStep === 1}
+            isLast={currentStep >= steps.length}
+            submitting={submitting}
+            blocked={attractionSchedule.hasConflict}
+            multiple={form.watch("additionalEvents").length > 0}
+            onBack={() => { setCurrentStep(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }}
+            onNext={nextStep}
+          />
         </form>
       </Form>
     </div>
