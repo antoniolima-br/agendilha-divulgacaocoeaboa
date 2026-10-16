@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { toast } from "sonner";
+import { onlyDigits } from "@/lib/phone";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,8 +48,14 @@ export default function AdminAprovarEventos() {
         {e.image_url ? <div className="flex min-h-[26rem] items-center justify-center overflow-hidden rounded-md border bg-background/40 sm:min-h-[38rem]"><img src={e.image_url} alt={`Flyer de ${e.event_title || "rolê"}`} loading="lazy" decoding="async" className="max-h-[80vh] w-full object-contain" /></div> : null}
         <div className="min-w-0 flex-1">
           <p className="font-semibold">{e.event_title || "Rolê sem título"}</p>
-          {e.responsible_name && <p className="text-xs text-muted-foreground">Enviado por {e.responsible_name}</p>}
-          <p className="text-sm text-muted-foreground">{formatEventDateTimeBR(e.date, e.start_time)} · {e.location || "Local a confirmar"}</p>
+          {e.atrativo_name && <p className="text-sm">Atração: <span className="font-medium">{e.atrativo_name}</span></p>}
+          <p className="text-sm text-muted-foreground">{formatEventDateTimeBR(e.date, e.start_time)} · {e.location || "Local a confirmar"}{e.address_neighborhood ? ` · ${e.address_neighborhood}` : ""}</p>
+          {(e.responsible_name || e.phone) && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Enviado por {e.responsible_name || "divulgador"}
+              {onlyDigits(e.phone ?? "").length >= 10 && <> · <a className="font-medium text-primary underline-offset-2 hover:underline" href={`https://wa.me/55${onlyDigits(e.phone ?? "").replace(/^55(?=\d{10,11}$)/, "")}`} target="_blank" rel="noopener noreferrer">WhatsApp {e.phone}</a></>}
+            </p>
+          )}
           {!e.event_title?.trim() && <p role="alert" className="mt-3 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-3 text-sm"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Preencha o título antes de aprovar este rolê.</p>}
         </div>
         {actions && <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">{actions}</div>}

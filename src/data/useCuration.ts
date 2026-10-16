@@ -6,13 +6,13 @@ import { PUBLIC_EVENT_STATUSES } from "@/lib/eventDate";
 import type { Tables } from "@/integrations/supabase/types";
 import { fetchAllPages } from "./pagination";
 
-export type CurationEvent = Pick<Tables<"submissions">, "id" | "event_title" | "date" | "start_time" | "end_time" | "location" | "status" | "image_url" | "category" | "responsible_name" | "description">;
+export type CurationEvent = Pick<Tables<"submissions">, "id" | "event_title" | "date" | "start_time" | "end_time" | "location" | "status" | "image_url" | "category" | "responsible_name" | "description" | "address_neighborhood" | "atrativo_name" | "phone">;
 export function useCuration(enabled: boolean, status: "pending" | "approved") {
   const { user } = useAuth();
   return useQuery({
     queryKey: qk.curation.list(user?.id, status), enabled: enabled && !!user,
     queryFn: () => fetchAllPages<CurationEvent>((from, to) => {
-        let query = supabase.from("submissions").select("id,event_title,date,start_time,end_time,location,status,image_url,category,responsible_name,description")
+        let query = supabase.from("submissions").select("id,event_title,date,start_time,end_time,location,status,image_url,category,responsible_name,description,address_neighborhood,atrativo_name,phone")
           .is("deleted_at", null).order("created_at", { ascending: false }).order("id");
         query = status === "pending" ? query.eq("status", "pendente") : query.in("status", [...PUBLIC_EVENT_STATUSES]);
         return query.range(from, to);
