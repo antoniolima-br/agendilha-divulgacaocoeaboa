@@ -1,10 +1,11 @@
-import { ArrowRight, BadgeCheck, ChartNoAxesCombined, Crosshair, MapPin, Megaphone, MessageCircle, MousePointerClick, Palette, Smartphone, Sparkles, Users, Wallet } from "lucide-react";
+import { ArrowRight, MapPin, Megaphone, MessageCircle, MousePointerClick, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SETTING_KEYS, settingOr, useAppSettings } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { PitchChapter } from "./PitchChapter";
 import { AdvertiserPdfButton } from "./AdvertiserPdfButton";
 import type { AdvertiserPitchContent } from "./types";
+import { advertiserCloseSteps, advertiserEngagement, advertiserGains, advertiserVisibility } from "./advertiserPitchCopy";
 
 const money = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 const commercialMessage = "Oi! Vi a apresentação do Coé a Boa? e quero anunciar minha marca. Podemos conversar sobre região, período e formato?";
@@ -28,27 +29,14 @@ export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Se a sua marca busca visibilidade com contexto e conexão com quem vive a cultura carioca, este espaço foi pensado para você.</p>
     </section>
     <PitchChapter value="sales-visibility" number="01" title="Por que anunciar no Coé a Boa?" eyebrow="Público · Região" icon={MapPin}>
-      <ul className="divide-y divide-border">
-        {item("Público interessado em lazer", "Quem abre o app procura o que fazer: rolês, gastronomia, cultura e experiências em diferentes regiões do Rio, da Zona Sul à Barra, da Zona Norte aos polos culturais.", Users)}
-        {item("Hiperlocalidade: foco na região certa", "Sua campanha pode ser direcionada à região escolhida e acompanhar a pessoa enquanto ela decide para onde ir e o que consumir.", Crosshair)}
-        {item("Flyers e banners em destaque", "Formatos integrados ao fluxo visual do app e pensados para o celular apresentam sua marca com elegância e clareza, sem poluição visual.", Smartphone)}
-        {item("Rastreamento e métricas registradas", "Você acompanha as visualizações e os cliques registrados na sua campanha, por período e origem, conforme os dados coletados.", ChartNoAxesCombined)}
-      </ul>
+      <ul className="divide-y divide-border">{advertiserVisibility.map(([title, description, Icon]) => item(title, description, Icon))}</ul>
     </PitchChapter>
     <PitchChapter value="sales-gains" number="02" title="O que sua marca ganha" eyebrow="Valor · Parceria" icon={Sparkles}>
-      <ul className="divide-y divide-border">
-        {item("Autoridade e desejo", "Estar junto dos rolês divulgados aproxima sua marca de estilo de vida, novidade e experiências cariocas.", BadgeCheck)}
-        {item("Investimento direcionado", "Os pacotes concentram a campanha na região que importa para você. O retorno pode ser avaliado quando seus dados de vendas são relacionados aos registros da campanha.", Wallet)}
-        {item("Suporte criativo", "Nosso Marketing ajuda a desenhar ou adaptar sua arte ao padrão visual da apresentação.", Palette)}
-      </ul>
+      <ul className="divide-y divide-border">{advertiserGains.map(([title, description, Icon]) => item(title, description, Icon))}</ul>
     </PitchChapter>
     <PitchChapter value="sales-engagement" number="03" title="Interesse registrado, campanha acompanhada" eyebrow="Engajamento · Pós-venda" icon={MousePointerClick}>
       <p className="max-w-3xl leading-relaxed text-muted-foreground">Não fique só na distribuição da arte. Acompanhe aberturas de flyer e cliques registrados por rolê, período e canal de origem, conforme os dados coletados.</p>
-      <dl className="divide-y divide-border">{[
-        ["Aberturas de flyer", "Quais rolês despertaram interesse e como esse interesse evoluiu no período."],
-        ["Origem e cliques", "Canais registrados ajudam a comparar a divulgação e orientar os próximos ajustes."],
-        ["Acompanhamento comercial", "Resultados registrados, contatos e respostas disponíveis apoiam o pós-venda e a renovação."],
-      ].map(([title, description]) => <div key={title} className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-semibold">{title}</dt><dd className="leading-relaxed text-muted-foreground">{description}</dd></div>)}</dl>
+      <dl className="divide-y divide-border">{advertiserEngagement.map(([title, description]) => <div key={title} className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-semibold">{title}</dt><dd className="leading-relaxed text-muted-foreground">{description}</dd></div>)}</dl>
       <p className="border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">Aberturas não são pessoas únicas nem vendas. RSVP não comprova presença. ROI depende de receita atribuível e custos completos; números da sua campanha entram no acompanhamento, sem estimativas apresentadas como resultados reais.</p>
     </PitchChapter>
     <PitchChapter value="sales-packages" number="04" title="Um formato para sua campanha" eyebrow="Pacotes · Patrocínio" icon={Megaphone}>
@@ -59,10 +47,7 @@ export function AdvertiserPitch({ content }: { content: AdvertiserPitchContent }
     </PitchChapter>
     <PitchChapter value="sales-close" number="05" title="Vamos fechar essa parceria?" eyebrow="Contratação · Próximo passo" icon={MessageCircle}>
       <p className="max-w-3xl text-lg leading-relaxed">Converse com o Comercial para escolher região, período e formato e aproximar sua marca de quem procura o que fazer no Rio de Janeiro.</p>
-      <ol className="space-y-5">{[
-        ["Defina sua campanha", "Escolha região, período, formato e destino do anúncio na proposta comercial."],
-        ["Alinhe a arte com o Marketing", "Combine criação ou adaptação das peças e entregas do pacote. Sua arte enviada continua preservada."],
-      ].map(([title, description], index) => <li key={title} className="space-y-2 border-t border-border pt-4"><p className="text-xs font-semibold text-primary">0{index + 1}</p><h3 className="text-lg font-semibold">{title}</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{description}</p></li>)}</ol>
+      <ol className="space-y-5">{advertiserCloseSteps.map(([title, description], index) => <li key={title} className="space-y-2 border-t border-border pt-4"><p className="text-xs font-semibold text-primary">0{index + 1}</p><h3 className="text-lg font-semibold">{title}</h3><p className="max-w-3xl leading-relaxed text-muted-foreground">{description}</p></li>)}</ol>
     </PitchChapter>
     <footer className="space-y-6 border-t border-border py-8">
       <p data-pdf-note className="text-xs leading-relaxed text-muted-foreground">Proposta comercial sujeita a disponibilidade e aprovação. Sem garantia de alcance, presença ou vendas. Dados pessoais e relatórios internos continuam protegidos.</p>
