@@ -899,7 +899,7 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
                 Continuar <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button key="publish" type="submit" disabled={submitting || attractionSchedule.loading || attractionSchedule.hasConflict || missingFinalFields(form.watch()).length > 0} className="gap-2 h-12 px-6 gradient-sunset font-bold">
+              <Button key="publish" type="submit" disabled={submitting || attractionSchedule.hasConflict} aria-busy={submitting} className="gap-2 h-12 px-6 gradient-sunset font-bold touch-manipulation">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {form.watch("additionalEvents").length > 0 ? "Publicar eventos" : "Publicar evento"}
               </Button>
