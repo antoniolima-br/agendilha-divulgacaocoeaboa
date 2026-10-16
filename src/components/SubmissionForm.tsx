@@ -17,13 +17,12 @@ import { supabase as supabaseClient } from "@/integrations/supabase/client";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./submission-form/StepIndicator";
-import { PublishChecklist } from "./submission-form/PublishChecklist";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
 import { DuvidasWhatsappField } from "./submission-form/DuvidasWhatsappField";
 import { 
-  ContactStep, EventStep, AtrativoStep, 
-  LocationStep, MediaStep, LegalStep 
+  EventStep, AtrativoStep, 
+  LocationStep, MediaStep
 } from "./submission-form/steps";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
