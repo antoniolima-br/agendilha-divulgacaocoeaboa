@@ -11,3 +11,4 @@
 - CEP transport lives in cep.ts; forms retain validation, request ownership, field policy and feedback to preserve distinct journeys.
 
 - Public discovery separates a filter/calendar index from bounded detail pages, preserving complete filter availability without retaining all full event records.
+- New event submissions write only through eventSubmission.ts (batch insert, attractions, first-time venue/attraction) so every entry follows the same pending-curation path.
