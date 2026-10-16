@@ -118,3 +118,15 @@ export function useDeleteEstabelecimento() {
     },
   });
 }
+/** Nome de um estabelecimento pelo id (vazio se não achar). */
+export async function getEstabelecimentoNome(id: string): Promise<string> {
+  const { data } = await supabase.from("estabelecimentos").select("nome").eq("id", id).maybeSingle();
+  return data?.nome ?? "";
+}
+
+/** Cria um estabelecimento rápido, só com nome e responsável, e devolve o id. */
+export async function createQuickEstabelecimento(nome: string, responsavelId: string): Promise<string> {
+  const { data, error } = await supabase.from("estabelecimentos").insert({ nome, responsavel_id: responsavelId }).select("id").single();
+  if (error) throw error;
+  return data.id;
+}
