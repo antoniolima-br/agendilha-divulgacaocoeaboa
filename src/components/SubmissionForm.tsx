@@ -823,39 +823,12 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
 
           {/* ETAPA 2 — conferência e aceite */}
           {currentStep === 2 && (
-            <div className="space-y-6">
-              <div className="space-y-1">
-                <h1 className="text-2xl font-bold">Falta pouco</h1>
-                <p className="text-sm text-muted-foreground">
-                  Confira o resumo e aceite os termos. Contatos e demais detalhes são opcionais.
-                </p>
-              </div>
-
-              <Step1Summary form={form} onEdit={() => { setCurrentStep(1); window.scrollTo(0, 0); }} />
-
-              <PublishChecklist form={form} goToStep={setCurrentStep} variant="compact" />
-
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="contato" className="border rounded-2xl px-4 bg-muted/20">
-                  <AccordionTrigger className="hover:no-underline font-semibold">
-                    Contato oficial do rolê
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-6 space-y-6">
-                    <ContactStep
-                      form={form}
-                      onRestoreFromProfile={restoreContactFromProfile}
-                      hasProfile={!!(profile?.phone || profile?.responsible_name || profile?.email)}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <div className="border rounded-2xl px-4 py-5 bg-card/30">
-                <LegalStep form={form} />
-              </div>
-
-
-            </div>
+            <ConfirmationStage
+              form={form}
+              goToStep={setCurrentStep}
+              onRestoreFromProfile={restoreContactFromProfile}
+              hasProfile={!!(profile?.phone || profile?.responsible_name || profile?.email)}
+            />
           )}
 
           {currentStep === 3 && (
