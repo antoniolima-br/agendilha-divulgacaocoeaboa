@@ -26,6 +26,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useNewsletterSubscribers } from "@/data";
+import type { NewsletterSubscriber } from "@/data/useNewsletterSubscribers";
 import { exportRowsToCsv } from "@/lib/csv";
 
 /** Bairro principal + bairros e localidades escolhidos nas preferências (micro-regiões). */
@@ -57,7 +58,7 @@ export default function AdminNewsletter() {
   const exportToCSV = () => {
     exportRowsToCsv(
       `inscritos-newsletter-${new Date().toISOString().split("T")[0]}.csv`,
-      ["Nome", "E-mail", "Bairro", "Data de Inscrição"],
+      ["Nome", "E-mail", "Bairros e localidades", "Data de Inscrição"],
       filtered.map((s) => [
         s.name || "—",
         s.email,
@@ -105,7 +106,7 @@ export default function AdminNewsletter() {
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os Bairros</SelectItem>
+              <SelectItem value="all">Todos os bairros e localidades</SelectItem>
               {neighborhoods.map(n => (
                 <SelectItem key={n} value={n}>{n}</SelectItem>
               ))}
