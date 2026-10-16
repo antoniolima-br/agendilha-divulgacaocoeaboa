@@ -56,7 +56,6 @@ export default function AdminAprovarEventos() {
               {onlyDigits(e.phone ?? "").length >= 10 && <> · <a className="font-medium text-primary underline-offset-2 hover:underline" href={`https://wa.me/55${onlyDigits(e.phone ?? "").replace(/^55(?=\d{10,11}$)/, "")}`} target="_blank" rel="noopener noreferrer">WhatsApp {e.phone}</a></>}
             </p>
           )}
-          {!e.event_title?.trim() && <p role="alert" className="mt-3 flex items-start gap-2 rounded-md border border-primary/40 bg-primary/5 p-3 text-sm"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />Preencha o título antes de aprovar este rolê.</p>}
         </div>
         {actions && <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">{actions}</div>}
       </CardContent>
@@ -80,7 +79,7 @@ export default function AdminAprovarEventos() {
           {pending.isError ? <div role="alert"><p>Não deu pra carregar os envios.</p><Button variant="outline" onClick={() => void pending.refetch()}>Tentar novamente</Button></div> : pending.isLoading ? <LoadingState /> : (pending.data ?? []).length === 0
             ? <p className="text-sm text-muted-foreground">Nada esperando aprovação. Tudo em dia!</p>
              : (pending.data ?? []).map((e) => row(e, <>
-                <Button className="min-h-12 text-base" disabled={decision.isPending || !e.event_title?.trim()} onClick={() => decide(e.id, true)}><Check className="mr-1 h-4 w-4" /> Aprovar</Button>
+                <Button className="min-h-12 text-base" disabled={decision.isPending} onClick={() => decide(e.id, true)}><Check className="mr-1 h-4 w-4" /> Aprovar</Button>
                 <Button className="min-h-12 text-base" variant="outline" disabled={decision.isPending} onClick={() => { setReason(""); setRejecting(e); }}><X className="mr-1 h-4 w-4" /> Rejeitar</Button>
               </>))}
         </TabsContent>

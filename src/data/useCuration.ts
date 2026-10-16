@@ -25,11 +25,6 @@ export function useCurationDecision() {
     mutationFn: async ({ id, approve, reason }: { id: string; approve: boolean; reason?: string }) => {
       const { data: auth, error: authError } = await supabase.auth.getUser();
       if (authError || !auth.user) throw new Error("Sua sessão expirou. Entre novamente.");
-      if (approve) {
-        const { data: event, error: eventError } = await supabase.from("submissions").select("event_title").eq("id", id).maybeSingle();
-        if (eventError) throw eventError;
-        if (!event?.event_title?.trim()) throw new Error("Preencha o título do rolê antes de aprovar.");
-      }
       const now = new Date().toISOString();
       const note = reason?.trim().slice(0, 500) || null;
       const patch = approve
