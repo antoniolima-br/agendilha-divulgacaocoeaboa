@@ -393,6 +393,13 @@
       "when": 1792093725613,
       "tag": "0055_harden_profile_client_privileges",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1792159156312,
+      "tag": "0056_title_optional_for_publication",
+      "breakpoints": true
     }
   ]
 }
