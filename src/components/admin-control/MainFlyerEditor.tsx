@@ -1,3 +1,4 @@
+import { saveEventFlyerUrl } from "@/data/eventFlyers";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Upload } from "lucide-react";
@@ -57,9 +58,8 @@ export function MainFlyerEditor() {
       const extension = file.name.split(".").pop() || "jpg";
       const path = `${user.id}/principal-${selected.id}-${Date.now()}.${extension}`;
       const imageUrl = await uploadFlyerImage(file, path);
-      const { data, error } = await supabase.from("submissions").update({ image_url: imageUrl }).eq("id", selected.id).select("id,image_url").single();
-      if (error) throw error;
-      if (data.image_url !== imageUrl) throw new Error("A troca do flyer não foi confirmada.");
+      const savedUrl = await saveEventFlyerUrl(selected.id, imageUrl);
+      if (savedUrl !== imageUrl) throw new Error("A troca do flyer não foi confirmada.");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: qk.home.all }),
         queryClient.invalidateQueries({ queryKey: qk.agenda.all }),
