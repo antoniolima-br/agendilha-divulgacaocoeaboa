@@ -20,6 +20,7 @@ import {
   categoryLabels, getWeekRange, parseEventDate, type Submission, EDITORIAL_STAGES, type EditorialStatus,
 } from "@/components/events-admin/types";
 import { EventCard } from "@/components/events-admin/EventCard";
+import { filterSubmissions } from "@/components/events-admin/filterSubmissions";
 import { useEventActions } from "@/components/events-admin/useEventActions";
 import { useAuditLogs } from "@/components/events-admin/useAuditLogs";
 import { KanbanBoard } from "@/components/events-admin/KanbanBoard";
@@ -58,21 +59,8 @@ export default function Eventos() {
   const confirmedEvents = activeSubmissions.filter(s => s.status === "approved");
   const pendingPublish = activeSubmissions.filter(s => (s.editorial_status as string) === "pronto_divulgar");
 
-  const getFiltered = (list: Submission[]) => {
-    let result = [...list];
-    if (categoryFilter !== "all") result = result.filter(s => s.category === categoryFilter);
-    if (editorialFilter !== "all") result = result.filter(s => (s.editorial_status || "recebido") === editorialFilter);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(s =>
-        s.event_title.toLowerCase().includes(q) ||
-        (s.company_name || "").toLowerCase().includes(q) ||
-        (s.location || "").toLowerCase().includes(q) ||
-        (s.responsible_name || "").toLowerCase().includes(q)
-      );
-    }
-    return result;
-  };
+  const getFiltered = (list: Submission[]) =>
+    filterSubmissions(list, { category: categoryFilter, editorial: editorialFilter, search });
 
   const filteredPending = useMemo(() => getFiltered(pendingEvents), [pendingEvents, categoryFilter, editorialFilter, search]);
   const filteredConfirmed = useMemo(() => getFiltered(confirmedEvents), [confirmedEvents, categoryFilter, editorialFilter, search]);
