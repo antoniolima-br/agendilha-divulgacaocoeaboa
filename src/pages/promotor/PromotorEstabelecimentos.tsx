@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
-import { formatCep } from "@/lib/autofillValidation";
+import { cepDigits, formatCep } from "@/lib/autofillValidation";
 import { SectionErrorBoundary } from "@/components/errors/SectionErrorBoundary";
 import { PromotorBadge } from "@/components/promotor/PromotorBadge";
 import { useProfile } from "@/hooks/useProfile";
@@ -95,7 +95,7 @@ function PromotorEstabelecimentosInner({ listingKind }: { listingKind: "event_ve
 
   const handleCepChange = async (rawCep: string) => {
     const cep = formatCep(rawCep);
-    const digits = cep.replace(/\D/g, "");
+    const digits = cepDigits(cep);
     setForm((current) => ({ ...current, cep }));
     setCepMessage("");
 

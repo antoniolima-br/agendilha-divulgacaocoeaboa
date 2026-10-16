@@ -19,9 +19,10 @@ import {
 import { useAdminUsers } from "@/data/useAdminUsers";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatPhoneDisplay, isValidBrazilianMobile, buildWhatsappUrl } from "@/lib/whatsapp";
+import { onlyDigits } from "@/lib/phone";
 
 const KEYS = [SETTING_KEYS.teamWhatsapp, SETTING_KEYS.teamContactName] as const;
-const digits = (v: string | null | undefined) => (v ?? "").replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
+const digits = (v: string | null | undefined) => onlyDigits(v).replace(/^55(?=\d{10,11}$)/, "");
 
 type Form = Record<string, string>;
 

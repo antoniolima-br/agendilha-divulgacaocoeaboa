@@ -19,7 +19,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageContainer } from "@/components/ui/PageContainer";
-import { formatCep } from "@/lib/autofillValidation";
+import { cepDigits, formatCep } from "@/lib/autofillValidation";
 import {
   Select,
   SelectContent,
@@ -60,7 +60,7 @@ function AdminEstabelecimentosPage({ listingKind }: { listingKind: "event_venue"
 
   async function handleCepChange(rawCep: string) {
     const cep = formatCep(rawCep);
-    const digits = cep.replace(/\D/g, "");
+    const digits = cepDigits(cep);
     setNewForm((current) => ({ ...current, cep }));
     setCepMessage("");
     if (digits.length !== 8) return;
