@@ -1,3 +1,4 @@
+import { onlyDigits } from "@/lib/phone";
 /**
  * Validações automáticas do autopreenchimento (local/estabelecimento e atrativo).
  *
@@ -15,7 +16,7 @@ export type AutofillIssue = {
 };
 
 export function cepDigits(cep: string | null | undefined) {
-  return (cep ?? "").replace(/\D/g, "");
+  return onlyDigits(cep);
 }
 
 export function formatCep(cep: string | null | undefined) {
