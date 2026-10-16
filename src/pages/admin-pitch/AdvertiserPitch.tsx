@@ -1,4 +1,4 @@
-import { ArrowRight, MapPin, Megaphone, MessageCircle, MousePointerClick, Sparkles, Wallet } from "lucide-react";
+import { ArrowRight, MapPin, Megaphone, MessageCircle, MousePointerClick, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SETTING_KEYS, settingOr, useAppSettings } from "@/data/useAppSettings";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
