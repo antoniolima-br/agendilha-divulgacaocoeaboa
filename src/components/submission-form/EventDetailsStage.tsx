@@ -9,7 +9,7 @@ import { AtrativoStep, EventStep, LocationStep, MediaStep } from "./steps";
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: UseFormReturn<any>;
-  eventImage: File | null;
+  eventImage: File | string | null;
   onImage: (file: File | null) => void;
   preserveDate: boolean;
   schedule: { entries: Parameters<typeof AttractionScheduleNotice>[0]["entries"]; loading: boolean; failed: boolean };

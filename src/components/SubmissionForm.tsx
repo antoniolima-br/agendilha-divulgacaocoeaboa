@@ -20,12 +20,6 @@ import { StepIndicator } from "./submission-form/StepIndicator";
 import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { EventDetailsStage } from "./submission-form/EventDetailsStage";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
-import { DuvidasWhatsappField } from "./submission-form/DuvidasWhatsappField";
-import { 
-  EventStep, AtrativoStep, 
-  LocationStep, MediaStep
-} from "./submission-form/steps";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { validateBrazilianMobile, formatPhoneDisplay } from "@/lib/whatsapp";
 import { prepareSponsoredFlyers, uploadSponsoredFlyer } from "@/lib/sponsoredFlyer";
 import { emitEntityCreated } from "@/lib/entityEvents";
@@ -34,10 +28,8 @@ import { measureFlowOperation, startFlowMeasure } from "@/lib/flow-performance";
 import { checkAttractionSchedule, useAttractionSchedule } from "@/data/useAttractionSchedule";
 import { AttractionScheduleNotice } from "./submission-form/AttractionScheduleNotice";
 import { submissionFormSchema, type SubmissionFormData } from "./submission-form/schema";
-import { AdditionalEventsSection } from "./submission-form/AdditionalEventsSection";
 import { findDuplicateEventStart } from "./submission-form/eventBatchValidation";
 import { uploadFlyerImage } from "@/lib/flyerImages";
-import { FlyerUpload } from "./submission-form/FlyerUpload";
 import { checkEventRegistration, flyerFingerprint, registrationCode, registrationMessages, type RegistrationCode, type RegistrationEvent } from "@/lib/eventRegistration";
 import { RegistrationAlert } from "./submission-form/RegistrationAlert";
 import {
