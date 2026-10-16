@@ -110,3 +110,11 @@ export function useUploadArtistMedia(artistId: string | null | undefined) {
     onSuccess: invalidate,
   });
 }
+/** Sobe a foto de perfil do artista e devolve o link público. */
+export async function uploadArtistAvatar(userId: string, file: File): Promise<string> {
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = `${userId}/avatar-${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from("artist-media").upload(path, file, { upsert: true });
+  if (error) throw error;
+  return supabase.storage.from("artist-media").getPublicUrl(path).data.publicUrl;
+}
