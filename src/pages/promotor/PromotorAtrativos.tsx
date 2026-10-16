@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { exportAtrativoToPdf, exportAtrativosConsolidatedPdf } from "@/lib/exportEventPdf";
 import { PrintPreviewDialog, PrintPreviewSheet } from "@/components/pdf/PrintPreviewDialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/integrations/supabase/client";
+import { createQuickEstabelecimento, getEstabelecimentoNome } from "@/data/useEstabelecimentos";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -155,12 +155,7 @@ export default function PromotorAtrativos() {
   const startEdit = async (a: Atrativo) => {
     let nome = "";
     if (a.estabelecimento_id) {
-      const { data } = await supabase
-        .from("estabelecimentos")
-        .select("nome")
-        .eq("id", a.estabelecimento_id)
-        .maybeSingle();
-      nome = data?.nome ?? "";
+      nome = await getEstabelecimentoNome(a.estabelecimento_id);
     }
     setEditing(a.id);
     setForm({
@@ -212,13 +207,7 @@ export default function PromotorAtrativos() {
       let estabId = form.estabelecimento_id;
       const nomeEstab = form.estabelecimento_nome.trim();
       if (!estabId && nomeEstab) {
-        const { data: novo, error: eErr } = await supabase
-          .from("estabelecimentos")
-          .insert({ nome: nomeEstab, responsavel_id: user.id })
-          .select("id")
-          .single();
-        if (eErr) throw eErr;
-        estabId = novo.id;
+        estabId = await createQuickEstabelecimento(nomeEstab, user.id);
         toast.success(`Estabelecimento "${nomeEstab}" criado.`);
       }
 
