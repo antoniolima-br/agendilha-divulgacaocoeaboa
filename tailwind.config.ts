@@ -26,6 +26,7 @@ export default {
         tightest: '0',
       },
       colors: {
+        nav: { active: "hsl(var(--nav-active))", inactive: "hsl(var(--nav-inactive))" },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         field: "hsl(var(--field))",
