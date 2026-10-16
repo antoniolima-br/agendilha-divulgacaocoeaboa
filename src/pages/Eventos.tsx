@@ -21,6 +21,7 @@ import {
 } from "@/components/events-admin/types";
 import { EventCard } from "@/components/events-admin/EventCard";
 import { filterSubmissions } from "@/components/events-admin/filterSubmissions";
+import { EnviosStatCard } from "@/components/events-admin/EnviosStatCard";
 import { useEventActions } from "@/components/events-admin/useEventActions";
 import { useAuditLogs } from "@/components/events-admin/useAuditLogs";
 import { KanbanBoard } from "@/components/events-admin/KanbanBoard";
@@ -175,63 +176,44 @@ export default function Eventos() {
         </div>
 
         <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <button
+          <EnviosStatCard
+            label="Pendentes"
+            count={pendingEvents.length}
+            icon={<Clock className="h-3.5 w-3.5 text-[hsl(35,90%,40%)]" />}
             onClick={() => setActiveTab("pending")}
-            className={`text-left rounded-xl border p-3 transition-all hover:scale-[1.02] active:scale-[0.98] ${
-              activeTab === "pending"
-                ? "bg-[hsl(45,93%,47%)]/10 border-[hsl(45,93%,47%)]/40 ring-2 ring-[hsl(45,93%,47%)]/30"
-                : "bg-background/60 border-border hover:border-[hsl(45,93%,47%)]/30"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Pendentes</span>
-              <Clock className="h-3.5 w-3.5 text-[hsl(35,90%,40%)]" />
-            </div>
-            <div className="mt-1 text-2xl font-display font-bold text-foreground">{pendingEvents.length}</div>
-          </button>
-          <button
+            toneClassName={activeTab === "pending"
+              ? "bg-[hsl(45,93%,47%)]/10 border-[hsl(45,93%,47%)]/40 ring-2 ring-[hsl(45,93%,47%)]/30"
+              : "bg-background/60 border-border hover:border-[hsl(45,93%,47%)]/30"}
+          />
+          <EnviosStatCard
+            label="Prontos p/ divulgar"
+            count={pendingPublish.length}
+            icon={<AlertTriangle className="h-3.5 w-3.5 text-orange-500" />}
             onClick={() => { setActiveTab("kanban"); setEditorialFilter("pronto_divulgar"); }}
-            className={`text-left rounded-xl border p-3 transition-all hover:scale-[1.02] active:scale-[0.98] ${
-              pendingPublish.length > 0
-                ? "bg-orange-100/60 border-orange-400/60 ring-2 ring-orange-400/30 dark:bg-orange-900/20"
-                : "bg-background/60 border-border hover:border-orange-400/30"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Prontos p/ divulgar</span>
-              <AlertTriangle className="h-3.5 w-3.5 text-orange-500" />
-            </div>
-            <div className="mt-1 text-2xl font-display font-bold text-foreground">{pendingPublish.length}</div>
-          </button>
-          <button
+            toneClassName={pendingPublish.length > 0
+              ? "bg-orange-100/60 border-orange-400/60 ring-2 ring-orange-400/30 dark:bg-orange-900/20"
+              : "bg-background/60 border-border hover:border-orange-400/30"}
+          />
+          <EnviosStatCard
+            label="Confirmados"
+            count={confirmedEvents.length}
+            icon={<CheckCircle className="h-3.5 w-3.5 text-primary" />}
             onClick={() => setActiveTab("confirmed")}
-            className={`text-left rounded-xl border p-3 transition-all hover:scale-[1.02] active:scale-[0.98] ${
-              activeTab === "confirmed"
-                ? "bg-primary/10 border-primary/40 ring-2 ring-primary/30"
-                : "bg-background/60 border-border hover:border-primary/30"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Confirmados</span>
-              <CheckCircle className="h-3.5 w-3.5 text-primary" />
-            </div>
-            <div className="mt-1 text-2xl font-display font-bold text-foreground">{confirmedEvents.length}</div>
-          </button>
+            toneClassName={activeTab === "confirmed"
+              ? "bg-primary/10 border-primary/40 ring-2 ring-primary/30"
+              : "bg-background/60 border-border hover:border-primary/30"}
+          />
           {(isAdmin || permissions.canDelete) && (
-            <button
+            <EnviosStatCard
+              label="Lixeira"
+              count={trashedSubmissions.length}
+              icon={<Trash2 className="h-3.5 w-3.5 text-muted-foreground" />}
               onClick={() => setActiveTab("trash")}
-              className={`text-left rounded-xl border p-3 transition-all hover:scale-[1.02] active:scale-[0.98] col-span-2 sm:col-span-1 ${
-                activeTab === "trash"
-                  ? "bg-muted border-border ring-2 ring-muted-foreground/20"
-                  : "bg-background/60 border-border hover:border-muted-foreground/30"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Lixeira</span>
-                <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <div className="mt-1 text-2xl font-display font-bold text-foreground">{trashedSubmissions.length}</div>
-            </button>
+              className="col-span-2 sm:col-span-1"
+              toneClassName={activeTab === "trash"
+                ? "bg-muted border-border ring-2 ring-muted-foreground/20"
+                : "bg-background/60 border-border hover:border-muted-foreground/30"}
+            />
           )}
         </div>
       </div>
