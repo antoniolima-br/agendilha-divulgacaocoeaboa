@@ -29,3 +29,21 @@ export async function updateEventFields(eventId: string, payload: Record<string,
   const { error } = await supabase.from("submissions").update(payload as never).eq("id", eventId);
   if (error) throw error;
 }
+
+/** Muda a etapa de moderação de um rolê no painel de eventos. */
+export async function setEventModeration(eventId: string, moderationStatus: string): Promise<void> {
+  const { error } = await supabase.from("submissions").update({ moderation_status: moderationStatus }).eq("id", eventId);
+  if (error) throw error;
+}
+
+/** Liga ou desliga o destaque da Home, gravando o tipo (cortesia/pago) e a arte usada. */
+export async function setEventHighlight(
+  eventId: string,
+  highlight: { isHighlight: boolean; imageUrl: string | null; grantType: "courtesy" | "paid" | null },
+): Promise<void> {
+  const { error } = await supabase
+    .from("submissions")
+    .update({ is_highlight: highlight.isHighlight, highlight_hidden: false, image_url: highlight.imageUrl, highlight_grant_type: highlight.grantType })
+    .eq("id", eventId);
+  if (error) throw error;
+}

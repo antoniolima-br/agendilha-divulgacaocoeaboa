@@ -1,3 +1,4 @@
+import { setEventHighlight, setEventModeration } from "@/data/eventWrites";
 import { PaymentStatus } from "@/components/admin/PaymentStatus";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -317,14 +318,12 @@ function AdminEventsInner() {
   };
 
   async function handleModerationChange(id: string, newModerationStatus: string) {
-    const { error } = await supabase.from("submissions").update({ 
-      moderation_status: newModerationStatus 
-    }).eq("id", id);
-    if (error) {
-      handleError(error, "Erro ao atualizar moderação");
-    } else {
+    try {
+      await setEventModeration(id, newModerationStatus);
       toast.success(`Moderação atualizada: ${newModerationStatus}`);
       setSubmissions((prev) => prev.map((s) => s.id === id ? { ...s, moderation_status: newModerationStatus } : s));
+    } catch (error) {
+      handleError(error, "Erro ao atualizar moderação");
     }
 
   }
@@ -368,11 +367,7 @@ function AdminEventsInner() {
       }
 
       const nextHighlight = !current;
-      const { error } = await supabase
-        .from("submissions")
-        .update({ is_highlight: nextHighlight, highlight_hidden: false, image_url: imageUrl, highlight_grant_type: nextHighlight ? grantType : null })
-        .eq("id", id);
-      if (error) throw error;
+      await setEventHighlight(id, { isHighlight: nextHighlight, imageUrl, grantType: nextHighlight ? grantType : null });
 
       setSubmissions((previous) => previous.map((submission) =>
          submission.id === id ? { ...submission, is_highlight: nextHighlight, image_url: imageUrl, highlight_grant_type: nextHighlight ? grantType : null } : submission,
