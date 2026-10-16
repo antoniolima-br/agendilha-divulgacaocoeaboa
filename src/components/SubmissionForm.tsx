@@ -18,7 +18,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { StepIndicator } from "./submission-form/StepIndicator";
 import { PublishChecklist } from "./submission-form/PublishChecklist";
-import { Step1Summary } from "./submission-form/Step1Summary";
+import { ConfirmationStage } from "./submission-form/ConfirmationStage";
 import { DestaquePremiumSection } from "./submission-form/DestaquePremiumSection";
 import { DuvidasWhatsappField } from "./submission-form/DuvidasWhatsappField";
 import { 
