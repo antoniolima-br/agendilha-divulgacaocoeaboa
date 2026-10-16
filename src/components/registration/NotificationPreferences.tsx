@@ -29,9 +29,8 @@ function GeographyAutocomplete({ id, values, onChange }: { id: string; values: s
 
  const results = useMemo(() => {
   if (!q) return [];
-  const starts = SEARCH_INDEX.filter(({ key }) => key.startsWith(q) || key.split(/[\s()-]+/).some(w => w.startsWith(q)));
-  const contains = SEARCH_INDEX.filter(({ key }) => key.includes(q) && !starts.some(s => s.key === key));
-  return [...starts, ...contains].map(({ o }) => o).slice(0, 8);
+  const rank = (key: string) => key.startsWith(q) ? 0 : key.split(/[\s()-]+/).some(w => w.startsWith(q)) ? 1 : key.includes(q) ? 2 : 3;
+  return SEARCH_INDEX.map(e => ({ ...e, r: rank(e.key) })).filter(e => e.r < 3).sort((a, b) => a.r - b.r || a.key.localeCompare(b.key)).map(({ o }) => o).slice(0, 8);
  }, [q]);
 
  const typed = cleanLocality(query);
