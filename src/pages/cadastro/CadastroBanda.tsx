@@ -1,3 +1,4 @@
+import { uploadArtistAvatar } from "@/data/useArtistMedia";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { onlyDigits } from "@/lib/phone";
 import { useNavigate } from "react-router-dom";
@@ -235,14 +236,7 @@ export default function CadastroBanda() {
     if (!user) return;
     setUploadingAvatar(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage
-        .from("artist-media")
-        .upload(path, file, { upsert: true });
-      if (error) throw error;
-      const { data } = supabase.storage.from("artist-media").getPublicUrl(path);
-      setAvatarUrl(data.publicUrl);
+      setAvatarUrl(await uploadArtistAvatar(user.id, file));
       toast.success("Foto de perfil pronta.");
     } catch (e) {
       handleError(e, "Não deu pra enviar a foto.");
