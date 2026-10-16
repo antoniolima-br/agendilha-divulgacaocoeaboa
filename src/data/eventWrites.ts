@@ -47,3 +47,22 @@ export async function setEventHighlight(
     .eq("id", eventId);
   if (error) throw error;
 }
+
+/** Remove um rolê pelo painel de eventos (o backend confere quem pode). */
+export async function deleteEvent(eventId: string): Promise<void> {
+  const { error } = await supabase.from("submissions").delete().eq("id", eventId);
+  if (error) throw error;
+}
+
+/** Aprova ou rejeita um rolê, gravando quem decidiu, quando e a observação. */
+export async function setEventReviewStatus(
+  eventId: string,
+  decision: { kind: "approved" | "rejected"; reviewerId: string | undefined; notes: string | null },
+): Promise<void> {
+  const now = new Date().toISOString();
+  const payload = decision.kind === "approved"
+    ? { status: "aprovado", approved_at: now, approved_by: decision.reviewerId, rejected_at: null, rejected_by: null, admin_notes: decision.notes }
+    : { status: "rejeitado", rejected_at: now, rejected_by: decision.reviewerId, admin_notes: decision.notes };
+  const { error } = await supabase.from("submissions").update(payload as never).eq("id", eventId);
+  if (error) throw error;
+}

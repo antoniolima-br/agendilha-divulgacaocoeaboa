@@ -1,4 +1,4 @@
-import { setEventHighlight, setEventModeration } from "@/data/eventWrites";
+import { deleteEvent, setEventHighlight, setEventModeration, setEventReviewStatus } from "@/data/eventWrites";
 import { PaymentStatus } from "@/components/admin/PaymentStatus";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -126,12 +126,12 @@ function AdminEventsInner() {
   }, []);
 
   async function handleDelete(id: string) {
-    const { error } = await supabase.from("submissions").delete().eq("id", id);
-    if (error) {
-      handleError(error, "Erro ao remover evento");
-    } else {
+    try {
+      await deleteEvent(id);
       toast.success("Evento removido com sucesso");
       setSubmissions((prev) => prev.filter((s) => s.id !== id));
+    } catch (error) {
+      handleError(error, "Erro ao remover evento");
     }
     setDeleteConfirmId(null);
   }
@@ -168,25 +168,9 @@ function AdminEventsInner() {
     }
     setReview({ ...review, submitting: true });
 
-    const payload: any =
-      kind === "approved"
-        ? {
-            status: "aprovado",
-            approved_at: new Date().toISOString(),
-            approved_by: user?.id,
-            rejected_at: null,
-            rejected_by: null,
-            admin_notes: reason || null,
-          }
-        : {
-            status: "rejeitado",
-            rejected_at: new Date().toISOString(),
-            rejected_by: user?.id,
-            admin_notes: reason || null,
-          };
-
-    const { error } = await supabase.from("submissions").update(payload).eq("id", sub.id);
-    if (error) {
+    try {
+      await setEventReviewStatus(sub.id, { kind: kind === "approved" ? "approved" : "rejected", reviewerId: user?.id, notes: reason || null });
+    } catch (error) {
       handleError(error, "Erro ao atualizar status");
       setReview({ ...review, submitting: false });
       return;
