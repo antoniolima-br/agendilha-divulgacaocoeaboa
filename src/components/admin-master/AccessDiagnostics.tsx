@@ -3,6 +3,7 @@ import { AlertTriangle, CheckCircle2, Loader2, ShieldCheck, Stethoscope } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { listRoleAssignments } from "@/data/userRoles";
 import { normalizeBrPhone, validateWhatsappForAccount } from "@/lib/phone";
 
 type Row = { user_id: string; responsible_name: string | null; phone: string | null; user_type: string | null };
@@ -16,14 +17,13 @@ export function AccessDiagnostics() {
     queryKey: ["master", "access-diagnostics"],
     staleTime: 60_000,
     queryFn: async () => {
-      const [profilesRes, rolesRes, collabRes] = await Promise.all([
+      const [profilesRes, roles, collabRes] = await Promise.all([
         supabase.from("profiles").select("user_id, responsible_name, phone, user_type"),
-        supabase.from("user_roles").select("user_id, role"),
+        listRoleAssignments(),
         supabase.from("collaborators").select("user_id, is_active, can_submit"),
       ]);
 
       const profiles = (profilesRes.data ?? []) as Row[];
-      const roles = rolesRes.data ?? [];
       const collabs = collabRes.data ?? [];
 
       const adminIds = new Set(
