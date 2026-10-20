@@ -214,8 +214,8 @@ export const AppRoutes = () => {
     <SectionErrorBoundary context="AppRoutes">
       <Suspense fallback={<PageFallback />}>
         <Routes>
-        <Route path={ROUTES.INTRANET} element={<ProtectedRoute masterOnly><IntranetPortal /></ProtectedRoute>} />
-        <Route path={ROUTES.INTRANET_SECTOR} element={<ProtectedRoute masterOnly><IntranetPortal /></ProtectedRoute>} />
+        <Route path={ROUTES.INTRANET} element={<ProtectedRoute><IntranetPortal /></ProtectedRoute>} />
+        <Route path={ROUTES.INTRANET_SECTOR} element={<ProtectedRoute><IntranetPortal /></ProtectedRoute>} />
         <Route path={ROUTES.CAMPAIGN_LINK} element={<CampaignRedirect />} />
         {/* Públicas */}
         <Route path={ROUTES.LANDING} element={<SectionErrorBoundary context="Home" title="Não deu pra carregar a página inicial agora." description="Tenta de novo em instantes."><Landing /></SectionErrorBoundary>} />

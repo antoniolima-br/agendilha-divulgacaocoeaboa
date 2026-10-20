@@ -2,13 +2,18 @@ export const INTRANET_SECTORS = ["comercial", "marketing", "administracao", "fin
 export type IntranetSector = typeof INTRANET_SECTORS[number];
 export const SECTOR_SHORTCUTS: IntranetSector[] = ["comercial", "marketing", "administracao", "financeiro"];
 export const ADMINISTRATIVE_ROLES = ["master", "senior", "admin", ...INTRANET_SECTORS] as const;
+/** Partners on the administrative team: directors plus sector holders. All read every sector. */
+export const INTRANET_DIRECTOR_ROLES = ["master", "senior"] as const;
+export const INTRANET_PARTNER_ROLES = [...INTRANET_DIRECTOR_ROLES, ...INTRANET_SECTORS] as const;
+export function isIntranetDirector(roles: string[]): boolean { return roles.some((r) => (INTRANET_DIRECTOR_ROLES as readonly string[]).includes(r)); }
+export function isIntranetPartner(roles: string[]): boolean { return roles.some((r) => (INTRANET_PARTNER_ROLES as readonly string[]).includes(r)); }
 export function canViewIntranetOverview(roles: string[]): boolean {
-  return roles.includes('master');
+  return isIntranetPartner(roles);
 }
 export const sectorLabels: Record<IntranetSector, string> = { comercial: "Comercial", marketing: "Marketing", administracao: "Curadoria", financeiro: "Financeiro", desenvolvimento: "Desenvolvimento" };
 export const sectorOwners: Record<IntranetSector, string> = { comercial: "Mauro Iorio", marketing: "Prof. Ana", administracao: "Cintya Coelho", financeiro: "Bia Pinha", desenvolvimento: "Equipe técnica" };
 export function intranetSectors(roles: string[]): IntranetSector[] {
-  return roles.includes('master') ? [...INTRANET_SECTORS] : [];
+  return isIntranetPartner(roles) ? [...INTRANET_SECTORS] : [];
 }
 export function assignedIntranetSector(roles: string[]): IntranetSector | null {
   return INTRANET_SECTORS.find((sector) => roles.includes(sector)) ?? (roles.includes("admin") ? "administracao" : null);
