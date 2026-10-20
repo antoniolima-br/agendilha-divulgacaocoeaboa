@@ -9,7 +9,7 @@ export type Lead = Tables<'intranet_leads'>;
 export type Campaign = Tables<'intranet_campaigns'>;
 export type Investment = Tables<'intranet_investments'>;
 export type Sample = Tables<'intranet_health_samples'>;
-export type Member = { id: string; name: string; roles: string[] };
+export type Member = { id: string; name: string; roles: string[]; grants?: { sector: string; expires_at: string | null }[] };
 export function useIntranet(sector: IntranetSector, days: number, enabled: boolean) {
   const { user } = useAuth();
   return useQuery({ queryKey: qk.intranet.dashboard(user?.id ?? null, sector, days), enabled: enabled && !!user, staleTime: 30_000, refetchInterval: 30_000,

@@ -60,7 +60,7 @@ describe("computePermissions", () => {
     expect(permissions.has("events.delete")).toBe(true);
     expect(permissions.has("users.update")).toBe(false);
     expect(permissions.has("roles.manage")).toBe(false);
-    expect(permissions.has("intranet.read")).toBe(false);
+    expect(permissions.has("intranet.read")).toBe(true);
   });
 
   it("colaborador ativo só ganha o que foi marcado", () => {

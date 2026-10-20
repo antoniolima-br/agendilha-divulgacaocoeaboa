@@ -1756,6 +1756,33 @@ export type Database = {
         }
         Relationships: []
       }
+      intranet_edit_grants: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          granted_by: string
+          id: string
+          sector: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          granted_by: string
+          id?: string
+          sector: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          granted_by?: string
+          id?: string
+          sector?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       intranet_event_guests: {
         Row: {
           converted_at: string | null
@@ -3866,6 +3893,7 @@ export type Database = {
         Returns: Json
       }
       intranet_health_probe: { Args: never; Returns: boolean }
+      intranet_is_director: { Args: { p_user: string }; Returns: boolean }
       intranet_members: { Args: never; Returns: Json }
       intranet_moderate: {
         Args: { p_approve: boolean; p_id: string }
@@ -3904,6 +3932,15 @@ export type Database = {
       intranet_set_curation_status: {
         Args: { p_action: string; p_id: string }
         Returns: Json
+      }
+      intranet_set_edit_grant: {
+        Args: {
+          p_days: number
+          p_revoke?: boolean
+          p_sector: string
+          p_user: string
+        }
+        Returns: undefined
       }
       is_admin_or_master: { Args: { p_user_id: string }; Returns: boolean }
       is_master: { Args: { _user_id: string }; Returns: boolean }
