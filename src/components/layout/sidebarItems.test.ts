@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { sidebarConfig, filterSidebarSections, isSidebarItemActive } from "./sidebarItems";
+import { sidebarConfig as menuConfig, governanceConfig, filterSidebarSections, isSidebarItemActive } from "./sidebarItems";
+const sidebarConfig = [...menuConfig, ...governanceConfig];
 import { ROUTES, routeExists } from "@/routes/config";
 import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { computePermissions } from "@/hooks/useAppPermissions";
@@ -22,9 +23,9 @@ describe("sidebarConfig", () => {
     expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "share_my_events", "ad_plans_catalog", "profile"]);
     expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/intranet"))).toBe(false);
   });
-  it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("abre os pitches no menu para %s", (role) => {
+  it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("abre os pitches nos atalhos da gestão para %s", (role) => {
     const { permissions } = computePermissions({ roleNames: [role], collaborator: null, profileRole: null });
-    const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists);
+    const visible = filterSidebarSections(role, (p) => permissions.has(p), routeExists, governanceConfig);
     const paths = visible.flatMap((s) => s.items.map((i) => i.path));
     expect(paths).toContain(ROUTES.ADMIN_PITCH_SOCIOS);
     expect(paths).toContain(ROUTES.ADMIN_PITCH_ANUNCIANTES);
@@ -35,11 +36,7 @@ describe("sidebarConfig", () => {
     expect(personal?.items.find((item) => item.id === "my_submissions")?.roles).toContain("admin");
     expect(personal?.items).toHaveLength(3);
     expect(personal?.items.some((item) => item.path.startsWith("/admin"))).toBe(false);
-    const intranet = sidebarConfig.find((section) => section.id === "intranet");
-    expect(intranet?.roles).toEqual(["master"]);
-    expect(intranet?.items[0]?.roles).toEqual(["master"]);
-    expect(filterSidebarSections("admin", () => true, routeExists).some((section) => section.id === "intranet")).toBe(false);
-    expect(filterSidebarSections("master", () => true, routeExists).some((section) => section.id === "intranet")).toBe(true);
+    expect(filterSidebarSections("master", () => true, routeExists).some((section) => section.id === "intranet")).toBe(false);
   });
   it("centraliza eventos e relatórios na Curadoria", () => {
     const curation = sidebarConfig.find((section) => section.id === "curadoria");
@@ -115,7 +112,7 @@ describe("sidebarConfig", () => {
 
   it("mostra os cinco setores no menu do Master conforme as permissões protegidas", () => {
     const { permissions } = computePermissions({ roleNames: ["master"], collaborator: null, profileRole: null });
-    const visible = filterSidebarSections("master", (permission) => permissions.has(permission), routeExists);
+    const visible = filterSidebarSections("master", (permission) => permissions.has(permission), routeExists, governanceConfig);
     expect(visible.map((section) => section.id)).toEqual(expect.arrayContaining([
       "curadoria",
       "marketing",
@@ -127,7 +124,7 @@ describe("sidebarConfig", () => {
 
   it("mostra a jornada essencial de cada perfil sem atalhos redundantes", () => {
     const publicItems = filterSidebarSections("public_guest", () => true, routeExists).flatMap((section) => section.items);
-    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "pitch_socios", "pitch_anunciantes", "profile", "divulgador_status"]);
+    expect(publicItems.map((item) => item.id)).toEqual(["agenda", "seu_radar", "profile", "divulgador_status"]);
     const promoterItems = filterSidebarSections("promoter", () => true, routeExists).flatMap((section) => section.items);
     expect(promoterItems.some(item => item.id === "my_submissions")).toBe(true);
     expect(promoterItems.some(item => item.id === "send_event")).toBe(false);
