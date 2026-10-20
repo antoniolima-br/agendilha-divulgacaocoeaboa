@@ -51,15 +51,6 @@ export interface SidebarSection {
 
 export const sidebarConfig: SidebarSection[] = [
   {
-    id: "intranet", title: "Bastidores", roles: ["master", "senior", "financeiro", "sector"],
-    items: [{
-      id: "intranet_portal", label: "Gestão setorial", path: ROUTES.INTRANET, icon: Building2, roles: ["master", "senior", "financeiro", "sector"],
-      children: [
-        { id: "sector_portal", label: "Abrir gestão", path: ROUTES.INTRANET, icon: Building2, roles: ["master", "senior", "financeiro", "sector"], exact: true },
-      ],
-    }],
-  },
-  {
     id: "explorar",
     title: "Explorar",
     roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
@@ -116,6 +107,31 @@ export const sidebarConfig: SidebarSection[] = [
       { id: "ad_plans_catalog", label: "Valores para anunciar", path: ROUTES.PLANOS_ANUNCIOS, exact: true, icon: Tag, roles: ["promoter", "collaborator", "admin", "senior", "master"] },
     ]
   },
+  {
+    id: "conta",
+    title: "Conta",
+    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
+    items: [
+      {
+        id: "profile",
+        label: "Meu Perfil",
+        path: ROUTES.PERFIL,
+        icon: UserRound,
+        roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"]
+      },
+      {
+        id: "divulgador_status",
+        label: "Seja Divulgador",
+        path: ROUTES.CADASTRO_DIVULGADOR,
+        icon: Megaphone,
+        roles: ["public_guest", "public_registered"]
+      }
+    ]
+  }
+];
+
+/** Governance shortcuts live only inside the restricted Intranet, never in the public sidebar. */
+export const governanceConfig: SidebarSection[] = [
   {
     id: "apresentacoes",
     title: "Apresentações",
@@ -189,27 +205,6 @@ export const sidebarConfig: SidebarSection[] = [
       }
     ]
   },
-  {
-    id: "conta",
-    title: "Conta",
-    roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"],
-    items: [
-      {
-        id: "profile",
-        label: "Meu Perfil",
-        path: ROUTES.PERFIL,
-        icon: UserRound,
-        roles: ["public_guest", "public_registered", "promoter", "collaborator", "admin", "senior", "financeiro", "master"]
-      },
-      {
-        id: "divulgador_status",
-        label: "Seja Divulgador",
-        path: ROUTES.CADASTRO_DIVULGADOR,
-        icon: Megaphone,
-        roles: ["public_guest", "public_registered"]
-      }
-    ]
-  }
 ];
 
 /** Prunes entire branches, including parents with no authorized children. */
@@ -217,6 +212,7 @@ export function filterSidebarSections(
   role: Role,
   hasPermission: (permission: PermissionName) => boolean,
   routeExists: (path: string) => boolean,
+  config: SidebarSection[] = sidebarConfig,
 ): SidebarSection[] {
   const filterItems = (items: SidebarItem[]): SidebarItem[] => items.flatMap((item) => {
     if (!item.roles.includes(role) || !item.path) return [];
@@ -228,7 +224,7 @@ export function filterSidebarSections(
     if (!children && !routeExists(item.path)) return [];
     return [{ ...item, path: children?.[0]?.path ?? item.path, children }];
   });
-  return sidebarConfig.filter((section) => section.roles.includes(role)).flatMap((section) => {
+  return config.filter((section) => section.roles.includes(role)).flatMap((section) => {
     const items = filterItems(section.items);
     return items.length ? [{ ...section, items }] : [];
   });
