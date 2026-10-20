@@ -18,8 +18,8 @@ describe("sidebarConfig", () => {
   });
   it("divulgador não vê atalhos gerenciais mesmo com permissões fornecidas", () => {
     const visible = filterSidebarSections("promoter", () => true, routeExists);
-    expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "apresentacoes", "conta"]);
-    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "share_my_events", "ad_plans_catalog", "pitch_socios", "pitch_anunciantes", "profile"]);
+    expect(visible.map(section => section.id)).toEqual(["explorar", "divulgacao", "conta"]);
+    expect(visible.flatMap(section => section.items).map(item => item.id)).toEqual(["agenda", "seu_radar", "my_submissions", "share_my_events", "ad_plans_catalog", "profile"]);
     expect(visible.flatMap(section => section.items).some(item => item.path.startsWith("/intranet"))).toBe(false);
   });
   it.each(["public_guest", "public_registered", "promoter", "collaborator", "admin", "financeiro", "senior", "master"] as const)("abre os pitches no menu para %s", (role) => {
