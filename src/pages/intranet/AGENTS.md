@@ -1,4 +1,4 @@
-- The entire Intranet is Master-only in navigation, routes, queries, and writes. Cash uses settlements; flyer opens are guarded; never fake metrics.
+- Every partner (Master, Sênior, sector holders) reads all sectors and the BI; writes require intranet_can_edit_sector (directors, the sector holder, or an active intranet_edit_grants row) so access stays server-verified. Cash uses settlements; flyer opens are guarded; never fake metrics.
 - Engagement BI shares one protected report across Consolidated and Marketing views; origins are allowlisted and physical attendance remains unreported until collected.
 - Curadoria impact uses channel-tagged event links and protected aggregate reports; anonymous opens and favorites never reveal personal identity, while leads may show only staff-entered contact data.
 - Guest invites use opaque per-event tokens; Curadoria owns registration, Marketing reads identified opens, and BI consolidates conversions without exposing invite data publicly.
