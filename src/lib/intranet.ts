@@ -34,4 +34,11 @@ export type IntranetDashboard = {
   queue?: { id: string; event_title: string | null; date: string; start_time: string | null; location: string | null; promotion_choice: string }[];
   ads?: { title: string; status: string; product: string | null; highlight_until: string | null; target_regions: string[] }[];
 };
-export type SectorAccess = { can_view: boolean; editors: Record<IntranetSector, boolean> };
+export type SectorAccess = { can_view: boolean; editors: Record<IntranetSector, boolean> };/** Public URL slug per sector: Curadoria is stored as "administracao" but lives at /intranet/curadoria. */
+export const INTRANET_BI_SLUG = "bi";
+export function sectorSlug(sector: IntranetSector): string { return sector === "administracao" ? "curadoria" : sector; }
+export function sectorFromSlug(slug: string | undefined): IntranetSector | undefined {
+  if (slug === "curadoria") return "administracao";
+  return isIntranetSector(slug) ? slug : undefined;
+}
+export function isOverviewSlug(slug: string | undefined): boolean { return !slug || slug === INTRANET_BI_SLUG || slug === "visao-geral"; }
