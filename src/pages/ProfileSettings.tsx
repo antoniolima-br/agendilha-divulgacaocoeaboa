@@ -34,6 +34,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { BAIRROS } from "@/lib/neighborhoods";
+import { IntranetShortcutCard } from "@/components/profile/IntranetShortcutCard";
 import { DivulgadorUpgradeCard } from "@/components/divulgador/DivulgadorUpgradeCard";
 import { ProfileAddressFields, type ProfileAddressForm } from "@/components/profile/ProfileAddressFields";
 import type { ProfileAddress } from "@/hooks/useProfile";
@@ -259,6 +260,8 @@ export default function ProfileSettings() {
         title="Meu Perfil"
         subtitle="Complemente suas informações e personalize sua experiência."
       />
+
+      <IntranetShortcutCard />
 
       <DivulgadorUpgradeCard />
 
