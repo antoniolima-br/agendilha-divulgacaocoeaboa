@@ -6,7 +6,9 @@ import {
   ChevronDown,
   ChevronRight,
   Download,
+  Building2,
 } from "lucide-react";
+import { canViewIntranetOverview } from "@/lib/intranet";
 import { cn } from "@/lib/utils";
 import { useUserBadge } from "@/hooks/useUserBadge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -97,6 +99,14 @@ export function SidebarMenu({ onClose }: Props) {
               </div>
             </div>
           </div>
+          {user && !permissionsLoading && canViewIntranetOverview(roles) && (
+            <Button asChild size="sm" className="w-full font-bold">
+              <Link to={ROUTES.INTRANET} onClick={onClose}>
+                <Building2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                Acessar Gestão Setorial
+              </Link>
+            </Button>
+          )}
           {!user && (
             <Button asChild size="sm" className="w-full font-bold">
               <Link to={ROUTES.CADASTRO_PUBLICO} onClick={onClose}>
