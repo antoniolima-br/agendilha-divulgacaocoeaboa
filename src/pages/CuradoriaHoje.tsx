@@ -151,7 +151,7 @@ function CuradoriaHojeInner() {
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
       <SeoHead
-        title="Hoje na Ilha — Coé a Boa?"
+        title="Hoje no Rio — Coé a Boa?"
         description="Veja a curadoria de eventos de hoje no Rio de Janeiro, com destaques e programação completa."
         path="/hoje"
       />
@@ -164,7 +164,7 @@ function CuradoriaHojeInner() {
           </p>
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <h1 className="text-2xl font-bold leading-tight sm:text-4xl lg:text-6xl">Acontece hoje na Ilha</h1>
+              <h1 className="text-2xl font-bold leading-tight sm:text-4xl lg:text-6xl">Acontece hoje no Rio</h1>
               <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                 A curadoria do que tá rolando, do primeiro programa ao último show.
               </p>
@@ -196,10 +196,10 @@ function CuradoriaHojeInner() {
           <Select value={region} onValueChange={setRegion}>
             <SelectTrigger className="h-11 w-full rounded-full border-foreground/15 bg-card px-4 shadow-sm sm:w-[240px]" aria-label="Selecionar região">
               <MapPin className="mr-2 h-4 w-4 shrink-0 text-secondary" />
-              <SelectValue placeholder="Toda a Ilha" />
+              <SelectValue placeholder="Todo o Rio" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toda a Ilha</SelectItem>
+              <SelectItem value="all">Todo o Rio</SelectItem>
               {regions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
             </SelectContent>
           </Select>
@@ -217,7 +217,7 @@ function CuradoriaHojeInner() {
         ) : currentFeature ? (
           <section aria-labelledby="destaques-heading" className="mb-10">
             <div className="mb-3 flex items-center justify-between">
-              <h2 id="destaques-heading" className="text-lg font-bold sm:text-2xl">Acontece hoje na Ilha</h2>
+              <h2 id="destaques-heading" className="text-lg font-bold sm:text-2xl">Acontece hoje no Rio</h2>
               {featuredEvents.length > 1 && (
                 <div className="flex gap-2">
                   <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" onClick={() => changeSlide(-1)} aria-label="Destaque anterior">
@@ -251,7 +251,7 @@ function CuradoriaHojeInner() {
                     {currentFeature.is_highlight || currentFeature.highlight_active ? "Em destaque" : "Evento aprovado"}
                 </span>
                 <h3 className="max-w-3xl text-lg sm:text-3xl lg:text-4xl font-bold leading-tight">
-                  {currentFeature.event_title || "Rolê na Ilha"}
+                  {currentFeature.event_title || "Rolê no Rio"}
                 </h3>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-background/80 sm:text-sm">
                   {currentFeature.location && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" />{currentFeature.location}</span>}
@@ -341,7 +341,7 @@ function CuradoriaHojeInner() {
                       {format(parseISO(eventDateISO(event.date)), "EEE, dd MMM", { locale: ptBR })}
                       {event.start_time ? ` · ${event.start_time.slice(0, 5)}` : ""}
                     </p>
-                    <h3 className="line-clamp-2 text-sm font-bold leading-tight sm:text-base">{event.event_title || "Rolê na Ilha"}</h3>
+                    <h3 className="line-clamp-2 text-sm font-bold leading-tight sm:text-base">{event.event_title || "Rolê no Rio"}</h3>
                     {event.location && <p className="mt-1 truncate text-[11px] text-background/75">{event.location}</p>}
                   </div>
                 </Button>
@@ -387,7 +387,7 @@ function CuradoriaHojeInner() {
               <div className="mb-5 flex items-end justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase text-secondary">Programação</p>
-                  <h2 id="programacao-heading" className="mt-1 text-lg sm:text-2xl lg:text-3xl font-bold">{selectedLabel} na Ilha</h2>
+                  <h2 id="programacao-heading" className="mt-1 text-lg sm:text-2xl lg:text-3xl font-bold">{selectedLabel} no Rio</h2>
                 </div>
               </div>
 
@@ -422,7 +422,7 @@ function CuradoriaHojeInner() {
               <div className="mb-5 flex items-end justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase text-secondary">Faça parte</p>
-                  <h2 id="acoes-heading" className="mt-1 text-xl sm:text-2xl lg:text-3xl font-bold">Movimente a Ilha</h2>
+                  <h2 id="acoes-heading" className="mt-1 text-xl sm:text-2xl lg:text-3xl font-bold">Movimente o Rio</h2>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

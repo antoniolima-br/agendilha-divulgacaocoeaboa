@@ -184,7 +184,7 @@ export default function StatusDivulgador() {
 
           <div className="pt-6 border-t border-dashed border-foreground/10 text-center">
             <p className="text-xs text-foreground/50 mb-4 font-medium italic">
-              "Curadoria local focada no melhor da Ilha."
+              "Curadoria local focada no melhor do Rio."
             </p>
             <Button 
               variant="ghost" 
@@ -204,7 +204,7 @@ export default function StatusDivulgador() {
             <div className="space-y-2">
               <h2 className="text-xl font-black tracking-tight">Divulgue seus rolês</h2>
               <p className="text-sm text-foreground/70 text-balance leading-relaxed">
-                Tem um bar, restaurante, banda ou produz eventos na Ilha? Seja um Divulgador oficial.
+                Tem um bar, restaurante, banda ou produz eventos no Rio? Seja um Divulgador oficial.
               </p>
             </div>
             <div className="pt-4">

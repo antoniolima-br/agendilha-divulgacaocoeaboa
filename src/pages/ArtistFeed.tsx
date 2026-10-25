@@ -220,7 +220,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
        onScroll={handleScroll}
      >
       <SeoHead
-        title="Atrativos da Ilha — vídeos de artistas | Coé a Boa?"
+        title="Atrativos do Rio — vídeos de artistas | Coé a Boa?"
         description="Assista aos vídeos dos artistas e atrativos do Rio de Janeiro e descubra quem vai tocar nos próximos rolês da agenda."
         path="/artistas"
       />

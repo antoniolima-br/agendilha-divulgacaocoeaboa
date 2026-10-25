@@ -101,7 +101,7 @@ export default function EstabelecimentoDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const text = estab ? `Conheça ${estab.nome} na Ilha — ${url}` : url;
+    const text = estab ? `Conheça ${estab.nome} no Rio — ${url}` : url;
     try {
       if (navigator.share) {
         await navigator.share({ title: estab?.nome, text, url });

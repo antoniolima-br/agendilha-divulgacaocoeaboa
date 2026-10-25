@@ -58,7 +58,7 @@ export default function CadastroPromotor() {
       );
       if (error) throw error;
       toast.success(
-        "Cadastro feito! Agora você já pode cadastrar seus eventos na agenda curada da Ilha.",
+        "Cadastro feito! Agora você já pode cadastrar seus eventos na agenda curada do Rio.",
       );
       navigate(ROUTES.PROMOTOR_ESTABELECIMENTOS, { replace: true });
     } catch (err) {
@@ -82,7 +82,7 @@ export default function CadastroPromotor() {
             Cadastro rápido para divulgar seus eventos
           </h1>
           <p className="text-base text-muted-foreground">
-            É coisa de 30 segundos: só pra gente saber quem está por trás dos rolês da Ilha.
+            É coisa de 30 segundos: só pra gente saber quem está por trás dos rolês do Rio.
           </p>
         </header>
 

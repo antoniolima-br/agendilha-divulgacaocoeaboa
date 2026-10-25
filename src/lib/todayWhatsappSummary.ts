@@ -99,7 +99,7 @@ export function buildCoeaboaDailyReport(
     .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
   const header = [
-    "*AGENDILHA* — sua agenda de eventos da Ilha do Governador",
+    "*AGENDILHA* — sua agenda de eventos do Rio",
     "",
     "📲 Siga no Instagram",
     "https://instagram.com/agendilha?igshid=YmMyMTA2M2Y=",
@@ -163,7 +163,7 @@ export function buildTodayWhatsAppSummary(submissions: SummaryEvent[]): {
 
   if (items.length === 0) return { text: "", count: 0 };
 
-  const header = `🌴 *AGENDILHA — Rolês de hoje na Ilha*`;
+  const header = `🌴 *AGENDILHA — Rolês de hoje no Rio*`;
   const blocks = items.map((s) => {
     const nome = s.atrativo_name || s.event_title;
     const local = s.location || s.estabelecimento_name || "";
@@ -225,7 +225,7 @@ export function buildWeekWhatsAppSummary(submissions: SummaryEvent[]): {
   }
 
   const header =
-    `🌴 *AGENDILHA — rolês desta semana na Ilha*\n\n` +
+    `🌴 *AGENDILHA — rolês desta semana no Rio*\n\n` +
     `Agenda completa em:\nhttps://agendilha-divulgacao.lovable.app`;
 
   const dayBlocks = Array.from(byDay.keys())

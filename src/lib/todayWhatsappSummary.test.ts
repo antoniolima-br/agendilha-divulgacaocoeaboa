@@ -143,7 +143,7 @@ describe("buildTodayWhatsAppSummary", () => {
     expect(count).toBe(1);
     expect(text).toContain("Hoje");
     expect(text).not.toContain("Amanha");
-    expect(text).toContain("AGENDILHA — Rolês de hoje na Ilha");
+    expect(text).toContain("AGENDILHA — Rolês de hoje no Rio");
   });
 
   it("mostra o endereço completo antes do bairro", () => {
