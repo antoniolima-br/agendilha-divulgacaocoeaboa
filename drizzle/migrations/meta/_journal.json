@@ -435,6 +435,13 @@
       "when": 1792958560900,
       "tag": "0061_home_video_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1792959467411,
+      "tag": "0062_home_video_slots",
+      "breakpoints": true
     }
   ]
 }
