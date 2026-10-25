@@ -19,7 +19,7 @@ export function HomeVideoHighlight(_props: { placePhrase?: string }) {
   const { data: cover } = useResolvedMediaUrl(data?.home_video_cover_url ?? "");
   const firstSource = playlist.length > 0 ? parseHomeVideo(playlist[0]) : null;
   const { data: firstFile } = useResolvedMediaUrl(firstSource?.kind === "file" ? firstSource.src : "");
-  const [showVideo, setShowVideo] = useState<boolean>(() => openingVideo.shouldPlay === true || (openingVideo.shouldPlay as unknown) === undefined ? Boolean(openingVideo.shouldPlay) : false);
+  const [showVideo, setShowVideo] = useState<boolean>(() => { try { return Boolean(openingVideo.shouldPlay()); } catch { return false; } });
   const [index, setIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [muted, setMuted] = useState(false);
