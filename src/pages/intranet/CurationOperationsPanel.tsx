@@ -185,12 +185,13 @@ export function CurationOperationsPanel({ canEdit }: { canEdit: boolean }) {
         <p className="max-w-3xl text-sm text-muted-foreground">As mudanças salvas aqui chegam automaticamente ao carrossel e aos feeds públicos.</p>
       </header>
       <Tabs value={tab} onValueChange={setTab} className="min-w-0">
-        <TabsList className="grid h-auto w-full grid-cols-2 sm:grid-cols-5">
-          <TabsTrigger value="register">Cadastro</TabsTrigger>
-          <TabsTrigger value="manage">Gerenciar</TabsTrigger>
-          <TabsTrigger value="share">Divulgação</TabsTrigger>
-          <TabsTrigger value="guests">Convidados</TabsTrigger>
-          <TabsTrigger value="impact">Impacto</TabsTrigger>
+        <TabsList aria-label="Ações da Curadoria" className="grid h-auto w-full grid-cols-2 gap-2 bg-transparent p-0 sm:grid-cols-4">
+          <TabsTrigger value="register" className="min-h-14 border border-border text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Plus className="mr-2 h-5 w-5" />Cadastro</TabsTrigger>
+          <TabsTrigger value="manage" className="min-h-14 border border-border text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Pencil className="mr-2 h-5 w-5" />Gerenciar</TabsTrigger>
+          <TabsTrigger value="share" className="min-h-11 border border-border text-sm data-[state=active]:bg-secondary">Divulgação</TabsTrigger>
+          {/* Convidados oculto por pedido; conteúdo da aba preservado abaixo pra reativar depois. */}
+          {/* <TabsTrigger value="guests">Convidados</TabsTrigger> */}
+          <TabsTrigger value="impact" className="min-h-11 border border-border text-sm data-[state=active]:bg-secondary">Impacto</TabsTrigger>
         </TabsList>
 
         <TabsContent value="register" className="pt-4">
