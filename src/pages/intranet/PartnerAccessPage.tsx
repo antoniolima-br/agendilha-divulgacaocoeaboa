@@ -6,6 +6,8 @@ import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { isIntranetDirector } from "@/lib/intranet";
 import { ROUTES } from "@/routes/config";
 
+import { HomeVideoSettings } from "./HomeVideoSettings";
+
 const AccessPanel = lazy(() => import("./AccessPanel"));
 
 /** Directors-only page for partner access; kept out of BI and sector panels. Server RPCs re-check the role. */
@@ -18,6 +20,7 @@ export default function PartnerAccessPage() {
       <Button asChild variant="ghost" size="sm" className="mb-4">
         <Link to={ROUTES.INTRANET}><ArrowLeft className="mr-1 h-4 w-4" /> Voltar pra gestão</Link>
       </Button>
+      <HomeVideoSettings />
       <h1 className="text-2xl font-semibold">Acessos dos sócios</h1>
       <Suspense fallback={<p className="py-6">Carregando acessos…</p>}><AccessPanel /></Suspense>
     </main>

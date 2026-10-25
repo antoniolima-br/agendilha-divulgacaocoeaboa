@@ -45,6 +45,7 @@ import logo from "@/assets/coeaboa-logo.webp";
 import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
 import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
+import { HomeVideoHighlight } from "@/components/home/HomeVideoHighlight";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
 import { EventDetailDialog } from "@/components/agenda/EventDetailDialog";
@@ -387,6 +388,7 @@ export default function Landing() {
              <ChevronRight className="h-4 w-4" />
            </Button>
          </nav>}
+         <HomeVideoHighlight />
          <section aria-label="Destaque para você" className="mx-auto w-full max-w-screen-lg space-y-6 px-4 pt-4 sm:space-y-8 sm:px-6">
            <HomeAdsCarousel variant="compact" region={globalFilters.region} />
            <h2 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-foreground">Destaque para você</h2>

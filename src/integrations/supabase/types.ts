@@ -4061,6 +4061,10 @@ export type Database = {
           tipos: string[]
         }[]
       }
+      set_home_video: {
+        Args: { p_cover: string; p_title: string; p_url: string }
+        Returns: undefined
+      }
       set_user_pin: {
         Args: { current_password: string; new_pin: string }
         Returns: undefined
