@@ -11,6 +11,9 @@ import { getSponsoredAdCreative } from "@/lib/sponsoredAdCreatives";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { safeAdDestination } from "@/lib/advertising";
+import { useAppSettings } from "@/data/useAppSettings";
+import { useResolvedMediaUrl } from "@/lib/homeVideo";
+import { homePubliList, pickPubli } from "@/lib/homePubli";
 
 const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
@@ -59,6 +62,8 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  const { data: settings } = useAppSettings();
+  const { data: curatedPubli } = useResolvedMediaUrl(pickPubli(homePubliList(settings)));
   const visibleAds = normalizeAds(data).slice(0, MAX_SPONSORED_ADS);
   const total = visibleAds.length;
   const goTo = useCallback((next: number) => {
@@ -89,12 +94,11 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   if (isCompact && total === 0) return null;
 
   if (total === 0) {
+    if (!curatedPubli) return null;
     return (
-      <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios do Rio"}>
-        <div className="rounded-lg border border-dashed p-6 text-center">
-          <Badge variant="outline" className="mb-2 text-[10px] font-semibold uppercase tracking-normal">Publi</Badge>
-          <p className="font-semibold">Espaço para parceiros do Rio</p>
-          <p className="mt-1 text-sm text-muted-foreground">Novidades e ofertas aparecem por aqui.</p>
+      <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
+        <div className="overflow-hidden rounded-lg border bg-muted">
+          <img src={curatedPubli} alt="Publicidade" loading="lazy" className="block h-auto w-full" />
         </div>
       </section>
     );
