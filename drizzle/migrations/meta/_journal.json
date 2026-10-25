@@ -428,6 +428,13 @@
       "when": 1792958263368,
       "tag": "0060_home_video_highlight",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1792958560900,
+      "tag": "0061_home_video_storage_policies",
+      "breakpoints": true
     }
   ]
 }
