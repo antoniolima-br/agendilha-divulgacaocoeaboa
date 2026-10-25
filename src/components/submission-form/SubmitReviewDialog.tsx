@@ -24,6 +24,8 @@ type Props = {
   events: SubmitReviewEvent[];
   location: string;
   neighborhood?: string;
+  category?: string | null;
+  description?: string | null;
   submitting: boolean;
   onConfirm: () => void;
 };
@@ -34,7 +36,7 @@ function formatDate(value: string) {
 }
 
 /** Resumo final antes de mandar o rolê pra curadoria. */
-export function SubmitReviewDialog({ open, onOpenChange, image, events, location, neighborhood, submitting, onConfirm }: Props) {
+export function SubmitReviewDialog({ open, onOpenChange, image, events, location, neighborhood, category, description, submitting, onConfirm }: Props) {
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!(image instanceof File)) { setObjectUrl(null); return; }
@@ -49,7 +51,7 @@ export function SubmitReviewDialog({ open, onOpenChange, image, events, location
     <Dialog open={open} onOpenChange={(next) => { if (!submitting) onOpenChange(next); }}>
       <DialogContent className="max-h-[90dvh] w-[calc(100vw-1.5rem)] max-w-lg overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Confere antes de enviar?</DialogTitle>
+          <DialogTitle>Resumo da Divulgação</DialogTitle>
           <DialogDescription>Dá uma olhada rápida. Se algo estiver errado, volta e ajusta.</DialogDescription>
         </DialogHeader>
 
@@ -62,7 +64,7 @@ export function SubmitReviewDialog({ open, onOpenChange, image, events, location
             )}
           </div>
           <div className="min-w-0 space-y-3">
-            {events.map((ev, i) => (
+            {(Array.isArray(events) ? events : []).map((ev, i) => (
               <div key={i} className="space-y-1.5 border-b border-border pb-3 last:border-0 last:pb-0">
                 <p className="break-words font-semibold">{ev.title || "Rolê sem título"}</p>
                 <p className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -78,16 +80,18 @@ export function SubmitReviewDialog({ open, onOpenChange, image, events, location
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span className="break-words">{place}</span>
             </p>
+            {category?.trim() && <p className="text-sm"><span className="text-muted-foreground">Categoria:</span> <span className="font-medium">{category}</span></p>}
+            {description?.trim() && <p className="line-clamp-4 whitespace-pre-line break-words text-sm text-muted-foreground">{description}</p>}
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-2">
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={submitting} className="h-12 gap-2">
-            <Pencil className="h-4 w-4" /> Voltar e editar
+        <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:gap-2">
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={submitting} className="h-12 w-full gap-2 sm:w-auto">
+            <Pencil className="h-4 w-4" /> Voltar / Editar
           </Button>
-          <Button type="button" onClick={onConfirm} disabled={submitting} aria-busy={submitting} className="h-12 gap-2 font-bold">
+          <Button type="button" onClick={onConfirm} disabled={submitting} aria-busy={submitting} className="h-12 w-full gap-2 font-bold sm:w-auto">
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            Enviar para Curadoria
+            Publicar / Enviar para Curadoria
           </Button>
         </DialogFooter>
       </DialogContent>

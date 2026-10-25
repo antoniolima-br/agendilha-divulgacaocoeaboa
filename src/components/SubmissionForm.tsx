@@ -809,6 +809,8 @@ export default function SubmissionForm({ initialValues }: { initialValues?: Part
         events={[form.watch(), ...form.watch("additionalEvents")].map((ev) => ({ title: ev.eventTitle || "", date: String(ev.date || ""), startTime: ev.startTime || "", endTime: ev.endTime || "" }))}
         location={form.watch("locationName") || ""}
         neighborhood={form.watch("addressNeighborhood") || ""}
+        category={(form.watch("category") as string | undefined) ?? ""}
+        description={(form.watch("description") as string | undefined) ?? ""}
         submitting={submitting}
         onConfirm={() => {
           reviewConfirmedRef.current = true;

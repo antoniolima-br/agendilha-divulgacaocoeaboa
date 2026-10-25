@@ -29,7 +29,7 @@ describe("SubmitReviewDialog", () => {
     const onConfirm = vi.fn();
     const onOpenChange = vi.fn();
     render(<SubmitReviewDialog {...base} onOpenChange={onOpenChange} onConfirm={onConfirm} />);
-    fireEvent.click(screen.getByRole("button", { name: /Voltar e editar/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Voltar \/ Editar/ }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(onConfirm).not.toHaveBeenCalled();
   });
