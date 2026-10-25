@@ -63,3 +63,10 @@ export const openingVideo = {
   markDone: () => { openingVideoDone = true; },
   reset: () => { openingVideoDone = false; },
 };
+
+/** Até três vídeos de abertura, tocados em sequência. O primeiro mantém a chave antiga. */
+export const HOME_VIDEO_KEYS = ["home_video_url", "home_video_url_2", "home_video_url_3"] as const;
+
+export function homeVideoPlaylist(settings: Record<string, string> | undefined): string[] {
+  return HOME_VIDEO_KEYS.map((k) => (settings?.[k] ?? "").trim()).filter((v) => parseHomeVideo(v) !== null);
+}

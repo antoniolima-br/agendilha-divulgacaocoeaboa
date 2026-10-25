@@ -4065,6 +4065,10 @@ export type Database = {
         Args: { p_cover: string; p_title: string; p_url: string }
         Returns: undefined
       }
+      set_home_video_slot: {
+        Args: { p_slot: number; p_url: string }
+        Returns: undefined
+      }
       set_user_pin: {
         Args: { current_password: string; new_pin: string }
         Returns: undefined
