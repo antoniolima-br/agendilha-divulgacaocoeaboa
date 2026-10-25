@@ -14,6 +14,7 @@ import { safeAdDestination } from "@/lib/advertising";
 import { useAppSettings } from "@/data/useAppSettings";
 import { useResolvedMediaUrl } from "@/lib/homeVideo";
 import { homePubliList, pickPubli } from "@/lib/homePubli";
+import defaultPubli from "@/assets/publi-coe-a-boa.jpg.asset.json";
 
 const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
@@ -94,11 +95,11 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   if (isCompact && total === 0) return null;
 
   if (total === 0) {
-    if (!curatedPubli) return null;
+    const publiSrc = curatedPubli || defaultPubli.url;
     return (
       <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
         <div className="m-0 overflow-hidden p-0">
-          <img src={curatedPubli} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
+          <img src={publiSrc} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
         </div>
       </section>
     );
