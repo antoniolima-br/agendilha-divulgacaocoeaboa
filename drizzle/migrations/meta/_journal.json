@@ -442,6 +442,13 @@
       "when": 1792959467411,
       "tag": "0062_home_video_slots",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1792961903358,
+      "tag": "0063_home_publi_slots",
+      "breakpoints": true
     }
   ]
 }
