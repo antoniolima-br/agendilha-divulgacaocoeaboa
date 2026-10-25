@@ -22,13 +22,15 @@ export default function AdminAprovarEventos() {
   const decision = useCurationDecision();
   const pending = useCuration(!loading && canApprove, "pending");
   const approved = useCuration(!loading && canApprove, "approved");
-  const currentApproved = (approved.data ?? []).filter((event) => isCurrentOrFutureEventDate(event.date));
+  const validEvents = (list: unknown): CurationEvent[] => (Array.isArray(list) ? list.filter((e): e is CurationEvent => !!e && typeof e.id === "string") : []);
+  const pendingList = validEvents(pending.data);
+  const currentApproved = validEvents(approved.data).filter((event) => !!event.date && isCurrentOrFutureEventDate(event.date));
 
   const [rejecting, setRejecting] = useState<CurationEvent | null>(null);
   const [reason, setReason] = useState("");
 
-  const decide = async (id: string, ok: boolean, why?: string) => {
-    if (decision.isPending) return false;
+  const decide = async (id: string | null | undefined, ok: boolean, why?: string) => {
+    if (decision.isPending || !id || !canApprove) return false;
     try {
       await decision.mutateAsync({ id, approve: ok, reason: why });
       toast.success(ok ? "Aprovado! Eventos atuais e futuros já aparecem na agenda." : "Evento rejeitado.");
