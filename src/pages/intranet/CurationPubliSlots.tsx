@@ -15,7 +15,7 @@ export function CurationPubliSlots() {
   const { data } = useAppSettings();
   return (
     <section className="mb-6 rounded-2xl border p-4">
-      <h2 className="text-lg font-semibold">Gerenciar Publicidade</h2>
+      <h2 className="text-lg font-semibold">Gerenciamento de Publicidade</h2>
       <p className="mb-4 text-sm text-muted-foreground">
         Imagens JPG ou PNG de até {MAX_MB} MB. A Home mostra uma delas no card PUBLI, trocando a cada nova visita.
       </p>
