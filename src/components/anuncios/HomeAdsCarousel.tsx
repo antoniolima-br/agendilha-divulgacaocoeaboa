@@ -97,8 +97,8 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
     if (!curatedPubli) return null;
     return (
       <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
-        <div className="overflow-hidden rounded-lg border bg-muted">
-          <img src={curatedPubli} alt="Publicidade" loading="lazy" className="block h-auto w-full" />
+        <div className="m-0 overflow-hidden p-0">
+          <img src={curatedPubli} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
         </div>
       </section>
     );
