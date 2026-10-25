@@ -155,7 +155,7 @@ function AgendaCulturalInner() {
           onCopyLink={() => handleCopyLink(getShareUrl())}
           onExportPdf={async () => {
             const { exportEditorialAgendaPdf } = await import("@/lib/pdfExport");
-            await exportEditorialAgendaPdf(filters.upcomingEvents, "Agenda Cultural da Ilha");
+            await exportEditorialAgendaPdf(filters.upcomingEvents, "Agenda Cultural do Rio");
             toast.success("PDF da agenda gerado!");
           }}
         />

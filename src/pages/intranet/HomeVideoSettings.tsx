@@ -90,7 +90,7 @@ export function HomeVideoSettings() {
       </div>
 
       <div className="space-y-1"><Label htmlFor="hv-title">Frase da capa</Label>
-        <Input id="hv-title" value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} placeholder="O que tá rolando na Ilha" /></div>
+        <Input id="hv-title" value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} placeholder="O que tá rolando no Rio" /></div>
 
       <Button onClick={() => save.mutate()} disabled={invalid || save.isPending || !!uploading}>{save.isPending ? "Salvando…" : "Salvar"}</Button>
     </section>

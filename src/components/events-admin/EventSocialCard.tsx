@@ -70,7 +70,7 @@ export function EventSocialCard({ sub }: EventSocialCardProps) {
               <p className="text-[10px] font-bold opacity-80 leading-tight">Escaneie para<br/>ver detalhes</p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-black italic tracking-tighter text-amber-500">#CoéABoaIlha</p>
+              <p className="text-sm font-black italic tracking-tighter text-amber-500">#CoéABoaRio</p>
               <p className="text-[10px] font-mono opacity-50">agendilha.com.br</p>
             </div>
           </div>

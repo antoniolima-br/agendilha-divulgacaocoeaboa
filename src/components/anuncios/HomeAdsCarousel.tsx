@@ -90,10 +90,10 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
 
   if (total === 0) {
     return (
-      <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}>
+      <section className={isBanner ? "mb-4" : "mb-12"} aria-label={isBanner ? "Espaço publicitário" : "Anúncios do Rio"}>
         <div className="rounded-lg border border-dashed p-6 text-center">
           <Badge variant="outline" className="mb-2 text-[10px] font-semibold uppercase tracking-normal">Publi</Badge>
-          <p className="font-semibold">Espaço para parceiros da Ilha</p>
+          <p className="font-semibold">Espaço para parceiros do Rio</p>
           <p className="mt-1 text-sm text-muted-foreground">Novidades e ofertas aparecem por aqui.</p>
         </div>
       </section>
@@ -115,11 +115,11 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   };
 
   return (
-    <section className={isCompact ? "" : isBanner ? "mb-4" : "mb-12"} aria-label={isBanner || isCompact ? "Espaço publicitário" : "Anúncios da Ilha"}>
+    <section className={isCompact ? "" : isBanner ? "mb-4" : "mb-12"} aria-label={isBanner || isCompact ? "Espaço publicitário" : "Anúncios do Rio"}>
       {!isCompact && <div className="mb-5 flex min-w-0 items-center justify-between gap-3 sm:mb-6">
         <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
           <ShoppingBag className="h-5 w-5 text-primary" />
-          {isBanner ? "Espaço publicitário" : "Anúncios da Ilha"}
+          {isBanner ? "Espaço publicitário" : "Anúncios do Rio"}
         </h2>
         <Button asChild variant="link" className="shrink-0 px-1 font-bold sm:px-0">
           <Link to="/anuncios">Ver todos</Link>

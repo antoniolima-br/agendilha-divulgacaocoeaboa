@@ -85,7 +85,7 @@ export function TermosPage() {
         },
         {
           heading: "Revisão antes de publicar",
-          body: "Todo evento passa por revisão da equipe antes de aparecer na agenda. Podemos ajustar textos, recusar ou remover conteúdo enganoso, ofensivo, ilegal ou fora do escopo cultural da Ilha.",
+          body: "Todo evento passa por revisão da equipe antes de aparecer na agenda. Podemos ajustar textos, recusar ou remover conteúdo enganoso, ofensivo, ilegal ou fora do escopo cultural do Rio.",
         },
         {
           heading: "Conta e acesso",

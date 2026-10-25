@@ -509,7 +509,7 @@ export function RegistrationFlow({ onComplete }: { onComplete: () => void }) {
           />
           <div className="grid gap-1.5 leading-tight">
             <label htmlFor="opt-in-whatsapp" className="text-sm font-bold cursor-pointer">
-              Fique por dentro da Ilha
+              Fique por dentro do Rio
             </label>
             <p className="text-[10px] text-muted-foreground">
               Autorizo o envio de notificações, sugestões de eventos personalizadas e a agenda cultural semanal diretamente no meu WhatsApp.

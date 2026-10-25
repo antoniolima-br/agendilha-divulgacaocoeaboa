@@ -24,7 +24,7 @@ export function buildBulkWhatsAppMessage(events: Submission[]): string {
   const formatBR = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
   const highlights = events.filter(e => e.is_highlight);
   const lines: string[] = [
-    `🌴 *COÉ A BOA?* - O que tem de bom na Ilha?`,
+    `🌴 *COÉ A BOA?* - O que tem de bom no Rio?`,
     `📅 Semana de ${formatBR(start)} a ${formatBR(endOfWeek)}`,
     ``,
   ];

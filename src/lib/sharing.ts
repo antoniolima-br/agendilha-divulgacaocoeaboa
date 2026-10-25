@@ -19,7 +19,7 @@ export const getEventOgShareUrl = (slug: string) => {
 export const getShareData = (ev?: ShareableEvent) => {
   const isAgenda = !ev;
   const eventTitle = ev?.event_title || "Evento";
-  const title = isAgenda ? "Agenda Cultural da Ilha" : `Evento: ${eventTitle}`;
+  const title = isAgenda ? "Agenda Cultural do Rio" : `Evento: ${eventTitle}`;
   const url = getShareUrl(ev?.id);
   
   if (!ev) {

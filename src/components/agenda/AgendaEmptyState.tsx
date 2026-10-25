@@ -19,7 +19,7 @@ export function AgendaEmptyState({
         <CalendarDays className="h-10 w-10 text-muted-foreground/70" />
       </div>
       <h3 className="mb-3 text-xl font-semibold text-foreground">
-        A Ilha está descansando...
+        A cidade tá descansando...
       </h3>
       <p className="mx-auto mb-6 max-w-md text-base leading-relaxed text-muted-foreground">
         {hasFilters

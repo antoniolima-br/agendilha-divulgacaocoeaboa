@@ -337,7 +337,7 @@ function ExplorarInner() {
 
       <section className="pt-24 sm:pt-32 pb-10 px-4 max-w-6xl mx-auto">
         <SeoHead
-          title={isArchive ? "Eventos anteriores — arquivo | Coé a Boa?" : "Buscar rolê na Ilha — agenda completa | Coé a Boa?"}
+          title={isArchive ? "Eventos anteriores — arquivo | Coé a Boa?" : "Buscar rolê no Rio — agenda completa | Coé a Boa?"}
           description={isArchive ? "Relembre os eventos que já rolaram no Rio de Janeiro." : "Explore a agenda completa do Rio de Janeiro: filtre eventos por data e categoria e ache o rolê certo pra hoje ou pro fim de semana."}
           path="/explorar"
         />
@@ -346,7 +346,7 @@ function ExplorarInner() {
             <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-secondary">{isArchive ? "Arquivo" : "Agenda completa"}</span>
           </div>
           <h1 className="mb-4 text-balance font-display text-2xl font-bold leading-tight sm:text-4xl sm:leading-[1.05] lg:text-6xl">
-            {isArchive ? "Eventos anteriores" : <>Buscar rolê <span className="text-secondary">na Ilha</span></>}
+            {isArchive ? "Eventos anteriores" : <>Buscar rolê <span className="text-secondary">no Rio</span></>}
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto text-balance leading-relaxed">
             {isArchive ? "Os rolês que já aconteceram ficam guardados aqui." : "Filtre por data e categoria pra encontrar o evento certo."}

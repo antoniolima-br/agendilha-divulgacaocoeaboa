@@ -111,7 +111,7 @@ export default function ArtistProfile() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <SeoHead
-        title={`${artist.name} — Atrativo na Ilha | Coé a Boa?`}
+        title={`${artist.name} — Atrativo no Rio | Coé a Boa?`}
         description={
           (artist.bio as string | null)?.trim() ||
           `Conheça ${artist.name}${artist.genre ? ` (${artist.genre})` : ""}, atrativo do Rio de Janeiro, e veja os próximos shows na agenda do Coé a Boa?.`

@@ -45,6 +45,7 @@ import logo from "@/assets/coeaboa-logo.webp";
 import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
 import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
+import { activePlacePhrase, radarDefaultRegion, radarRegionOnce } from "@/lib/activePlace";
 import { HomeVideoHighlight } from "@/components/home/HomeVideoHighlight";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
@@ -352,6 +353,14 @@ export default function Landing() {
   const setHomeCat = (category: string) => setGlobalFilters({ category });
   const setHomeNbh = (neighborhood: string) => setGlobalFilters({ neighborhood });
   const homeBairros = REGIONS;
+  // Meu Radar: se a pessoa segue uma região e ainda não escolheu nenhuma, a Home abre nela (uma vez por abertura).
+  useEffect(() => {
+    if (!profileLoaded || !radarRegionOnce.pending()) return;
+    radarRegionOnce.done();
+    const radarRegion = radarDefaultRegion(profile?.followed_regions);
+    if (radarRegion && homeBairro === "all") setHomeBairro(radarRegion);
+  }, [profileLoaded, profile?.followed_regions]); // eslint-disable-line react-hooks/exhaustive-deps
+  const placePhrase = activePlacePhrase(homeBairro, homeNbh);
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
   const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
   const regionNbhs = useMemo(() => homeBairro === "all" ? [] :
@@ -388,7 +397,16 @@ export default function Landing() {
              <ChevronRight className="h-4 w-4" />
            </Button>
          </nav>}
-         <HomeVideoHighlight />
+         <HomeVideoHighlight placePhrase={placePhrase} />
+         <div className="mx-auto flex w-full max-w-screen-lg items-center justify-between gap-2 px-4 pt-3 sm:px-6">
+           <p className="flex min-w-0 items-center gap-1.5 font-display text-sm font-bold text-foreground">
+             <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">Rolês {placePhrase}</span>
+           </p>
+           <Button variant="ghost" size="sm" className="h-11 shrink-0 font-bold text-primary"
+             onClick={() => document.getElementById("filtros-local")?.scrollIntoView({ behavior: "smooth", block: "center" })}>
+             Trocar local
+           </Button>
+         </div>
          <section aria-label="Destaque para você" className="mx-auto w-full max-w-screen-lg space-y-6 px-4 pt-4 sm:space-y-8 sm:px-6">
            <HomeAdsCarousel variant="compact" region={globalFilters.region} />
            <h2 className="font-display text-sm font-bold uppercase tracking-[0.12em] text-foreground">Destaque para você</h2>
@@ -402,7 +420,7 @@ export default function Landing() {
 
        <section className="mx-auto w-full max-w-screen-lg px-4 pb-16 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
          {/* Filtros Local / Categoria */}
-         <div className="mb-8 grid grid-cols-2 gap-3" aria-label="Filtros de local e categoria">
+         <div id="filtros-local" className="mb-8 grid scroll-mt-32 grid-cols-2 gap-3" aria-label="Filtros de local e categoria">
            <Select value={homeBairro} onValueChange={setHomeBairro}>
              <SelectTrigger aria-label="Filtrar por local" className="h-16 min-w-0 gap-1 rounded-lg border-primary/70 bg-card/60 px-3 font-display text-xs font-bold uppercase text-primary sm:h-11 sm:text-sm">
                <span className="flex min-w-0 flex-1 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2"><span className="flex shrink-0 items-center gap-1 text-foreground/70"><MapPin className="h-4 w-4 shrink-0" />Local:</span><span className="block min-w-0 w-full truncate sm:w-auto"><SelectValue /></span></span>
@@ -678,7 +696,7 @@ export default function Landing() {
         {false && (
                 <section className="mb-12 flex flex-col items-center justify-between gap-6 rounded-3xl border border-secondary/10 bg-secondary/5 p-5 sm:mb-16 sm:flex-row sm:p-8">
           <div className="text-center sm:text-left">
-            <h3 className="text-xl font-bold mb-2">Explore a Ilha no mapa</h3>
+            <h3 className="text-xl font-bold mb-2">Explore o Rio no mapa</h3>
             <p className="text-muted-foreground text-sm">Estabelecimentos, shows e pontos culturais no Rio de Janeiro.</p>
           </div>
           <Button 

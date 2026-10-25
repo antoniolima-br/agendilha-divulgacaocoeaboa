@@ -8,12 +8,12 @@ import logo from "@/assets/coeaboa-logo.webp";
  * Vídeo de abertura: toca uma vez quando o app é aberto ou atualizado.
  * Quando termina ou a pessoa pula, dá lugar à capa estática (também nas navegações seguintes).
  */
-export function HomeVideoHighlight() {
+export function HomeVideoHighlight({ placePhrase = "no Rio" }: { placePhrase?: string }) {
   const { data } = useAppSettings();
   const source = parseHomeVideo(data?.home_video_url);
   const { data: fileSrc } = useResolvedMediaUrl(source?.kind === "file" ? source.src : "");
   const { data: cover } = useResolvedMediaUrl(data?.home_video_cover_url);
-  const title = (data?.home_video_title ?? "").trim() || "O que tá rolando na Ilha";
+  const title = (data?.home_video_title ?? "").trim() || `O que tá rolando ${placePhrase}`;
   const [showVideo, setShowVideo] = useState(openingVideo.shouldPlay);
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(false);
