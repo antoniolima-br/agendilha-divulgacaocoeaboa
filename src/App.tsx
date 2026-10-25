@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFound";
 // Lazy-loaded routes (code-split)
 const Auth = lazy(() => import("./pages/Auth"));
 const IntranetPortal = lazy(() => import("./pages/intranet/IntranetPortal"));
+const PartnerAccessPage = lazy(() => import("./pages/intranet/PartnerAccessPage"));
 const CampaignRedirect = lazy(() => import("./pages/intranet/CampaignRedirect"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
@@ -214,6 +215,7 @@ export const AppRoutes = () => {
     <SectionErrorBoundary context="AppRoutes">
       <Suspense fallback={<PageFallback />}>
         <Routes>
+        <Route path={ROUTES.INTRANET_ACESSOS} element={<ProtectedRoute><PartnerAccessPage /></ProtectedRoute>} />
         <Route path={ROUTES.INTRANET} element={<ProtectedRoute><IntranetPortal /></ProtectedRoute>} />
         <Route path={ROUTES.INTRANET_SECTOR} element={<ProtectedRoute><IntranetPortal /></ProtectedRoute>} />
         <Route path={ROUTES.CAMPAIGN_LINK} element={<CampaignRedirect />} />
