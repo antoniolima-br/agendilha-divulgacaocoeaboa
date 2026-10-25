@@ -47,21 +47,21 @@ export function HomeVideoHighlight({ placePhrase = "no Rio" }: { placePhrase?: s
         )}
 
         {playing && (
-          <div className="absolute right-2 top-2 z-10 flex gap-2">
+          <div className="absolute right-1.5 top-1.5 z-10 flex items-center gap-1">
             {playlist.length > 1 && (
-              <span className="flex h-11 items-center rounded-full bg-background/85 px-3 text-xs font-bold text-foreground shadow" aria-live="polite">
+              <span className="flex h-6 items-center rounded-full bg-background/70 px-2 text-[10px] font-semibold leading-none backdrop-blur-sm text-foreground shadow" aria-live="polite">
                 {index + 1}/{playlist.length}
               </span>
             )}
             {index + 1 < playlist.length && (
               <button type="button" onClick={next} aria-label="Próximo vídeo"
-                className="flex h-11 items-center gap-1 rounded-full bg-background/85 px-3 text-sm font-bold text-foreground shadow">
-                Próximo <SkipForward className="h-4 w-4" />
+                className="!min-h-0 flex h-6 items-center gap-0.5 rounded-full bg-background/70 px-2 text-[10px] font-semibold leading-none text-foreground backdrop-blur-sm">
+                Próximo <SkipForward className="h-3 w-3" />
               </button>
             )}
             <button type="button" onClick={finish} aria-label="Pular vídeos"
-              className="flex h-11 items-center gap-1 rounded-full bg-background/85 px-4 text-sm font-bold text-foreground shadow">
-              Pular <X className="h-4 w-4" />
+              className="!min-h-0 flex h-6 items-center gap-0.5 rounded-full bg-background/70 px-2 text-[10px] font-semibold leading-none text-foreground backdrop-blur-sm">
+              Pular <X className="h-3 w-3" />
             </button>
           </div>
         )}
@@ -84,7 +84,7 @@ function OpeningClip({ raw, title, onReady, onEnd }: { raw: string; title: strin
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => { if (isError) onEnd(); }, [isError]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!source) return null;
-  const btn = "flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow";
+  const btn = "!min-h-0 flex h-7 w-7 items-center justify-center rounded-full bg-background/70 text-foreground backdrop-blur-sm";
 
   if (source.kind !== "file") {
     return <iframe src={source.embed} title={title} onLoad={onReady}
@@ -96,12 +96,12 @@ function OpeningClip({ raw, title, onReady, onEnd }: { raw: string; title: strin
     <>
       <video ref={ref} src={fileSrc} autoPlay muted={muted} playsInline preload="auto"
         onCanPlay={onReady} onEnded={onEnd} onError={onEnd} className="h-full w-full object-cover" />
-      <div className="absolute bottom-3 right-3 flex gap-2">
+      <div className="absolute bottom-1.5 right-1.5 flex gap-1">
         <button type="button" onClick={toggle} aria-label={paused ? "Tocar vídeo" : "Pausar vídeo"} className={btn}>
-          {paused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+          {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
         </button>
         <button type="button" onClick={() => setMuted((m) => !m)} aria-label={muted ? "Ligar som" : "Desligar som"} className={btn}>
-          {muted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+          {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
         </button>
       </div>
     </>
