@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { activeAccessRole, administrativeRole, canOrganize, isAdministrativeRole } from "./access";
 import { computePermissions } from "@/hooks/useAppPermissions";
-import { filterSidebarSections, type SidebarItem } from "@/components/layout/sidebarItems";
+import { filterSidebarSections, sidebarConfig, governanceConfig, type SidebarItem } from "@/components/layout/sidebarItems";
 import { ROUTE_PERMISSIONS } from "@/routes/access";
 import { ROUTES, routeExists } from "@/routes/config";
 
 function menu(roles: string[], signedIn = true) {
   const { permissions } = computePermissions({ roleNames: roles, collaborator: null, profileRole: roles.includes("promoter") ? "divulgador" : null });
-  const sections = filterSidebarSections(activeAccessRole(signedIn, roles), (p) => permissions.has(p), routeExists);
+  const sections = filterSidebarSections(activeAccessRole(signedIn, roles), (p) => permissions.has(p), routeExists, [...sidebarConfig, ...governanceConfig]);
   const flatten = (items: SidebarItem[]): SidebarItem[] => items.flatMap((item) => [item, ...flatten(item.children ?? [])]);
   return sections.flatMap((section) => flatten(section.items));
 }

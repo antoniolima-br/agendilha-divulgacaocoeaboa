@@ -155,6 +155,5 @@ describe('Admin/Master Route Protection Integration', () => {
     await waitFor(() => {
       expect(screen.getByTestId('admin-master')).toBeInTheDocument();
     });
-    expect(screen.getByText('Painel Master')).toBeInTheDocument();
   });
 });

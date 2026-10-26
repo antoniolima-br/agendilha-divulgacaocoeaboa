@@ -167,7 +167,7 @@ describe("Landing sem dados", () => {
     await waitFor(() => {
       expect(screen.getByText("Nenhuma outra programação disponível agora. Confira novamente em breve.")).toBeInTheDocument();
     });
-    expect(screen.getByText("Ainda não temos sugestões personalizadas")).toBeInTheDocument();
+    expect(screen.getByText("Ainda sem sugestões pra você")).toBeInTheDocument();
   });
 
   it("mostra estado vazio quando a consulta devolve null", async () => {
