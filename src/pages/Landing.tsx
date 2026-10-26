@@ -639,82 +639,65 @@ export default function Landing() {
 
 
         {/* Newsletter / Public Registration */}
-        <section className="mb-8">
-          <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-card p-4 sm:p-6">
+        <section className="mb-4">
+          <div className="relative overflow-hidden rounded-xl border border-primary/25 bg-card p-3 sm:p-4">
             <div className="absolute -right-20 -top-20 h-64 w-64 bg-secondary/20 rounded-full blur-3xl" />
             <div className="relative z-10 max-w-2xl">
-               <h2 className="mb-1 font-display text-lg font-black sm:text-2xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
-              <p className="mb-3 text-sm text-muted-foreground">
-                Toda semana, uma curadoria imperdível com o que está rolando de norte a sul — direto no seu Zap.
-              </p>
-              <form onSubmit={handleNewsletterSubscribe} className="space-y-2.5">
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <div className="space-y-1">
-                    <Input 
-                      aria-label="Seu nome"
-                      placeholder="Seu nome" 
-                      value={subscriberName}
-                      onChange={(e) => setSubscriberName(e.target.value)}
-                      className="h-11 rounded-xl border-border bg-background px-3.5 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Input 
-                      aria-label="WhatsApp com DDD"
-                      type="tel" 
-                      placeholder="WhatsApp (DDD + Número)" 
-                      value={subscriberPhone}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, "");
-                        if (val.length <= 11) setSubscriberPhone(val);
-                      }}
-                      required
-                      className="h-11 rounded-xl border-border bg-background px-3.5 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
-                    />
-                  </div>
+              <h2 className="font-display text-base font-black leading-tight sm:text-xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
+              <p className="mb-2 truncate text-xs text-muted-foreground">Curadoria semanal do que tá rolando, direto no seu Zap.</p>
+              <form onSubmit={handleNewsletterSubscribe} className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    aria-label="Seu nome"
+                    placeholder="Seu nome"
+                    value={subscriberName}
+                    onChange={(e) => setSubscriberName(e.target.value)}
+                    className="h-10 min-w-0 rounded-lg border-border bg-background px-3 text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-primary sm:text-sm"
+                  />
+                  <Input
+                    aria-label="WhatsApp com DDD"
+                    type="tel"
+                    placeholder="WhatsApp (DDD)"
+                    value={subscriberPhone}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "");
+                      if (val.length <= 11) setSubscriberPhone(val);
+                    }}
+                    required
+                    className="h-10 min-w-0 rounded-lg border-border bg-background px-3 text-base text-foreground placeholder:text-muted-foreground focus-visible:ring-primary sm:text-sm"
+                  />
                 </div>
                 <NotificationPreferences geographies={subscriberGeographies} onGeographiesChange={setSubscriberGeographies} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
-                <fieldset className="space-y-1">
-                  <legend className="text-xs font-semibold text-foreground">Horário preferido <span className="font-normal text-muted-foreground">(opcional)</span></legend>
-                  <div className="flex flex-wrap gap-1.5">
-                    {TIME_PREFERENCES.map((t) => {
-                      const on = subscriberTimes.includes(t.id);
-                      return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
-                        onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
-                        className={cn("h-8 rounded-md border px-3 text-xs font-semibold transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
-                    })}
-                  </div>
+                <fieldset className="flex flex-wrap items-center gap-1.5">
+                  <legend className="sr-only">Horário preferido (opcional)</legend>
+                  <span aria-hidden="true" className="text-xs font-semibold text-foreground">Horário:</span>
+                  {TIME_PREFERENCES.map((t) => {
+                    const on = subscriberTimes.includes(t.id);
+                    return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
+                      onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
+                      className={cn("h-7 rounded-md border px-2.5 text-xs font-semibold transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
+                  })}
                 </fieldset>
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="flex flex-col justify-end">
-                    <div className="flex items-start gap-2 rounded-lg border border-border bg-background px-2.5 py-2 sm:border-0 sm:bg-transparent sm:p-0">
-                      <input 
-                        type="checkbox" 
-                        id="whatsapp-consent-landing" 
-                        checked={whatsappConsent}
-                        onChange={(e) => setWhatsappConsent(e.target.checked)}
-                    className="relative mt-0.5 h-5 w-5 shrink-0 rounded border-border text-primary after:absolute after:-inset-3 after:content-[''] focus:ring-primary accent-primary"
-                      />
-                      <label htmlFor="whatsapp-consent-landing" className="cursor-pointer break-words text-xs font-medium leading-snug text-foreground">
-                        Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
-                      </label>
-                    </div>
-                  </div>
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="whatsapp-consent-landing"
+                    checked={whatsappConsent}
+                    onChange={(e) => setWhatsappConsent(e.target.checked)}
+                    className="relative mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary after:absolute after:-inset-3 after:content-[''] focus:ring-primary accent-primary"
+                  />
+                  <label htmlFor="whatsapp-consent-landing" className="cursor-pointer break-words text-xs font-medium leading-snug text-foreground">
+                    Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
+                  </label>
                 </div>
-                <div>
-                  <Button 
-                    type="submit" 
-                    disabled={isSubscribing}
-                    className="w-full h-11 rounded-xl font-semibold text-base tracking-tight bg-foreground hover:bg-secondary text-background shadow-card flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
-                  >
-                    {isSubscribing ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      <MessageCircle className="h-6 w-6 fill-white" />
-                    )}
-                    {isSubscribing ? "Cadastrando..." : "Cadastrar"}
-                  </Button>
-                </div>
+                <Button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="w-full h-10 rounded-lg font-semibold text-sm tracking-tight bg-foreground hover:bg-secondary text-background shadow-card flex items-center justify-center gap-2"
+                >
+                  {isSubscribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-5 w-5 fill-white" />}
+                  {isSubscribing ? "Cadastrando..." : "Cadastrar"}
+                </Button>
               </form>
             </div>
           </div>
