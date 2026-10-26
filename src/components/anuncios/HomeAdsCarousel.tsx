@@ -98,7 +98,7 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
     const publiSrc = curatedPubli || defaultPubli.url;
     return (
       <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
-        <div className="m-0 overflow-hidden p-0">
+        <div className="m-0 ml-[calc(50%-50vw)] w-screen overflow-hidden p-0 sm:ml-0 sm:w-full">
           <img src={publiSrc} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
         </div>
       </section>
