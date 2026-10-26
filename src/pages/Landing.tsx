@@ -378,30 +378,30 @@ export default function Landing() {
     <div className="theme-coeaboa home-action-clarity min-h-screen bg-background text-foreground antialiased font-body selection:bg-primary/15 selection:text-primary">
       <Header />
 
-       {/* ── Faixa de dias ── */}
        <div style={{ paddingTop: headerH }}>
-         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-2 sm:px-6">
-           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-11 w-11 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
-             <ChevronLeft className="h-4 w-4" />
+         <HomeVideoHighlight placePhrase={placePhrase} />
+         {/* ── Faixa de dias (logo abaixo dos vídeos) ── */}
+         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-1 sm:px-6">
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-8 w-8 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
+             <ChevronLeft className="h-3.5 w-3.5" />
            </Button>
-           <div className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
+           <div className="flex min-w-0 flex-1 snap-x snap-mandatory gap-0.5 overflow-x-auto overscroll-x-contain scroll-smooth touch-pan-x [-webkit-overflow-scrolling:touch]">
              {dayStrip.days.map((dayStr) => {
                const day = parseISO(dayStr);
                const isSel = (carouselDate || globalFilters.date || todayStr) === dayStr;
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
-                   className={cn("h-11 min-w-14 flex-1 flex-col gap-0 rounded-lg px-0.5 py-1 transition-colors", isSel ? "btn-gold shadow-md" : "text-muted-foreground hover:text-foreground")}>
-                    <span className="text-[10px] font-bold uppercase leading-none sm:text-xs">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
-                   <span className="mt-0.5 text-xs font-black leading-none sm:text-sm">{format(day, "dd/MM")}</span>
+                   className={cn("h-9 min-w-12 flex-1 snap-start flex-col gap-0 rounded-md px-0.5 py-0.5 transition-colors", isSel ? "btn-gold shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+                   <span className="text-[9px] font-bold uppercase leading-none sm:text-[11px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
+                   <span className="mt-0.5 text-[11px] font-black leading-none sm:text-xs">{format(day, "dd/MM")}</span>
                  </Button>
                );
              })}
            </div>
-           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-11 w-11 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
-             <ChevronRight className="h-4 w-4" />
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-8 w-8 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
+             <ChevronRight className="h-3.5 w-3.5" />
            </Button>
          </nav>}
-         <HomeVideoHighlight placePhrase={placePhrase} />
          <div className="mx-auto flex w-full max-w-screen-lg items-center justify-between gap-2 px-4 pt-3 sm:px-6">
            <p className="flex min-w-0 items-center gap-1.5 font-display text-sm font-bold text-foreground">
              <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">{homeBairro === "all" && (!homeNbh || homeNbh === "all") ? "Rolês em Todas as Regiões" : `Rolês ${placePhrase}`}</span>
