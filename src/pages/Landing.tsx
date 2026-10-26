@@ -385,8 +385,8 @@ export default function Landing() {
        <div style={{ paddingTop: headerH }}>
          <HomeVideoHighlight placePhrase={placePhrase} />
          {/* ── Faixa de dias (logo abaixo dos vídeos) ── */}
-         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-0.5 px-1.5 py-0.5 sm:px-6">
-           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-7 w-4 shrink-0 rounded-full p-0 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
+         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-1.5 py-1 sm:px-6">
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-9 w-5 shrink-0 self-center rounded-full p-0 text-muted-foreground hover:text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
              <ChevronLeft className="h-2.5 w-2.5" />
            </Button>
            <div className="flex min-w-0 flex-1 snap-x snap-mandatory gap-0.5 overflow-x-auto overscroll-x-contain scroll-smooth touch-pan-x [-webkit-overflow-scrolling:touch]">
@@ -395,13 +395,13 @@ export default function Landing() {
                const isSel = (carouselDate || globalFilters.date || todayStr) === dayStr;
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
-                   className={cn("h-7 min-w-11 flex-1 snap-start flex-row items-center justify-center gap-1 rounded-full px-1 py-0 transition-colors", isSel ? "btn-gold shadow-sm" : "text-muted-foreground hover:text-foreground")}>
-                   <span className="text-[10px] font-bold capitalize leading-none sm:text-[11px]">{format(day, "EEE", { locale: ptBR }).replace(".", "")}</span><span className="text-[11px] font-black leading-none tabular-nums sm:text-xs">{format(day, "dd")}</span>
+                   className={cn("h-9 min-w-11 flex-1 snap-start flex-col items-center justify-center gap-0.5 rounded-xl border px-1 py-0 transition-all duration-200", isSel ? "btn-gold border-transparent shadow-md ring-1 ring-primary/40" : "border-border/50 bg-card/40 text-muted-foreground backdrop-blur-sm hover:border-primary/40 hover:text-foreground")}>
+                   <span className="text-[8px] font-semibold uppercase leading-none tracking-[0.12em] opacity-80 sm:text-[9px]">{format(day, "EEE", { locale: ptBR }).replace(".", "")}</span><span className="font-display text-sm font-black leading-none tabular-nums sm:text-base">{format(day, "dd")}</span>
                  </Button>
                );
              })}
            </div>
-           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-7 w-4 shrink-0 rounded-full p-0 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-9 w-5 shrink-0 self-center rounded-full p-0 text-muted-foreground hover:text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
              <ChevronRight className="h-2.5 w-2.5" />
            </Button>
          </nav>}

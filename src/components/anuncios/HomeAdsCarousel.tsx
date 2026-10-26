@@ -14,7 +14,7 @@ import { safeAdDestination } from "@/lib/advertising";
 import { useAppSettings } from "@/data/useAppSettings";
 import { useResolvedMediaUrl } from "@/lib/homeVideo";
 import { DEFAULT_PUBLI_MESSAGE, pickPubliSlot } from "@/lib/homePubli";
-import defaultPubli from "@/assets/publi-coe-a-boa.jpg.asset.json";
+import defaultPubliSrc from "@/assets/publi-cervejaria.jpg";
 import coeLogo from "@/assets/coeaboa-logo.webp";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { SETTING_KEYS, settingOr } from "@/data/useAppSettings";
@@ -101,7 +101,7 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   if (isCompact && total === 0) return null;
 
   if (total === 0) {
-    const publiSrc = curatedPubli || defaultPubli.url;
+    const publiSrc = curatedPubli || defaultPubliSrc;
     const team = settingOr(settings, SETTING_KEYS.teamWhatsapp);
     const publiHref = (team && buildWhatsappUrl(team, publiMessage)) || `https://wa.me/?text=${encodeURIComponent(publiMessage)}`;
     return (
@@ -113,10 +113,13 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
           aria-label="Quero anunciar no Coé a Boa? — falar no WhatsApp"
           className="relative m-0 ml-[calc(50%-50vw)] block w-screen overflow-hidden p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:ml-0 sm:w-full"
         >
-          <img src={publiSrc} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
-          <img src={coeLogo} alt="Coé a Boa?" className="absolute left-2 top-2 h-9 w-9 rounded-lg shadow-md ring-1 ring-background/40 sm:left-3 sm:top-3 sm:h-12 sm:w-12" />
-          <span className="absolute right-2 top-2 rounded-full bg-background/75 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-foreground backdrop-blur-sm sm:right-3 sm:top-3 sm:text-xs">
+          <img src={publiSrc} alt="Publicidade" loading="lazy" width={1536} height={512} className="block aspect-[3/1] w-full max-w-none object-cover sm:aspect-[4/1]" />
+          <img src={coeLogo} alt="Coé a Boa?" className="absolute left-2 top-2 h-7 w-7 rounded-md shadow-md ring-1 ring-background/40 sm:left-3 sm:top-3 sm:h-10 sm:w-10" />
+          <span className="absolute right-2 top-2 rounded-full bg-background/75 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-foreground backdrop-blur-sm sm:right-3 sm:top-3 sm:text-xs">
             Fase de testes · condição especial
+          </span>
+          <span className="absolute bottom-2 right-2 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-md sm:bottom-3 sm:right-3 sm:text-xs">
+            Anuncie aqui · WhatsApp
           </span>
         </a>
       </section>
