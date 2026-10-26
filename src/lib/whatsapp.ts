@@ -30,7 +30,7 @@ export function validateBrazilianMobile(
   phone: string | null | undefined, 
   strict: boolean = true
 ): PhoneValidation {
-  let rawInput = (phone ?? "").trim();
+  const rawInput = (phone ?? "").trim();
   let d = onlyDigits(rawInput);
   
   if (!d) return { valid: false, reason: "Informe o número do WhatsApp." };
