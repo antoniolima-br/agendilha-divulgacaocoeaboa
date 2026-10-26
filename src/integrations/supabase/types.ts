@@ -4061,6 +4061,10 @@ export type Database = {
           tipos: string[]
         }[]
       }
+      set_home_publi_message: {
+        Args: { p_message: string; p_slot: number }
+        Returns: undefined
+      }
       set_home_publi_slot: {
         Args: { p_slot: number; p_url: string }
         Returns: undefined
