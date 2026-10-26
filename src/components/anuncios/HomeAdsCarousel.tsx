@@ -15,6 +15,11 @@ import { useAppSettings } from "@/data/useAppSettings";
 import { useResolvedMediaUrl } from "@/lib/homeVideo";
 import { homePubliList, pickPubli } from "@/lib/homePubli";
 import defaultPubli from "@/assets/publi-coe-a-boa.jpg.asset.json";
+import coeLogo from "@/assets/coeaboa-logo.webp";
+import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { SETTING_KEYS, settingOr } from "@/data/useAppSettings";
+
+const PUBLI_MESSAGE = "Olá! Gostaria de anunciar no Coé a Boa?";
 
 const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
@@ -96,11 +101,23 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
 
   if (total === 0) {
     const publiSrc = curatedPubli || defaultPubli.url;
+    const team = settingOr(settings, SETTING_KEYS.teamWhatsapp);
+    const publiHref = (team && buildWhatsappUrl(team, PUBLI_MESSAGE)) || `https://wa.me/?text=${encodeURIComponent(PUBLI_MESSAGE)}`;
     return (
       <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
-        <div className="m-0 ml-[calc(50%-50vw)] w-screen overflow-hidden p-0 sm:ml-0 sm:w-full">
+        <a
+          href={publiHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Quero anunciar no Coé a Boa? — falar no WhatsApp"
+          className="relative m-0 ml-[calc(50%-50vw)] block w-screen overflow-hidden p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:ml-0 sm:w-full"
+        >
           <img src={publiSrc} alt="Publicidade" loading="lazy" className="block h-auto w-full max-w-none" />
-        </div>
+          <img src={coeLogo} alt="Coé a Boa?" className="absolute left-2 top-2 h-9 w-9 rounded-lg shadow-md ring-1 ring-background/40 sm:left-3 sm:top-3 sm:h-12 sm:w-12" />
+          <span className="absolute right-2 top-2 rounded-full bg-background/75 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-foreground backdrop-blur-sm sm:right-3 sm:top-3 sm:text-xs">
+            Fase de testes · condição especial
+          </span>
+        </a>
       </section>
     );
   }
