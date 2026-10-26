@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS preferred_times text[] NOT NULL DEFAULT '{}'::text[];
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_preferred_times_allowed CHECK (preferred_times <@ ARRAY['manha','tarde','noite','madrugada']::text[]);

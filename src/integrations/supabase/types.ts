@@ -2333,6 +2333,7 @@ export type Database = {
           notification_frequency: string | null
           onboarding_completed: boolean | null
           phone: string | null
+          preferred_times: string[]
           push_notifications_enabled: boolean | null
           responsible_name: string | null
           role: string | null
@@ -2373,6 +2374,7 @@ export type Database = {
           notification_frequency?: string | null
           onboarding_completed?: boolean | null
           phone?: string | null
+          preferred_times?: string[]
           push_notifications_enabled?: boolean | null
           responsible_name?: string | null
           role?: string | null
@@ -2413,6 +2415,7 @@ export type Database = {
           notification_frequency?: string | null
           onboarding_completed?: boolean | null
           phone?: string | null
+          preferred_times?: string[]
           push_notifications_enabled?: boolean | null
           responsible_name?: string | null
           role?: string | null
