@@ -45,7 +45,7 @@ import logo from "@/assets/coeaboa-logo.webp";
 import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
 import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
-import { activePlacePhrase, radarDefaultRegion, radarRegionOnce } from "@/lib/activePlace";
+import { activePlacePhrase } from "@/lib/activePlace";
 import { HomeVideoHighlight } from "@/components/home/HomeVideoHighlight";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
@@ -353,13 +353,7 @@ export default function Landing() {
   const setHomeCat = (category: string) => setGlobalFilters({ category });
   const setHomeNbh = (neighborhood: string) => setGlobalFilters({ neighborhood });
   const homeBairros = REGIONS;
-  // Meu Radar: se a pessoa segue uma região e ainda não escolheu nenhuma, a Home abre nela (uma vez por abertura).
-  useEffect(() => {
-    if (!profileLoaded || !radarRegionOnce.pending()) return;
-    radarRegionOnce.done();
-    const radarRegion = radarDefaultRegion(profile?.followed_regions);
-    if (radarRegion && homeBairro === "all") setHomeBairro(radarRegion);
-  }, [profileLoaded, profile?.followed_regions]); // eslint-disable-line react-hooks/exhaustive-deps
+  // A Home sempre abre em "Todas as Regiões"; a pessoa refina pelo "Trocar local".
   const placePhrase = activePlacePhrase(homeBairro, homeNbh);
   useEffect(() => { if (homeBairro !== "all" && !homeBairros.includes(homeBairro as any)) setHomeBairro("all"); }, [homeBairros, homeBairro]);
   const nbhName = (e: any) => String(e.address_neighborhood || "").trim();
@@ -400,7 +394,7 @@ export default function Landing() {
          <HomeVideoHighlight placePhrase={placePhrase} />
          <div className="mx-auto flex w-full max-w-screen-lg items-center justify-between gap-2 px-4 pt-3 sm:px-6">
            <p className="flex min-w-0 items-center gap-1.5 font-display text-sm font-bold text-foreground">
-             <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">Rolês {placePhrase}</span>
+             <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">{homeBairro === "all" && (!homeNbh || homeNbh === "all") ? "Rolês em Todas as Regiões" : `Rolês ${placePhrase}`}</span>
            </p>
            <Button variant="ghost" size="sm" className="h-11 shrink-0 font-bold text-primary"
              onClick={() => document.getElementById("filtros-local")?.scrollIntoView({ behavior: "smooth", block: "center" })}>
