@@ -43,6 +43,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import logo from "@/assets/coeaboa-logo.webp";
+import { CompactMultiSelect } from "@/components/registration/CompactMultiSelect";
 import { NotificationPreferences } from "@/components/registration/NotificationPreferences";
 import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
@@ -680,21 +681,14 @@ export default function Landing() {
                     Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
                   </label>
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <fieldset className="flex flex-wrap items-center gap-1">
-                    <legend className="sr-only">Horário preferido (opcional)</legend>
-                    <span aria-hidden="true" className="text-[11px] font-semibold text-foreground">Horário:</span>
-                    {TIME_PREFERENCES.map((t) => {
-                      const on = subscriberTimes.includes(t.id);
-                      return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
-                        onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
-                        className={cn("h-6 rounded border px-1.5 text-[11px] font-semibold leading-none transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
-                    })}
-                  </fieldset>
+                <div className="flex items-end gap-2">
+                  <div className="min-w-0 flex-1">
+                    <CompactMultiSelect id="newsletter-times" label="Horário preferido" values={subscriberTimes} onChange={(v) => setSubscriberTimes(v as typeof subscriberTimes)} placeholder="Escolher horários" groups={[{ label: "Horários", options: TIME_PREFERENCES.map((t) => ({ value: t.id, label: t.label })) }]} />
+                  </div>
                   <Button
                     type="submit"
                     disabled={isSubscribing}
-                    className="ml-auto h-8 shrink-0 rounded-md bg-foreground px-4 text-xs font-semibold text-background hover:bg-secondary flex items-center gap-1.5"
+                    className="h-11 shrink-0 rounded-xl bg-foreground px-4 text-xs font-semibold text-background hover:bg-secondary flex items-center gap-1.5"
                   >
                     {isSubscribing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <MessageCircle className="h-4 w-4 fill-white" />}
                     {isSubscribing ? "Cadastrando..." : "Cadastrar"}
