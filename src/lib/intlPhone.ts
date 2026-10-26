@@ -47,7 +47,7 @@ export function splitPhone(value: string | null | undefined): { ddi: string; nat
 
 export function maskNational(ddi: string, national: string): string {
   const info = findDdi(ddi);
-  let d = digits(national).slice(0, info.code === ddi ? info.max : 14);
+  const d = digits(national).slice(0, info.code === ddi ? info.max : 14);
   if (ddi === "55") {
     if (d.length <= 2) return d;
     if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
