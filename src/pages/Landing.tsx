@@ -496,8 +496,8 @@ export default function Landing() {
            <HomeAdsCarousel variant="banner" region={homeBairro} />
          </div>
 
-         <section id="radar" className="mb-12 scroll-mt-40">
-           <div className="mb-6 flex flex-col gap-3 xs:flex-row xs:items-center xs:justify-between">
+        <section id="radar" className="mb-8 scroll-mt-40">
+           <div className="mb-3 flex flex-row items-center justify-between gap-3">
              <h2 className="flex min-w-0 items-center gap-2 font-display text-xl font-bold sm:text-2xl">
                <MapPin className="h-5 w-5 text-primary" />
                {user ? "No seu radar" : "Sugestões para você"}
@@ -549,20 +549,24 @@ export default function Landing() {
               })}
             </ul>
            ) : (
-            <div className="bg-muted/30 rounded-3xl p-10 text-center border-2 border-dashed border-primary/10">
-              <Sparkles className="h-10 w-10 text-primary/20 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-foreground/80 mb-2">Ainda não temos sugestões personalizadas</h3>
-              <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
-                {!user 
-                  ? "Crie uma conta e selecione seus estilos favoritos para o Coezinho indicar os rolês que combinam com você."
-                  : "Complete seu perfil com seus estilos musicais favoritos para receber recomendações exclusivas."}
-              </p>
+            <div className="flex flex-col gap-2.5 rounded-2xl border border-dashed border-primary/20 bg-muted/30 px-3 py-2.5 sm:flex-row sm:items-center sm:gap-3">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                <Sparkles className="h-5 w-5 shrink-0 text-primary/60" />
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold leading-tight text-foreground/90">Ainda sem sugestões pra você</h3>
+                  <p className="text-xs leading-snug text-muted-foreground">
+                    {!user
+                      ? "Crie uma conta e escolha seus estilos favoritos."
+                      : "Escolha seus estilos favoritos pra receber indicações."}
+                  </p>
+                </div>
+              </div>
               {!user ? (
-                <Button onClick={() => navigate("/auth")} variant="outline" className="rounded-full font-bold">
+                <Button onClick={() => navigate("/auth")} variant="outline" size="sm" className="h-9 shrink-0 rounded-full font-bold">
                   Criar minha conta
                 </Button>
               ) : (
-                <Button onClick={() => setPersonalizationOpen(true)} variant="outline" className="rounded-full font-bold">
+                <Button onClick={() => setPersonalizationOpen(true)} variant="outline" size="sm" className="h-9 shrink-0 rounded-full font-bold">
                   Definir Preferências
                 </Button>
               )}
