@@ -48,14 +48,14 @@ function GeographyAutocomplete({ id, values, onChange }: { id: string; values: s
  const listId = `${id}-list`;
  const showList = open && q.length > 0;
 
- return <div className="relative min-w-0 space-y-2">
-  <Label htmlFor={id}>Bairro ou localidade</Label>
+ return <div className="relative min-w-0 space-y-1">
+  <Label htmlFor={id} className="text-xs">Bairro ou localidade</Label>
   <div className="relative">
    <MapPin aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
    <Input id={id} role="combobox" aria-expanded={showList} aria-controls={listId} aria-autocomplete="list" autoComplete="off" enterKeyHint="done"
     aria-activedescendant={showList && items[active] ? `${listId}-${active}` : undefined}
-    value={query} placeholder={chosen.length ? 'Adicionar outro bairro...' : 'Digite um bairro (ex.: Ban, Jar, Pra)'}
-    className="h-11 bg-background pl-9 text-base sm:text-sm"
+    value={query} placeholder={chosen.length ? 'Adicionar outro bairro...' : 'Digite seu bairro'}
+    className="h-11 rounded-xl bg-background pl-9 text-base sm:text-sm"
     onChange={e => { setQuery(e.target.value.slice(0, 80)); setOpen(true); setActive(0); }}
     onFocus={() => setOpen(true)}
     onBlur={() => setTimeout(() => setOpen(false), 120)}
@@ -94,7 +94,7 @@ function GeographyAutocomplete({ id, values, onChange }: { id: string; values: s
 export function NotificationPreferences({ geographies, onGeographiesChange, interests, onInterestsChange, id = 'notification-geography' }: {
  geographies: string[]; onGeographiesChange: (value: string[]) => void; interests: string[]; onInterestsChange: (value: string[]) => void; id?: string;
 }) {
- return <div className="grid min-w-0 items-start gap-3 sm:grid-cols-2">
+ return <div className="grid min-w-0 items-start gap-2 sm:grid-cols-2">
   <GeographyAutocomplete id={id} values={geographies} onChange={onGeographiesChange} />
   <CompactMultiSelect id={`${id}-interests`} label="Interesses" values={interests} onChange={onInterestsChange} placeholder="Escolher interesses" groups={[{ label: 'Tipos de rolê', options: NOTIFICATION_INTERESTS.map(i => ({ value: i, label: i })) }]} />
  </div>;

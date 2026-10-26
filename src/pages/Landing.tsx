@@ -627,23 +627,23 @@ export default function Landing() {
 
 
         {/* Newsletter / Public Registration */}
-        <section className="mb-12">
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-primary/25 bg-card p-8 sm:p-12">
+        <section className="mb-8">
+          <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-card p-4 sm:p-6">
             <div className="absolute -right-20 -top-20 h-64 w-64 bg-secondary/20 rounded-full blur-3xl" />
             <div className="relative z-10 max-w-2xl">
-               <h2 className="mb-4 font-display text-2xl font-black sm:text-3xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
-              <p className="text-muted-foreground mb-8 text-lg">
+               <h2 className="mb-1 font-display text-lg font-black sm:text-2xl">Receba o melhor do rolê no WhatsApp 🎸</h2>
+              <p className="mb-3 text-sm text-muted-foreground">
                 Toda semana, uma curadoria imperdível com o que está rolando de norte a sul — direto no seu Zap.
               </p>
-              <form onSubmit={handleNewsletterSubscribe} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <form onSubmit={handleNewsletterSubscribe} className="space-y-2.5">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <div className="space-y-1">
                     <Input 
                       aria-label="Seu nome"
                       placeholder="Seu nome" 
                       value={subscriberName}
                       onChange={(e) => setSubscriberName(e.target.value)}
-                      className="h-14 rounded-2xl border-border bg-background px-6 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                      className="h-11 rounded-xl border-border bg-background px-3.5 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     />
                   </div>
                   <div className="space-y-1">
@@ -657,14 +657,14 @@ export default function Landing() {
                         if (val.length <= 11) setSubscriberPhone(val);
                       }}
                       required
-                      className="h-14 rounded-2xl border-border bg-background px-6 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                      className="h-11 rounded-xl border-border bg-background px-3.5 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     />
                   </div>
                 </div>
                 <NotificationPreferences geographies={subscriberGeographies} onGeographiesChange={setSubscriberGeographies} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
                 <div className="grid grid-cols-1 gap-3">
-                  <div className="flex flex-col justify-end px-1 sm:px-4">
-                    <div className="flex items-start gap-2 rounded-xl border border-border bg-background p-3 sm:border-0 sm:bg-transparent sm:p-0">
+                  <div className="flex flex-col justify-end">
+                    <div className="flex items-start gap-2 rounded-lg border border-border bg-background px-2.5 py-2 sm:border-0 sm:bg-transparent sm:p-0">
                       <input 
                         type="checkbox" 
                         id="whatsapp-consent-landing" 
@@ -678,11 +678,11 @@ export default function Landing() {
                     </div>
                   </div>
                 </div>
-                <div className="pt-2">
+                <div>
                   <Button 
                     type="submit" 
                     disabled={isSubscribing}
-                    className="w-full h-14 rounded-2xl font-semibold text-base tracking-tight bg-foreground hover:bg-secondary text-background shadow-card flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                    className="w-full h-11 rounded-xl font-semibold text-base tracking-tight bg-foreground hover:bg-secondary text-background shadow-card flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
                   >
                     {isSubscribing ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
