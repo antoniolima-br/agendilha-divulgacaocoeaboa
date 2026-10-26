@@ -13,13 +13,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { safeAdDestination } from "@/lib/advertising";
 import { useAppSettings } from "@/data/useAppSettings";
 import { useResolvedMediaUrl } from "@/lib/homeVideo";
-import { homePubliList, pickPubli } from "@/lib/homePubli";
+import { DEFAULT_PUBLI_MESSAGE, pickPubliSlot } from "@/lib/homePubli";
 import defaultPubli from "@/assets/publi-coe-a-boa.jpg.asset.json";
 import coeLogo from "@/assets/coeaboa-logo.webp";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 import { SETTING_KEYS, settingOr } from "@/data/useAppSettings";
 
-const PUBLI_MESSAGE = "Olá! Gostaria de anunciar no Coé a Boa?";
 
 const AUTOPLAY_MS = 5_000;
 const MAX_SPONSORED_ADS = 6;
@@ -69,7 +68,9 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   const [reduceMotion, setReduceMotion] = useState(false);
 
   const { data: settings } = useAppSettings();
-  const { data: curatedPubli } = useResolvedMediaUrl(pickPubli(homePubliList(settings)));
+  const publiSlot = pickPubliSlot(settings);
+  const { data: curatedPubli } = useResolvedMediaUrl(publiSlot?.url ?? null);
+  const publiMessage = publiSlot?.message ?? DEFAULT_PUBLI_MESSAGE;
   const visibleAds = normalizeAds(data).slice(0, MAX_SPONSORED_ADS);
   const total = visibleAds.length;
   const goTo = useCallback((next: number) => {
@@ -102,7 +103,7 @@ export function HomeAdsCarousel({ variant = "showcase", region = "all" }: { vari
   if (total === 0) {
     const publiSrc = curatedPubli || defaultPubli.url;
     const team = settingOr(settings, SETTING_KEYS.teamWhatsapp);
-    const publiHref = (team && buildWhatsappUrl(team, PUBLI_MESSAGE)) || `https://wa.me/?text=${encodeURIComponent(PUBLI_MESSAGE)}`;
+    const publiHref = (team && buildWhatsappUrl(team, publiMessage)) || `https://wa.me/?text=${encodeURIComponent(publiMessage)}`;
     return (
       <section className={isBanner ? "mb-4" : "mb-12"} aria-label="Espaço publicitário">
         <a
