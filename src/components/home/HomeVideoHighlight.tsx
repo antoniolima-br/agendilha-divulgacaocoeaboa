@@ -41,8 +41,8 @@ export function HomeVideoHighlight(_props: { placePhrase?: string }) {
   const firstFrame = typeof firstFile === "string" && firstFile ? `${firstFile}#t=0.1` : "";
 
   return (
-    <section aria-label="Vídeo em destaque" className="mx-auto w-full max-w-screen-lg px-3 pt-2 sm:px-6">
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-primary/30 bg-secondary shadow-lg">
+    <section aria-label="Vídeo em destaque" className="mx-auto w-full max-w-screen-lg pt-2">
+      <div className="relative aspect-video w-full overflow-hidden bg-secondary">
         <div className={`absolute inset-0 transition-opacity duration-500 ${playing && ready ? "opacity-0" : "opacity-100"}`}>
           {firstFrame ? (
             <video src={firstFrame} muted playsInline preload="metadata" aria-hidden className="h-full w-full object-cover" />
