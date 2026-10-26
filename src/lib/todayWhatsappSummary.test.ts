@@ -85,7 +85,7 @@ describe("buildWeekWhatsAppSummary", () => {
     const { text, count } = buildWeekWhatsAppSummary(submissions);
     expect(count).toBe(3);
     // Cabeçalho
-    expect(text).toContain("AGENDILHA — rolês desta semana na Ilha");
+    expect(text).toContain("AGENDILHA — rolês desta semana no Rio");
     expect(text).toContain("Agenda completa em:");
     expect(text).toContain("https://agendilha-divulgacao.lovable.app");
     // Bloco por dia com emoji e ordenação por horário
@@ -212,7 +212,7 @@ describe("buildCoeaboaDailyReport", () => {
     ], date);
 
     expect(count).toBe(1);
-    expect(text).toContain("*AGENDILHA* — sua agenda de eventos da Ilha do Governador");
+    expect(text).toContain("*AGENDILHA* — sua agenda de eventos do Rio");
     expect(text).toContain("📲 Siga no Instagram\nhttps://instagram.com/agendilha?igshid=YmMyMTA2M2Y=");
     expect(text).toContain("💬 Entre no nosso WhatsApp\nhttps://chat.whatsapp.com/ENHhvKwqqsE2iUdWcZJY4G");
     expect(text).toContain("🗓️ TERÇA-FEIRA, 15 DE SETEMBRO");

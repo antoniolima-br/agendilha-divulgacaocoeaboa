@@ -8,9 +8,9 @@ const data: IntranetBI = { summary: { received_cents: 10000, expenses_cents: 250
 describe('executive BI', () => {
   it('shows confirmed cash, costs and net balance separately', async () => {
     render(<ConsolidatedView data={data}/>);
-    expect(screen.getByText('Receita recebida').parentElement).toHaveTextContent('100,00');
-    expect(screen.getByText('Despesas pagas').parentElement).toHaveTextContent('25,00');
-    expect(screen.getByText('Saldo do período').parentElement).toHaveTextContent('75,00');
+    expect(screen.getByText('Receita recebida').closest('button')).toHaveTextContent('100,00');
+    expect(screen.getByText('Despesas pagas').closest('button')).toHaveTextContent('25,00');
+    expect(screen.getByText('Saldo do período').closest('button')).toHaveTextContent('75,00');
     expect(screen.queryByText('Entradas, despesas e saldo diário')).not.toBeInTheDocument();
   });
   it('shows the three success indicators in plain language', () => {

@@ -19,6 +19,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePublicEventIndex, usePublicEventBatch } from "@/data/pagedPublicEvents";
 import { EventBatchNavigation } from "@/components/agenda/EventBatchNavigation";
 import { flyerListingUrl } from "@/lib/flyerImages";
+import { TIME_PREFERENCES, cleanTimePreferences } from "@/lib/timePreferences";
+
+const TIME_IDS = TIME_PREFERENCES.map((t) => t.id);
+const timeLabel = (id: string) => { const t = TIME_PREFERENCES.find((x) => x.id === id); return t ? `${t.label} (${t.hint})` : id; };
 
 const STYLES = ["Samba", "Pagode", "Rock", "MPB", "Funk", "Jazz", "Pop", "Sertanejo", "Eletrônica"];
 const CATEGORIES = ["Música", "Gastronomia", "Cultura", "Esporte", "Promoções"];
@@ -28,9 +32,10 @@ interface ChoiceGroupProps {
   options: readonly string[];
   values: string[];
   onToggle: (value: string) => void;
+  labelFor?: (value: string) => string;
 }
 
-function ChoiceGroup({ title, options, values, onToggle }: ChoiceGroupProps) {
+function ChoiceGroup({ title, options, values, onToggle, labelFor }: ChoiceGroupProps) {
   return (
     <fieldset className="space-y-3">
       <legend className="text-sm font-semibold text-foreground">{title}</legend>
@@ -43,7 +48,7 @@ function ChoiceGroup({ title, options, values, onToggle }: ChoiceGroupProps) {
               className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border/70 bg-card/40 px-3 py-2.5 text-sm transition-colors hover:border-primary/35 hover:bg-card"
             >
               <Checkbox checked={checked} onCheckedChange={() => onToggle(value)} />
-              <span className="min-w-0 break-words">{value}</span>
+              <span className="min-w-0 break-words">{labelFor ? labelFor(value) : value}</span>
             </label>
           );
         })}
@@ -60,6 +65,7 @@ export default function SeuRadar() {
   const [styles, setStyles] = useState<string[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
+  const [times, setTimes] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -77,9 +83,10 @@ export default function SeuRadar() {
     setStyles(Array.isArray(profile.musical_preferences) ? profile.musical_preferences : []);
     setNeighborhoods(Array.isArray(profile.followed_neighborhoods) ? profile.followed_neighborhoods : []);
     setRegions(Array.isArray(profile.followed_regions) ? profile.followed_regions : []);
+    setTimes(cleanTimePreferences(profile.preferred_times));
   }, [loaded, profile]);
 
-  const feed = useMemo(() => radarEvents(events, { event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods, followed_regions: regions }), [events, categories, styles, neighborhoods, regions]);
+  const feed = useMemo(() => radarEvents(events, { event_type_preferences: categories, musical_preferences: styles, followed_neighborhoods: neighborhoods, followed_regions: regions, preferred_times: times }), [events, categories, styles, neighborhoods, regions, times]);
   const batch = usePublicEventBatch(feed);
   const mixedFeed = useMemo(() => interleaveRadarAds(batch.events, radarAds), [batch.events, radarAds]);
   const toggle = (values: string[], value: string, setter: (next: string[]) => void) => {
@@ -94,6 +101,7 @@ export default function SeuRadar() {
         musical_preferences: styles,
         followed_neighborhoods: neighborhoods,
         followed_regions: regions,
+        preferred_times: times,
       });
       if (saved) setEditing(false);
     } finally {
@@ -120,6 +128,7 @@ export default function SeuRadar() {
         <section className="space-y-7 rounded-lg border border-border/70 bg-card/35 p-4 shadow-card sm:p-6" aria-label="Preferências do Radar">
           <ChoiceGroup title="Categorias" options={CATEGORIES} values={categories} onToggle={(value) => toggle(categories, value, setCategories)} />
           <ChoiceGroup title="Estilos musicais" options={STYLES} values={styles} onToggle={(value) => toggle(styles, value, setStyles)} />
+          <ChoiceGroup title="Horários" options={TIME_IDS} values={times} labelFor={timeLabel} onToggle={(value) => toggle(times, value, setTimes)} />
           <ChoiceGroup title="Regiões" options={REGIONS} values={regions} onToggle={(value) => toggle(regions, value, setRegions)} />
           <details className="rounded-md border border-border/70 bg-background/35 p-4">
             <summary className="cursor-pointer font-semibold text-foreground">

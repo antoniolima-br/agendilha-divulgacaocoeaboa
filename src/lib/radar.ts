@@ -1,3 +1,4 @@
+import { matchesTimePreferences } from "@/lib/timePreferences";
 import { regionOf, normalizeNeighborhood } from "./regions";
 import type { AgendaEvent } from "@/components/agenda/types";
 import type { ProfileAddress } from "@/hooks/useProfile";
@@ -16,7 +17,7 @@ export function radarEvents(events: AgendaEvent[], preferences: Partial<ProfileA
     const interest = (!categories.length && !styles.length) || [...categories, ...styles].some((value) => text.includes(value));
     const region = regionOf(event);
     const geography = (!neighborhoods.length && !regions.length) || neighborhoods.includes(normalizeNeighborhood(event.address_neighborhood || "")) || (region !== null && regions.includes(normalizeRadarText(region)));
-    return interest && geography;
+    return interest && geography && matchesTimePreferences(event.start_time, preferences.preferred_times);
   }).sort((a, b) => `${eventDateISO(a.date)} ${a.start_time || ""}`.localeCompare(`${eventDateISO(b.date)} ${b.start_time || ""}`));
 }
 
