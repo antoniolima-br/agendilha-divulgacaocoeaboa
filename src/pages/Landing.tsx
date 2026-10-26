@@ -47,6 +47,7 @@ import { processGeographies } from "@/lib/notificationPreferences";
 import { newsletterSubscribeSchema } from "@/schemas/newsletter";
 import { activePlacePhrase } from "@/lib/activePlace";
 import { HomeVideoHighlight } from "@/components/home/HomeVideoHighlight";
+import { RegionNeighborhoodPanel } from "@/components/home/RegionNeighborhoodPanel";
 import { HomeAdsCarousel } from "@/components/anuncios/HomeAdsCarousel";
 import { HomeMixedHeroCarousel } from "@/components/anuncios/HomeMixedHeroCarousel";
 import { EventDetailDialog } from "@/components/agenda/EventDetailDialog";
@@ -116,7 +117,7 @@ export default function Landing() {
   }, []);
   useScrollReveal();
   const { user } = useAuth();
-  const { profile, loaded: profileLoaded } = useProfile();
+  const { profile, loaded: profileLoaded, saveProfile } = useProfile();
   const navigate = useNavigate();
   const todayRowRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -292,6 +293,15 @@ export default function Landing() {
           whatsapp_consent: parsed.data.whatsappConsent,
         });
 
+      // Quem está logado leva bairros, regiões e interesses pro Meu Radar.
+      if (user && (!error || error.code === "23505")) {
+        const merge = (a: unknown, b: string[]) => [...new Set([...(Array.isArray(a) ? a as string[] : []), ...b])];
+        await saveProfile({
+          followed_regions: merge(profile?.followed_regions, audience.preferred_regions),
+          followed_neighborhoods: merge(profile?.followed_neighborhoods, audience.preferred_neighborhoods),
+          event_type_preferences: merge(profile?.event_type_preferences, interests),
+        });
+      }
       if (error) {
         if (error.code === "23505") {
           toast.info("Este número já está cadastrado!");
@@ -425,7 +435,7 @@ export default function Landing() {
               </SelectContent>
             </Select>
             {regionNbhs.length > 0 && (
-              <Select value={homeNbh} onValueChange={setHomeNbh}>
+              <Select key="nbh-select" value={homeNbh} onValueChange={setHomeNbh}>
                 <SelectTrigger aria-label="Filtrar por bairro" className="order-3 col-span-2 h-11 min-w-0 rounded-lg border-primary/70 bg-card/60 font-display text-sm font-bold uppercase text-primary">
                   <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /><span className="text-foreground/70">Bairro:</span><SelectValue /></span>
                 </SelectTrigger>
@@ -445,6 +455,11 @@ export default function Landing() {
              </SelectContent>
            </Select>
          </div>
+
+         {homeBairro !== "all" && (
+           <RegionNeighborhoodPanel region={homeBairro} neighborhood={homeNbh} onPick={setHomeNbh}
+             counts={regionNbhs.map((n) => ({ name: n, total: visualEvents.filter((e: any) => regionOf(e) === homeBairro && nbhName(e) === n).length }))} />
+         )}
 
          <div className="mb-10 flex flex-wrap items-center gap-3">
             <EventDateFilter value={globalFilters.date} onChange={(date) => setGlobalFilters({ date, period: date ? "custom" : "all" })} />
