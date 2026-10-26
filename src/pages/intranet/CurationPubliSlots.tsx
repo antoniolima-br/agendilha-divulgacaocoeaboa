@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { APP_SETTINGS_KEY, useAppSettings } from "@/data/useAppSettings";
 import { HOME_VIDEO_BUCKET, STORAGE_PREFIX, useResolvedMediaUrl } from "@/lib/homeVideo";
-import { HOME_PUBLI_KEYS, HOME_PUBLI_LABELS } from "@/lib/homePubli";
+import { DEFAULT_PUBLI_MESSAGE, HOME_PUBLI_KEYS, HOME_PUBLI_LABELS, HOME_PUBLI_MSG_KEYS } from "@/lib/homePubli";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 const MAX_MB = 10;
@@ -17,18 +18,21 @@ export function CurationPubliSlots() {
     <section className="mb-6 rounded-2xl border p-4">
       <h2 className="text-lg font-semibold">Gerenciamento de Publicidade</h2>
       <p className="mb-4 text-sm text-muted-foreground">
-        Imagens JPG ou PNG de até {MAX_MB} MB. A Home mostra uma delas no card PUBLI, trocando a cada nova visita.
+        Imagens JPG ou PNG de até {MAX_MB} MB e a mensagem que abre no WhatsApp ao tocar. A Home mostra um deles no card PUBLI, trocando a cada nova visita.
       </p>
       <ul className="grid gap-3 sm:grid-cols-3">
         {HOME_PUBLI_KEYS.map((key, i) => (
-          <PubliSlot key={key} slot={i + 1} label={HOME_PUBLI_LABELS[i]} value={(data?.[key] ?? "").trim()} />
+          <PubliSlot key={key} slot={i + 1} label={HOME_PUBLI_LABELS[i]} value={(data?.[key] ?? "").trim()} message={(data?.[HOME_PUBLI_MSG_KEYS[i]] ?? "").trim()} />
         ))}
       </ul>
     </section>
   );
 }
 
-function PubliSlot({ slot, label, value }: { slot: number; label: string; value: string }) {
+function PubliSlot({ slot, label, value, message }: { slot: number; label: string; value: string; message: string }) {
+  const [text, setText] = useState(message);
+  const [savingText, setSavingText] = useState(false);
+  useEffect(() => setText(message), [message]);
   const qc = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -101,6 +105,19 @@ function PubliSlot({ slot, label, value }: { slot: number; label: string; value:
           <Trash2 className="mr-2 h-4 w-4" />Excluir
         </Button>
       )}
+      <label className="text-xs font-semibold" htmlFor={`publi-msg-${slot}`}>Mensagem do WhatsApp</label>
+      <Textarea id={`publi-msg-${slot}`} value={text} maxLength={300} rows={2} placeholder={DEFAULT_PUBLI_MESSAGE}
+        onChange={(e) => setText(e.target.value)} className="text-sm" />
+      <Button variant="secondary" size="sm" className="h-11" disabled={savingText || text.trim() === message}
+        onClick={async () => {
+          setSavingText(true); setMsg(null);
+          const { error } = await supabase.rpc("set_home_publi_message", { p_slot: slot, p_message: text });
+          if (error) setMsg({ ok: false, text: `Não deu pra salvar a mensagem: ${error.message}` });
+          else { await qc.invalidateQueries({ queryKey: APP_SETTINGS_KEY }); setMsg({ ok: true, text: "Mensagem salva!" }); }
+          setSavingText(false);
+        }}>
+        {savingText ? "Salvando…" : "Salvar mensagem"}
+      </Button>
       {msg && (
         <p role="status" className={`flex items-center gap-1 text-xs ${msg.ok ? "text-foreground" : "text-destructive"}`}>
           {msg.ok && <CheckCircle2 className="h-4 w-4 text-primary" />}{msg.text}
