@@ -1,3 +1,4 @@
+import { TIME_PREFERENCES, cleanTimePreferences } from "@/lib/timePreferences";
 import { usePublicEvents } from "@/data/usePublicEvents";
 import { InstitutionalCredits } from "@/components/layout/InstitutionalCredits";
 import { useGlobalEventFilters } from "@/hooks/useGlobalEventFilters";
@@ -246,6 +247,7 @@ export default function Landing() {
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberGeographies, setSubscriberGeographies] = useState<string[]>(["all"]);
   const [subscriberInterests, setSubscriberInterests] = useState<string[]>([]);
+  const [subscriberTimes, setSubscriberTimes] = useState<string[]>([]);
   const [whatsappConsent, setWhatsappConsent] = useState(true);
   const [isSubscribing, setIsSubmitting] = useState(false);
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
@@ -300,6 +302,7 @@ export default function Landing() {
           followed_regions: merge(profile?.followed_regions, audience.preferred_regions),
           followed_neighborhoods: merge(profile?.followed_neighborhoods, audience.preferred_neighborhoods),
           event_type_preferences: merge(profile?.event_type_preferences, interests),
+          preferred_times: cleanTimePreferences(merge(profile?.preferred_times, subscriberTimes)),
         });
       }
       if (error) {
@@ -316,6 +319,7 @@ export default function Landing() {
         setSubscriberName("");
         setSubscriberGeographies(["all"]);
         setSubscriberInterests([]);
+        setSubscriberTimes([]);
       }
      } catch (err) {
        handleError(err, "Erro ao realizar cadastro.");
@@ -671,6 +675,17 @@ export default function Landing() {
                   </div>
                 </div>
                 <NotificationPreferences geographies={subscriberGeographies} onGeographiesChange={setSubscriberGeographies} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
+                <fieldset className="space-y-1">
+                  <legend className="text-xs font-semibold text-foreground">Horário preferido <span className="font-normal text-muted-foreground">(opcional)</span></legend>
+                  <div className="flex flex-wrap gap-1.5">
+                    {TIME_PREFERENCES.map((t) => {
+                      const on = subscriberTimes.includes(t.id);
+                      return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
+                        onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
+                        className={cn("h-8 rounded-md border px-3 text-xs font-semibold transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
+                    })}
+                  </div>
+                </fieldset>
                 <div className="grid grid-cols-1 gap-3">
                   <div className="flex flex-col justify-end">
                     <div className="flex items-start gap-2 rounded-lg border border-border bg-background px-2.5 py-2 sm:border-0 sm:bg-transparent sm:p-0">
