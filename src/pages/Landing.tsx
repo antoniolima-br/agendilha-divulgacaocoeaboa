@@ -668,36 +668,38 @@ export default function Landing() {
                   />
                 </div>
                 <NotificationPreferences geographies={subscriberGeographies} onGeographiesChange={setSubscriberGeographies} interests={subscriberInterests} onInterestsChange={setSubscriberInterests} id="newsletter-geography" />
-                <fieldset className="flex flex-wrap items-center gap-1.5">
-                  <legend className="sr-only">Horário preferido (opcional)</legend>
-                  <span aria-hidden="true" className="text-xs font-semibold text-foreground">Horário:</span>
-                  {TIME_PREFERENCES.map((t) => {
-                    const on = subscriberTimes.includes(t.id);
-                    return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
-                      onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
-                      className={cn("h-7 rounded-md border px-2.5 text-xs font-semibold transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
-                  })}
-                </fieldset>
-                <div className="flex items-start gap-2">
+                <div className="flex items-center gap-1.5">
                   <input
                     type="checkbox"
                     id="whatsapp-consent-landing"
                     checked={whatsappConsent}
                     onChange={(e) => setWhatsappConsent(e.target.checked)}
-                    className="relative mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary after:absolute after:-inset-3 after:content-[''] focus:ring-primary accent-primary"
+                    className="relative h-3.5 w-3.5 shrink-0 rounded border-border text-primary after:absolute after:-inset-3 after:content-[''] focus:ring-primary accent-primary"
                   />
-                  <label htmlFor="whatsapp-consent-landing" className="cursor-pointer break-words text-xs font-medium leading-snug text-foreground">
+                  <label htmlFor="whatsapp-consent-landing" className="cursor-pointer break-words text-[11px] leading-tight text-muted-foreground">
                     Autorizo receber notificações, sugestões e promoções pelo WhatsApp.
                   </label>
                 </div>
-                <Button
-                  type="submit"
-                  disabled={isSubscribing}
-                  className="w-full h-10 rounded-lg font-semibold text-sm tracking-tight bg-foreground hover:bg-secondary text-background shadow-card flex items-center justify-center gap-2"
-                >
-                  {isSubscribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-5 w-5 fill-white" />}
-                  {isSubscribing ? "Cadastrando..." : "Cadastrar"}
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <fieldset className="flex flex-wrap items-center gap-1">
+                    <legend className="sr-only">Horário preferido (opcional)</legend>
+                    <span aria-hidden="true" className="text-[11px] font-semibold text-foreground">Horário:</span>
+                    {TIME_PREFERENCES.map((t) => {
+                      const on = subscriberTimes.includes(t.id);
+                      return <button key={t.id} type="button" aria-pressed={on} title={t.hint}
+                        onClick={() => setSubscriberTimes((cur) => cur.includes(t.id) ? cur.filter((x) => x !== t.id) : [...cur, t.id])}
+                        className={cn("h-6 rounded border px-1.5 text-[11px] font-semibold leading-none transition-colors", on ? "btn-gold border-transparent" : "border-border bg-background text-muted-foreground hover:text-foreground")}>{t.label}</button>;
+                    })}
+                  </fieldset>
+                  <Button
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="ml-auto h-8 shrink-0 rounded-md bg-foreground px-4 text-xs font-semibold text-background hover:bg-secondary flex items-center gap-1.5"
+                  >
+                    {isSubscribing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <MessageCircle className="h-4 w-4 fill-white" />}
+                    {isSubscribing ? "Cadastrando..." : "Cadastrar"}
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
