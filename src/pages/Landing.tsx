@@ -385,9 +385,9 @@ export default function Landing() {
        <div style={{ paddingTop: headerH }}>
          <HomeVideoHighlight placePhrase={placePhrase} />
          {/* ── Faixa de dias (logo abaixo dos vídeos) ── */}
-         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-1 px-2 py-1 sm:px-6">
-           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-8 w-8 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
-             <ChevronLeft className="h-3.5 w-3.5" />
+         {dayStrip.days.length > 0 && <nav aria-label="Dias com rolês" className="mx-auto flex w-full max-w-screen-lg items-center gap-0.5 px-1.5 py-0.5 sm:px-6">
+           <Button variant="ghost" size="icon" aria-label="Semana anterior" className="h-7 w-5 shrink-0 rounded-md p-0 text-primary" onClick={() => { if (dayStrip.previous) setWeekStart(dayStrip.previous); }} disabled={!dayStrip.previous}>
+             <ChevronLeft className="h-3 w-3" />
            </Button>
            <div className="flex min-w-0 flex-1 snap-x snap-mandatory gap-0.5 overflow-x-auto overscroll-x-contain scroll-smooth touch-pan-x [-webkit-overflow-scrolling:touch]">
              {dayStrip.days.map((dayStr) => {
@@ -395,15 +395,15 @@ export default function Landing() {
                const isSel = (carouselDate || globalFilters.date || todayStr) === dayStr;
                return (
                  <Button variant="ghost" key={dayStr} aria-label={format(day, "EEEE, dd/MM/yyyy", { locale: ptBR })} aria-pressed={isSel} onClick={() => { setGlobalFilters({ period: "custom", date: dayStr }); navigate(`/explorar?view=custom&date=${dayStr}`); }}
-                   className={cn("h-9 min-w-12 flex-1 snap-start flex-col gap-0 rounded-md px-0.5 py-0.5 transition-colors", isSel ? "btn-gold shadow-sm" : "text-muted-foreground hover:text-foreground")}>
-                   <span className="text-[9px] font-bold uppercase leading-none sm:text-[11px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
-                   <span className="mt-0.5 text-[11px] font-black leading-none sm:text-xs">{format(day, "dd/MM")}</span>
+                   className={cn("h-7 min-w-10 flex-1 snap-start flex-col justify-center gap-0 rounded px-0 py-0 transition-colors", isSel ? "btn-gold shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+                   <span className="text-[9px] font-bold uppercase leading-none sm:text-[10px]">{format(day, "EEEE", { locale: ptBR }).split("-")[0]}</span>
+                   <span className="mt-px text-[11px] font-black leading-none sm:text-xs">{format(day, "dd/MM")}</span>
                  </Button>
                );
              })}
            </div>
-           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-8 w-8 shrink-0 rounded-full border border-primary/40 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
-             <ChevronRight className="h-3.5 w-3.5" />
+           <Button variant="ghost" size="icon" aria-label="Próxima semana" className="h-7 w-5 shrink-0 rounded-md p-0 text-primary" onClick={() => { if (dayStrip.next) setWeekStart(dayStrip.next); }} disabled={!dayStrip.next}>
+             <ChevronRight className="h-3 w-3" />
            </Button>
          </nav>}
          <div className="mx-auto flex w-full max-w-screen-lg items-center justify-between gap-2 px-4 pt-3 sm:px-6">
@@ -480,7 +480,7 @@ export default function Landing() {
                      {c.label} <span className="font-medium normal-case tracking-normal text-muted-foreground">/ {c.hint}</span>
                    </h2>
                    {evs.length > 2 && (
-                     <Link to={`/agenda?category=${encodeURIComponent(c.key)}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3.5 w-3.5" /></Link>
+                     <Link to={`/agenda?category=${encodeURIComponent(c.key)}`} className="flex min-h-9 shrink-0 items-center text-xs font-bold text-primary">Ver tudo <ChevronRight className="h-3 w-3" /></Link>
                    )}
                  </div>
                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
